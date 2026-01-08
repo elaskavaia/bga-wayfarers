@@ -1,0 +1,124 @@
+<?php
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * wayfarers.game.php
+ *
+ * This is the main file for your game logic.
+ *
+ * In this PHP file, you are going to defines the rules of the game.
+ *
+ */
+
+declare(strict_types=1);
+
+namespace Bga\Games\wayfarers\OpCommon;
+
+abstract class ComplexOperation extends CountableOperation {
+    /** @var Operation[] */
+    public array $delegates = [];
+
+    function getDataForDb() {
+        $data = $this->getData() ?? [];
+        $data["args"] = [];
+        foreach ($this->delegates as $i => $sub) {
+            $data["args"][$i] = ["type" => $sub->getType(), "data" => $sub->getDataForDb(), "owner" => $sub->getOwner()];
+        }
+        return $data;
+    }
+    function getDataForDbWithCounts(mixed $count = 1, mixed $mcount = null) {
+        if ($mcount == null) {
+            $mcount = $count;
+        }
+        $data = $this->getDataForDb();
+        $data["count"] = $count;
+        $data["mcount"] = $count;
+    }
+
+    function canSkip() {
+        if (count($this->delegates) == 0) {
+            return true;
+        }
+        return parent::canSkip();
+    }
+
+    function withDelegate(Operation $sub) {
+        $this->delegates[] = $sub;
+        return $this;
+    }
+
+    function getPossibleMoves() {
+        if ($this->isRangedChoice()) {
+            return parent::getPossibleMoves();
+        }
+        $res = [];
+        foreach ($this->delegates as $sub) {
+            $res[$sub->getId()] = [
+                "name" => $sub->getButtonName(),
+            ];
+        }
+        return $res;
+    }
+
+    function isSubTrancient() {
+        foreach ($this->delegates as $sub) {
+            if ($sub->isTrancient()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    function getRecName($join) {
+        $args = [];
+        $pars = [];
+        if (count($this->delegates) == 0) {
+            return $this->game->getRulesFor("Op_" . $this->getType(), "name", "?");
+        }
+        foreach ($this->delegates as $i => $sub) {
+            $pars[] = "p$i";
+            $args["p$i"] = ["log" => $sub->getButtonName(), "args" => $sub->getExtraArgs()];
+        }
+        $log = implode(
+            $join,
+            array_map(function ($a) {
+                return '${' . $a . "}";
+            }, $pars)
+        );
+
+        return ["log" => $log, "args" => $args];
+    }
+
+    function getTypeFullExpr() {
+        $op = $this->getOperator();
+
+        $opcount = count($this->delegates);
+        if ($opcount == 1) {
+            $base = static::str($this->delegates[0]);
+        } elseif ($opcount == 0) {
+            $base = "0";
+        } else {
+            $res = static::str($this->delegates[0], $op);
+            for ($i = 1; $i < $opcount; $i++) {
+                $res .= $op . static::str($this->delegates[$i], $op);
+            }
+            $base = $res;
+        }
+        if ($this->isRanged()) {
+            $min = $this->getMinCount();
+            $max = $this->getCount();
+            if ($min == $max) {
+                return "$min($base)";
+            }
+            return "[$min,$max]($base)";
+        }
+
+        return $base;
+    }
+}

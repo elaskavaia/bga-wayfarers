@@ -1,0 +1,778 @@
+@charset "UTF-8";
+.card,
+.action,
+.deck,
+.discard {
+  height: 200px;
+  aspect-ratio: 640/1000;
+  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5019607843);
+  border-radius: 5%;
+}
+
+.deck > * {
+  visibility: hidden;
+}
+
+.discard > * {
+  visibility: hidden;
+  position: absolute;
+}
+
+.selection_area {
+  position: sticky;
+  top: 86px;
+  align-self: flex-start;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  z-index: 20;
+}
+.selection_area > * {
+  position: relative;
+  display: inline-block;
+}
+
+#mainarea {
+  width: 100%;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  z-index: 0;
+}
+
+.tableau {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 5px;
+  padding-top: 32px;
+}
+
+.players_panels {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
+
+.tracker {
+  height: 32px;
+  aspect-ratio: 1/1;
+}
+.log .tracker, #page-title .tracker {
+  display: inline-block;
+  vertical-align: middle;
+  height: 24px;
+  line-height: 24px;
+}
+
+.miniboard,
+.restrackers {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.miniboard .tracker,
+.miniboard .counter,
+.restrackers .tracker,
+.restrackers .counter {
+  color: black;
+  text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
+}
+html[data-theme=dark] .miniboard .tracker,
+html[data-theme=dark] .miniboard .counter,
+html[data-theme=dark] .restrackers .tracker,
+html[data-theme=dark] .restrackers .counter {
+  color: white;
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
+}
+.miniboard .tracker::after,
+.miniboard .counter::after,
+.restrackers .tracker::after,
+.restrackers .counter::after {
+  content: attr(data-state);
+  position: relative;
+  left: 12px;
+  top: 9px;
+}
+
+.counter_card {
+  background-image: url(img/tokens.png);
+  background-size: auto 453%;
+  background-position: 86% 66%;
+  height: 32px;
+  aspect-ratio: 1/1;
+}
+
+.counter_roof {
+  background-image: url(img/tokens.png);
+  background-size: auto 453%;
+  background-position: 76.5% 66%;
+  height: 32px;
+  aspect-ratio: 1/1;
+}
+
+.wooden {
+  background-image: url(img/tokens.png);
+  background-size: auto 453%;
+}
+
+.hearth {
+  background-position: 47% 0%;
+}
+
+.furnish {
+  background-position: 89% 97%;
+  background-size: auto 453%;
+}
+
+.trade {
+  background-position: 81% 97%;
+  background-size: auto 453%;
+}
+
+.wooden.shell {
+  background-position: 0% 34%;
+}
+
+.wooden.barley {
+  background-position: 8% 34%;
+  background-size: auto 488%;
+}
+
+.wooden.food {
+  background-position: 16% 34%;
+}
+
+.wooden.hide {
+  background-position: 24% 34%;
+}
+
+.wooden.seaweed {
+  background-position: 31.5% 34%;
+  background-size: auto 530%;
+}
+
+.wooden.skaill {
+  background-position: 39% 38%;
+  background-size: auto 530%;
+}
+
+.wooden.rabbit {
+  background-position: 55% 33%;
+  background-size: auto 479%;
+}
+
+.wooden.fish {
+  background-position: 62% 34%;
+  background-size: auto 488%;
+}
+
+.wooden.sheep {
+  background-position: 10% 66%;
+}
+
+.wooden.wool {
+  background-position: 48% 37%;
+}
+
+.wooden.deer {
+  background-position: 20% 63%;
+}
+
+.wooden.boar {
+  background-position: 30% 67%;
+}
+
+.wooden.stone {
+  background-position: 80% 38%;
+}
+
+.wooden.cow {
+  background-position: 40% 64%;
+}
+
+.wooden.wood {
+  background-position: 50% 67%;
+}
+
+.wooden.bone {
+  background-position: 71% 37%;
+  background-size: auto 490%;
+}
+
+.wooden.midden {
+  background-position: 0% 67%;
+}
+
+.worker {
+  background-position: 19% 97%;
+  background-size: auto 453%;
+  width: 26px;
+  height: 39px;
+  aspect-ratio: 2/3;
+}
+.worker[data-state="0"] {
+  opacity: 0;
+}
+.worker.color_ff0000 {
+  background-position: 14% 97%;
+}
+.worker.color_000000 {
+  background-position: 7% 97%;
+}
+.worker.color_ffffff {
+  background-position: 0% 97%;
+}
+.worker.color_ffcc02 {
+  background-position: 21% 97%;
+}
+.worker.color_6cd0f6 {
+  background-position: 27% 97%;
+}
+.worker.color_982fff {
+  background-position: 34% 97%;
+}
+
+.worker.large {
+  width: 30px;
+  height: 50px;
+}
+
+.tableau .wooden,
+.tableau .slider {
+  filter: drop-shadow(2px 2px 3px black);
+}
+
+.tracker.slider {
+  background-image: url(img/SliderBGA.png);
+  background-size: cover;
+  aspect-ratio: 198/634;
+}
+.action-button .tracker.slider {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.pboard .tracker.slider {
+  position: absolute;
+  height: 32%;
+  top: 51%;
+}
+.pboard .tracker.slider[data-state="0"] {
+  left: 2%;
+}
+.pboard .tracker.slider[data-state="1"] {
+  left: 10.7%;
+}
+.pboard .tracker.slider[data-state="2"] {
+  left: 19.4%;
+}
+.pboard .tracker.slider[data-state="3"] {
+  left: 28.1%;
+}
+.pboard .tracker.slider[data-state="4"] {
+  left: 36.8%;
+}
+.pboard .tracker.slider[data-state="5"] {
+  left: 45.5%;
+}
+.pboard .tracker.slider[data-state="6"] {
+  left: 54.2%;
+}
+.pboard .tracker.slider[data-state="7"] {
+  left: 62.9%;
+}
+.pboard .tracker.slider[data-state="8"] {
+  left: 71.6%;
+}
+.pboard .tracker.slider[data-state="9"] {
+  left: 80.3%;
+}
+.pboard .tracker.slider[data-state="10"] {
+  left: 89%;
+}
+
+.solo_game .turndisk {
+  display: none;
+}
+
+.turndisk {
+  background-image: url(img/turnTokenS.png);
+  background-size: cover;
+  aspect-ratio: 109/104;
+  height: 104px;
+  position: relative;
+}
+
+.turnmarker {
+  background-position-x: 100%;
+  background-size: auto 453%;
+  width: 30px;
+  aspect-ratio: 1/1;
+  position: absolute;
+}
+.supply .turnmarker {
+  display: none;
+}
+.turnmarker.color_982fff {
+  background-position-y: 5%;
+}
+.turnmarker.color_6cd0f6 {
+  background-position-y: 38%;
+}
+.turnmarker.color_ffcc02 {
+  background-position-y: 64%;
+}
+.turnmarker.color_ff0000 {
+  background-position-y: 95%;
+}
+.turnmarker.color_000000 {
+  background-position-y: 64%;
+  filter: grayscale(1);
+}
+.turnmarker[data-state="0"] {
+  left: 15%;
+  bottom: 12%;
+  z-index: 0;
+}
+.turnmarker[data-state="1"] {
+  left: 15%;
+  bottom: 20%;
+  z-index: 1;
+}
+.turnmarker[data-state="2"] {
+  left: 15%;
+  bottom: 28%;
+  z-index: 2;
+}
+.turnmarker[data-state="3"] {
+  left: 15%;
+  bottom: 36%;
+  z-index: 3;
+}
+.turnmarker[data-state="10"] {
+  left: 37%;
+  bottom: 52%;
+  z-index: 0;
+}
+.turnmarker[data-state="11"] {
+  left: 37%;
+  bottom: 60%;
+  z-index: 1;
+}
+.turnmarker[data-state="12"] {
+  left: 37%;
+  bottom: 68%;
+  z-index: 2;
+}
+.turnmarker[data-state="13"] {
+  left: 37%;
+  bottom: 76%;
+  z-index: 3;
+}
+.turnmarker[data-state="20"] {
+  right: 15%;
+  bottom: 12%;
+  z-index: 0;
+}
+.turnmarker[data-state="21"] {
+  right: 15%;
+  bottom: 20%;
+  z-index: 1;
+}
+.turnmarker[data-state="22"] {
+  right: 15%;
+  bottom: 28%;
+  z-index: 2;
+}
+.turnmarker[data-state="23"] {
+  right: 15%;
+  bottom: 36%;
+  z-index: 3;
+}
+
+.turninfo {
+  position: relative;
+  height: 32px;
+  aspect-ratio: unset;
+  color: #999;
+}
+.turninfo:after {
+  content: attr(data-state);
+  position: relative;
+}
+.turninfo:before {
+  content: attr(data-name);
+  position: relative;
+}
+.turninfo[data-state="0"] {
+  display: none;
+}
+.turninfo[data-state="5"] {
+  display: none;
+}
+
+/* tooltips */
+.midSizeDialog {
+  max-width: 700px;
+  min-width: 400px;
+}
+
+.tundra .dijitTooltipContainer,
+.tooltipcontainer {
+  background: white;
+  color: black;
+  border: unset;
+  border-radius: unset;
+  padding: unset;
+  margin: 0;
+}
+
+.tundra .dijitTooltipContainer {
+  box-shadow: 1px 1px 2px 2px rgba(0, 0, 0, 0.5019607843);
+}
+
+.tooltipcontainer {
+  background-size: cover;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.tooltipcontainer .tooltiptitle {
+  position: relative;
+  font-weight: bold;
+  padding: 0.1em;
+  font-size: x-large;
+}
+.tooltipcontainer .tooltip-body {
+  position: relative;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+.tooltipcontainer li {
+  list-style: circle;
+}
+.tooltipcontainer .tooltiptext {
+  max-width: 500px;
+  top: unset;
+}
+.tooltipcontainer .tooltiptitle {
+  font-family: "Caesar Dressing";
+}
+
+.tooltip-left {
+  padding: 0.5em;
+}
+
+.tooltip-right {
+  padding: 0.5em;
+  padding-left: 0em;
+}
+
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ * wayfarers.scss
+ *
+ */
+/* 
+latin
+<link href='https://fonts.googleapis.com/css?family=Caesar Dressing' rel='stylesheet'> 
+*/
+@font-face {
+  font-family: "Caesar Dressing";
+  font-style: normal;
+  font-weight: 400;
+  src: url(https://fonts.gstatic.com/s/caesardressing/v22/yYLx0hLa3vawqtwdswbotmK4vrRHdrz7.woff2) format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@keyframes active-pulse {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
+  }
+  70% {
+    transform: scale(1.5);
+    box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
+  }
+}
+@keyframes pulse {
+  0% {
+    transform: scale(1) !important;
+  }
+  50% {
+    transform: scale(1.5) !important;
+  }
+  100% {
+    transform: scale(1) !important;
+  }
+}
+#gameaction_status_wrap {
+  display: block !important;
+}
+#gameaction_status_wrap img {
+  display: none;
+}
+
+.subtitle {
+  font-size: x-small;
+}
+
+#page-title {
+  min-height: 76px !important;
+  line-height: 24px;
+}
+
+#pagemaintitle_wrap {
+  min-height: 42px !important;
+}
+
+#oversurface {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 100;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  overflow: visible;
+}
+
+#oversurface > * {
+  position: absolute;
+  transition-property: all;
+  transition-duration: 500ms;
+  transition-timing-function: ease-in-out;
+  /* background-color: blue; */
+  transform-origin: center center;
+}
+
+.phantom {
+  animation: pulse 500ms ease-in-out;
+}
+
+.limbo {
+  display: none;
+}
+
+#thething {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  font-family: "Caesar Dressing";
+}
+
+.bgabutton_orange {
+  background-color: #b17300;
+}
+
+a.bgabutton_white {
+  background-color: white;
+  color: darkgrey;
+}
+
+.bgabutton_targetcolor {
+  background-color: rgba(33, 150, 243, 0.7803921569);
+}
+
+.bgabutton_purple {
+  background-color: rgb(43, 15, 76);
+}
+
+.bgabutton.disabled {
+  pointer-events: unset;
+}
+
+.bgabutton.disabled:active {
+  pointer-events: unset;
+}
+
+.gg_selected,
+.gg_selected_alt {
+  box-shadow: 0px 0px 5px 5px #3f51b5;
+}
+
+.active_slot {
+  cursor: pointer;
+  outline: 4px dashed #19bedb;
+}
+.active_slot.gg_selected, .active_slot.gg_selected_alt {
+  outline: 4px dashed #3f51b5;
+}
+
+.gg_selected_alt.segment {
+  margin-top: 0em !important;
+}
+.gg_selected_alt.target_container_card {
+  margin-top: 0em !important;
+}
+
+.selection_area .disabled {
+  filter: opacity(0.3);
+}
+
+.target_container {
+  position: relative;
+  border-radius: 5%;
+  min-width: 64px;
+  border: 1px solid white;
+}
+.target_container > * {
+  position: relative;
+  display: inline-block;
+  vertical-align: middle;
+}
+.target_container > *::after {
+  content: attr(data-count);
+  z-index: 10;
+  position: absolute;
+  width: 100%;
+  top: 25%;
+  left: 0em;
+  font-size: large;
+  color: white;
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
+}
+.target_container .tracker {
+  color: white;
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
+  font-size: large;
+}
+html[data-theme=dark] .target_container .tracker {
+  color: black;
+  text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
+}
+.target_container .tracker:after {
+  position: absolute;
+  text-align: center;
+  left: 0;
+  top: 28%;
+  width: 100%;
+}
+.target_container .tracker[data-sign="-"]::after {
+  left: 5%;
+}
+.target_container.withcount {
+  padding-left: 1.5em;
+}
+
+/*
+.gg_selected_alt[data-count] {
+  box-shadow:
+    0 0 0 2px white,
+    0.3em 0.3em 1em gray !important;
+}
+*/
+.bgabutton.gg_selected, .bgabutton.gg_selected_alt {
+  border: 1px solid blue;
+}
+.bgabutton[data-count]::after {
+  content: " x " attr(data-count);
+}
+
+.action-button {
+  min-width: 4em;
+  line-height: 24px;
+}
+
+#undoredo_wrap {
+  margin-left: 5px;
+  margin-right: 5px;
+  float: right;
+}
+
+#go_to_next_table_active_player,
+#go_to_next_table_inactive_player {
+  top: 0px;
+}
+
+.button_undo {
+  min-width: 2em;
+  background-image: none;
+}
+
+#overall-content {
+  overflow: visible;
+}
+
+html {
+  background: url(img/stonex.jpg);
+}
+
+.player-board {
+  background-color: #f8f8f8;
+}
+
+#game_play_area_background {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  display: block !important;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  background-image: url(img/bg11.jpg);
+  background-size: auto 100%;
+}
+
+#round_banner {
+  height: 24px;
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 20px;
+  font-family: "Caesar Dressing";
+  font-size: large;
+  color: #999;
+}
+
+#round_banner:before {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5%;
+  z-index: -1;
+  background-image: url("img/topBanner.png");
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+}
+
+.score-sheet {
+  background-image: url(img/stonex.jpg);
+  background-size: cover;
+  font-family: "Caesar Dressing";
+  font-size: large;
+}
+.score-sheet table,
+.score-sheet td,
+.score-sheet th {
+  border: 1px solid darkgray;
+  border-collapse: collapse;
+  padding: 8px;
+  color: white;
+}
+.score-sheet .bga-score-sheet_player-name {
+  color: var(--player-color);
+}

@@ -1,0 +1,23 @@
+{
+  "101": {
+    "name": "Solo Mode Difficulty",
+    "values": {
+      "1": {
+        "name": "Easy (45 vp)"
+      },
+      "2": {
+        "name": "Hard (55 vp)"
+      },
+      "3": {
+        "name": "Beat your own score"
+      }
+    },
+    "default": 1,
+    "displaycondition": [
+      {
+        "type": "maxplayers",
+        "value": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,6 @@
+num|name|r|t|tooltip
+#set create=4
+#set type=card
+#set location=deck_land
+#set id=card_land_{num}
+#1|Fisherman|fish|1|Gain fish

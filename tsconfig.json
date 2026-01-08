@@ -1,0 +1,14 @@
+{
+  "rootDir": ".",
+  "compilerOptions": {
+    "target": "es5",
+    "module": "none",
+    "lib": ["dom", "esnext"],
+    "sourceMap": false,
+    "outFile": "wayfarers.js",
+    "typeRoots": ["src/types", "./node_modules/@types"]
+  },
+
+  "include": ["src/Game0Basics.ts", "src/**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}

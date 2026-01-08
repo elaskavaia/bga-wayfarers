@@ -1,0 +1,19 @@
+@use "variables" as v;
+
+.card,
+.action,
+.deck,
+.discard {
+  height: 200px;
+  aspect-ratio: 640 / 1000;
+  box-shadow: v.$boxShadowBlack;
+  border-radius: 5%;
+}
+
+.deck > * {
+  visibility: hidden;
+}
+.discard > * {
+  visibility: hidden;
+  position: absolute;
+}

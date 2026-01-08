@@ -1,0 +1,47 @@
+{
+  // Place your bga-euro workspace snippets here. Each snippet is defined under a snippet name and has a scope, prefix, body and
+  // description. Add comma separated ids of the languages where the snippet is applicable in the scope field. If scope
+  // is left empty or omitted, the snippet gets applied to all languages. The prefix is what is
+  // used to trigger the snippet and the body will be expanded and inserted. Possible variables are:
+  // $1, $2 for tab stops, $0 for the final cursor position, and ${1:label}, ${2:another} for placeholders.
+  // Placeholders with the same ids are connected.
+  // Example:
+  "opclass": {
+    "scope": "",
+    "prefix": "opcl",
+    "body": [
+      "<?php",
+      "/**",
+      " *------",
+      " * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>",
+      " * implementation : © Alena Laskavaia <laskava@gmail.com>",
+      " *",
+      " * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.",
+      " * See http://en.boardgamearena.com/#!doc/Studio for more information.",
+      " * -----",
+      " *",
+      " */",
+      "",
+      "declare(strict_types=1);",
+      "",
+      "namespace Bga\\Games\\skarabrie\\Operations;",
+      "",
+      "use BgaSystemException;",
+      "use BgaUserException;",
+      "",
+      "class ${TM_FILENAME_BASE} extends Operation {",
+      "    /** Get state arguments if we go to player's state */",
+      "    function getArgs() {",
+      "        return [];",
+      "    }",
+      "",
+      "    /** User does the action */",
+      "    function resolve(mixed \\$data) {",
+      "        $1",
+      "        return;",
+      "    }",
+      "}",
+      ""
+    ]
+  }
+}

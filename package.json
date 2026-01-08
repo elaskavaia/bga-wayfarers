@@ -1,0 +1,39 @@
+{
+  "name": "bga.wayfarers",
+  "version": "1.0.0",
+  "description": "",
+  "main": "wayfarers.js",
+  "scripts": {
+    "build:ts": "tsc",
+    "build:scss": "sass --no-source-map src/css/GameXBody.scss wayfarers.css",
+    "watch:ts": "tsc --watch",
+    "watch:scss": "sass --watch src/css/GameXBody.scss wayfarers.css",
+    "watch": "npm run watch:ts && npm run watch:scss",
+    "build": "npm run build:ts && npm run build:scss"
+  },
+  "author": "Alena Laskavaia",
+  "license": "EPL2.0",
+  "devDependencies": {
+    "@prettier/plugin-php": "^0.22",
+    "@types/chai": "^4.x.x",
+    "@types/mocha": "^10.0.10",
+    "@types/node": "^10.9.2",
+    "@types/sinon": "^10.x.x",
+    "chai": "^4.x.x",
+    "jsdom": "^20.0.0",
+    "mocha": "^10.x.x",
+    "prettier": "^3.6",
+    "sass": "^1.32.6",
+    "sinon": "^15.x.x",
+    "ts-node": "^10.9.2",
+    "typescript": "^4.9.5"
+  },
+  "prettier": {
+    "plugins": [
+      "@prettier/plugin-php"
+    ],
+    "braceStyle": "1tbs",
+    "printWidth": 140,
+    "trailingComma": "none"
+  }
+}

@@ -1,0 +1,43 @@
+.selection_area {
+  position: sticky;
+  top: 86px;
+  align-self: flex-start;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+
+  z-index: 20;
+  & > * {
+    position: relative;
+    display: inline-block;
+  }
+}
+
+#mainarea {
+  width: 100%;
+  padding-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 10px;
+  z-index: 0;
+}
+
+.tableau {
+  position: relative;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: flex-start;
+  margin-top: 5px;
+  padding-top: 32px; // player name
+}
+
+.players_panels {
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: space-around;
+}
