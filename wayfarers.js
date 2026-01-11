@@ -303,6 +303,21 @@ var Game0Basics = /** @class */ (function (_super) {
             return this.clienttranslate_string(log);
         }
     };
+    Game0Basics.prototype.reloadCss = function () {
+        var links = document.getElementsByTagName("link");
+        for (var cl in links) {
+            var link = links[cl];
+            if (link.rel === "stylesheet" && link.href.includes("99999")) {
+                var index = link.href.indexOf("?timestamp=");
+                var href = link.href;
+                if (index >= 0) {
+                    href = href.substring(0, index);
+                }
+                link.href = href + "?timestamp=" + Date.now();
+                console.log("reloading " + link.href);
+            }
+        }
+    };
     Game0Basics.prototype.isSolo = function () {
         return this.gamedatas.playerorder.length == 1;
     };
@@ -1673,10 +1688,11 @@ var GameXBody = /** @class */ (function (_super) {
     function GameXBody() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboard\" class=\"mainboard\"></div>\n <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n <div id=\"deck_space\" class=\"deck decl_space\"></div>\n <div id=\"deck_land\" class=\"deck deck_land\"></div>\n <div id=\"deck_water\" class=\"deck deck_water\"></div>\n <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"supply\">\n\n\n</div>\n\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"supply\">\n\n\n</div>\n\n\n\n";
         return _this;
     }
     GameXBody.prototype.setup = function (gamedatas) {
+        var _this = this;
         try {
             _super.prototype.setup.call(this, gamedatas);
             placeHtml(this.gameTemplate, this.bga.gameArea.getElement());
@@ -1687,10 +1703,14 @@ var GameXBody = /** @class */ (function (_super) {
                 this.setupPlayer(playerInfo);
             }
             _super.prototype.setupGame.call(this, gamedatas);
+            $("mainboard_3").appendChild($("supply"));
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
             // document.rootElement?.classList.add("bgaext_cust_back");
+            var parent = document.querySelector(".debug_section"); // studio only
+            if (parent)
+                this.addActionButton("button_rcss", "Reload CSS", function () { return _this.reloadCss(); }, "topbar_content");
         }
         catch (e) {
             console.error("Exception during game setup", e.stack);
@@ -1706,7 +1726,7 @@ var GameXBody = /** @class */ (function (_super) {
         document.querySelectorAll("#".concat(pp, ">.miniboard")).forEach(function (node) { return node.remove(); });
         placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n      </div>"), pp);
         var parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
-        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n      </div>"), parent);
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'> \n         <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n         </div>\n      </div>"), parent);
     };
     GameXBody.prototype.setupScoreSheet = function () {
         var _this = this;
@@ -1799,6 +1819,23 @@ var GameXBody = /** @class */ (function (_super) {
         var _a;
         (_a = $("limbo")) === null || _a === void 0 ? void 0 : _a.appendChild($(tokenId));
     };
+    GameXBody.prototype.createDiceSlot = function (card, token) {
+        return __awaiter(this, void 0, void 0, function () {
+            var cardId, dslot, dslotNode;
+            var _this = this;
+            return __generator(this, function (_a) {
+                cardId = token.key;
+                dslot = "dslot_0_".concat(cardId);
+                dslotNode = $(dslot);
+                if (dslotNode)
+                    return [2 /*return*/];
+                placeHtml("<div id='".concat(dslot, "' class='dslot dslot_0'></div>"), card);
+                dslotNode = $(dslot);
+                this.addListenerWithGuard(dslotNode, function (x) { return _this.onToken(x); });
+                return [2 /*return*/];
+            });
+        });
+    };
     GameXBody.prototype.getPlaceRedirect = function (tokenInfo, args) {
         var _this = this;
         var _a;
@@ -1820,22 +1857,27 @@ var GameXBody = /** @class */ (function (_super) {
         if (tokenId.startsWith("card")) {
             // cards
             result.onClick = function (x) { return _this.onToken(x); };
-            if (tokenId.startsWith("card_card") && location.startsWith("tableau")) {
-                var color_1 = getPart(location, 1);
-                var t = this.getRulesFor(tokenId, "t");
-                result.location = "settlers_col_".concat(color_1, "_").concat(t);
-                result.onEnd = function () {
-                    var counter = $("counter_card_".concat(color_1));
-                    var count = $(location).querySelectorAll(".card.card").length;
-                    counter.dataset.state = "".concat(count);
-                    // sort
-                    var parentNode = $(result.location);
-                    var children = Array.from(parentNode.children);
-                    children.sort(function (a, b) { return Number(a.dataset.state) - Number(b.dataset.state); });
-                    children.forEach(function (node) {
-                        parentNode.appendChild(node);
-                    });
-                };
+            var cardType = getPart(tokenId, 1);
+            var state = Number(tokenInfo.state);
+            if (location.startsWith("mainarea")) {
+                if (cardType == "folk" && state >= 3)
+                    result.location = "mainboard_1";
+                else if (cardType == "folk")
+                    result.location = "mainboard_2";
+                else if (cardType == "land" && state >= 3)
+                    result.location = "mainboard_1";
+                else if (cardType == "land")
+                    result.location = "mainboard_2";
+                else if (cardType == "water" && state >= 3)
+                    result.location = "mainboard_3";
+                else if (cardType == "water")
+                    result.location = "mainboard_2";
+                else if (cardType == "space" && state >= 3)
+                    result.location = "mainboard_3";
+                else if (cardType == "space")
+                    result.location = "mainboard_2";
+                else if (cardType == "insp")
+                    result.location = "mainboard_3";
             }
             else if (location.startsWith("hand")) {
                 var color = getPart(location, 1);
@@ -1846,17 +1888,10 @@ var GameXBody = /** @class */ (function (_super) {
                     result.onClick = function (x) { return _this.onToken(x); };
                 }
             }
-            else if (tokenId.startsWith("card") && location.startsWith("tableau")) {
-                var color_2 = getPart(location, 1);
-                result.location = "cards_area_".concat(color_2);
-                var mid = getPart(tokenId, 1);
-                if (mid.startsWith("roof")) {
-                    result.onEnd = function () {
-                        var counter = $("counter_roof_".concat(color_2));
-                        var count = $(location).querySelectorAll(".card.roof,.card.roofi").length;
-                        counter.dataset.state = "".concat(count);
-                    };
-                }
+            else if (location.startsWith("tableau")) {
+                var color = getPart(location, 1);
+                result.location = "pboard_".concat(color);
+                result.onStart = function (node) { return _this.createDiceSlot(node, tokenInfo); };
             }
             else if (location.startsWith("discard")) {
                 result.onEnd = function (node) { return _this.hideCard(node); };
@@ -1867,6 +1902,9 @@ var GameXBody = /** @class */ (function (_super) {
         }
         else if (tokenId.startsWith("tableau")) {
             result.nop = true;
+        }
+        else if (tokenId.startsWith("mainboard_")) {
+            result.location = "mainboardall";
         }
         else if (tokenId.startsWith("hand")) {
             result.nop = true;
@@ -1883,9 +1921,13 @@ var GameXBody = /** @class */ (function (_super) {
         else if (location.startsWith("miniboard") && $(tokenId)) {
             result.nop = true; // do not move
         }
-        else if (tokenId.startsWith("worker") && location.startsWith("tableau")) {
+        else if ((tokenId.startsWith("worker") || tokenId.startsWith("dice")) && location.startsWith("tableau")) {
             var color = getPart(location, 1);
-            //result.location = `breakroom_${color}`;
+            result.location = "breakroom_".concat(color);
+            result.onClick = function (x) { return _this.onToken(x); };
+        }
+        else if (tokenId.startsWith("dslot")) {
+            result.onClick = function (x) { return _this.onToken(x); };
         }
         return result;
     };
@@ -1899,20 +1941,42 @@ var GameXBody = /** @class */ (function (_super) {
         var token = $(tokenInfo.tokenId);
         var parentId = (_a = token === null || token === void 0 ? void 0 : token.parentElement) === null || _a === void 0 ? void 0 : _a.id;
         var state = parseInt(token === null || token === void 0 ? void 0 : token.dataset.state);
+        var tokenId = tokenInfo.tokenId;
         switch (mainType) {
             case "worker":
                 {
-                    var tokenId = tokenInfo.key;
+                    var tokenId_1 = tokenInfo.key;
                     var name_2 = tokenInfo.name;
                     tokenInfo.tooltip = {
                         log: "${name} (${color_name})",
                         args: {
                             name: this.getTr(name_2),
-                            color_name: this.getTr(this.getColorName(getPart(tokenId, 2)))
+                            color_name: this.getTr(this.getColorName(getPart(tokenId_1, 2)))
                         }
                     };
                 }
                 return;
+            case "card": {
+                var name_3 = tokenInfo.name;
+                if (!name_3) {
+                    tokenInfo.name = this.getTr({
+                        log: "${typename} #${num}",
+                        args: {
+                            typename: this.getTr(tokenInfo.t),
+                            num: tokenInfo.num
+                        }
+                    });
+                }
+                return;
+            }
+            case "dslot": {
+                var k = tokenId.indexOf("card");
+                var cardId = tokenId.substring(k);
+                var cardInfo = this.getTokenDisplayInfo(cardId);
+                if (!tokenInfo.name)
+                    tokenInfo.name = cardInfo.name;
+                return;
+            }
         }
     };
     GameXBody.prototype.ttSection = function (prefix, text) {

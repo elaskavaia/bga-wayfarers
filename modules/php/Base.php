@@ -145,7 +145,7 @@ class Base extends Table {
         foreach ($table_stats as $key => $value) {
             $v = $this->getDefaultStatValue($key, "table");
             if ($v !== null) {
-                $this->playerStats->init($key, $v);
+                $this->tableStats->init($key, $v);
             }
         }
     }

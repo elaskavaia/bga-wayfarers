@@ -10,14 +10,14 @@ id|name|count|type|create|location|php
 
 
 #12  Workers 4 of each 3 colors
-worker_blue|Worker|4|worker wooden|2|supply|
-worker_yellow|Worker|4|worker wooden|2|supply|
-worker_green|Worker|4|worker wooden|2|supply|
+worker_blue|Worker|4|worker wooden|2|limbo|
+worker_yellow|Worker|4|worker wooden|2|limbo|
+worker_green|Worker|4|worker wooden|2|limbo|
 
 #player counters
 
-tracker_silver|Silver|1|tracker silver|4|miniboard_{COLOR}
-tracker_provision|Provision|1|tracker provision|4|miniboard_{COLOR}
+tracker_coin|Silver|1|tracker coin|4|miniboard_{COLOR}
+tracker_food|Provision|1|tracker food|4|miniboard_{COLOR}
 marker|Player marker|1|marker wooden|4|tableau_{COLOR}
 influence|Player marker|15|influence wooden|3|tableau_{COLOR}
 dice|Player dice|5|dice wooden|3|tableau_{COLOR}
@@ -30,17 +30,18 @@ utile|Upgrade Tile|10|utile tile|2|supply
 #cards
 #36 Townsfolk Cards 36 Space Cards 36 Land Cards 16 Inspiration Cards 36 Water Cards 6 Scheme Cards
 
-
-card_folk|Townsfolk|36|card folk|2|deck_folk
+#create=0
+#card_folk|Townsfolk|36|card folk|2|deck_folk
+#create=1
 card_space|Space|36|card space|2|deck_space
 card_land|Land|36|card land|2|deck_land
 card_water|Water|36|card water|2|deck_water
-card_insp|Inspiration|16|card inspiration|2|deck_insp
+card_insp|Inspiration|16|card insp|2|deck_insp
 
 #boards
-mainboard_1||1|mainboard left|1|mainboard|
-mainboard_2||1|mainboard middle|1|mainboard|
-mainboard_3||1|mainboard right|1|mainboard|
+mainboard_1||1|mainboard_x left|1|mainboardall|
+mainboard_2||1|mainboard_x middle|1|mainboardall|
+mainboard_3||1|mainboard_x right|1|mainboardall|
 
 #create=0
 

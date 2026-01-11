@@ -228,21 +228,21 @@ final class GameTest extends TestCase {
         return $op;
     }
 
-    public function testAllActions() {
+    public function testAllDiceSpots() {
         $this->game();
         $token_types = $this->game->material->get();
 
         foreach ($token_types as $key => $info) {
             $this->assertTrue(!!$key);
-            if (!startsWith($key, "action_")) {
+            if (!startsWith($key, "dslot_")) {
                 continue;
             }
-            echo "testing action $key\n";
-            $r = $info["r"] ?? "";
-            $this->assertTrue($r != "", "empty r for $key");
-            $this->game->machine->instanciateOperation($r, PCOLOR);
-            $r = $info["rb"] ?? "";
-            $this->assertTrue($r != "", "empty rb for $key");
+            echo "testing dspot $key\n";
+            $r = $info["d"] ?? "";
+            $this->assertTrue($r != "", "empty d for $key");
+            //$this->game->machine->instanciateOperation($r, PCOLOR);
+            $r = $info["dr"] ?? "";
+            $this->assertTrue($r != "", "empty dr for $key");
             $this->game->machine->instanciateOperation($r, PCOLOR);
         }
     }

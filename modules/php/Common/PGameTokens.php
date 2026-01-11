@@ -282,6 +282,23 @@ class PGameTokens {
         $this->dbSetTokenLocation($token_id, null, $state, $notif, $args, $player_id);
     }
 
+    function dbPickTokenForLocation($from_place, $to_place, $state = null, $notif = "*", $args = [], int $player_id = 0) {
+        $picks = $this->game->tokens->db->pickTokensForLocation(1, $from_place, $to_place);
+        $pick = array_shift($picks);
+        if ($pick) {
+            $this->game->tokens->dbSetTokenLocation(
+                $pick["key"],
+                "mainarea",
+                $state,
+                $notif,
+                ["place_from" => $from_place] + $args,
+                $player_id
+            );
+        } else {
+            $this->game->notifyMessage(clienttranslate('No cards left in ${token_name}'), ["token_name" => $from_place]);
+        }
+    }
+
     function dbSetTokenLocation($token_id, $place_id, $state = null, $notif = "*", $args = [], int $player_id = 0) {
         if (is_array($token_id)) {
             $this->game->error("token_id is array " . toJson($token_id));

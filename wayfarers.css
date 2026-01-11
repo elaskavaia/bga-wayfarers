@@ -1,12 +1,13 @@
 @charset "UTF-8";
 .card,
-.action,
 .deck,
 .discard {
   height: 200px;
-  aspect-ratio: 640/1000;
+  aspect-ratio: 638/1016;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5019607843);
   border-radius: 5%;
+  border: 1px solid antiquewhite;
+  z-index: 5;
 }
 
 .deck > * {
@@ -16,6 +17,318 @@
 .discard > * {
   visibility: hidden;
   position: absolute;
+}
+
+.card.folk {
+  border-color: green;
+}
+
+.card.space {
+  border-color: black;
+}
+
+.card.land {
+  border-color: beige;
+}
+
+.card.water {
+  border-color: blue;
+}
+
+.mainarea .card.folk {
+  bottom: 99%;
+}
+.mainarea .card.folk[data-state="4"] {
+  left: 36%;
+}
+.mainarea .card.folk[data-state="3"] {
+  left: 68%;
+}
+.mainarea .card.folk[data-state="2"] {
+  left: 1%;
+}
+.mainarea .card.folk[data-state="1"] {
+  left: 22%;
+}
+.mainarea .card.land {
+  top: 99%;
+}
+.mainarea .card.land[data-state="4"] {
+  left: 36%;
+}
+.mainarea .card.land[data-state="3"] {
+  left: 68%;
+}
+.mainarea .card.land[data-state="2"] {
+  left: 1%;
+}
+.mainarea .card.land[data-state="1"] {
+  left: 22%;
+}
+.mainarea .card.space {
+  bottom: 99%;
+}
+.mainarea .card.space[data-state="4"] {
+  left: 35%;
+}
+.mainarea .card.space[data-state="3"] {
+  left: 1%;
+}
+.mainarea .card.space[data-state="2"] {
+  left: 80%;
+}
+.mainarea .card.space[data-state="1"] {
+  left: 59%;
+}
+.mainarea .card.water {
+  top: 99%;
+}
+.mainarea .card.water[data-state="4"] {
+  left: 35%;
+}
+.mainarea .card.water[data-state="3"] {
+  left: 1%;
+}
+.mainarea .card.water[data-state="2"] {
+  left: 80%;
+}
+.mainarea .card.water[data-state="1"] {
+  left: 59%;
+}
+.mainarea .card.insp {
+  left: 108%;
+  transform: rotate(90deg);
+}
+.mainarea .card.insp[data-state="4"] {
+  top: 70%;
+}
+.mainarea .card.insp[data-state="3"] {
+  top: 45%;
+}
+.mainarea .card.insp[data-state="2"] {
+  top: 20%;
+}
+.mainarea .card.insp[data-state="1"] {
+  top: -5%;
+}
+
+.mainarea .deck_insp {
+  left: 108%;
+  bottom: 99%;
+  transform: rotate(90deg);
+}
+.mainarea .deck_space {
+  right: 2%;
+  bottom: 99%;
+}
+.mainarea .deck_folk {
+  left: 0;
+  bottom: 99%;
+}
+.mainarea .deck_land {
+  left: 0;
+  top: 99%;
+}
+.mainarea .deck_water {
+  right: 2%;
+  top: 99%;
+}
+
+.tableau .card_home {
+  position: absolute;
+  bottom: 9%;
+  border: unset;
+  box-shadow: unset;
+}
+.tableau .card_home_1 {
+  left: 33%;
+}
+.tableau .card_home_2 {
+  left: 0%;
+}
+.tableau .card_home_3 {
+  right: 0%;
+}
+
+.dslot {
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+  height: 19%;
+  left: 0%;
+  outline: 1px solid yellow;
+}
+
+.dslot_0_card_home_1 {
+  bottom: 51%;
+  height: 15%;
+}
+
+.dslot_1_card_home_1 {
+  bottom: 37%;
+  height: 15%;
+}
+
+.dslot_2_card_home_1 {
+  bottom: 19%;
+  height: 15%;
+}
+
+.card.folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+}
+
+.card_folk_114 {
+  background-position: 0% 0%;
+}
+
+.card_folk_115 {
+  background-position: 20% 0%;
+}
+
+.card_folk_116 {
+  background-position: 40% 0%;
+}
+
+.card_folk_117 {
+  background-position: 60% 0%;
+}
+
+.card_folk_118 {
+  background-position: 80% 0%;
+}
+
+.card_folk_119 {
+  background-position: 100% 0%;
+}
+
+.card_folk_120 {
+  background-position: 0% 16.6666666667%;
+}
+
+.card_folk_121 {
+  background-position: 20% 16.6666666667%;
+}
+
+.card_folk_122 {
+  background-position: 40% 16.6666666667%;
+}
+
+.card_folk_123 {
+  background-position: 60% 16.6666666667%;
+}
+
+.card_folk_124 {
+  background-position: 80% 16.6666666667%;
+}
+
+.card_folk_125 {
+  background-position: 100% 16.6666666667%;
+}
+
+.card_folk_126 {
+  background-position: 0% 33.3333333333%;
+}
+
+.card_folk_127 {
+  background-position: 20% 33.3333333333%;
+}
+
+.card_folk_128 {
+  background-position: 40% 33.3333333333%;
+}
+
+.card_folk_129 {
+  background-position: 60% 33.3333333333%;
+}
+
+.card_folk_130 {
+  background-position: 80% 33.3333333333%;
+}
+
+.card_folk_131 {
+  background-position: 100% 33.3333333333%;
+}
+
+.card_folk_132 {
+  background-position: 0% 50%;
+}
+
+.card_folk_133 {
+  background-position: 20% 50%;
+}
+
+.card_folk_134 {
+  background-position: 40% 50%;
+}
+
+.card_folk_135 {
+  background-position: 60% 50%;
+}
+
+.card_folk_136 {
+  background-position: 80% 50%;
+}
+
+.card_folk_137 {
+  background-position: 100% 50%;
+}
+
+.card_folk_138 {
+  background-position: 0% 66.6666666667%;
+}
+
+.card_folk_139 {
+  background-position: 20% 66.6666666667%;
+}
+
+.card_folk_140 {
+  background-position: 40% 66.6666666667%;
+}
+
+.card_folk_141 {
+  background-position: 60% 66.6666666667%;
+}
+
+.card_folk_142 {
+  background-position: 80% 66.6666666667%;
+}
+
+.card_folk_143 {
+  background-position: 100% 66.6666666667%;
+}
+
+.card_folk_144 {
+  background-position: 0% 83.3333333333%;
+}
+
+.card_folk_145 {
+  background-position: 20% 83.3333333333%;
+}
+
+.card_folk_146 {
+  background-position: 40% 83.3333333333%;
+}
+
+.card_folk_147 {
+  background-position: 60% 83.3333333333%;
+}
+
+.card_folk_148 {
+  background-position: 80% 83.3333333333%;
+}
+
+.card_folk_149 {
+  background-position: 100% 83.3333333333%;
+}
+
+.card_folk_150 {
+  background-position: 0% 100%;
+}
+
+.card_folk_151 {
+  background-position: 20% 100%;
 }
 
 .selection_area {
@@ -42,6 +355,32 @@
   gap: 10px;
   padding: 10px;
   z-index: 0;
+  position: relative;
+}
+#mainarea .card,
+#mainarea .deck {
+  position: absolute;
+}
+
+.guild {
+  position: absolute;
+  width: 40%;
+  height: 10%;
+}
+
+.guild_blue {
+  top: 65%;
+  left: 50%;
+}
+
+.guild_yellow {
+  top: 40%;
+  left: 38%;
+}
+
+.guild_black {
+  top: 20%;
+  left: 50%;
 }
 
 .tableau {
@@ -54,11 +393,62 @@
   padding-top: 32px;
 }
 
+.pboard {
+  background-image: url(img/PlayerBoard-01-s.png);
+  height: 496px;
+  background-size: cover;
+  aspect-ratio: 798/1024;
+  position: relative;
+}
+
+.breakroom {
+  position: absolute;
+  top: 21%;
+  right: 0%;
+  width: 33%;
+  height: 24%;
+}
+.breakroom > * {
+  display: inline-block;
+  vertical-align: top;
+}
+
 .players_panels {
   display: flex;
   position: relative;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.mainboardall {
+  position: relative;
+}
+.mainboardall > * {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  aspect-ratio: 768/1024;
+  height: 600px;
+  background-size: cover;
+}
+
+.mainboard_x {
+  margin-top: 200px;
+  margin-bottom: 200px;
+}
+
+.mainboard_1 {
+  background-image: url(img/MainBoard1.jpg);
+}
+
+.mainboard_2 {
+  background-image: url(img/MainBoard2.jpg);
+  aspect-ratio: 1212/1024;
+}
+
+.mainboard_3 {
+  background-image: url(img/MainBoard3.jpg);
+  margin-right: 200px;
 }
 
 .tracker {
@@ -103,321 +493,103 @@ html[data-theme=dark] .restrackers .counter {
   top: 9px;
 }
 
-.counter_card {
-  background-image: url(img/tokens.png);
-  background-size: auto 453%;
-  background-position: 86% 66%;
-  height: 32px;
-  aspect-ratio: 1/1;
-}
-
-.counter_roof {
-  background-image: url(img/tokens.png);
-  background-size: auto 453%;
-  background-position: 76.5% 66%;
-  height: 32px;
-  aspect-ratio: 1/1;
-}
-
 .wooden {
   background-image: url(img/tokens.png);
-  background-size: auto 453%;
+  background-size: auto 800%;
 }
 
-.hearth {
-  background-position: 47% 0%;
+.dice {
+  background-image: url(img/dice.png);
+  background-size: 600% 100%;
+  mask-image: url(img/dice.png);
+  mask-size: 600% 100%;
+  width: 32px;
+  height: 32px;
+  aspect-ratio: 1/1;
+  background-blend-mode: multiply;
+  background-position-x: 100%;
+}
+.dice.color_ff0000 {
+  background-color: #ff0000;
+}
+.dice[data-state="1"] {
+  background-position-x: 0%;
+}
+.dice[data-state="2"] {
+  background-position-x: 20%;
+}
+.dice[data-state="3"] {
+  background-position-x: 40%;
+}
+.dice[data-state="4"] {
+  background-position-x: 60%;
+}
+.dice[data-state="5"] {
+  background-position-x: 80%;
 }
 
-.furnish {
-  background-position: 89% 97%;
-  background-size: auto 453%;
+.dice.active_slot {
+  cursor: pointer;
+  outline: unset;
+  border: 4px dashed #19bedb;
 }
 
-.trade {
-  background-position: 81% 97%;
-  background-size: auto 453%;
+.influence {
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1/1;
+  background-position-x: 100%;
+  border-radius: 50%;
+}
+.influence.color_982fff {
+  background-position-y: 5%;
+  background-color: #982fff;
+}
+.influence.color_6cd0f6 {
+  background-position-y: 38%;
+}
+.influence.color_ffcc02 {
+  background-position-y: 64%;
+}
+.influence.color_ff0000 {
+  background-position-y: 95%;
+  background-color: #ff0000;
 }
 
-.wooden.shell {
-  background-position: 0% 34%;
+.food {
+  background-image: url(img/tokens.png);
+  background-position: 84% 42%;
+  background-size: auto 1100%;
 }
 
-.wooden.barley {
-  background-position: 8% 34%;
-  background-size: auto 488%;
-}
-
-.wooden.food {
-  background-position: 16% 34%;
-}
-
-.wooden.hide {
-  background-position: 24% 34%;
-}
-
-.wooden.seaweed {
-  background-position: 31.5% 34%;
-  background-size: auto 530%;
-}
-
-.wooden.skaill {
-  background-position: 39% 38%;
-  background-size: auto 530%;
-}
-
-.wooden.rabbit {
-  background-position: 55% 33%;
-  background-size: auto 479%;
-}
-
-.wooden.fish {
-  background-position: 62% 34%;
-  background-size: auto 488%;
-}
-
-.wooden.sheep {
-  background-position: 10% 66%;
-}
-
-.wooden.wool {
-  background-position: 48% 37%;
-}
-
-.wooden.deer {
-  background-position: 20% 63%;
-}
-
-.wooden.boar {
-  background-position: 30% 67%;
-}
-
-.wooden.stone {
-  background-position: 80% 38%;
-}
-
-.wooden.cow {
-  background-position: 40% 64%;
-}
-
-.wooden.wood {
-  background-position: 50% 67%;
-}
-
-.wooden.bone {
-  background-position: 71% 37%;
-  background-size: auto 490%;
-}
-
-.wooden.midden {
-  background-position: 0% 67%;
+.coin {
+  background-image: url(img/tokens.png);
+  background-position: 76.5% 42%;
+  background-size: auto 1200%;
 }
 
 .worker {
-  background-position: 19% 97%;
-  background-size: auto 453%;
+  background-position: 0% 57%;
+  background-size: auto 800%;
   width: 26px;
   height: 39px;
   aspect-ratio: 2/3;
 }
-.worker[data-state="0"] {
-  opacity: 0;
-}
-.worker.color_ff0000 {
-  background-position: 14% 97%;
-}
-.worker.color_000000 {
-  background-position: 7% 97%;
-}
-.worker.color_ffffff {
-  background-position: 0% 97%;
-}
-.worker.color_ffcc02 {
-  background-position: 21% 97%;
-}
-.worker.color_6cd0f6 {
-  background-position: 27% 97%;
-}
-.worker.color_982fff {
-  background-position: 34% 97%;
+
+.worker_blue {
+  background-position-x: 16%;
 }
 
-.worker.large {
-  width: 30px;
-  height: 50px;
+.worker_yellow {
+  background-position-x: 8%;
 }
 
-.tableau .wooden,
-.tableau .slider {
+.worker_green {
+  background-position-x: 0%;
+}
+
+.tableau .worker {
   filter: drop-shadow(2px 2px 3px black);
-}
-
-.tracker.slider {
-  background-image: url(img/SliderBGA.png);
-  background-size: cover;
-  aspect-ratio: 198/634;
-}
-.action-button .tracker.slider {
-  margin-right: auto;
-  margin-left: auto;
-}
-
-.pboard .tracker.slider {
-  position: absolute;
-  height: 32%;
-  top: 51%;
-}
-.pboard .tracker.slider[data-state="0"] {
-  left: 2%;
-}
-.pboard .tracker.slider[data-state="1"] {
-  left: 10.7%;
-}
-.pboard .tracker.slider[data-state="2"] {
-  left: 19.4%;
-}
-.pboard .tracker.slider[data-state="3"] {
-  left: 28.1%;
-}
-.pboard .tracker.slider[data-state="4"] {
-  left: 36.8%;
-}
-.pboard .tracker.slider[data-state="5"] {
-  left: 45.5%;
-}
-.pboard .tracker.slider[data-state="6"] {
-  left: 54.2%;
-}
-.pboard .tracker.slider[data-state="7"] {
-  left: 62.9%;
-}
-.pboard .tracker.slider[data-state="8"] {
-  left: 71.6%;
-}
-.pboard .tracker.slider[data-state="9"] {
-  left: 80.3%;
-}
-.pboard .tracker.slider[data-state="10"] {
-  left: 89%;
-}
-
-.solo_game .turndisk {
-  display: none;
-}
-
-.turndisk {
-  background-image: url(img/turnTokenS.png);
-  background-size: cover;
-  aspect-ratio: 109/104;
-  height: 104px;
-  position: relative;
-}
-
-.turnmarker {
-  background-position-x: 100%;
-  background-size: auto 453%;
-  width: 30px;
-  aspect-ratio: 1/1;
-  position: absolute;
-}
-.supply .turnmarker {
-  display: none;
-}
-.turnmarker.color_982fff {
-  background-position-y: 5%;
-}
-.turnmarker.color_6cd0f6 {
-  background-position-y: 38%;
-}
-.turnmarker.color_ffcc02 {
-  background-position-y: 64%;
-}
-.turnmarker.color_ff0000 {
-  background-position-y: 95%;
-}
-.turnmarker.color_000000 {
-  background-position-y: 64%;
-  filter: grayscale(1);
-}
-.turnmarker[data-state="0"] {
-  left: 15%;
-  bottom: 12%;
-  z-index: 0;
-}
-.turnmarker[data-state="1"] {
-  left: 15%;
-  bottom: 20%;
-  z-index: 1;
-}
-.turnmarker[data-state="2"] {
-  left: 15%;
-  bottom: 28%;
-  z-index: 2;
-}
-.turnmarker[data-state="3"] {
-  left: 15%;
-  bottom: 36%;
-  z-index: 3;
-}
-.turnmarker[data-state="10"] {
-  left: 37%;
-  bottom: 52%;
-  z-index: 0;
-}
-.turnmarker[data-state="11"] {
-  left: 37%;
-  bottom: 60%;
-  z-index: 1;
-}
-.turnmarker[data-state="12"] {
-  left: 37%;
-  bottom: 68%;
-  z-index: 2;
-}
-.turnmarker[data-state="13"] {
-  left: 37%;
-  bottom: 76%;
-  z-index: 3;
-}
-.turnmarker[data-state="20"] {
-  right: 15%;
-  bottom: 12%;
-  z-index: 0;
-}
-.turnmarker[data-state="21"] {
-  right: 15%;
-  bottom: 20%;
-  z-index: 1;
-}
-.turnmarker[data-state="22"] {
-  right: 15%;
-  bottom: 28%;
-  z-index: 2;
-}
-.turnmarker[data-state="23"] {
-  right: 15%;
-  bottom: 36%;
-  z-index: 3;
-}
-
-.turninfo {
-  position: relative;
-  height: 32px;
-  aspect-ratio: unset;
-  color: #999;
-}
-.turninfo:after {
-  content: attr(data-state);
-  position: relative;
-}
-.turninfo:before {
-  content: attr(data-name);
-  position: relative;
-}
-.turninfo[data-state="0"] {
-  display: none;
-}
-.turninfo[data-state="5"] {
-  display: none;
 }
 
 /* tooltips */
@@ -491,17 +663,6 @@ html[data-theme=dark] .restrackers .counter {
  * wayfarers.scss
  *
  */
-/* 
-latin
-<link href='https://fonts.googleapis.com/css?family=Caesar Dressing' rel='stylesheet'> 
-*/
-@font-face {
-  font-family: "Caesar Dressing";
-  font-style: normal;
-  font-weight: 400;
-  src: url(https://fonts.gstatic.com/s/caesardressing/v22/yYLx0hLa3vawqtwdswbotmK4vrRHdrz7.woff2) format("woff2");
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
 @keyframes active-pulse {
   0% {
     transform: scale(1);
@@ -580,7 +741,6 @@ latin
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
-  font-family: "Caesar Dressing";
 }
 
 .bgabutton_orange {
@@ -632,51 +792,6 @@ a.bgabutton_white {
   filter: opacity(0.3);
 }
 
-.target_container {
-  position: relative;
-  border-radius: 5%;
-  min-width: 64px;
-  border: 1px solid white;
-}
-.target_container > * {
-  position: relative;
-  display: inline-block;
-  vertical-align: middle;
-}
-.target_container > *::after {
-  content: attr(data-count);
-  z-index: 10;
-  position: absolute;
-  width: 100%;
-  top: 25%;
-  left: 0em;
-  font-size: large;
-  color: white;
-  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
-}
-.target_container .tracker {
-  color: white;
-  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
-  font-size: large;
-}
-html[data-theme=dark] .target_container .tracker {
-  color: black;
-  text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
-}
-.target_container .tracker:after {
-  position: absolute;
-  text-align: center;
-  left: 0;
-  top: 28%;
-  width: 100%;
-}
-.target_container .tracker[data-sign="-"]::after {
-  left: 5%;
-}
-.target_container.withcount {
-  padding-left: 1.5em;
-}
-
 /*
 .gg_selected_alt[data-count] {
   box-shadow:
@@ -716,47 +831,8 @@ html[data-theme=dark] .target_container .tracker {
   overflow: visible;
 }
 
-html {
-  background: url(img/stonex.jpg);
-}
-
 .player-board {
   background-color: #f8f8f8;
-}
-
-#game_play_area_background {
-  width: 100%;
-  height: 100%;
-  position: absolute;
-  display: block !important;
-  top: 0;
-  left: 0;
-  z-index: -1;
-  background-image: url(img/bg11.jpg);
-  background-size: auto 100%;
-}
-
-#round_banner {
-  height: 24px;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 20px;
-  font-family: "Caesar Dressing";
-  font-size: large;
-  color: #999;
-}
-
-#round_banner:before {
-  content: "";
-  position: absolute;
-  width: 100%;
-  height: 5%;
-  z-index: -1;
-  background-image: url("img/topBanner.png");
-  background-size: 100% auto;
-  background-repeat: no-repeat;
 }
 
 .score-sheet {

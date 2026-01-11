@@ -1,6 +1,62 @@
-num|name|r|t|tooltip
+num|r|d|dr|tags|name
 #set create=4
-#set type=card
-#set location=deck_land
-#set id=card_land_{num}
-#1|Fisherman|fish|1|Gain fish
+#set type=dslot
+#set id=dslot_{r}_card_{t}_{num}
+#set t=home
+#set location=card_{t}_{num}_{COLOR}
+1|0|telescope|(cardBlack/upgBlack)||Black Slot
+1|1|bird|(journal/(pickWorker,infAny))||Journal Slot
+1|2|any|(cardGreen/2food)||Food Slot
+1|3|telescope|(upgGreen/2coin)||Coin Slot
+#set type=card card_home 
+#set location=tableau_{COLOR}
+#set id=card_{t}_{num}
+1||||Book Observatory
+2||camel|(2food:cardYellow,coin)|City
+3||ship|(2food:cardBlue)|Harbour
+#set t=folk
+#set id=card_folk_{num}
+#set type=card card_folk folk
+1|||journal,coin||Townfolk
+#set create=1
+#set location=deck_folk
+114|1|*|(coin/food):(pickWorker,reroll)|Vista|Protector
+115|2|*|food:2coin|Observatory|Wanderer
+116|1||ship|Harbour|Adventurer
+117|0||telescope|Observatory|Astronomer
+118|2||pickWorker/infCard|Vista|Champion
+119|1||infMove,food|Water|Enforcer
+120|1||infMove,food|Water|Enforcer
+121|2||camel,bird|City|Envoy
+122|2||ship,bird|City|Envoy
+123|2||coin|City|Farmer
+124|2||food|City|Farmer
+125|2||coin|Harbour|Fisherman
+126|2||food|Harbour|Fisherman
+127|3||food,coin|Water|Guardian
+128|3||2coin|Water|Guardian
+129|3||2food|Water|Guardian
+130|0||2diceMod|Vista|Hunter
+131|2||2ship|Harbour|Invader
+132|2||pickWorker/infCard|City Harbour|Mercenary
+133|2||coin|Vista|Merchant
+134|2||coin|Vista|Merchant
+135|2||food|Vista|Merchant
+136|2||food|Vista|Merchant
+137|1||bird|City Harbour|Messenger
+138|1||infCard/infMove/diceMod|City Harbour|Rogue
+139|1||infBlue/infMove|City Harbour|Scholar
+140|1||infYellow/infMove|City Harbour|Scholar
+141|2||infBlack/infMove|Book Observatory|Scholar
+142|1||infBlue/infMove|Book Observatory|Scribe
+143|1||infYellow/infMove|Book Observatory|Scribe
+144|2||infBlack/infMove|Vista|Scribe
+145|2||telescope,camel|City|Stargazer
+146|1||infBlue/infMove|Water|Translator
+147|1||infYellow/infMove|Water|Translator
+148|2||infBlack/infMove|Water|Translator
+149|1||camel|City|Vagrant
+150|1||infCard/infMove/diceMod|Vista|Vigilante
+151|0||pickWorker/infMove|Water|Warrior
+
+

@@ -22,12 +22,27 @@ class GameXBody extends GameMachine {
 <div id="game-score-sheet"></div>
 <div id="current_player_panel"></div>
 <div id="mainarea">
- <div id="mainboard" class="mainboard"></div>
- <div id="deck_folk" class="deck decl_folk"></div>
- <div id="deck_space" class="deck decl_space"></div>
- <div id="deck_land" class="deck deck_land"></div>
- <div id="deck_water" class="deck deck_water"></div>
- <div id="deck_insp" class="deck deck_insp"></div>
+ <div id="mainboardall" class="mainboardall">
+    <div id="mainboard_1">
+         <div id="deck_folk" class="deck decl_folk"></div>
+          <div id="deck_land" class="deck deck_land"></div>
+    </div>
+    <div id="mainboard_2">
+    </div>
+    <div id="mainboard_3">
+     <div id="deck_water" class="deck deck_water"></div>
+     <div id="deck_space" class="deck decl_space"></div>
+     <div id="deck_insp" class="deck deck_insp"></div>
+
+      <div id="guild_yellow" class="guild guild_yellow"></div>
+      <div id="guild_blue" class="guild guild_blue"></div>
+      <div id="guild_black" class="guild guild_black"></div>
+    </div>
+ </div>
+
+
+
+
 </div>
 <div id="players_panels"></div>
 <div id="supply">
@@ -50,12 +65,16 @@ class GameXBody extends GameMachine {
       }
 
       super.setupGame(gamedatas);
+      $("mainboard_3").appendChild($("supply"));
 
       this.setupNotifications();
       this.setupScoreSheet();
       this.updateBanner();
 
       // document.rootElement?.classList.add("bgaext_cust_back");
+
+      var parent = document.querySelector(".debug_section"); // studio only
+      if (parent) this.addActionButton("button_rcss", "Reload CSS", () => this.reloadCss(), "topbar_content");
     } catch (e) {
       console.error("Exception during game setup", e.stack);
     }
@@ -79,6 +98,10 @@ class GameXBody extends GameMachine {
     placeHtml(
       `
       <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${pcolor}'>
+
+         <div id='pboard_${pcolor}' class='pboard'> 
+         <div id='breakroom_${pcolor}' class='breakroom'></div>
+         </div>
       </div>`,
       parent
     );
@@ -178,6 +201,16 @@ class GameXBody extends GameMachine {
     $("limbo")?.appendChild($(tokenId));
   }
 
+  async createDiceSlot(card: Element, token: Token) {
+    const cardId = token.key;
+    const dslot = `dslot_0_${cardId}`;
+    let dslotNode = $(dslot);
+    if (dslotNode) return;
+    placeHtml(`<div id='${dslot}' class='dslot dslot_0'></div>`, card);
+    dslotNode = $(dslot);
+    this.addListenerWithGuard(dslotNode, (x) => this.onToken(x));
+  }
+
   getPlaceRedirect(tokenInfo: Token, args: AnimArgs = {}): TokenMoveInfo {
     const location = tokenInfo.location ?? "limbo";
     const tokenId = tokenInfo.key;
@@ -195,23 +228,18 @@ class GameXBody extends GameMachine {
     if (tokenId.startsWith("card")) {
       // cards
       result.onClick = (x) => this.onToken(x);
-      if (tokenId.startsWith("card_card") && location.startsWith("tableau")) {
-        const color = getPart(location, 1);
-        const t = this.getRulesFor(tokenId, "t");
-        result.location = `settlers_col_${color}_${t}`;
-        result.onEnd = () => {
-          const counter = $(`counter_card_${color}`);
-          const count = $(location).querySelectorAll(".card.card").length;
-          counter.dataset.state = `${count}`;
-
-          // sort
-          const parentNode = $(result.location);
-          const children = Array.from(parentNode.children);
-          children.sort((a: HTMLElement, b: HTMLElement) => Number(a.dataset.state) - Number(b.dataset.state));
-          children.forEach((node: HTMLElement) => {
-            parentNode.appendChild(node);
-          });
-        };
+      const cardType = getPart(tokenId, 1);
+      const state = Number(tokenInfo.state);
+      if (location.startsWith("mainarea")) {
+        if (cardType == "folk" && state >= 3) result.location = "mainboard_1";
+        else if (cardType == "folk") result.location = "mainboard_2";
+        else if (cardType == "land" && state >= 3) result.location = "mainboard_1";
+        else if (cardType == "land") result.location = "mainboard_2";
+        else if (cardType == "water" && state >= 3) result.location = "mainboard_3";
+        else if (cardType == "water") result.location = "mainboard_2";
+        else if (cardType == "space" && state >= 3) result.location = "mainboard_3";
+        else if (cardType == "space") result.location = "mainboard_2";
+        else if (cardType == "insp") result.location = "mainboard_3";
       } else if (location.startsWith("hand")) {
         const color = getPart(location, 1);
         if (color != this.player_color) result.nop = true;
@@ -219,17 +247,10 @@ class GameXBody extends GameMachine {
           result.location = `selection_area`;
           result.onClick = (x) => this.onToken(x);
         }
-      } else if (tokenId.startsWith("card") && location.startsWith("tableau")) {
+      } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
-        result.location = `cards_area_${color}`;
-        const mid = getPart(tokenId, 1);
-        if (mid.startsWith("roof")) {
-          result.onEnd = () => {
-            const counter = $(`counter_roof_${color}`);
-            const count = $(location).querySelectorAll(".card.roof,.card.roofi").length;
-            counter.dataset.state = `${count}`;
-          };
-        }
+        result.location = `pboard_${color}`;
+        result.onStart = (node) => this.createDiceSlot(node, tokenInfo);
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);
       } else if (location.startsWith("deck")) {
@@ -237,6 +258,8 @@ class GameXBody extends GameMachine {
       }
     } else if (tokenId.startsWith("tableau")) {
       result.nop = true;
+    } else if (tokenId.startsWith("mainboard_")) {
+      result.location = `mainboardall`;
     } else if (tokenId.startsWith("hand")) {
       result.nop = true;
     } else if (tokenId.startsWith("deck") || tokenId.startsWith("discard")) {
@@ -247,9 +270,12 @@ class GameXBody extends GameMachine {
       result.nop = true;
     } else if (location.startsWith("miniboard") && $(tokenId)) {
       result.nop = true; // do not move
-    } else if (tokenId.startsWith("worker") && location.startsWith("tableau")) {
+    } else if ((tokenId.startsWith("worker") || tokenId.startsWith("dice")) && location.startsWith("tableau")) {
       const color = getPart(location, 1);
-      //result.location = `breakroom_${color}`;
+      result.location = `breakroom_${color}`;
+      result.onClick = (x) => this.onToken(x);
+    } else if (tokenId.startsWith("dslot")) {
+      result.onClick = (x) => this.onToken(x);
     }
     return result;
   }
@@ -264,6 +290,7 @@ class GameXBody extends GameMachine {
     const token = $(tokenInfo.tokenId);
     const parentId = token?.parentElement?.id;
     const state = parseInt(token?.dataset.state);
+    const tokenId = tokenInfo.tokenId;
     switch (mainType) {
       case "worker":
         {
@@ -278,6 +305,27 @@ class GameXBody extends GameMachine {
           };
         }
         return;
+      case "card": {
+        const name = tokenInfo.name;
+        if (!name) {
+          tokenInfo.name = this.getTr({
+            log: "${typename} #${num}",
+            args: {
+              typename: this.getTr(tokenInfo.t),
+              num: tokenInfo.num
+            }
+          });
+        }
+        return;
+      }
+      case "dslot": {
+        const k = tokenId.indexOf("card");
+        const cardId = tokenId.substring(k);
+        const cardInfo = this.getTokenDisplayInfo(cardId);
+        if (!tokenInfo.name) tokenInfo.name = cardInfo.name;
+
+        return;
+      }
     }
   }
 

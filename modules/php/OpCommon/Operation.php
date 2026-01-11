@@ -534,6 +534,10 @@ abstract class Operation {
         return [];
     }
 
+    /**
+     * Return either array of targets, or annotated assoc array.
+     * When annotaget the key is the target and value is assoc array of type ParamInfo which you can find in typescript
+     */
     function getPossibleMoves() {
         return ["confirm"];
     }

@@ -49,175 +49,57 @@
     }
   }
 }
-.counter_card {
-  background-image: url(img/tokens.png);
-  background-size: auto 453%;
-  background-position: 86% 66%;
-  height: 32px;
-  aspect-ratio: 1/1;
-}
-.counter_roof {
-  background-image: url(img/tokens.png);
-  background-size: auto 453%;
-  background-position: 76.5% 66%;
-  height: 32px;
-  aspect-ratio: 1/1;
-}
+
 .wooden {
   background-image: url(img/tokens.png);
-  background-size: auto 453%;
+  background-size: auto 800%;
 }
 
-.hearth {
-  background-position: 47% 0%;
-}
-
-.furnish {
-  background-position: 89% 97%;
-  background-size: auto 453%;
-}
-.trade {
-  background-position: 81% 97%;
-  background-size: auto 453%;
-}
-.wooden.shell {
-  background-position: 0% 34%;
-}
-.wooden.barley {
-  background-position: 8% 34%;
-  background-size: auto 488%;
-}
-.wooden.food {
-  background-position: 16% 34%;
-}
-.wooden.hide {
-  background-position: 24% 34%;
-}
-.wooden.seaweed {
-  background-position: 31.5% 34%;
-  background-size: auto 530%;
-}
-.wooden.skaill {
-  background-position: 39% 38%;
-  background-size: auto 530%;
-}
-.wooden.rabbit {
-  background-position: 55% 33%;
-  background-size: auto 479%;
-}
-.wooden.fish {
-  background-position: 62% 34%;
-  background-size: auto 488%;
-}
-.wooden.sheep {
-  background-position: 10% 66%;
-}
-.wooden.wool {
-  background-position: 48% 37%;
-}
-.wooden.deer {
-  background-position: 20% 63%;
-}
-.wooden.boar {
-  background-position: 30% 67%;
-}
-.wooden.stone {
-  background-position: 80% 38%;
-}
-.wooden.cow {
-  background-position: 40% 64%;
-}
-.wooden.wood {
-  background-position: 50% 67%;
-}
-.wooden.bone {
-  background-position: 71% 37%;
-  background-size: auto 490%;
-}
-.wooden.midden {
-  background-position: 0% 67%;
-}
-.worker {
-  background-position: 19% 97%;
-  background-size: auto 453%;
-  width: 26px;
-  height: 39px;
-  aspect-ratio: 2 / 3;
-  &[data-state="0"] {
-    opacity: 0;
-  }
-
-  &.color_ff0000 {
-    background-position: 14% 97%;
-  }
-  &.color_000000 {
-    background-position: 7% 97%;
-  }
-  &.color_ffffff {
-    background-position: 0% 97%;
-  }
-  &.color_ffcc02 {
-    background-position: 21% 97%;
-  }
-  &.color_6cd0f6 {
-    background-position: 27% 97%;
-  }
-  &.color_982fff {
-    background-position: 34% 97%;
-  }
-}
-
-.worker.large {
-  width: 30px;
-  height: 50px;
-}
-.tableau {
-  .wooden,
-  .slider {
-    filter: v.$dropShadow2;
-  }
-}
-
-.tracker.slider {
-  background-image: url(img/SliderBGA.png);
-  background-size: cover;
-  aspect-ratio: 198 / 634;
-  .action-button & {
-    margin-right: auto;
-    margin-left: auto;
-  }
-}
-.pboard .tracker.slider {
-  position: absolute;
-  height: 32%;
-  top: 51%;
-
-  @for $num from 0 through 10 {
-    &[data-state="#{$num}"] {
-      left: calc(2% + 8.7% * $num);
-    }
-  }
-}
-.solo_game .turndisk {
-  display: none;
-}
-.turndisk {
-  background-image: url(img/turnTokenS.png);
-  background-size: cover;
-  aspect-ratio: 109 / 104;
-  height: 104px;
-  position: relative;
-}
-.turnmarker {
-  background-position-x: 100%;
-  background-size: auto 453%;
-  width: 30px;
+.dice {
+  background-image: url(img/dice.png);
+  background-size: 600% 100%;
+  mask-image: url(img/dice.png);
+  mask-size: 600% 100%;
+  width: 32px;
+  height: 32px;
   aspect-ratio: 1 / 1;
-  .supply & {
-    display: none;
+  background-blend-mode: multiply;
+  background-position-x: 100%;
+  &.color_ff0000 {
+    background-color: #ff0000;
   }
+  &[data-state="1"] {
+    background-position-x: 0%;
+  }
+  &[data-state="2"] {
+    background-position-x: 20%;
+  }
+  &[data-state="3"] {
+    background-position-x: 40%;
+  }
+  &[data-state="4"] {
+    background-position-x: 60%;
+  }
+  &[data-state="5"] {
+    background-position-x: 80%;
+  }
+}
+.dice.active_slot {
+  cursor: pointer;
+  outline: unset;
+  border: 4px dashed #19bedb;
+}
+.influence {
+  // background-image: url(img/influenceTokens.png);
+  // background-size: auto 400%;
+  width: 24px;
+  height: 24px;
+  aspect-ratio: 1 / 1;
+  background-position-x: 100%;
+  border-radius: 50%;
   &.color_982fff {
     background-position-y: 5%;
+    background-color: #982fff;
   }
   &.color_6cd0f6 {
     background-position-y: 38%;
@@ -228,56 +110,39 @@
 
   &.color_ff0000 {
     background-position-y: 95%;
-  }
-  &.color_000000 {
-    background-position-y: 64%;
-    filter: grayscale(1);
-  }
-
-  position: absolute;
-
-  @for $num from 0 through 3 {
-    &[data-state="#{$num}"] {
-      $rev: $num;
-      left: 15%;
-      bottom: calc(12% + 8% * $rev);
-      z-index: calc($rev);
-    }
-  }
-  @for $num from 10 through 13 {
-    &[data-state="#{$num}"] {
-      $rev: $num - 10;
-      left: 37%;
-      bottom: calc(52% + 8% * $rev);
-      z-index: calc($rev);
-    }
-  }
-  @for $num from 20 through 23 {
-    &[data-state="#{$num}"] {
-      $rev: $num - 20;
-      right: 15%;
-      bottom: calc(12% + 8% * $rev);
-      z-index: calc($rev);
-    }
+    background-color: #ff0000;
   }
 }
-.turninfo {
-  position: relative;
-  height: 32px;
-  aspect-ratio: unset;
-  color: #999;
-  &:after {
-    content: attr(data-state);
-    position: relative;
-  }
-  &:before {
-    content: attr(data-name);
-    position: relative;
-  }
-  &[data-state="0"] {
-    display: none;
-  }
-  &[data-state="5"] {
-    display: none;
+
+.food {
+  background-image: url(img/tokens.png);
+  background-position: 84% 42%;
+  background-size: auto 1100%;
+}
+.coin {
+  background-image: url(img/tokens.png);
+  background-position: 76.5% 42%;
+  background-size: auto 1200%;
+}
+.worker {
+  background-position: 0% 57%;
+  background-size: auto 800%;
+  width: 26px;
+  height: 39px;
+  aspect-ratio: 2 / 3;
+}
+.worker_blue {
+  background-position-x: 16%;
+}
+.worker_yellow {
+  background-position-x: 8%;
+}
+.worker_green {
+  background-position-x: 0%;
+}
+
+.tableau {
+  .worker {
+    filter: v.$dropShadow2;
   }
 }

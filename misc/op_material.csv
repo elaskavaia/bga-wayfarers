@@ -18,3 +18,19 @@ paygain|Trade
 
 
 turn|Turn
+cardBlack|Gain Space Card
+cardGreen|Gain Townfolk Card
+#cardBlue|Gain Water Card
+#cardYellow|Gain Land Card
+gainCard|Gain Card
+
+upgBlack|Gain Black Upgrade
+upgGreen|Gain Green Upgrade
+journal|Journal
+infAny|Place Influence in any Guide
+pickWorker|Pick a Worker
+
+
+#set class=Op_gain
+food|Gain Provisions
+coin|Gain Silver

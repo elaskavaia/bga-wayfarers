@@ -78,7 +78,6 @@ class Game extends Base {
 
         // Shuffle the Townsfolk, Space, Land, Water, and Inspiration Cards into separate decks and place them in their designated spaces on the Main Board.
         // Draw the top 4 cards from each deck and place them faceup next to their respective draw piles.
-        // Shuffle the Journal Tiles and place one faceup on each empty space of the Journal Track.
 
         $this->tokens->db->shuffle("deck_folk");
         $tokens = $this->tokens->db->pickTokensForLocation(4, "deck_folk", "mainarea");
@@ -115,6 +114,7 @@ class Game extends Base {
             $this->tokens->db->setTokenState($token["key"], $i);
             $i++;
         }
+        // Shuffle the Journal Tiles and place one faceup on each empty space of the Journal Track.
         $this->tokens->db->shuffle("deck_jtile");
         $i = 1;
         foreach ($tokens as $token) {
@@ -157,16 +157,17 @@ class Game extends Base {
             $this->tokens->db->moveToken("worker_yellow_$i", "tableau_$color");
 
             if ($i <= 2) {
-                $this->effect_incCount($color, "silver", 3, "setup");
+                $this->effect_incCount($color, "coin", 3, "setup");
             } else {
-                $this->effect_incCount($color, "silver", 4, "setup");
+                $this->effect_incCount($color, "coin", 4, "setup");
             }
-            $this->effect_incCount($color, "provision", 2, "setup");
+            $this->effect_incCount($color, "food", 2, "setup");
             $this->tokens->db->moveToken("influence_{$color}_1", "guild_blue");
             if ($i > 1) {
                 $this->tokens->db->moveToken("influence_{$color}_2", "guild_yellow");
             }
-
+            $this->tokens->db->moveToken("dice_{$color}_4", "supply");
+            $this->tokens->db->moveToken("dice_{$color}_5", "supply");
             $i++;
         }
 
@@ -242,13 +243,17 @@ class Game extends Base {
 
         $token_id = $this->tokens->getTrackerId($color, $type);
 
-        $this->tokens->dbResourceInc(
+        $value = $this->tokens->dbResourceInc(
             $token_id,
             $inc,
             $message,
             ["reason" => $reason, "place_from" => $reason] + $options,
             $this->getPlayerIdByColor($color)
         );
+
+        if ($value < 0 && $inc < 0) {
+            $this->userAssert(clienttranslate("Insufficient resources to pay"));
+        }
     }
 
     function effect_incVp(string $owner, int $inc, string $stat = "", array $options = []) {
@@ -307,31 +312,20 @@ class Game extends Base {
         return $this->tokens->getTrackerIdAndValue($color, $type, $arr);
     }
 
-    function countTags(int $tagtype, string $owner) {
-        if ($tagtype <= 4) {
-            $ac = $tagtype + 5;
-            // if gathering card is flipped it has another tag
-            $count = $this->getActionTileSide("action_main_{$ac}_{$owner}");
-            $cards = $this->tokens->getTokensOfTypeInLocation("card_card", "tableau_{$owner}");
-            foreach ($cards as $card => $info) {
-                $num = $this->getTerrainNum($card);
-                if ($num == $tagtype) {
-                    $count++;
-                }
+    function getTagsSet(string $card) {
+        $tags = $this->getRulesFor($card, "tags");
+        $tagsarr = explode(" ", $tags);
+        $res = [];
+        foreach ($tagsarr as $tag) {
+            if ($tag) {
+                $res[$tag] = 1; // XXX multi?
             }
-        } elseif ($tagtype == 5) {
-            // stone balls
-            $cards = $this->tokens->getTokensOfTypeInLocation("card_ball", "tableau_{$owner}");
-            $count = count($cards);
-        } elseif ($tagtype == 6) {
-            // spindle wharl
-            $cards = $this->tokens->getTokensOfTypeInLocation("card_spin", "tableau_{$owner}");
-            $count = count($cards);
-        } elseif ($tagtype == 7) {
-            // roof
-            $cards = $this->tokens->getTokensOfTypeInLocation("card_roof%", "tableau_{$owner}");
-            $count = count($cards);
         }
+        return $res;
+    }
+    function countTags(int $tagtype, string $owner) {
+        $count = 0; //XXX
+
         return $count;
     }
 

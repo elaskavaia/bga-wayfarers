@@ -274,7 +274,21 @@ class Game0Basics extends GameGui<any> {
       return this.clienttranslate_string(log);
     }
   }
-
+  reloadCss() {
+    var links = document.getElementsByTagName("link");
+    for (var cl in links) {
+      var link = links[cl];
+      if (link.rel === "stylesheet" && link.href.includes("99999")) {
+        var index = link.href.indexOf("?timestamp=");
+        var href = link.href;
+        if (index >= 0) {
+          href = href.substring(0, index);
+        }
+        link.href = href + "?timestamp=" + Date.now();
+        console.log("reloading " + link.href);
+      }
+    }
+  }
   isSolo() {
     return this.gamedatas.playerorder.length == 1;
   }

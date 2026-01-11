@@ -1,13 +1,14 @@
 @use "variables" as v;
 
 .card,
-.action,
 .deck,
 .discard {
   height: 200px;
-  aspect-ratio: 640 / 1000;
+  aspect-ratio: 638 / 1016;
   box-shadow: v.$boxShadowBlack;
   border-radius: 5%;
+  border: 1px solid antiquewhite;
+  z-index: 5;
 }
 
 .deck > * {
@@ -16,4 +17,180 @@
 .discard > * {
   visibility: hidden;
   position: absolute;
+}
+
+.card.folk {
+  border-color: green;
+}
+.card.space {
+  border-color: black;
+}
+.card.land {
+  border-color: beige;
+}
+.card.water {
+  border-color: blue;
+}
+
+.mainarea {
+  .card.folk {
+    bottom: 99%;
+  }
+  .card.folk[data-state="4"] {
+    left: 36%;
+  }
+  .card.folk[data-state="3"] {
+    left: 68%;
+  }
+  .card.folk[data-state="2"] {
+    left: 1%;
+  }
+  .card.folk[data-state="1"] {
+    left: 22%;
+  }
+  .card.land {
+    top: 99%;
+  }
+  .card.land[data-state="4"] {
+    left: 36%;
+  }
+  .card.land[data-state="3"] {
+    left: 68%;
+  }
+  .card.land[data-state="2"] {
+    left: 1%;
+  }
+  .card.land[data-state="1"] {
+    left: 22%;
+  }
+
+  .card.space {
+    bottom: 99%;
+  }
+  .card.space[data-state="4"] {
+    left: 35%;
+  }
+  .card.space[data-state="3"] {
+    left: 1%;
+  }
+  .card.space[data-state="2"] {
+    left: 80%;
+  }
+  .card.space[data-state="1"] {
+    left: 59%;
+  }
+
+  .card.water {
+    top: 99%;
+  }
+  .card.water[data-state="4"] {
+    left: 35%;
+  }
+  .card.water[data-state="3"] {
+    left: 1%;
+  }
+  .card.water[data-state="2"] {
+    left: 80%;
+  }
+  .card.water[data-state="1"] {
+    left: 59%;
+  }
+
+  .card.insp {
+    left: 108%;
+    transform: rotate(90deg);
+  }
+  .card.insp[data-state="4"] {
+    top: 70%;
+  }
+  .card.insp[data-state="3"] {
+    top: 45%;
+  }
+  .card.insp[data-state="2"] {
+    top: 20%;
+  }
+  .card.insp[data-state="1"] {
+    top: -5%;
+  }
+}
+.mainarea {
+  .deck_insp {
+    left: 108%;
+    bottom: 99%;
+    transform: rotate(90deg);
+  }
+  .deck_space {
+    right: 2%;
+
+    bottom: 99%;
+  }
+  .deck_folk {
+    left: 0;
+    bottom: 99%;
+  }
+  .deck_land {
+    left: 0;
+    top: 99%;
+  }
+  .deck_water {
+    right: 2%;
+
+    top: 99%;
+  }
+}
+
+.tableau {
+  .card_home {
+    position: absolute;
+    bottom: 9%;
+    border: unset;
+    box-shadow: unset;
+  }
+  .card_home_1 {
+    left: 33%;
+  }
+  .card_home_2 {
+    left: 0%;
+  }
+  .card_home_3 {
+    right: 0%;
+  }
+}
+
+.dslot {
+  position: absolute;
+  bottom: 0%;
+  width: 100%;
+  height: 19%;
+  left: 0%;
+  outline: 1px solid yellow;
+}
+.dslot_0_card_home_1 {
+  bottom: 51%;
+  height: 15%;
+}
+.dslot_1_card_home_1 {
+  bottom: 37%;
+  height: 15%;
+}
+.dslot_2_card_home_1 {
+  bottom: 19%;
+  height: 15%;
+}
+
+.card.folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+}
+
+@for $i from 114 through 151 {
+  $num: $i - 114;
+  $cols: 6;
+  $rows: 7;
+
+  $col: $num % $cols;
+  $row: calc(($num - $col) / $cols);
+  .card_folk_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
+  }
 }

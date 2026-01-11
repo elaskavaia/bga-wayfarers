@@ -23,6 +23,29 @@
   gap: 10px;
   padding: 10px;
   z-index: 0;
+  position: relative;
+
+  .card,
+  .deck {
+    position: absolute;
+  }
+}
+.guild {
+  position: absolute;
+  width: 40%;
+  height: 10%;
+}
+.guild_blue {
+  top: 65%;
+  left: 50%;
+}
+.guild_yellow {
+  top: 40%;
+  left: 38%;
+}
+.guild_black {
+  top: 20%;
+  left: 50%;
 }
 
 .tableau {
@@ -35,9 +58,58 @@
   padding-top: 32px; // player name
 }
 
+.pboard {
+  background-image: url(img/PlayerBoard-01-s.png);
+  height: 496px;
+  background-size: cover;
+  aspect-ratio: 798 / 1024;
+  position: relative;
+}
+
+.breakroom {
+  position: absolute;
+  top: 21%;
+  right: 0%;
+  width: 33%;
+  height: 24%;
+  & > * {
+    display: inline-block;
+    vertical-align: top;
+  }
+}
+
 .players_panels {
   display: flex;
   position: relative;
   flex-wrap: wrap;
   justify-content: space-around;
+}
+
+.mainboardall {
+  position: relative;
+  & > * {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+
+    aspect-ratio: 768 / 1024;
+    height: 600px;
+    background-size: cover;
+  }
+}
+.mainboard_x {
+  margin-top: 200px;
+  margin-bottom: 200px;
+}
+.mainboard_1 {
+  background-image: url(img/MainBoard1.jpg);
+}
+.mainboard_2 {
+  background-image: url(img/MainBoard2.jpg);
+  aspect-ratio: 1212 / 1024;
+}
+
+.mainboard_3 {
+  background-image: url(img/MainBoard3.jpg);
+  margin-right: 200px;
 }

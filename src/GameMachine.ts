@@ -9,7 +9,7 @@
  *
  */
 
-interface BasicParamInfo {
+interface ParamInfo {
   q: number; // error code
   max?: number; // max count for this param
 
@@ -27,8 +27,6 @@ interface BasicParamInfo {
 
   info?: ParamInfoArray; // param info for next argument
 }
-
-type ParamInfo = BasicParamInfo;
 
 interface ParamInfoArray {
   [key: string]: ParamInfo;
