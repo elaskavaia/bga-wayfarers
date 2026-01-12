@@ -6,7 +6,6 @@
   aspect-ratio: 638/1016;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5019607843);
   border-radius: 5%;
-  border: 1px solid antiquewhite;
   z-index: 5;
 }
 
@@ -17,22 +16,6 @@
 .discard > * {
   visibility: hidden;
   position: absolute;
-}
-
-.card.folk {
-  border-color: green;
-}
-
-.card.space {
-  border-color: black;
-}
-
-.card.land {
-  border-color: beige;
-}
-
-.card.water {
-  border-color: blue;
 }
 
 .mainarea .card.folk {
@@ -134,20 +117,51 @@
   top: 99%;
 }
 
-.tableau .card_home {
+.tableau .card_home,
+.tableau .card[data-home-pos] {
   position: absolute;
-  bottom: 9%;
   border: unset;
   box-shadow: unset;
 }
-.tableau .card_home_1 {
+.tableau .card_folk {
+  z-index: 0;
+}
+.tableau .card_home {
+  z-index: 1;
+  bottom: 9%;
+}
+.tableau .card[data-home-pos] {
+  bottom: 0%;
+}
+.tableau .card_home_1,
+.tableau .card[data-home-pos="1"] {
   left: 33%;
 }
-.tableau .card_home_2 {
+.tableau .card_home_2,
+.tableau .card[data-home-pos="2"] {
   left: 0%;
 }
-.tableau .card_home_3 {
+.tableau .card_home_3,
+.tableau .card[data-home-pos="3"] {
   right: 0%;
+}
+
+.card_home {
+  background-image: url(img/PlayerBoard-01-s.png);
+  background-size: 300% auto;
+  background-position-y: 86%;
+}
+
+.card_home_1 {
+  background-image: unset;
+}
+
+.card_home_2 {
+  background-position-x: 0%;
+}
+
+.card_home_3 {
+  background-position-x: 100%;
 }
 
 .dslot {
@@ -172,11 +186,6 @@
 .dslot_2_card_home_1 {
   bottom: 19%;
   height: 15%;
-}
-
-.card.folk {
-  background-image: url(img/cards_folk.jpg);
-  background-size: 600% auto;
 }
 
 .card_folk_114 {
@@ -329,6 +338,565 @@
 
 .card_folk_151 {
   background-position: 20% 100%;
+}
+
+.card_folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+}
+
+.deck_folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 40% 100%;
+}
+
+.card_space {
+  background-image: url(img/cards_space.jpg);
+  background-size: 600% auto;
+}
+
+.deck_space {
+  background-image: url(img/cards_space.jpg);
+  background-size: 600% auto;
+  background-position: 20% 100%;
+}
+
+.card_land {
+  background-image: url(img/cards_land.jpg);
+  background-size: 600% auto;
+}
+
+.deck_land {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 60% 100%;
+}
+
+.card_water {
+  background-image: url(img/cards_water.jpg);
+  background-size: 600% auto;
+}
+
+.deck_water {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 80% 100%;
+}
+
+.card_insp {
+  background-image: url(img/cards_insp.jpg);
+  background-size: 600% auto;
+}
+
+.deck_insp {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 100% 100%;
+}
+
+.card_space_1 {
+  background-position: 0% 0%;
+}
+
+.card_water_1 {
+  background-position: 0% 0%;
+}
+
+.card_land_1 {
+  background-position: 0% 0%;
+}
+
+.card_space_2 {
+  background-position: 20% 0%;
+}
+
+.card_water_2 {
+  background-position: 20% 0%;
+}
+
+.card_land_2 {
+  background-position: 20% 0%;
+}
+
+.card_space_3 {
+  background-position: 40% 0%;
+}
+
+.card_water_3 {
+  background-position: 40% 0%;
+}
+
+.card_land_3 {
+  background-position: 40% 0%;
+}
+
+.card_space_4 {
+  background-position: 60% 0%;
+}
+
+.card_water_4 {
+  background-position: 60% 0%;
+}
+
+.card_land_4 {
+  background-position: 60% 0%;
+}
+
+.card_space_5 {
+  background-position: 80% 0%;
+}
+
+.card_water_5 {
+  background-position: 80% 0%;
+}
+
+.card_land_5 {
+  background-position: 80% 0%;
+}
+
+.card_space_6 {
+  background-position: 100% 0%;
+}
+
+.card_water_6 {
+  background-position: 100% 0%;
+}
+
+.card_land_6 {
+  background-position: 100% 0%;
+}
+
+.card_space_7 {
+  background-position: 0% 16.6666666667%;
+}
+
+.card_water_7 {
+  background-position: 0% 16.6666666667%;
+}
+
+.card_land_7 {
+  background-position: 0% 16.6666666667%;
+}
+
+.card_space_8 {
+  background-position: 20% 16.6666666667%;
+}
+
+.card_water_8 {
+  background-position: 20% 16.6666666667%;
+}
+
+.card_land_8 {
+  background-position: 20% 16.6666666667%;
+}
+
+.card_space_9 {
+  background-position: 40% 16.6666666667%;
+}
+
+.card_water_9 {
+  background-position: 40% 16.6666666667%;
+}
+
+.card_land_9 {
+  background-position: 40% 16.6666666667%;
+}
+
+.card_space_10 {
+  background-position: 60% 16.6666666667%;
+}
+
+.card_water_10 {
+  background-position: 60% 16.6666666667%;
+}
+
+.card_land_10 {
+  background-position: 60% 16.6666666667%;
+}
+
+.card_space_11 {
+  background-position: 80% 16.6666666667%;
+}
+
+.card_water_11 {
+  background-position: 80% 16.6666666667%;
+}
+
+.card_land_11 {
+  background-position: 80% 16.6666666667%;
+}
+
+.card_space_12 {
+  background-position: 100% 16.6666666667%;
+}
+
+.card_water_12 {
+  background-position: 100% 16.6666666667%;
+}
+
+.card_land_12 {
+  background-position: 100% 16.6666666667%;
+}
+
+.card_space_13 {
+  background-position: 0% 33.3333333333%;
+}
+
+.card_water_13 {
+  background-position: 0% 33.3333333333%;
+}
+
+.card_land_13 {
+  background-position: 0% 33.3333333333%;
+}
+
+.card_space_14 {
+  background-position: 20% 33.3333333333%;
+}
+
+.card_water_14 {
+  background-position: 20% 33.3333333333%;
+}
+
+.card_land_14 {
+  background-position: 20% 33.3333333333%;
+}
+
+.card_space_15 {
+  background-position: 40% 33.3333333333%;
+}
+
+.card_water_15 {
+  background-position: 40% 33.3333333333%;
+}
+
+.card_land_15 {
+  background-position: 40% 33.3333333333%;
+}
+
+.card_space_16 {
+  background-position: 60% 33.3333333333%;
+}
+
+.card_water_16 {
+  background-position: 60% 33.3333333333%;
+}
+
+.card_land_16 {
+  background-position: 60% 33.3333333333%;
+}
+
+.card_space_17 {
+  background-position: 80% 33.3333333333%;
+}
+
+.card_water_17 {
+  background-position: 80% 33.3333333333%;
+}
+
+.card_land_17 {
+  background-position: 80% 33.3333333333%;
+}
+
+.card_space_18 {
+  background-position: 100% 33.3333333333%;
+}
+
+.card_water_18 {
+  background-position: 100% 33.3333333333%;
+}
+
+.card_land_18 {
+  background-position: 100% 33.3333333333%;
+}
+
+.card_space_19 {
+  background-position: 0% 50%;
+}
+
+.card_water_19 {
+  background-position: 0% 50%;
+}
+
+.card_land_19 {
+  background-position: 0% 50%;
+}
+
+.card_space_20 {
+  background-position: 20% 50%;
+}
+
+.card_water_20 {
+  background-position: 20% 50%;
+}
+
+.card_land_20 {
+  background-position: 20% 50%;
+}
+
+.card_space_21 {
+  background-position: 40% 50%;
+}
+
+.card_water_21 {
+  background-position: 40% 50%;
+}
+
+.card_land_21 {
+  background-position: 40% 50%;
+}
+
+.card_space_22 {
+  background-position: 60% 50%;
+}
+
+.card_water_22 {
+  background-position: 60% 50%;
+}
+
+.card_land_22 {
+  background-position: 60% 50%;
+}
+
+.card_space_23 {
+  background-position: 80% 50%;
+}
+
+.card_water_23 {
+  background-position: 80% 50%;
+}
+
+.card_land_23 {
+  background-position: 80% 50%;
+}
+
+.card_space_24 {
+  background-position: 100% 50%;
+}
+
+.card_water_24 {
+  background-position: 100% 50%;
+}
+
+.card_land_24 {
+  background-position: 100% 50%;
+}
+
+.card_space_25 {
+  background-position: 0% 66.6666666667%;
+}
+
+.card_water_25 {
+  background-position: 0% 66.6666666667%;
+}
+
+.card_land_25 {
+  background-position: 0% 66.6666666667%;
+}
+
+.card_space_26 {
+  background-position: 20% 66.6666666667%;
+}
+
+.card_water_26 {
+  background-position: 20% 66.6666666667%;
+}
+
+.card_land_26 {
+  background-position: 20% 66.6666666667%;
+}
+
+.card_space_27 {
+  background-position: 40% 66.6666666667%;
+}
+
+.card_water_27 {
+  background-position: 40% 66.6666666667%;
+}
+
+.card_land_27 {
+  background-position: 40% 66.6666666667%;
+}
+
+.card_space_28 {
+  background-position: 60% 66.6666666667%;
+}
+
+.card_water_28 {
+  background-position: 60% 66.6666666667%;
+}
+
+.card_land_28 {
+  background-position: 60% 66.6666666667%;
+}
+
+.card_space_29 {
+  background-position: 80% 66.6666666667%;
+}
+
+.card_water_29 {
+  background-position: 80% 66.6666666667%;
+}
+
+.card_land_29 {
+  background-position: 80% 66.6666666667%;
+}
+
+.card_space_30 {
+  background-position: 100% 66.6666666667%;
+}
+
+.card_water_30 {
+  background-position: 100% 66.6666666667%;
+}
+
+.card_land_30 {
+  background-position: 100% 66.6666666667%;
+}
+
+.card_space_31 {
+  background-position: 0% 83.3333333333%;
+}
+
+.card_water_31 {
+  background-position: 0% 83.3333333333%;
+}
+
+.card_land_31 {
+  background-position: 0% 83.3333333333%;
+}
+
+.card_space_32 {
+  background-position: 20% 83.3333333333%;
+}
+
+.card_water_32 {
+  background-position: 20% 83.3333333333%;
+}
+
+.card_land_32 {
+  background-position: 20% 83.3333333333%;
+}
+
+.card_space_33 {
+  background-position: 40% 83.3333333333%;
+}
+
+.card_water_33 {
+  background-position: 40% 83.3333333333%;
+}
+
+.card_land_33 {
+  background-position: 40% 83.3333333333%;
+}
+
+.card_space_34 {
+  background-position: 60% 83.3333333333%;
+}
+
+.card_water_34 {
+  background-position: 60% 83.3333333333%;
+}
+
+.card_land_34 {
+  background-position: 60% 83.3333333333%;
+}
+
+.card_space_35 {
+  background-position: 80% 83.3333333333%;
+}
+
+.card_water_35 {
+  background-position: 80% 83.3333333333%;
+}
+
+.card_land_35 {
+  background-position: 80% 83.3333333333%;
+}
+
+.card_space_36 {
+  background-position: 100% 83.3333333333%;
+}
+
+.card_water_36 {
+  background-position: 100% 83.3333333333%;
+}
+
+.card_land_36 {
+  background-position: 100% 83.3333333333%;
+}
+
+.card_insp_1 {
+  background-position: 0% 0%;
+}
+
+.card_insp_2 {
+  background-position: 20% 0%;
+}
+
+.card_insp_3 {
+  background-position: 40% 0%;
+}
+
+.card_insp_4 {
+  background-position: 60% 0%;
+}
+
+.card_insp_5 {
+  background-position: 80% 0%;
+}
+
+.card_insp_6 {
+  background-position: 100% 0%;
+}
+
+.card_insp_7 {
+  background-position: 0% 50%;
+}
+
+.card_insp_8 {
+  background-position: 20% 50%;
+}
+
+.card_insp_9 {
+  background-position: 40% 50%;
+}
+
+.card_insp_10 {
+  background-position: 60% 50%;
+}
+
+.card_insp_11 {
+  background-position: 80% 50%;
+}
+
+.card_insp_12 {
+  background-position: 100% 50%;
+}
+
+.card_insp_13 {
+  background-position: 0% 100%;
+}
+
+.card_insp_14 {
+  background-position: 20% 100%;
+}
+
+.card_insp_15 {
+  background-position: 40% 100%;
+}
+
+.card_insp_16 {
+  background-position: 60% 100%;
+}
+
+.card_insp_17 {
+  background-position: 80% 100%;
+}
+
+.card_insp_18 {
+  background-position: 100% 100%;
 }
 
 .selection_area {
@@ -535,25 +1103,24 @@ html[data-theme=dark] .restrackers .counter {
 }
 
 .influence {
+  background-image: url(img/tokens.png);
+  background-size: auto 1100%;
   width: 24px;
   height: 24px;
   aspect-ratio: 1/1;
-  background-position-x: 100%;
-  border-radius: 50%;
+  background-position-y: 83%;
 }
 .influence.color_982fff {
-  background-position-y: 5%;
-  background-color: #982fff;
+  background-position-x: 84.6%;
 }
 .influence.color_6cd0f6 {
-  background-position-y: 38%;
+  background-position-x: 77%;
 }
 .influence.color_ffcc02 {
-  background-position-y: 64%;
+  background-position-x: 100%;
 }
 .influence.color_ff0000 {
-  background-position-y: 95%;
-  background-color: #ff0000;
+  background-position-x: 92.3%;
 }
 
 .food {

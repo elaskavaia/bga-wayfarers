@@ -255,6 +255,12 @@ class GameXBody extends GameMachine {
         result.onEnd = (node) => this.hideCard(node);
       } else if (location.startsWith("deck")) {
         result.onEnd = (node) => this.hideCard(node);
+      } else if (location.startsWith("card")) {
+        result.onEnd = (node: HTMLElement) => {
+          const grand = node.parentElement.parentElement;
+          grand.appendChild(node);
+          node.dataset[`${getPart(location, 1)}Pos`] = getPart(location, 2);
+        };
       }
     } else if (tokenId.startsWith("tableau")) {
       result.nop = true;

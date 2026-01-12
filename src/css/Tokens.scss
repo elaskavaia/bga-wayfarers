@@ -90,27 +90,23 @@
   border: 4px dashed #19bedb;
 }
 .influence {
-  // background-image: url(img/influenceTokens.png);
-  // background-size: auto 400%;
+  background-image: url(img/tokens.png);
+  background-size: auto 1100%;
   width: 24px;
   height: 24px;
   aspect-ratio: 1 / 1;
-  background-position-x: 100%;
-  border-radius: 50%;
+  background-position-y: 83%;
   &.color_982fff {
-    background-position-y: 5%;
-    background-color: #982fff;
+    background-position-x: 84.6%;
   }
   &.color_6cd0f6 {
-    background-position-y: 38%;
+    background-position-x: 77%;
   }
   &.color_ffcc02 {
-    background-position-y: 64%;
+    background-position-x: 100%;
   }
-
   &.color_ff0000 {
-    background-position-y: 95%;
-    background-color: #ff0000;
+    background-position-x: 92.3%;
   }
 }
 

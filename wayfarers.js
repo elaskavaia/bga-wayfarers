@@ -1899,6 +1899,13 @@ var GameXBody = /** @class */ (function (_super) {
             else if (location.startsWith("deck")) {
                 result.onEnd = function (node) { return _this.hideCard(node); };
             }
+            else if (location.startsWith("card")) {
+                result.onEnd = function (node) {
+                    var grand = node.parentElement.parentElement;
+                    grand.appendChild(node);
+                    node.dataset["".concat(getPart(location, 1), "Pos")] = getPart(location, 2);
+                };
+            }
         }
         else if (tokenId.startsWith("tableau")) {
             result.nop = true;

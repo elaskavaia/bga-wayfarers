@@ -7,7 +7,7 @@
   aspect-ratio: 638 / 1016;
   box-shadow: v.$boxShadowBlack;
   border-radius: 5%;
-  border: 1px solid antiquewhite;
+
   z-index: 5;
 }
 
@@ -17,19 +17,6 @@
 .discard > * {
   visibility: hidden;
   position: absolute;
-}
-
-.card.folk {
-  border-color: green;
-}
-.card.space {
-  border-color: black;
-}
-.card.land {
-  border-color: beige;
-}
-.card.water {
-  border-color: blue;
 }
 
 .mainarea {
@@ -140,21 +127,48 @@
 }
 
 .tableau {
-  .card_home {
+  .card_home,
+  .card[data-home-pos] {
     position: absolute;
-    bottom: 9%;
     border: unset;
     box-shadow: unset;
   }
-  .card_home_1 {
+  .card_folk {
+    z-index: 0;
+  }
+  .card_home {
+    z-index: 1;
+    bottom: 9%;
+  }
+  .card[data-home-pos] {
+    bottom: 0%;
+  }
+  .card_home_1,
+  .card[data-home-pos="1"] {
     left: 33%;
   }
-  .card_home_2 {
+  .card_home_2,
+  .card[data-home-pos="2"] {
     left: 0%;
   }
-  .card_home_3 {
+  .card_home_3,
+  .card[data-home-pos="3"] {
     right: 0%;
   }
+}
+.card_home {
+  background-image: url(img/PlayerBoard-01-s.png);
+  background-size: 300% auto;
+  background-position-y: 86%;
+}
+.card_home_1 {
+  background-image: unset;
+}
+.card_home_2 {
+  background-position-x: 0%;
+}
+.card_home_3 {
+  background-position-x: 100%;
 }
 
 .dslot {
@@ -178,11 +192,6 @@
   height: 15%;
 }
 
-.card.folk {
-  background-image: url(img/cards_folk.jpg);
-  background-size: 600% auto;
-}
-
 @for $i from 114 through 151 {
   $num: $i - 114;
   $cols: 6;
@@ -191,6 +200,96 @@
   $col: $num % $cols;
   $row: calc(($num - $col) / $cols);
   .card_folk_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
+  }
+}
+
+// .card.folk {
+//   border-color: green;
+// }
+// .card.space {
+//   border-color: black;
+// }
+// .card.land {
+//   border-color: beige;
+// }
+// .card.water {
+//   border-color: blue;
+// }
+
+.card_folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+}
+.deck_folk {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 40% 100%;
+}
+
+.card_space {
+  background-image: url(img/cards_space.jpg);
+  background-size: 600% auto;
+}
+.deck_space {
+  background-image: url(img/cards_space.jpg);
+  background-size: 600% auto;
+  background-position: 20% 100%;
+}
+.card_land {
+  background-image: url(img/cards_land.jpg);
+  background-size: 600% auto;
+}
+.deck_land {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 60% 100%;
+}
+
+.card_water {
+  background-image: url(img/cards_water.jpg);
+  background-size: 600% auto;
+}
+
+.deck_water {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 80% 100%;
+}
+.card_insp {
+  background-image: url(img/cards_insp.jpg);
+  background-size: 600% auto;
+}
+.deck_insp {
+  background-image: url(img/cards_folk.jpg);
+  background-size: 600% auto;
+  background-position: 100% 100%;
+}
+@for $i from 1 through 36 {
+  $num: $i - 1;
+  $cols: 6;
+  $rows: 7;
+
+  $col: $num % $cols;
+  $row: calc(($num - $col) / $cols);
+  .card_space_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
+  }
+  .card_water_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
+  }
+  .card_land_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
+  }
+}
+@for $i from 1 through 18 {
+  $num: $i - 1;
+  $cols: 6;
+  $rows: 3;
+
+  $col: $num % $cols;
+  $row: calc(($num - $col) / $cols);
+  .card_insp_#{$i} {
     background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
   }
 }
