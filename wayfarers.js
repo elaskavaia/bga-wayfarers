@@ -556,6 +556,7 @@ var Game1Tokens = /** @class */ (function (_super) {
         this.placeTokenSetup("limbo");
         placeHtml("<div id=\"oversurface\"></div>", this.getGameAreaElement());
         this.setupTokens();
+        this.updateCountersSafe(this.gamedatas.counters);
     };
     Game1Tokens.prototype.onLeavingState = function (stateName) {
         console.log("onLeavingState: " + stateName);
@@ -617,6 +618,28 @@ var Game1Tokens = /** @class */ (function (_super) {
     };
     Game1Tokens.prototype.isLocationByType = function (id) {
         return this.getRulesFor(id, "type", "").indexOf("location") >= 0;
+    };
+    Game1Tokens.prototype.updateCountersSafe = function (counters) {
+        //console.log(counters);
+        for (var key in counters) {
+            var node = $(key);
+            if (counters.hasOwnProperty(key)) {
+                if (!node) {
+                    var deckId = key.replace("counter_", "");
+                    if ($(deckId)) {
+                        placeHtml("<div id='".concat(key, "' class='counter'></div>"), deckId);
+                        node = $(key);
+                    }
+                }
+                if (node) {
+                    var value = counters[key].value;
+                    node.dataset.state = value;
+                }
+                else {
+                    console.log("unknown counter " + key);
+                }
+            }
+        }
     };
     Game1Tokens.prototype.setupTokens = function () {
         console.log("Setup tokens");
@@ -1890,7 +1913,16 @@ var GameXBody = /** @class */ (function (_super) {
             }
             else if (location.startsWith("tableau")) {
                 var color = getPart(location, 1);
-                result.location = "pboard_".concat(color);
+                if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
+                    result.location = "pboard_".concat(color);
+                }
+                else {
+                    var x = tokenInfo.state;
+                    result.location = "pboard_column_".concat(x, "_").concat(color);
+                    if (!$(result.location)) {
+                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
+                    }
+                }
                 result.onStart = function (node) { return _this.createDiceSlot(node, tokenInfo); };
             }
             else if (location.startsWith("discard")) {

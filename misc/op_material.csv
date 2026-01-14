@@ -18,17 +18,29 @@ paygain|Trade
 
 
 turn|Turn
-cardBlack|Gain Space Card
+cardSpace|Gain Space Card
 cardGreen|Gain Townfolk Card
-#cardBlue|Gain Water Card
-#cardYellow|Gain Land Card
+cardWater|Gain Water Card
+cardLand|Gain Land Card
 gainCard|Gain Card
 
 upgBlack|Gain Black Upgrade
 upgGreen|Gain Green Upgrade
 journal|Journal
-infAny|Place Influence in any Guide
 pickWorker|Pick a Worker
+drawTab|Refill Cards
+reroll|Re-roll
+ship|Ship
+camel|Camel
+telescope|Telescope
+bird|Bird
+infAny|Influence on any Guild
+infBlue|Influence on Blue
+infYellow|Influence on Yellow
+infBlack|Influence on Black
+infCard|Influence on Card
+infMove|Move Influence
+diceMod|Modify Dice by One
 
 
 #set class=Op_gain

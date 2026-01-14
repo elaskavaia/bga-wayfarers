@@ -3,17 +3,38 @@
 .card,
 .deck,
 .discard {
-  height: 200px;
-  aspect-ratio: 638 / 1016;
+  height: v.$cardHeight;
+  aspect-ratio: v.$ratioW / v.$ratioH;
   box-shadow: v.$boxShadowBlack;
   border-radius: 5%;
 
   z-index: 5;
 }
 
-.deck > * {
-  visibility: hidden;
+.deck {
+  .counter {
+    position: absolute;
+    bottom: 1%;
+    right: 1%;
+
+    color: black;
+    text-shadow: v.$textShadowWhite;
+
+    html[data-theme="dark"] & {
+      color: white;
+      text-shadow: v.$textShadowBlack;
+    }
+
+    &::after {
+      content: attr(data-state);
+      position: relative;
+    }
+  }
+  .card {
+    visibility: hidden;
+  }
 }
+
 .discard > * {
   visibility: hidden;
   position: absolute;
@@ -127,35 +148,64 @@
 }
 
 .tableau {
-  .card_home,
-  .card[data-home-pos] {
+  .card {
     position: absolute;
-    border: unset;
-    box-shadow: unset;
   }
+  .column {
+    display: inline-block;
+    vertical-align: top;
+    position: relative;
+    width: v.$cardWidth;
+    height: 100%;
+    .card {
+      left: 0%;
+    }
+  }
+
   .card_folk {
     z-index: 0;
+    bottom: 0%;
   }
-  .card_home {
+  .card_water,
+  .card_land {
     z-index: 1;
     bottom: 9%;
   }
-  .card[data-home-pos] {
-    bottom: 0%;
-  }
-  .card_home_1,
-  .card[data-home-pos="1"] {
-    left: 33%;
-  }
-  .card_home_2,
-  .card[data-home-pos="2"] {
-    left: 0%;
-  }
-  .card_home_3,
-  .card[data-home-pos="3"] {
-    right: 0%;
+  .pboard {
+    display: inline-block;
+    vertical-align: top;
+    .card_home,
+    .card[data-home-pos] {
+      border: unset;
+      box-shadow: unset;
+    }
+    .card_home {
+      z-index: 1;
+      bottom: 9%;
+    }
+    .card[data-home-pos] {
+      bottom: 0%;
+    }
+    .card_home_1,
+    .card[data-home-pos="1"] {
+      left: 33%;
+    }
+    .card_home_2,
+    .card[data-home-pos="2"] {
+      left: 0%;
+    }
+    .card_home_3,
+    .card[data-home-pos="3"] {
+      right: 0%;
+    }
+    .card_folk_1 {
+      left: 33%;
+      bottom: 0%;
+      position: absolute !important;
+    }
   }
 }
+
 .card_home {
   background-image: url(img/PlayerBoard-01-s.png);
   background-size: 300% auto;
@@ -164,13 +214,16 @@
 .card_home_1 {
   background-image: unset;
 }
+
 .card_home_2 {
   background-position-x: 0%;
 }
 .card_home_3 {
   background-position-x: 100%;
 }
-
+.card_folk_1 {
+  background-image: unset !important;
+}
 .dslot {
   position: absolute;
   bottom: 0%;

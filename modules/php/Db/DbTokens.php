@@ -336,17 +336,6 @@ class DbTokens {
         return $state;
     }
 
-    function incTokenState($token_key, $by) {
-        self::checkState($by);
-        self::checkKey($token_key);
-        $this->clear_cache();
-        $sql = "UPDATE " . $this->table;
-        $sql .= " SET token_state = token_state + $by";
-        $sql .= " WHERE token_key='$token_key'";
-        $this->game->DbQuery($sql);
-        return;
-    }
-
     /**
      * Move a token to specific location in specific state, if state set to null do not change state
      */
@@ -445,7 +434,7 @@ class DbTokens {
      * @param string $type -  if type contains % it will be treated as LIKE, otherwise % will be appended
      * @param string $location - if location contains % it will be treated as LIKE
      * @param int|string $state - state can be just numeric or can be expression i.e. "!=0"
-     * @param string $order_by - field to order by, if used keys will be numberic in returned array
+     * @param string $order_by - field to order by (it has to start with "token_" prefix)
      *
      * @return array mixed
      */
@@ -479,11 +468,13 @@ class DbTokens {
             $sql .= " ORDER BY $order_by ASC";
         }
 
-        if ($order_by !== null) {
-            return $this->game->getObjectListFromDB($sql);
-        } else {
-            return $this->game->getCollectionFromDB($sql);
-        }
+        return $this->game->getCollectionFromDB($sql);
+    }
+
+    function getTokensOnLocations(array $locs) {
+        $sql = $this->getSelectQuery();
+        $sql .= " WHERE token_location IN ('" . implode("','", $locs) . "') ";
+        return $this->game->getCollectionFromDB($sql);
     }
 
     function getTokensOfTypeInLocationSingle($type, $location = null, $state = null, $order_by = null) {
@@ -502,12 +493,12 @@ class DbTokens {
         return reset($res)["key"];
     }
 
-    function getTokenState($token_id, $def = null) {
+    function getTokenState($token_id, $def = 0) {
         $res = $this->getTokenInfo($token_id);
         if ($res == null) {
             return $def;
         }
-        return $res["state"];
+        return (int) $res["state"];
     }
 
     function getTokenLocation($token_id) {

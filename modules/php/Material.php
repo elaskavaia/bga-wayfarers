@@ -199,16 +199,22 @@ class Material {
         "type" => "turn",
         "name" => clienttranslate("Turn"),
 ],
-    "Op_cardBlack" => [ 
-        "type" => "cardBlack",
+    "Op_cardSpace" => [ 
+        "type" => "cardSpace",
         "name" => clienttranslate("Gain Space Card"),
 ],
     "Op_cardGreen" => [ 
         "type" => "cardGreen",
         "name" => clienttranslate("Gain Townfolk Card"),
 ],
-// #cardBlue|Gain Water Card
-// #cardYellow|Gain Land Card
+    "Op_cardWater" => [ 
+        "type" => "cardWater",
+        "name" => clienttranslate("Gain Water Card"),
+],
+    "Op_cardLand" => [ 
+        "type" => "cardLand",
+        "name" => clienttranslate("Gain Land Card"),
+],
     "Op_gainCard" => [ 
         "type" => "gainCard",
         "name" => clienttranslate("Gain Card"),
@@ -225,13 +231,61 @@ class Material {
         "type" => "journal",
         "name" => clienttranslate("Journal"),
 ],
-    "Op_infAny" => [ 
-        "type" => "infAny",
-        "name" => clienttranslate("Place Influence in any Guide"),
-],
     "Op_pickWorker" => [ 
         "type" => "pickWorker",
         "name" => clienttranslate("Pick a Worker"),
+],
+    "Op_drawTab" => [ 
+        "type" => "drawTab",
+        "name" => clienttranslate("Refill Cards"),
+],
+    "Op_reroll" => [ 
+        "type" => "reroll",
+        "name" => clienttranslate("Re-roll"),
+],
+    "Op_ship" => [ 
+        "type" => "ship",
+        "name" => clienttranslate("Ship"),
+],
+    "Op_camel" => [ 
+        "type" => "camel",
+        "name" => clienttranslate("Camel"),
+],
+    "Op_telescope" => [ 
+        "type" => "telescope",
+        "name" => clienttranslate("Telescope"),
+],
+    "Op_bird" => [ 
+        "type" => "bird",
+        "name" => clienttranslate("Bird"),
+],
+    "Op_infAny" => [ 
+        "type" => "infAny",
+        "name" => clienttranslate("Influence on any Guild"),
+],
+    "Op_infBlue" => [ 
+        "type" => "infBlue",
+        "name" => clienttranslate("Influence on Blue"),
+],
+    "Op_infYellow" => [ 
+        "type" => "infYellow",
+        "name" => clienttranslate("Influence on Yellow"),
+],
+    "Op_infBlack" => [ 
+        "type" => "infBlack",
+        "name" => clienttranslate("Influence on Black"),
+],
+    "Op_infCard" => [ 
+        "type" => "infCard",
+        "name" => clienttranslate("Influence on Card"),
+],
+    "Op_infMove" => [ 
+        "type" => "infMove",
+        "name" => clienttranslate("Move Influence"),
+],
+    "Op_diceMod" => [ 
+        "type" => "diceMod",
+        "name" => clienttranslate("Modify Dice by One"),
 ],
     "Op_food" => [ 
         "class" => "Op_gain",
@@ -298,7 +352,7 @@ class Material {
         "location" => "tableau_{COLOR}",
 ],
     "influence" => [ 
-        "name" => clienttranslate("Player marker"),
+        "name" => clienttranslate("Influence"),
         "count" => 15,
         "type" => "influence wooden",
         "create" => 3,
@@ -389,7 +443,7 @@ class Material {
         "num" => 1,
         "r" => 0,
         "d" => "telescope",
-        "dr" => "(cardBlack/upgBlack)",
+        "dr" => "(cardSpace/upgBlack)",
         "name" => clienttranslate("Black Slot"),
 ],
     "dslot_1_card_home_1" => [ 
@@ -440,7 +494,7 @@ class Material {
         "location" => "tableau_{COLOR}",
         "num" => 2,
         "d" => "camel",
-        "dr" => "(2food:cardYellow,coin)",
+        "dr" => "cardLand,coin",
         "tags" => "City",
 ],
     "card_home_3" => [ 
@@ -450,7 +504,7 @@ class Material {
         "location" => "tableau_{COLOR}",
         "num" => 3,
         "d" => "ship",
-        "dr" => "(2food:cardBlue)",
+        "dr" => "cardWater",
         "tags" => "Harbour",
 ],
     "card_folk_1" => [ 
@@ -459,6 +513,7 @@ class Material {
         "t" => "folk",
         "location" => "tableau_{COLOR}",
         "num" => 1,
+        "r" => 0,
         "dr" => "journal,coin",
         "name" => clienttranslate("Townfolk"),
 ],

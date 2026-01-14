@@ -1,3 +1,4 @@
+@use "variables" as v;
 .selection_area {
   position: sticky;
   top: 86px;
@@ -56,11 +57,12 @@
   align-items: flex-start;
   margin-top: 5px;
   padding-top: 32px; // player name
+  height: calc(v.$cardHeight * 2.4);
 }
 
 .pboard {
   background-image: url(img/PlayerBoard-01-s.png);
-  height: 496px;
+  height: 100%;
   background-size: cover;
   aspect-ratio: 798 / 1024;
   position: relative;

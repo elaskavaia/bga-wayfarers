@@ -19,7 +19,7 @@ worker_green|Worker|4|worker wooden|2|limbo|
 tracker_coin|Silver|1|tracker coin|4|miniboard_{COLOR}
 tracker_food|Provision|1|tracker food|4|miniboard_{COLOR}
 marker|Player marker|1|marker wooden|4|tableau_{COLOR}
-influence|Player marker|15|influence wooden|3|tableau_{COLOR}
+influence|Influence|15|influence wooden|3|tableau_{COLOR}
 dice|Player dice|5|dice wooden|3|tableau_{COLOR}
 
 #journal tiles

@@ -249,7 +249,15 @@ class GameXBody extends GameMachine {
         }
       } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
-        result.location = `pboard_${color}`;
+        if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
+          result.location = `pboard_${color}`;
+        } else {
+          const x = tokenInfo.state;
+          result.location = `pboard_column_${x}_${color}`;
+          if (!$(result.location)) {
+            placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
+          }
+        }
         result.onStart = (node) => this.createDiceSlot(node, tokenInfo);
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);

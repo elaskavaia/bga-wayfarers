@@ -44,6 +44,12 @@ class DbMachine {
         }
         return $id;
     }
+
+    function gettablearr() {
+        $arr = $this->game->getCollectionFromDB("SELECT * from machine WHERE rank >= 0 ORDER BY rank ASC");
+        return array_values($arr);
+    }
+
     final function getId($info, $throw = true) {
         try {
             if ($info instanceof Operation) {
@@ -64,11 +70,6 @@ class DbMachine {
                 return false;
             }
         }
-    }
-
-    function gettablearr() {
-        $arr = $this->game->getCollectionFromDB("SELECT * from machine WHERE rank >= 0 ORDER BY rank ASC");
-        return array_values($arr);
     }
 
     /**

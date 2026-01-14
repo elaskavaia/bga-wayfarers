@@ -3,13 +3,28 @@
 .deck,
 .discard {
   height: 200px;
-  aspect-ratio: 638/1016;
+  aspect-ratio: 0.6282722513;
   box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5019607843);
   border-radius: 5%;
   z-index: 5;
 }
 
-.deck > * {
+.deck .counter {
+  position: absolute;
+  bottom: 1%;
+  right: 1%;
+  color: black;
+  text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
+}
+html[data-theme=dark] .deck .counter {
+  color: white;
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
+}
+.deck .counter::after {
+  content: attr(data-state);
+  position: relative;
+}
+.deck .card {
   visibility: hidden;
 }
 
@@ -117,33 +132,60 @@
   top: 99%;
 }
 
-.tableau .card_home,
-.tableau .card[data-home-pos] {
+.tableau .card {
   position: absolute;
-  border: unset;
-  box-shadow: unset;
+}
+.tableau .column {
+  display: inline-block;
+  vertical-align: top;
+  position: relative;
+  width: 125.6544502618px;
+  height: 100%;
+}
+.tableau .column .card {
+  left: 0%;
 }
 .tableau .card_folk {
   z-index: 0;
+  bottom: 0%;
 }
-.tableau .card_home {
+.tableau .card_water,
+.tableau .card_land {
   z-index: 1;
   bottom: 9%;
 }
-.tableau .card[data-home-pos] {
+.tableau .pboard {
+  display: inline-block;
+  vertical-align: top;
+}
+.tableau .pboard .card_home,
+.tableau .pboard .card[data-home-pos] {
+  border: unset;
+  box-shadow: unset;
+}
+.tableau .pboard .card_home {
+  z-index: 1;
+  bottom: 9%;
+}
+.tableau .pboard .card[data-home-pos] {
   bottom: 0%;
 }
-.tableau .card_home_1,
-.tableau .card[data-home-pos="1"] {
+.tableau .pboard .card_home_1,
+.tableau .pboard .card[data-home-pos="1"] {
   left: 33%;
 }
-.tableau .card_home_2,
-.tableau .card[data-home-pos="2"] {
+.tableau .pboard .card_home_2,
+.tableau .pboard .card[data-home-pos="2"] {
   left: 0%;
 }
-.tableau .card_home_3,
-.tableau .card[data-home-pos="3"] {
+.tableau .pboard .card_home_3,
+.tableau .pboard .card[data-home-pos="3"] {
   right: 0%;
+}
+.tableau .pboard .card_folk_1 {
+  left: 33%;
+  bottom: 0%;
+  position: absolute !important;
 }
 
 .card_home {
@@ -162,6 +204,10 @@
 
 .card_home_3 {
   background-position-x: 100%;
+}
+
+.card_folk_1 {
+  background-image: unset !important;
 }
 
 .dslot {
@@ -959,11 +1005,12 @@
   align-items: flex-start;
   margin-top: 5px;
   padding-top: 32px;
+  height: 480px;
 }
 
 .pboard {
   background-image: url(img/PlayerBoard-01-s.png);
-  height: 496px;
+  height: 100%;
   background-size: cover;
   aspect-ratio: 798/1024;
   position: relative;
@@ -1105,8 +1152,8 @@ html[data-theme=dark] .restrackers .counter {
 .influence {
   background-image: url(img/tokens.png);
   background-size: auto 1100%;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   aspect-ratio: 1/1;
   background-position-y: 83%;
 }
@@ -1120,6 +1167,27 @@ html[data-theme=dark] .restrackers .counter {
   background-position-x: 100%;
 }
 .influence.color_ff0000 {
+  background-position-x: 92.3%;
+}
+
+.marker {
+  background-image: url(img/tokens.png);
+  background-size: auto 1100%;
+  width: 32px;
+  height: 32px;
+  aspect-ratio: 1/1;
+  background-position-y: 69%;
+}
+.marker.color_982fff {
+  background-position-x: 84.6%;
+}
+.marker.color_6cd0f6 {
+  background-position-x: 77%;
+}
+.marker.color_ffcc02 {
+  background-position-x: 100%;
+}
+.marker.color_ff0000 {
   background-position-x: 92.3%;
 }
 

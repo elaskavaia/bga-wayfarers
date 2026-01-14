@@ -246,4 +246,23 @@ final class GameTest extends TestCase {
             $this->game->machine->instanciateOperation($r, PCOLOR);
         }
     }
+
+    public function testFolk() {
+        $this->game();
+        $token_types = $this->game->material->get();
+
+        foreach ($token_types as $key => $info) {
+            $this->assertTrue(!!$key);
+            if (!startsWith($key, "card_folk")) {
+                continue;
+            }
+            echo "testing $key\n";
+            $r = $info["r"] ?? "";
+            $this->assertTrue($r != "", "empty r for $key");
+
+            $r = $info["dr"] ?? "";
+            $this->assertTrue($r != "", "empty dr for $key");
+            $this->game->machine->instanciateOperation($r, PCOLOR);
+        }
+    }
 }

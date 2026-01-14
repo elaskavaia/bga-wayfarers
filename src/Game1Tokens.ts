@@ -86,6 +86,7 @@ class Game1Tokens extends Game0Basics {
     placeHtml(`<div id="oversurface"></div>`, this.getGameAreaElement());
 
     this.setupTokens();
+    this.updateCountersSafe(this.gamedatas.counters);
   }
 
   onLeavingState(stateName: string): void {
@@ -151,6 +152,29 @@ class Game1Tokens extends Game0Basics {
 
   isLocationByType(id: string) {
     return this.getRulesFor(id, "type", "").indexOf("location") >= 0;
+  }
+
+  updateCountersSafe(counters: {}) {
+    //console.log(counters);
+
+    for (var key in counters) {
+      let node = $(key);
+      if (counters.hasOwnProperty(key)) {
+        if (!node) {
+          const deckId = key.replace("counter_", "");
+          if ($(deckId)) {
+            placeHtml(`<div id='${key}' class='counter'></div>`, deckId);
+            node = $(key);
+          }
+        }
+        if (node) {
+          const value = counters[key].value;
+          node.dataset.state = value;
+        } else {
+          console.log("unknown counter " + key);
+        }
+      }
+    }
   }
 
   setupTokens() {

@@ -137,12 +137,6 @@ class Game extends Base {
 
         // Each player receives:
 
-        // 1 Player Board (randomly assigned).
-        // 5 Dice in their chosen color (roll 3 and place them next to their Player Board; keep 2 in reserve near the Minarets on the Main Board).
-        // 15 Influence tokens in their chosen color.
-        // 1 Player Marker in their chosen color (place it on the far-left end of the Journal Track).
-        // 1 Yellow Worker and 1 Blue Worker.
-
         // Randomly determine the first player. Use the chart to distribute starting Provisions, Silver, and Guild Influence based on turn order.
         // Return any unused Player Boards, Dice, Influence tokens, Player Markers, and Workers to the box.
 
@@ -153,6 +147,11 @@ class Game extends Base {
 
         foreach ($p as $player_id) {
             $color = $this->getPlayerColorById($player_id);
+            // 1 Player Board (randomly assigned).
+            // XXX
+            // 1 Player Marker in their chosen color (place it on the far-left end of the Journal Track).
+            $this->tokens->db->moveToken("marker_$color", "mainarea", 0);
+            // 1 Yellow Worker and 1 Blue Worker.
             $this->tokens->db->moveToken("worker_blue_$i", "tableau_$color");
             $this->tokens->db->moveToken("worker_yellow_$i", "tableau_$color");
 
@@ -166,6 +165,8 @@ class Game extends Base {
             if ($i > 1) {
                 $this->tokens->db->moveToken("influence_{$color}_2", "guild_yellow");
             }
+            // 5 Dice in their chosen color (roll 3 and place them next to their Player Board; keep 2 in reserve near the Minarets on the Main Board).
+            // 15 Influence tokens in their chosen color.
             $this->tokens->db->moveToken("dice_{$color}_4", "supply");
             $this->tokens->db->moveToken("dice_{$color}_5", "supply");
             $i++;

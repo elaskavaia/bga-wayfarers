@@ -94,6 +94,13 @@ class Op_turn extends Operation {
             "num" => $state,
         ]);
         $r = $this->game->getRulesFor($loc, "dr");
+        // XXX
+        if (!$r) {
+            $i = strpos($loc, "card");
+            $pcard = substr($loc, $i);
+            $r = $this->game->getRulesFor($pcard, "dr");
+            $this->game->systemAssert("parent rule empty '$pcard' '$loc'", $r);
+        }
         $this->queue($r);
         $this->queue("turn"); // XXX pick next player
     }

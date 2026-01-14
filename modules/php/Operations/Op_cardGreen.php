@@ -18,7 +18,7 @@ use Bga\Games\wayfarers\Material;
 
 class Op_cardGreen extends Op_gainCard {
     function getPossibleMoves() {
-        $cardGreen = $this->getCard();
+        $cardSelected = $this->getCard();
         $res = [];
         $owner = $this->getOwner();
         $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
@@ -30,7 +30,7 @@ class Op_cardGreen extends Op_gainCard {
                 $info["folkon"] = 1;
             }
         }
-        if ($cardGreen == null) {
+        if ($cardSelected == null) {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
 
             foreach ($tokens as $card => $info) {
@@ -53,7 +53,7 @@ class Op_cardGreen extends Op_gainCard {
         // where to put it
 
         foreach ($cards as $tcard => $info) {
-            if ($this->hasMatchingTags($cardGreen, $tcard)) {
+            if ($this->hasMatchingTags($cardSelected, $tcard)) {
                 $res[$tcard] = ["q" => 0];
             }
         }
@@ -79,23 +79,23 @@ class Op_cardGreen extends Op_gainCard {
     }
     /** User does the action */
     function resolve(): void {
-        $cardGreen = $this->getCard();
+        $cardSelected = $this->getCard();
         $owner = $this->getOwner();
-        if ($cardGreen == null) {
+        if ($cardSelected == null) {
             $this->queue($this->getType(), $owner, ["card" => $this->getCheckedArg()]);
             return;
         }
         $owner = $this->getOwner();
         $cardTuck = $this->getCheckedArg();
-        $cost = $this->getCost($cardGreen);
+        $cost = $this->getCost($cardSelected);
         $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
         $this->game->tokens->dbSetTokenLocation(
-            $cardGreen,
+            $cardSelected,
             $cardTuck,
             0,
             clienttranslate('${player_name} buys Townfolk card ${token_name}')
         );
-        $this->queue("drawTab", $owner, ["card" => $cardGreen]);
+        $this->queue("drawTab", $owner, ["card" => $cardSelected]);
         return;
     }
 

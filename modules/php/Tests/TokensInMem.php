@@ -53,16 +53,6 @@ class TokensInMem extends DbTokens {
         return $state;
     }
 
-    function incTokenState($token_key, $by) {
-        self::checkState($by);
-        self::checkKey($token_key);
-        if (!array_key_exists($token_key, $this->keyindex)) {
-            return;
-        }
-        $this->keyindex[$token_key]["state"] = $this->keyindex[$token_key]["state"] + $by;
-        return;
-    }
-
     function moveToken($token_key, $location, $state = 0) {
         self::checkLocation($location);
         self::checkState($state, true);

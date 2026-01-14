@@ -529,4 +529,17 @@ class PGameTokens {
     function getTokensOfTypeInLocation($type, $location = null, $state = null, $order_by = null) {
         return $this->db->getTokensOfTypeInLocation($type, $location, $state, $order_by);
     }
+
+    function getTokensOfTypeInLocationWithChildren($type, $location = null, $state = null, $order_by = null) {
+        $tokens = $this->db->getTokensOfTypeInLocation($type, $location, $state, $order_by);
+        $children = $this->db->getTokensOnLocations(array_keys($tokens));
+        foreach ($children as $child) {
+            $parent = $child["location"];
+            if (!array_key_exists("children", $tokens[$parent])) {
+                $tokens[$parent]["children"] = [];
+            }
+            $tokens[$parent]["children"][$child] = $this->db->getTokenInfo($child);
+        }
+        return $tokens;
+    }
 }
