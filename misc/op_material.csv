@@ -48,3 +48,8 @@ diceMod|Modify Dice by One
 #set class=Op_gain
 food|Gain Provisions
 coin|Gain Silver
+
+
+#set class=Op_pay
+n_food|Pay Provisions
+n_coin|Pay Silver

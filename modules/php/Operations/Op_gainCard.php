@@ -14,15 +14,18 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
+
+use function Bga\Games\wayfarers\getPart;
 
 class Op_gainCard extends Operation {
     public function getArgType() {
         return Operation::TTYPE_TOKEN;
     }
 
-    function getCost(string $card): int {
-        return 0;
+    function canAfford(string $op) {
+        return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
     }
     public function getCard() {
         return $this->getDataField("card", null);
@@ -38,31 +41,51 @@ class Op_gainCard extends Operation {
         $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_$cardType", "mainarea");
 
         foreach ($tokens as $card => $info) {
-            $cost = $this->getCost($card);
+            $payop = $this->getPaymentOperation($card);
             $children = $info["children"] ?? [];
-            $ex = 0;
+
+            $inf = "";
             if (count($children) > 0) {
-                $ex = 1;
+                $inf = array_key_first($children);
             }
-            $res[$card] = ["q" => 0, "cost" => $cost, "extra_cost" => $ex];
+            $can = $this->canAfford($payop);
+            $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop, "inf" => $inf];
         }
 
         return $res;
     }
 
-    function effect_pay(string $card) {
-        $owner = $this->getOwner();
-        $this->game->effect_incCount($owner, "food", -2, $this->getOpId());
+    function getPaymentOperation(string $card) {
+        return "2n_food";
     }
 
-    /** User does the action */
+    function placeCard($card) {
+        $owner = $this->getOwner();
+        $cardType = $this->getCardType();
+        $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens));
+    }
     function resolve(): void {
         $owner = $this->getOwner();
         $card = $this->getCheckedArg();
-        $cardType = $this->getCardType();
-        $this->effect_pay($card);
-        $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens));
+
+        $args = $this->getArgs();
+        $info = $args["info"][$card];
+        $this->queue($info["pay"]);
+        $inf = $info["inf"];
+        if ($inf) {
+            $this->queue("food/coin", $owner, [], $inf);
+            // return card influence
+            $opp = getPart($inf, 2);
+            $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
+        }
+
+        $this->placeCard($card);
+
+        $r = $this->game->getRulesFor($card, "r");
+        if ($r) {
+            $this->queue($r, $owner, ["card" => $card], $card);
+        }
         $this->queue("drawTab", $owner, ["card" => $card]);
         return;
     }

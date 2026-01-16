@@ -1202,154 +1202,94 @@ html[data-theme=dark] .restrackers .counter {
 .mainboardall .marker[data-state="0"] {
   left: 0%;
 }
+.mainboardall .marker[data-state="0.3333333333"] {
+  left: 3.3333333333%;
+}
+.mainboardall .marker[data-state="0.6666666667"] {
+  left: 6.6666666667%;
+}
 .mainboardall .marker[data-state="1"] {
-  left: 2%;
-}
-.mainboardall .marker[data-state="2"] {
-  left: 4%;
-}
-.mainboardall .marker[data-state="3"] {
-  left: 6%;
-}
-.mainboardall .marker[data-state="4"] {
-  left: 8%;
-}
-.mainboardall .marker[data-state="5"] {
   left: 10%;
 }
-.mainboardall .marker[data-state="6"] {
-  left: 12%;
+.mainboardall .marker[data-state="1.3333333333"] {
+  left: 13.3333333333%;
 }
-.mainboardall .marker[data-state="7"] {
-  left: 14%;
+.mainboardall .marker[data-state="1.6666666667"] {
+  left: 16.6666666667%;
 }
-.mainboardall .marker[data-state="8"] {
-  left: 16%;
-}
-.mainboardall .marker[data-state="9"] {
-  left: 18%;
-}
-.mainboardall .marker[data-state="10"] {
+.mainboardall .marker[data-state="2"] {
   left: 20%;
 }
-.mainboardall .marker[data-state="11"] {
-  left: 22%;
+.mainboardall .marker[data-state="2.3333333333"] {
+  left: 23.3333333333%;
 }
-.mainboardall .marker[data-state="12"] {
-  left: 24%;
+.mainboardall .marker[data-state="2.6666666667"] {
+  left: 26.6666666667%;
 }
-.mainboardall .marker[data-state="13"] {
-  left: 26%;
-}
-.mainboardall .marker[data-state="14"] {
-  left: 28%;
-}
-.mainboardall .marker[data-state="15"] {
+.mainboardall .marker[data-state="3"] {
   left: 30%;
 }
-.mainboardall .marker[data-state="16"] {
-  left: 32%;
+.mainboardall .marker[data-state="3.3333333333"] {
+  left: 33.3333333333%;
 }
-.mainboardall .marker[data-state="17"] {
-  left: 34%;
+.mainboardall .marker[data-state="3.6666666667"] {
+  left: 36.6666666667%;
 }
-.mainboardall .marker[data-state="18"] {
-  left: 36%;
-}
-.mainboardall .marker[data-state="19"] {
-  left: 38%;
-}
-.mainboardall .marker[data-state="20"] {
+.mainboardall .marker[data-state="4"] {
   left: 40%;
 }
-.mainboardall .marker[data-state="21"] {
-  left: 42%;
+.mainboardall .marker[data-state="4.3333333333"] {
+  left: 43.3333333333%;
 }
-.mainboardall .marker[data-state="22"] {
-  left: 44%;
+.mainboardall .marker[data-state="4.6666666667"] {
+  left: 46.6666666667%;
 }
-.mainboardall .marker[data-state="23"] {
-  left: 46%;
-}
-.mainboardall .marker[data-state="24"] {
-  left: 48%;
-}
-.mainboardall .marker[data-state="25"] {
+.mainboardall .marker[data-state="5"] {
   left: 50%;
 }
-.mainboardall .marker[data-state="26"] {
-  left: 52%;
+.mainboardall .marker[data-state="5.3333333333"] {
+  left: 53.3333333333%;
 }
-.mainboardall .marker[data-state="27"] {
-  left: 54%;
+.mainboardall .marker[data-state="5.6666666667"] {
+  left: 56.6666666667%;
 }
-.mainboardall .marker[data-state="28"] {
-  left: 56%;
-}
-.mainboardall .marker[data-state="29"] {
-  left: 58%;
-}
-.mainboardall .marker[data-state="30"] {
+.mainboardall .marker[data-state="6"] {
   left: 60%;
 }
-.mainboardall .marker[data-state="31"] {
-  left: 62%;
+.mainboardall .marker[data-state="6.3333333333"] {
+  left: 63.3333333333%;
 }
-.mainboardall .marker[data-state="32"] {
-  left: 64%;
+.mainboardall .marker[data-state="6.6666666667"] {
+  left: 66.6666666667%;
 }
-.mainboardall .marker[data-state="33"] {
-  left: 66%;
-}
-.mainboardall .marker[data-state="34"] {
-  left: 68%;
-}
-.mainboardall .marker[data-state="35"] {
+.mainboardall .marker[data-state="7"] {
   left: 70%;
 }
-.mainboardall .marker[data-state="36"] {
-  left: 72%;
+.mainboardall .marker[data-state="7.3333333333"] {
+  left: 73.3333333333%;
 }
-.mainboardall .marker[data-state="37"] {
-  left: 74%;
+.mainboardall .marker[data-state="7.6666666667"] {
+  left: 76.6666666667%;
 }
-.mainboardall .marker[data-state="38"] {
-  left: 76%;
-}
-.mainboardall .marker[data-state="39"] {
-  left: 78%;
-}
-.mainboardall .marker[data-state="40"] {
+.mainboardall .marker[data-state="8"] {
   left: 80%;
 }
-.mainboardall .marker[data-state="41"] {
-  left: 82%;
+.mainboardall .marker[data-state="8.3333333333"] {
+  left: 83.3333333333%;
 }
-.mainboardall .marker[data-state="42"] {
-  left: 84%;
+.mainboardall .marker[data-state="8.6666666667"] {
+  left: 86.6666666667%;
 }
-.mainboardall .marker[data-state="43"] {
-  left: 86%;
-}
-.mainboardall .marker[data-state="44"] {
-  left: 88%;
-}
-.mainboardall .marker[data-state="45"] {
+.mainboardall .marker[data-state="9"] {
   left: 90%;
 }
-.mainboardall .marker[data-state="46"] {
-  left: 92%;
+.mainboardall .marker[data-state="9.3333333333"] {
+  left: 93.3333333333%;
 }
-.mainboardall .marker[data-state="47"] {
-  left: 94%;
+.mainboardall .marker[data-state="9.6666666667"] {
+  left: 96.6666666667%;
 }
-.mainboardall .marker[data-state="48"] {
-  left: 96%;
-}
-.mainboardall .marker[data-state="49"] {
-  left: 98%;
-}
-.mainboardall .marker[data-state="50"] {
+.mainboardall .marker[data-state="10"] {
   left: 100%;
 }
 
@@ -1835,4 +1775,8 @@ a.bgabutton_white {
 }
 .score-sheet .bga-score-sheet_player-name {
   color: var(--player-color);
+}
+
+#test_stuff > * {
+  display: inline-block;
 }

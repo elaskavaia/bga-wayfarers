@@ -136,9 +136,10 @@
     position: absolute;
     top: 50%;
     // Generate positions for states 0-50
-    @for $i from 0 through 50 {
+    @for $step from 0 through 30 {
+      $i: calc($step / 3);
       &[data-state="#{$i}"] {
-        left: #{$i * 2%};
+        left: #{$i * 10%};
       }
     }
   }

@@ -20,10 +20,41 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_turn extends Operation {
+    /**
+     * Queue the next turn, or end the game if this was the final turn
+     * When end game is triggered, game_stage holds the player number (1-4) who triggered it.
+     * After that player completes their turn (everyone got their final turn), set game_stage to 5.
+     */
+    function queueNextTurnOrEnd(): void {
+        $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
+
+        // If end game was triggered (game_stage = 1-4)
+        if ($gameStage >= 1 && $gameStage <= 4) {
+            $triggeringPlayerNo = $gameStage;
+            $currentPlayerNo = $this->game->getPlayerNoById($this->getPlayerId());
+
+            // If the current player is the one who triggered end game,
+            // that means everyone has had their final turn - end the game
+            if ($currentPlayerNo == $triggeringPlayerNo) {
+                $this->game->tokens->dbSetTokenState(
+                    Game::GAME_STAGE,
+                    5,
+                    clienttranslate('Final turn complete. Game ends!')
+                );
+                // Don't queue another turn - game will end
+                return;
+            }
+        }
+
+        // Continue with the next turn
+        $this->queue("turn"); // XXX pick next player
+    }
+
     public function auto(): bool {
         if ($this->getLocation() === null) {
             $this->game->customUndoSavepoint($this->getPlayerId(), 1);
@@ -87,7 +118,7 @@ class Op_turn extends Operation {
             $selected = $this->getCheckedArg();
             if ($selected === "rest") {
                 $this->queue("rest");
-                $this->queue("turn"); // XXX pick next player
+                $this->queueNextTurnOrEnd();
                 return;
             }
             $this->queue($this->getType(), $owner, ["loc" => $selected]);
@@ -102,7 +133,7 @@ class Op_turn extends Operation {
 
         $this->game->systemAssert("parent rule empty '$loc'", $r);
         $this->queue($r);
-        $this->queue("turn"); // XXX pick next player
+        $this->queueNextTurnOrEnd();
     }
 
     public function getPrompt() {

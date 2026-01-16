@@ -148,157 +148,167 @@ class Material {
             ],
             /* --- gen php end loc_material --- */
             /* --- gen php begin op_material --- */
-            "Op_nop" => [
-                "type" => "nop",
-                "name" => clienttranslate("None"),
-            ],
-            // #fake name
-            "Op_barrier" => [
-                "type" => "barrier",
-                "name" => clienttranslate("None"),
-            ],
-            "Op_savepoint" => [
-                "type" => "savepoint",
-                "name" => clienttranslate("None"),
-            ],
-            "Op_or" => [
-                "type" => "or",
-                "name" => clienttranslate("Choice"),
-            ],
-            "Op_unique" => [
-                "type" => "unique",
-                "name" => clienttranslate("Unique Choice"),
-            ],
-            "Op_order" => [
-                "type" => "order",
-                "name" => clienttranslate("Choose Order"),
-            ],
-            "Op_seq" => [
-                "type" => "seq",
-                "name" => clienttranslate("Sequence"),
-            ],
-            "Op_gain" => [
-                "type" => "gain",
-                "name" => clienttranslate("Gain"),
-            ],
-            "Op_pay" => [
-                "type" => "pay",
-                "name" => clienttranslate("Pay"),
-            ],
-            "Op_paygain" => [
-                "type" => "paygain",
-                "name" => clienttranslate("Trade"),
-            ],
-            "Op_turn" => [
-                "type" => "turn",
-                "name" => clienttranslate("Turn"),
-            ],
-            "Op_rest" => [
-                "type" => "rest",
-                "name" => clienttranslate("Rest"),
-            ],
-            "Op_cardSpace" => [
-                "type" => "cardSpace",
-                "name" => clienttranslate("Gain Space Card"),
-            ],
-            "Op_cardGreen" => [
-                "type" => "cardGreen",
-                "name" => clienttranslate("Gain Townfolk Card"),
-            ],
-            "Op_cardWater" => [
-                "type" => "cardWater",
-                "name" => clienttranslate("Gain Water Card"),
-            ],
-            "Op_cardLand" => [
-                "type" => "cardLand",
-                "name" => clienttranslate("Gain Land Card"),
-            ],
-            "Op_gainCard" => [
-                "type" => "gainCard",
-                "name" => clienttranslate("Gain Card"),
-            ],
-            "Op_upgBlack" => [
-                "type" => "upgBlack",
-                "name" => clienttranslate("Gain Black Upgrade"),
-            ],
-            "Op_upgGreen" => [
-                "type" => "upgGreen",
-                "name" => clienttranslate("Gain Green Upgrade"),
-            ],
-            "Op_upgYellow" => [
-                "type" => "upgYellow",
-                "name" => clienttranslate("Gain Yellow Upgrade"),
-            ],
-            "Op_journal" => [
-                "type" => "journal",
-                "name" => clienttranslate("Journal"),
-            ],
-            "Op_pickWorker" => [
-                "type" => "pickWorker",
-                "name" => clienttranslate("Pick a Worker"),
-            ],
-            "Op_drawTab" => [
-                "type" => "drawTab",
-                "name" => clienttranslate("Refill Cards"),
-            ],
-            "Op_reroll" => [
-                "type" => "reroll",
-                "name" => clienttranslate("Re-roll"),
-            ],
-            "Op_ship" => [
-                "type" => "ship",
-                "name" => clienttranslate("Ship"),
-            ],
-            "Op_camel" => [
-                "type" => "camel",
-                "name" => clienttranslate("Camel"),
-            ],
-            "Op_telescope" => [
-                "type" => "telescope",
-                "name" => clienttranslate("Telescope"),
-            ],
-            "Op_bird" => [
-                "type" => "bird",
-                "name" => clienttranslate("Bird"),
-            ],
-            "Op_infAny" => [
-                "type" => "infAny",
-                "name" => clienttranslate("Influence on any Guild"),
-            ],
-            "Op_infBlue" => [
-                "type" => "infBlue",
-                "name" => clienttranslate("Influence on Blue"),
-            ],
-            "Op_infYellow" => [
-                "type" => "infYellow",
-                "name" => clienttranslate("Influence on Yellow"),
-            ],
-            "Op_infBlack" => [
-                "type" => "infBlack",
-                "name" => clienttranslate("Influence on Black"),
-            ],
-            "Op_infCard" => [
-                "type" => "infCard",
-                "name" => clienttranslate("Influence on Card"),
-            ],
-            "Op_infMove" => [
-                "type" => "infMove",
-                "name" => clienttranslate("Move Influence"),
-            ],
-            "Op_diceMod" => [
-                "type" => "diceMod",
-                "name" => clienttranslate("Modify Dice by One"),
-            ],
-            "Op_food" => [
-                "class" => "Op_gain",
-                "type" => "food",
-                "name" => clienttranslate("Gain Provisions"),
-            ],
-            "Op_coin" => [
-                "class" => "Op_gain",
-                "type" => "coin",
-                "name" => clienttranslate("Gain Silver"),
-            ],
+    "Op_nop" => [ 
+        "type" => "nop",
+        "name" => clienttranslate("None"),
+],
+// #fake name
+    "Op_barrier" => [ 
+        "type" => "barrier",
+        "name" => clienttranslate("None"),
+],
+    "Op_savepoint" => [ 
+        "type" => "savepoint",
+        "name" => clienttranslate("None"),
+],
+    "Op_or" => [ 
+        "type" => "or",
+        "name" => clienttranslate("Choice"),
+],
+    "Op_unique" => [ 
+        "type" => "unique",
+        "name" => clienttranslate("Unique Choice"),
+],
+    "Op_order" => [ 
+        "type" => "order",
+        "name" => clienttranslate("Choose Order"),
+],
+    "Op_seq" => [ 
+        "type" => "seq",
+        "name" => clienttranslate("Sequence"),
+],
+    "Op_gain" => [ 
+        "type" => "gain",
+        "name" => clienttranslate("Gain"),
+],
+    "Op_pay" => [ 
+        "type" => "pay",
+        "name" => clienttranslate("Pay"),
+],
+    "Op_paygain" => [ 
+        "type" => "paygain",
+        "name" => clienttranslate("Trade"),
+],
+    "Op_turn" => [ 
+        "type" => "turn",
+        "name" => clienttranslate("Turn"),
+],
+    "Op_rest" => [ 
+        "type" => "rest",
+        "name" => clienttranslate("Rest"),
+],
+    "Op_cardSpace" => [ 
+        "type" => "cardSpace",
+        "name" => clienttranslate("Gain Space Card"),
+],
+    "Op_cardGreen" => [ 
+        "type" => "cardGreen",
+        "name" => clienttranslate("Gain Townfolk Card"),
+],
+    "Op_cardWater" => [ 
+        "type" => "cardWater",
+        "name" => clienttranslate("Gain Water Card"),
+],
+    "Op_cardLand" => [ 
+        "type" => "cardLand",
+        "name" => clienttranslate("Gain Land Card"),
+],
+    "Op_gainCard" => [ 
+        "type" => "gainCard",
+        "name" => clienttranslate("Gain Card"),
+],
+    "Op_upgBlack" => [ 
+        "type" => "upgBlack",
+        "name" => clienttranslate("Gain Black Upgrade"),
+],
+    "Op_upgGreen" => [ 
+        "type" => "upgGreen",
+        "name" => clienttranslate("Gain Green Upgrade"),
+],
+    "Op_upgYellow" => [ 
+        "type" => "upgYellow",
+        "name" => clienttranslate("Gain Yellow Upgrade"),
+],
+    "Op_journal" => [ 
+        "type" => "journal",
+        "name" => clienttranslate("Journal"),
+],
+    "Op_pickWorker" => [ 
+        "type" => "pickWorker",
+        "name" => clienttranslate("Pick a Worker"),
+],
+    "Op_drawTab" => [ 
+        "type" => "drawTab",
+        "name" => clienttranslate("Refill Cards"),
+],
+    "Op_reroll" => [ 
+        "type" => "reroll",
+        "name" => clienttranslate("Re-roll"),
+],
+    "Op_ship" => [ 
+        "type" => "ship",
+        "name" => clienttranslate("Ship"),
+],
+    "Op_camel" => [ 
+        "type" => "camel",
+        "name" => clienttranslate("Camel"),
+],
+    "Op_telescope" => [ 
+        "type" => "telescope",
+        "name" => clienttranslate("Telescope"),
+],
+    "Op_bird" => [ 
+        "type" => "bird",
+        "name" => clienttranslate("Bird"),
+],
+    "Op_infAny" => [ 
+        "type" => "infAny",
+        "name" => clienttranslate("Influence on any Guild"),
+],
+    "Op_infBlue" => [ 
+        "type" => "infBlue",
+        "name" => clienttranslate("Influence on Blue"),
+],
+    "Op_infYellow" => [ 
+        "type" => "infYellow",
+        "name" => clienttranslate("Influence on Yellow"),
+],
+    "Op_infBlack" => [ 
+        "type" => "infBlack",
+        "name" => clienttranslate("Influence on Black"),
+],
+    "Op_infCard" => [ 
+        "type" => "infCard",
+        "name" => clienttranslate("Influence on Card"),
+],
+    "Op_infMove" => [ 
+        "type" => "infMove",
+        "name" => clienttranslate("Move Influence"),
+],
+    "Op_diceMod" => [ 
+        "type" => "diceMod",
+        "name" => clienttranslate("Modify Dice by One"),
+],
+    "Op_food" => [ 
+        "class" => "Op_gain",
+        "type" => "food",
+        "name" => clienttranslate("Gain Provisions"),
+],
+    "Op_coin" => [ 
+        "class" => "Op_gain",
+        "type" => "coin",
+        "name" => clienttranslate("Gain Silver"),
+],
+    "Op_n_food" => [ 
+        "class" => "Op_pay",
+        "type" => "n_food",
+        "name" => clienttranslate("Pay Provisions"),
+],
+    "Op_n_coin" => [ 
+        "class" => "Op_pay",
+        "type" => "n_coin",
+        "name" => clienttranslate("Pay Silver"),
+],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
             // # create is one of the numbers
