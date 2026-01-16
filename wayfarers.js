@@ -554,7 +554,7 @@ var Game1Tokens = /** @class */ (function (_super) {
             location: "thething"
         };
         this.placeTokenSetup("limbo");
-        placeHtml("<div id=\"oversurface\"></div>", this.getGameAreaElement());
+        placeHtml("<div id=\"oversurface\"></div>", this.bga.gameArea.getElement());
         this.setupTokens();
         this.updateCountersSafe(this.gamedatas.counters);
     };
@@ -1711,7 +1711,7 @@ var GameXBody = /** @class */ (function (_super) {
     function GameXBody() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"supply\">\n\n\n</div>\n\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n  <!-- Test icons - Row 1: Destinations -->\n  <div class=\"wicon icon_island\"></div>\n  <div class=\"wicon icon_book\"></div>\n  <div class=\"wicon icon_tent\"></div>\n  <div class=\"wicon icon_fire\"></div>\n  <div class=\"wicon icon_comet\"></div>\n  <div class=\"wicon icon_stars\"></div>\n  <div class=\"wicon icon_globe\"></div>\n  <div class=\"wicon icon_moon\"></div>\n  <div class=\"wicon icon_sun\"></div>\n  <div class=\"wicon icon_gold\"></div>\n  <!-- Row 2: Lodges with plus and travel -->\n  <div class=\"wicon lodge_green_plus\"></div>\n  <div class=\"wicon lodge_blue_plus\"></div>\n  <div class=\"wicon lodge_purple_plus\"></div>\n  <div class=\"wicon lodge_gray_plus\"></div>\n  <div class=\"wicon icon_gear\"></div>\n  <div class=\"wicon icon_camel\"></div>\n  <div class=\"wicon icon_sailboat\"></div>\n  <div class=\"wicon icon_water\"></div>\n  <div class=\"wicon icon_eagle\"></div>\n  <div class=\"wicon icon_telescope\"></div>\n  <!-- Row 3: Lodges with gear -->\n  <div class=\"wicon lodge_green_gear\"></div>\n  <div class=\"wicon lodge_yellow_gear\"></div>\n  <div class=\"wicon lodge_brown_gear\"></div>\n  <div class=\"wicon lodge_blue_gear\"></div>\n  <div class=\"wicon icon_sphere\"></div>\n  <div class=\"wicon icon_bottle\"></div>\n  <div class=\"wicon icon_bottle_small\"></div>\n  <!-- Row 4: Meeples and misc -->\n  <div class=\"wicon meeple_blue\"></div>\n  <div class=\"wicon meeple_green\"></div>\n  <div class=\"wicon meeple_yellow\"></div>\n  <div class=\"wicon icon_shield\"></div>\n  <div class=\"wicon icon_shield_small\"></div>\n  <div class=\"wicon icon_wheat\"></div>\n  <div class=\"wicon icon_grass\"></div>\n  <!-- Row 5: Cards and tokens -->\n  <div class=\"wicon icon_lodge_plus\"></div>\n  <div class=\"wicon icon_cards\"></div>\n  <div class=\"wicon token_green\"></div>\n  <div class=\"wicon icon_card\"></div>\n  <div class=\"wicon icon_coins\"></div>\n  <div class=\"wicon token_yellow_plant\"></div>\n  <!-- Row 6: Deck and tokens -->\n  <div class=\"wicon icon_deck\"></div>\n  <div class=\"wicon token_oval_green\"></div>\n  <div class=\"wicon icon_card_blue\"></div>\n  <div class=\"wicon token_yellow\"></div>\n  <div class=\"wicon token_yellow_leaves\"></div>\n</div>\n<div id=\"supply\"></div>\n\n\n";
         return _this;
     }
     GameXBody.prototype.setup = function (gamedatas) {
@@ -1842,23 +1842,6 @@ var GameXBody = /** @class */ (function (_super) {
         var _a;
         (_a = $("limbo")) === null || _a === void 0 ? void 0 : _a.appendChild($(tokenId));
     };
-    GameXBody.prototype.createDiceSlot = function (card, token) {
-        return __awaiter(this, void 0, void 0, function () {
-            var cardId, dslot, dslotNode;
-            var _this = this;
-            return __generator(this, function (_a) {
-                cardId = token.key;
-                dslot = "dslot_0_".concat(cardId);
-                dslotNode = $(dslot);
-                if (dslotNode)
-                    return [2 /*return*/];
-                placeHtml("<div id='".concat(dslot, "' class='dslot dslot_0'></div>"), card);
-                dslotNode = $(dslot);
-                this.addListenerWithGuard(dslotNode, function (x) { return _this.onToken(x); });
-                return [2 /*return*/];
-            });
-        });
-    };
     GameXBody.prototype.getPlaceRedirect = function (tokenInfo, args) {
         var _this = this;
         var _a;
@@ -1923,7 +1906,6 @@ var GameXBody = /** @class */ (function (_super) {
                         placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
                     }
                 }
-                result.onStart = function (node) { return _this.createDiceSlot(node, tokenInfo); };
             }
             else if (location.startsWith("discard")) {
                 result.onEnd = function (node) { return _this.hideCard(node); };
@@ -1943,6 +1925,9 @@ var GameXBody = /** @class */ (function (_super) {
             result.nop = true;
         }
         else if (tokenId.startsWith("mainboard_")) {
+            result.location = "mainboardall";
+        }
+        else if (tokenId.startsWith("marker")) {
             result.location = "mainboardall";
         }
         else if (tokenId.startsWith("hand")) {
@@ -1965,16 +1950,13 @@ var GameXBody = /** @class */ (function (_super) {
             result.location = "breakroom_".concat(color);
             result.onClick = function (x) { return _this.onToken(x); };
         }
-        else if (tokenId.startsWith("dslot")) {
-            result.onClick = function (x) { return _this.onToken(x); };
-        }
         return result;
     };
     GameXBody.prototype.gameAnimationsActive = function () {
         return gameui.bgaAnimationsActive() && !this.inSetup;
     };
     GameXBody.prototype.updateTokenDisplayInfo = function (tokenInfo) {
-        var _a;
+        var _a, _b;
         // override to generate dynamic tooltips and such
         var mainType = tokenInfo.mainType;
         var token = $(tokenInfo.tokenId);
@@ -1996,24 +1978,10 @@ var GameXBody = /** @class */ (function (_super) {
                 }
                 return;
             case "card": {
-                var name_3 = tokenInfo.name;
-                if (!name_3) {
-                    tokenInfo.name = this.getTr({
-                        log: "${typename} #${num}",
-                        args: {
-                            typename: this.getTr(tokenInfo.t),
-                            num: tokenInfo.num
-                        }
-                    });
-                }
-                return;
-            }
-            case "dslot": {
-                var k = tokenId.indexOf("card");
-                var cardId = tokenId.substring(k);
-                var cardInfo = this.getTokenDisplayInfo(cardId);
-                if (!tokenInfo.name)
-                    tokenInfo.name = cardInfo.name;
+                tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
+                    name: this.getTr((_b = this.getRulesFor(tokenId, "name")) !== null && _b !== void 0 ? _b : tokenInfo.t),
+                    num: getPart(tokenId, 2)
+                });
                 return;
             }
         }

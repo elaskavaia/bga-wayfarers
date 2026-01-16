@@ -41,15 +41,62 @@ class GameXBody extends GameMachine {
  </div>
 
 
-
-
 </div>
 <div id="players_panels"></div>
-<div id="supply">
-
-
+<div id="test_stuff">
+  <!-- Test icons - Row 1: Destinations -->
+  <div class="wicon icon_island"></div>
+  <div class="wicon icon_book"></div>
+  <div class="wicon icon_tent"></div>
+  <div class="wicon icon_fire"></div>
+  <div class="wicon icon_comet"></div>
+  <div class="wicon icon_stars"></div>
+  <div class="wicon icon_globe"></div>
+  <div class="wicon icon_moon"></div>
+  <div class="wicon icon_sun"></div>
+  <div class="wicon icon_gold"></div>
+  <!-- Row 2: Lodges with plus and travel -->
+  <div class="wicon lodge_green_plus"></div>
+  <div class="wicon lodge_blue_plus"></div>
+  <div class="wicon lodge_purple_plus"></div>
+  <div class="wicon lodge_gray_plus"></div>
+  <div class="wicon icon_gear"></div>
+  <div class="wicon icon_camel"></div>
+  <div class="wicon icon_sailboat"></div>
+  <div class="wicon icon_water"></div>
+  <div class="wicon icon_eagle"></div>
+  <div class="wicon icon_telescope"></div>
+  <!-- Row 3: Lodges with gear -->
+  <div class="wicon lodge_green_gear"></div>
+  <div class="wicon lodge_yellow_gear"></div>
+  <div class="wicon lodge_brown_gear"></div>
+  <div class="wicon lodge_blue_gear"></div>
+  <div class="wicon icon_sphere"></div>
+  <div class="wicon icon_bottle"></div>
+  <div class="wicon icon_bottle_small"></div>
+  <!-- Row 4: Meeples and misc -->
+  <div class="wicon meeple_blue"></div>
+  <div class="wicon meeple_green"></div>
+  <div class="wicon meeple_yellow"></div>
+  <div class="wicon icon_shield"></div>
+  <div class="wicon icon_shield_small"></div>
+  <div class="wicon icon_wheat"></div>
+  <div class="wicon icon_grass"></div>
+  <!-- Row 5: Cards and tokens -->
+  <div class="wicon icon_lodge_plus"></div>
+  <div class="wicon icon_cards"></div>
+  <div class="wicon token_green"></div>
+  <div class="wicon icon_card"></div>
+  <div class="wicon icon_coins"></div>
+  <div class="wicon token_yellow_plant"></div>
+  <!-- Row 6: Deck and tokens -->
+  <div class="wicon icon_deck"></div>
+  <div class="wicon token_oval_green"></div>
+  <div class="wicon icon_card_blue"></div>
+  <div class="wicon token_yellow"></div>
+  <div class="wicon token_yellow_leaves"></div>
 </div>
-
+<div id="supply"></div>
 
 
 `;
@@ -201,16 +248,6 @@ class GameXBody extends GameMachine {
     $("limbo")?.appendChild($(tokenId));
   }
 
-  async createDiceSlot(card: Element, token: Token) {
-    const cardId = token.key;
-    const dslot = `dslot_0_${cardId}`;
-    let dslotNode = $(dslot);
-    if (dslotNode) return;
-    placeHtml(`<div id='${dslot}' class='dslot dslot_0'></div>`, card);
-    dslotNode = $(dslot);
-    this.addListenerWithGuard(dslotNode, (x) => this.onToken(x));
-  }
-
   getPlaceRedirect(tokenInfo: Token, args: AnimArgs = {}): TokenMoveInfo {
     const location = tokenInfo.location ?? "limbo";
     const tokenId = tokenInfo.key;
@@ -258,7 +295,6 @@ class GameXBody extends GameMachine {
             placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
           }
         }
-        result.onStart = (node) => this.createDiceSlot(node, tokenInfo);
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);
       } else if (location.startsWith("deck")) {
@@ -274,6 +310,8 @@ class GameXBody extends GameMachine {
       result.nop = true;
     } else if (tokenId.startsWith("mainboard_")) {
       result.location = `mainboardall`;
+    } else if (tokenId.startsWith("marker")) {
+      result.location = `mainboardall`;
     } else if (tokenId.startsWith("hand")) {
       result.nop = true;
     } else if (tokenId.startsWith("deck") || tokenId.startsWith("discard")) {
@@ -287,8 +325,6 @@ class GameXBody extends GameMachine {
     } else if ((tokenId.startsWith("worker") || tokenId.startsWith("dice")) && location.startsWith("tableau")) {
       const color = getPart(location, 1);
       result.location = `breakroom_${color}`;
-      result.onClick = (x) => this.onToken(x);
-    } else if (tokenId.startsWith("dslot")) {
       result.onClick = (x) => this.onToken(x);
     }
     return result;
@@ -320,23 +356,10 @@ class GameXBody extends GameMachine {
         }
         return;
       case "card": {
-        const name = tokenInfo.name;
-        if (!name) {
-          tokenInfo.name = this.getTr({
-            log: "${typename} #${num}",
-            args: {
-              typename: this.getTr(tokenInfo.t),
-              num: tokenInfo.num
-            }
-          });
-        }
-        return;
-      }
-      case "dslot": {
-        const k = tokenId.indexOf("card");
-        const cardId = tokenId.substring(k);
-        const cardInfo = this.getTokenDisplayInfo(cardId);
-        if (!tokenInfo.name) tokenInfo.name = cardInfo.name;
+        tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
+          name: this.getTr(this.getRulesFor(tokenId, "name") ?? tokenInfo.t),
+          num: getPart(tokenId, 2)
+        });
 
         return;
       }

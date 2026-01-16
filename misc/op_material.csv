@@ -18,6 +18,7 @@ paygain|Trade
 
 
 turn|Turn
+rest|Rest
 cardSpace|Gain Space Card
 cardGreen|Gain Townfolk Card
 cardWater|Gain Water Card
@@ -26,6 +27,7 @@ gainCard|Gain Card
 
 upgBlack|Gain Black Upgrade
 upgGreen|Gain Green Upgrade
+upgYellow|Gain Yellow Upgrade
 journal|Journal
 pickWorker|Pick a Worker
 drawTab|Refill Cards

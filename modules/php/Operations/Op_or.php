@@ -101,7 +101,7 @@ class Op_or extends ComplexOperation {
             }
         }
         if ($totalLimit < $this->getMinCount()) {
-            return ["q" => Material::MA_ERR_COST];
+            return ["q" => Material::ERR_COST];
         }
         return $res;
     }

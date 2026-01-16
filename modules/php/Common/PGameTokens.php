@@ -538,7 +538,8 @@ class PGameTokens {
             if (!array_key_exists("children", $tokens[$parent])) {
                 $tokens[$parent]["children"] = [];
             }
-            $tokens[$parent]["children"][$child] = $this->db->getTokenInfo($child);
+            $key = $child["key"];
+            $tokens[$parent]["children"][$key] = $this->db->getTokenInfo($key);
         }
         return $tokens;
     }

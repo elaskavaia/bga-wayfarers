@@ -23,8 +23,21 @@ class Op_journal extends Operation {
 
     /** User does the action */
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        $owner = $this->getOwner();
+        $markerId = "marker_$owner";
 
-        return;
+        // Get current position on Journal Track
+        $currentState = $this->game->tokens->db->getTokenState($markerId);
+
+        // Increment position by 1
+        $newState = $currentState + 1;
+
+        // Update marker state
+        $this->game->tokens->dbSetTokenState(
+            $markerId,
+            $newState,
+            clienttranslate('${player_name} journals to position ${num}'),
+            ["num" => $newState]
+        );
     }
 }

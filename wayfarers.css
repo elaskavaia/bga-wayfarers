@@ -187,6 +187,21 @@ html[data-theme=dark] .deck .counter {
   bottom: 0%;
   position: absolute !important;
 }
+.tableau .pboard .card_slot {
+  left: 33%;
+}
+.tableau .pboard .card_home_10 {
+  bottom: 31%;
+}
+.tableau .pboard .card_home_11 {
+  bottom: 24%;
+}
+.tableau .pboard .card_home_12 {
+  bottom: 17%;
+}
+.tableau .pboard .card_home_13 {
+  bottom: 9%;
+}
 
 .card_home {
   background-image: url(img/PlayerBoard-01-s.png);
@@ -210,28 +225,11 @@ html[data-theme=dark] .deck .counter {
   background-image: unset !important;
 }
 
-.dslot {
-  position: absolute;
-  bottom: 0%;
-  width: 100%;
-  height: 19%;
-  left: 0%;
-  outline: 1px solid yellow;
-}
-
-.dslot_0_card_home_1 {
-  bottom: 51%;
-  height: 15%;
-}
-
-.dslot_1_card_home_1 {
-  bottom: 37%;
-  height: 15%;
-}
-
-.dslot_2_card_home_1 {
-  bottom: 19%;
-  height: 15%;
+.card_slot {
+  background-image: unset;
+  aspect-ratio: unset;
+  width: 125.6544502618px;
+  height: 31.25px;
 }
 
 .card_folk_114 {
@@ -945,6 +943,12 @@ html[data-theme=dark] .deck .counter {
   background-position: 100% 100%;
 }
 
+.card .dice {
+  position: absolute;
+  bottom: 5%;
+  left: 5%;
+}
+
 .selection_area {
   position: sticky;
   top: 86px;
@@ -1177,6 +1181,7 @@ html[data-theme=dark] .restrackers .counter {
   height: 32px;
   aspect-ratio: 1/1;
   background-position-y: 69%;
+  z-index: 2;
 }
 .marker.color_982fff {
   background-position-x: 84.6%;
@@ -1189,6 +1194,163 @@ html[data-theme=dark] .restrackers .counter {
 }
 .marker.color_ff0000 {
   background-position-x: 92.3%;
+}
+.mainboardall .marker {
+  position: absolute;
+  top: 50%;
+}
+.mainboardall .marker[data-state="0"] {
+  left: 0%;
+}
+.mainboardall .marker[data-state="1"] {
+  left: 2%;
+}
+.mainboardall .marker[data-state="2"] {
+  left: 4%;
+}
+.mainboardall .marker[data-state="3"] {
+  left: 6%;
+}
+.mainboardall .marker[data-state="4"] {
+  left: 8%;
+}
+.mainboardall .marker[data-state="5"] {
+  left: 10%;
+}
+.mainboardall .marker[data-state="6"] {
+  left: 12%;
+}
+.mainboardall .marker[data-state="7"] {
+  left: 14%;
+}
+.mainboardall .marker[data-state="8"] {
+  left: 16%;
+}
+.mainboardall .marker[data-state="9"] {
+  left: 18%;
+}
+.mainboardall .marker[data-state="10"] {
+  left: 20%;
+}
+.mainboardall .marker[data-state="11"] {
+  left: 22%;
+}
+.mainboardall .marker[data-state="12"] {
+  left: 24%;
+}
+.mainboardall .marker[data-state="13"] {
+  left: 26%;
+}
+.mainboardall .marker[data-state="14"] {
+  left: 28%;
+}
+.mainboardall .marker[data-state="15"] {
+  left: 30%;
+}
+.mainboardall .marker[data-state="16"] {
+  left: 32%;
+}
+.mainboardall .marker[data-state="17"] {
+  left: 34%;
+}
+.mainboardall .marker[data-state="18"] {
+  left: 36%;
+}
+.mainboardall .marker[data-state="19"] {
+  left: 38%;
+}
+.mainboardall .marker[data-state="20"] {
+  left: 40%;
+}
+.mainboardall .marker[data-state="21"] {
+  left: 42%;
+}
+.mainboardall .marker[data-state="22"] {
+  left: 44%;
+}
+.mainboardall .marker[data-state="23"] {
+  left: 46%;
+}
+.mainboardall .marker[data-state="24"] {
+  left: 48%;
+}
+.mainboardall .marker[data-state="25"] {
+  left: 50%;
+}
+.mainboardall .marker[data-state="26"] {
+  left: 52%;
+}
+.mainboardall .marker[data-state="27"] {
+  left: 54%;
+}
+.mainboardall .marker[data-state="28"] {
+  left: 56%;
+}
+.mainboardall .marker[data-state="29"] {
+  left: 58%;
+}
+.mainboardall .marker[data-state="30"] {
+  left: 60%;
+}
+.mainboardall .marker[data-state="31"] {
+  left: 62%;
+}
+.mainboardall .marker[data-state="32"] {
+  left: 64%;
+}
+.mainboardall .marker[data-state="33"] {
+  left: 66%;
+}
+.mainboardall .marker[data-state="34"] {
+  left: 68%;
+}
+.mainboardall .marker[data-state="35"] {
+  left: 70%;
+}
+.mainboardall .marker[data-state="36"] {
+  left: 72%;
+}
+.mainboardall .marker[data-state="37"] {
+  left: 74%;
+}
+.mainboardall .marker[data-state="38"] {
+  left: 76%;
+}
+.mainboardall .marker[data-state="39"] {
+  left: 78%;
+}
+.mainboardall .marker[data-state="40"] {
+  left: 80%;
+}
+.mainboardall .marker[data-state="41"] {
+  left: 82%;
+}
+.mainboardall .marker[data-state="42"] {
+  left: 84%;
+}
+.mainboardall .marker[data-state="43"] {
+  left: 86%;
+}
+.mainboardall .marker[data-state="44"] {
+  left: 88%;
+}
+.mainboardall .marker[data-state="45"] {
+  left: 90%;
+}
+.mainboardall .marker[data-state="46"] {
+  left: 92%;
+}
+.mainboardall .marker[data-state="47"] {
+  left: 94%;
+}
+.mainboardall .marker[data-state="48"] {
+  left: 96%;
+}
+.mainboardall .marker[data-state="49"] {
+  left: 98%;
+}
+.mainboardall .marker[data-state="50"] {
+  left: 100%;
 }
 
 .food {
@@ -1225,6 +1387,193 @@ html[data-theme=dark] .restrackers .counter {
 
 .tableau .worker {
   filter: drop-shadow(2px 2px 3px black);
+}
+
+.wicon {
+  background-image: url(img/tokens.png);
+  background-size: auto 800%;
+  width: 32px;
+  height: 32px;
+}
+
+.icon_island {
+  background-position: 0% 0%;
+}
+
+.icon_book {
+  background-position: 8% 0%;
+}
+
+.icon_tent {
+  background-position: 16% 0%;
+}
+
+.icon_fire {
+  background-position: 24% 0%;
+}
+
+.icon_comet {
+  background-position: 32% 0%;
+}
+
+.icon_stars {
+  background-position: 40% 0%;
+}
+
+.icon_globe {
+  background-position: 48% 0%;
+}
+
+.icon_moon {
+  background-position: 56% 0%;
+}
+
+.icon_sun {
+  background-position: 64% 0%;
+}
+
+.icon_gold {
+  background-position: 72% 0%;
+}
+
+.lodge_green_plus {
+  background-position: 0% 14.3%;
+}
+
+.lodge_blue_plus {
+  background-position: 8% 14.3%;
+}
+
+.lodge_purple_plus {
+  background-position: 16% 14.3%;
+}
+
+.lodge_gray_plus {
+  background-position: 24% 14.3%;
+}
+
+.icon_gear {
+  background-position: 32% 14.3%;
+}
+
+.icon_water {
+  background-position: 72% 14.3%;
+}
+
+.icon_camel {
+  background-position: 56% 14.3%;
+}
+
+.icon_sailboat {
+  background-position: 64% 14.3%;
+}
+
+.icon_eagle {
+  background-position: 80% 14.3%;
+}
+
+.icon_telescope {
+  background-position: 88% 14.3%;
+}
+
+.lodge_green_gear {
+  background-position: 0% 28.6%;
+}
+
+.lodge_yellow_gear {
+  background-position: 8% 28.6%;
+}
+
+.lodge_brown_gear {
+  background-position: 16% 28.6%;
+}
+
+.lodge_blue_gear {
+  background-position: 24% 28.6%;
+}
+
+.icon_sphere {
+  background-position: 40% 28.6%;
+}
+
+.icon_bottle {
+  background-position: 48% 28.6%;
+}
+
+.icon_bottle_small {
+  background-position: 56% 28.6%;
+}
+
+.meeple_blue {
+  background-position: 0% 42.9%;
+}
+
+.meeple_green {
+  background-position: 8% 42.9%;
+}
+
+.meeple_yellow {
+  background-position: 16% 42.9%;
+}
+
+.icon_shield {
+  background-position: 32% 42.9%;
+}
+
+.icon_shield_small {
+  background-position: 40% 42.9%;
+}
+
+.icon_wheat {
+  background-position: 48% 42.9%;
+}
+
+.icon_grass {
+  background-position: 56% 42.9%;
+}
+
+.icon_lodge_plus {
+  background-position: 0% 57.1%;
+}
+
+.icon_cards {
+  background-position: 8% 57.1%;
+}
+
+.token_green {
+  background-position: 16% 57.1%;
+}
+
+.icon_card {
+  background-position: 24% 57.1%;
+}
+
+.icon_coins {
+  background-position: 32% 57.1%;
+}
+
+.token_yellow_plant {
+  background-position: 40% 57.1%;
+}
+
+.icon_deck {
+  background-position: 0% 71.4%;
+}
+
+.token_oval_green {
+  background-position: 8% 71.4%;
+}
+
+.icon_card_blue {
+  background-position: 16% 71.4%;
+}
+
+.token_yellow {
+  background-position: 24% 71.4%;
+}
+
+.token_yellow_leaves {
+  background-position: 32% 71.4%;
 }
 
 /* tooltips */

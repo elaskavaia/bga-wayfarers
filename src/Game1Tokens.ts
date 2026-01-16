@@ -20,7 +20,7 @@ interface TokenDisplayInfo {
 }
 
 interface TokenMoveInfo extends Token {
-  onStart?: (node: Element) => Promise<void>;
+  onStart?: (node: Element) => Promise<void> | void;
   onEnd?: (node: Element) => void;
   onClick?: (event?: any) => void;
   animtime?: number;
@@ -83,7 +83,7 @@ class Game1Tokens extends Game0Basics {
       location: "thething"
     };
     this.placeTokenSetup("limbo");
-    placeHtml(`<div id="oversurface"></div>`, this.getGameAreaElement());
+    placeHtml(`<div id="oversurface"></div>`, this.bga.gameArea.getElement());
 
     this.setupTokens();
     this.updateCountersSafe(this.gamedatas.counters);

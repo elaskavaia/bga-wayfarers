@@ -39,7 +39,7 @@ class Op_pay extends CountableOperation {
         $owner = $this->getOwner();
         $current = $this->game->tokens->getTrackerValue($owner, $this->getResType());
         if ($current < $this->getCount()) {
-            return ["q" => Material::MA_ERR_COST];
+            return ["q" => Material::ERR_COST];
         }
         return [$this->getResType()];
     }

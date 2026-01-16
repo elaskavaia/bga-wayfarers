@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_turn extends Operation {
@@ -31,23 +32,19 @@ class Op_turn extends Operation {
     }
     function getDiceSlots() {
         $owner = $this->getOwner();
-        $all = $this->game->tokens->getTokensOfTypeInLocation("dslot");
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
-        $player_dslots = array_filter($all, fn($rec) => array_key_exists($rec["location"], $cards));
+
+        $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "tableau_$owner");
+        $slots = [];
         foreach ($cards as $card => $info) {
             if ($this->game->getRulesFor($card, "d")) {
-                $dslot = "dslot_0_$card";
-                if (array_key_exists($dslot, $player_dslots)) {
-                    continue;
-                }
-                $player_dslots[$dslot] = [
-                    "key" => $dslot,
+                $slots[$card] = [
+                    "key" => $card,
                     "location" => $card,
-                    "state" => 0,
+                    "state" => count($info["children"] ?? []),
                 ];
             }
         }
-        return $player_dslots;
+        return $slots;
     }
 
     function getDice() {
@@ -66,12 +63,14 @@ class Op_turn extends Operation {
                 $res[$key] = ["q" => 0];
             }
         } else {
-            $player_dslots = $this->getDiceSlots();
+            $slots = $this->getDiceSlots();
 
-            foreach ($player_dslots as $key => $slot) {
-                $res[$key] = ["q" => 0];
+            foreach ($slots as $key => $slot) {
+                $state = $slot["state"];
+                $res[$key] = ["q" => $state == 0 ? Material::RET_OK : Material::ERR_OCCUPIED];
             }
         }
+        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
         return $res;
     }
     public function getUiArgs() {
@@ -85,7 +84,13 @@ class Op_turn extends Operation {
         $loc = $this->getLocation();
         $owner = $this->getOwner();
         if ($loc == null) {
-            $this->queue($this->getType(), $owner, ["loc" => $this->getCheckedArg()]);
+            $selected = $this->getCheckedArg();
+            if ($selected === "rest") {
+                $this->queue("rest");
+                $this->queue("turn"); // XXX pick next player
+                return;
+            }
+            $this->queue($this->getType(), $owner, ["loc" => $selected]);
             return;
         }
         $tool = $this->getCheckedArg();
@@ -94,13 +99,8 @@ class Op_turn extends Operation {
             "num" => $state,
         ]);
         $r = $this->game->getRulesFor($loc, "dr");
-        // XXX
-        if (!$r) {
-            $i = strpos($loc, "card");
-            $pcard = substr($loc, $i);
-            $r = $this->game->getRulesFor($pcard, "dr");
-            $this->game->systemAssert("parent rule empty '$pcard' '$loc'", $r);
-        }
+
+        $this->game->systemAssert("parent rule empty '$loc'", $r);
         $this->queue($r);
         $this->queue("turn"); // XXX pick next player
     }

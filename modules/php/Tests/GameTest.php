@@ -1,6 +1,7 @@
 <?php
 
 declare(strict_types=1);
+namespace Bga\Games\wayfarers\Tests;
 
 use Bga\GameFramework\NotificationMessage;
 use Bga\GameFramework\Notify;
@@ -234,12 +235,15 @@ final class GameTest extends TestCase {
 
         foreach ($token_types as $key => $info) {
             $this->assertTrue(!!$key);
-            if (!startsWith($key, "dslot_")) {
+            if (!startsWith($key, "card_")) {
                 continue;
             }
             echo "testing dspot $key\n";
             $r = $info["d"] ?? "";
-            $this->assertTrue($r != "", "empty d for $key");
+            if (!$r) {
+                continue;
+            }
+
             //$this->game->machine->instanciateOperation($r, PCOLOR);
             $r = $info["dr"] ?? "";
             $this->assertTrue($r != "", "empty dr for $key");

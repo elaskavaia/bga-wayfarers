@@ -30,20 +30,21 @@ class Op_cardGreen extends Op_gainCard {
                 $info["folkon"] = 1;
             }
         }
+        unset($info);
         if ($cardSelected == null) {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
 
-            foreach ($tokens as $card => $info) {
+            foreach ($tokens as $card => $tokenInfo) {
                 $cost = $this->getCost($card);
-                $res[$card] = ["q" => Material::MA_ERR_PREREQ, "cost" => $cost, "info" => []];
+                $res[$card] = ["q" => Material::ERR_PREREQ, "cost" => $cost, "info" => []];
 
-                foreach ($cards as $tcard => $info) {
+                foreach ($cards as $tcard => $cardInfo) {
                     if ($this->hasMatchingTags($card, $tcard)) {
-                        if ($info["folkon"] == 0) {
-                            $res[$card] = ["q" => 0];
+                        if ($cardInfo["folkon"] == 0) {
+                            $res[$card]["q"] = 0;
                             $res[$card]["info"][$tcard] = ["q" => 0];
                         } else {
-                            $res[$card]["info"][$tcard] = ["q" => Material::MA_ERR_OCCUPIED];
+                            $res[$card]["info"][$tcard] = ["q" => Material::ERR_OCCUPIED];
                         }
                     }
                 }

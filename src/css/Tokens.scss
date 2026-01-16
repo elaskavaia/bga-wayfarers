@@ -117,6 +117,7 @@
   height: 32px;
   aspect-ratio: 1 / 1;
   background-position-y: 69%;
+  z-index: 2;
   &.color_982fff {
     background-position-x: 84.6%;
   }
@@ -128,6 +129,18 @@
   }
   &.color_ff0000 {
     background-position-x: 92.3%;
+  }
+
+  // Position marker on mainboardall based on state (Journal Track position)
+  .mainboardall & {
+    position: absolute;
+    top: 50%;
+    // Generate positions for states 0-50
+    @for $i from 0 through 50 {
+      &[data-state="#{$i}"] {
+        left: #{$i * 2%};
+      }
+    }
   }
 }
 
@@ -162,4 +175,158 @@
   .worker {
     filter: v.$dropShadow2;
   }
+}
+
+.wicon {
+  background-image: url(img/tokens.png);
+  background-size: auto 800%;
+  width: 32px;
+  height: 32px;
+}
+
+// Row 1: Destination/Location icons
+.icon_island {
+  background-position: 0% 0%;
+}
+.icon_book {
+  background-position: 8% 0%;
+}
+.icon_tent {
+  background-position: 16% 0%;
+}
+.icon_fire {
+  background-position: 24% 0%;
+}
+.icon_comet {
+  background-position: 32% 0%;
+}
+.icon_stars {
+  background-position: 40% 0%;
+}
+.icon_globe {
+  background-position: 48% 0%;
+}
+.icon_moon {
+  background-position: 56% 0%;
+}
+.icon_sun {
+  background-position: 64% 0%;
+}
+.icon_gold {
+  background-position: 72% 0%;
+}
+
+// Row 2: Lodges with plus and other icons
+.lodge_green_plus {
+  background-position: 0% 14.3%;
+}
+.lodge_blue_plus {
+  background-position: 8% 14.3%;
+}
+.lodge_purple_plus {
+  background-position: 16% 14.3%;
+}
+.lodge_gray_plus {
+  background-position: 24% 14.3%;
+}
+.icon_gear {
+  background-position: 32% 14.3%;
+}
+.icon_water {
+  background-position: 72% 14.3%;
+}
+.icon_camel {
+  background-position: 56% 14.3%;
+}
+.icon_sailboat {
+  background-position: 64% 14.3%;
+}
+.icon_eagle {
+  background-position: 80% 14.3%;
+}
+.icon_telescope {
+  background-position: 88% 14.3%;
+}
+
+// Row 3: Lodge variants with gear
+.lodge_green_gear {
+  background-position: 0% 28.6%;
+}
+.lodge_yellow_gear {
+  background-position: 8% 28.6%;
+}
+.lodge_brown_gear {
+  background-position: 16% 28.6%;
+}
+.lodge_blue_gear {
+  background-position: 24% 28.6%;
+}
+.icon_sphere {
+  background-position: 40% 28.6%;
+}
+.icon_bottle {
+  background-position: 48% 28.6%;
+}
+.icon_bottle_small {
+  background-position: 56% 28.6%;
+}
+
+// Row 4: Meeples and other icons
+.meeple_blue {
+  background-position: 0% 42.9%;
+}
+.meeple_green {
+  background-position: 8% 42.9%;
+}
+.meeple_yellow {
+  background-position: 16% 42.9%;
+}
+.icon_shield {
+  background-position: 32% 42.9%;
+}
+.icon_shield_small {
+  background-position: 40% 42.9%;
+}
+.icon_wheat {
+  background-position: 48% 42.9%;
+}
+.icon_grass {
+  background-position: 56% 42.9%;
+}
+
+// Row 5: Cards and tokens
+.icon_lodge_plus {
+  background-position: 0% 57.1%;
+}
+.icon_cards {
+  background-position: 8% 57.1%;
+}
+.token_green {
+  background-position: 16% 57.1%;
+}
+.icon_card {
+  background-position: 24% 57.1%;
+}
+.icon_coins {
+  background-position: 32% 57.1%;
+}
+.token_yellow_plant {
+  background-position: 40% 57.1%;
+}
+
+// Row 6: Deck, tokens
+.icon_deck {
+  background-position: 0% 71.4%;
+}
+.token_oval_green {
+  background-position: 8% 71.4%;
+}
+.icon_card_blue {
+  background-position: 16% 71.4%;
+}
+.token_yellow {
+  background-position: 24% 71.4%;
+}
+.token_yellow_leaves {
+  background-position: 32% 71.4%;
 }
