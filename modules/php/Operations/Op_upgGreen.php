@@ -14,30 +14,23 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\Games\wayfarers\OpCommon\Operation;
+/**
+ * Green upgrade tiles (1x1 square)
+ */
+class Op_upgGreen extends Op_upgBase {
+    function getTileType(): string {
+        return "green";
+    }
 
-class Op_upgGreen extends Operation {
-    function getPossibleMoves() {
-        $tokens = $this->game->tokens->getTokensOfTypeInLocation("upg_green", "mainarea");
-        $res = [];
-        foreach ($tokens as $card => $info) {
-            $cost = $this->getCost();
-            $res[$card] = ["q" => 0, "cost" => $cost];
-        }
-        return $res;
+    function getTileWidth(): int {
+        return 1; // Green tiles are 1x1 (square)
+    }
+
+    function getTileHeight(): int {
+        return 1;
     }
 
     function getCost(): int {
-        return 2;
-    }
-
-    /** User does the action */
-    function resolve(): void {
-        $owner = $this->getOwner();
-        $card = $this->getCheckedArg();
-        $cost = $this->getCost();
-        $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", 0); //XXX pick location
-        return;
+        return 2; // Green tiles cost 2 (cheaper than others)
     }
 }

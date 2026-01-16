@@ -15,15 +15,15 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 /**
- * Yellow upgrade tiles (2x1 horizontal)
+ * Blue upgrade tiles (2x1 horizontal)
  */
-class Op_upgYellow extends Op_upgBase {
+class Op_upgBlue extends Op_upgBase {
     function getTileType(): string {
-        return "yellow";
+        return "blue";
     }
 
     function getTileWidth(): int {
-        return 2; // Yellow tiles are 2x1 (horizontal)
+        return 2; // Blue tiles are 2x1 (horizontal)
     }
 
     function getTileHeight(): int {

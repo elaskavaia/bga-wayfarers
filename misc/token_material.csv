@@ -10,9 +10,9 @@ id|name|count|type|create|location|php
 
 
 #12  Workers 4 of each 3 colors
-worker_blue|Worker|4|worker wooden|2|limbo|
-worker_yellow|Worker|4|worker wooden|2|limbo|
-worker_green|Worker|4|worker wooden|2|limbo|
+worker_blue|Blue Worker|4|worker wooden|2|limbo|
+worker_yellow|Yellow Worker|4|worker wooden|2|limbo|
+worker_green|Green Worker|4|worker wooden|2|limbo|
 
 #player counters
 
@@ -24,7 +24,7 @@ dice|Player dice|5|dice wooden|3|tableau_{COLOR}
 
 #journal tiles
 jtile|Journal Tile|10|jtile tile|2|deck_jtile
-utile|Upgrade Tile|10|utile tile|2|supply
+upg|Upgrade Tile|10|upg tile|2|supply
 
 
 #cards
@@ -42,6 +42,7 @@ card_insp|Inspiration|16|card insp|2|deck_insp
 mainboard_1||1|mainboard_x left|1|mainboardall|
 mainboard_2||1|mainboard_x middle|1|mainboardall|
 mainboard_3||1|mainboard_x right|1|mainboardall|
+game_stage||1|stage|1|limbo|
 
 #create=0
 

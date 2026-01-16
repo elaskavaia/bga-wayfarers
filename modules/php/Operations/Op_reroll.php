@@ -14,16 +14,53 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_reroll extends Operation {
+    function getAllDice(): array {
+        $owner = $this->getOwner();
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
+
+        // Also get dice placed on cards in player's tableau
+        $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "tableau_$owner");
+        foreach ($cards as $card => $info) {
+            if (isset($info["children"])) {
+                foreach ($info["children"] as $childKey => $childInfo) {
+                    if (str_starts_with($childKey, "dice_")) {
+                        $dice[$childKey] = $childInfo;
+                    }
+                }
+            }
+        }
+        return $dice;
+    }
+
     function getPossibleMoves() {
-        return ["confirm"];
+        $dice = $this->getAllDice();
+        $res = [];
+        foreach ($dice as $key => $die) {
+            $res[$key] = ["q" => Material::RET_OK];
+        }
+        return $res;
     }
 
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        $dieKey = $this->getCheckedArg();
+        $newValue = bga_rand(1, 6);
+        $owner = $this->getOwner();
+        $this->game->tokens->dbSetTokenLocation(
+            $dieKey,
+            "tableau_$owner",
+            $newValue,
+            clienttranslate('${player_name} rerolls ${token_name} to ${new_state}')
+        );
+    }
+    public function canSkip() {
+        return true;
+    }
 
-        return;
+    function getPrompt() {
+        return clienttranslate("Select a die to reroll");
     }
 }

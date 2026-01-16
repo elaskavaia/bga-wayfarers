@@ -44,57 +44,6 @@ class GameXBody extends GameMachine {
 </div>
 <div id="players_panels"></div>
 <div id="test_stuff">
-  <!-- Test icons - Row 1: Destinations -->
-  <div class="wicon icon_island"></div>
-  <div class="wicon icon_book"></div>
-  <div class="wicon icon_tent"></div>
-  <div class="wicon icon_fire"></div>
-  <div class="wicon icon_comet"></div>
-  <div class="wicon icon_stars"></div>
-  <div class="wicon icon_globe"></div>
-  <div class="wicon icon_moon"></div>
-  <div class="wicon icon_sun"></div>
-  <div class="wicon icon_gold"></div>
-  <!-- Row 2: Lodges with plus and travel -->
-  <div class="wicon lodge_green_plus"></div>
-  <div class="wicon lodge_blue_plus"></div>
-  <div class="wicon lodge_purple_plus"></div>
-  <div class="wicon lodge_gray_plus"></div>
-  <div class="wicon icon_gear"></div>
-  <div class="wicon icon_camel"></div>
-  <div class="wicon icon_sailboat"></div>
-  <div class="wicon icon_water"></div>
-  <div class="wicon icon_eagle"></div>
-  <div class="wicon icon_telescope"></div>
-  <!-- Row 3: Lodges with gear -->
-  <div class="wicon lodge_green_gear"></div>
-  <div class="wicon lodge_yellow_gear"></div>
-  <div class="wicon lodge_brown_gear"></div>
-  <div class="wicon lodge_blue_gear"></div>
-  <div class="wicon icon_sphere"></div>
-  <div class="wicon icon_bottle"></div>
-  <div class="wicon icon_bottle_small"></div>
-  <!-- Row 4: Meeples and misc -->
-  <div class="wicon meeple_blue"></div>
-  <div class="wicon meeple_green"></div>
-  <div class="wicon meeple_yellow"></div>
-  <div class="wicon icon_shield"></div>
-  <div class="wicon icon_shield_small"></div>
-  <div class="wicon icon_wheat"></div>
-  <div class="wicon icon_grass"></div>
-  <!-- Row 5: Cards and tokens -->
-  <div class="wicon icon_lodge_plus"></div>
-  <div class="wicon icon_cards"></div>
-  <div class="wicon token_green"></div>
-  <div class="wicon icon_card"></div>
-  <div class="wicon icon_coins"></div>
-  <div class="wicon token_yellow_plant"></div>
-  <!-- Row 6: Deck and tokens -->
-  <div class="wicon icon_deck"></div>
-  <div class="wicon token_oval_green"></div>
-  <div class="wicon icon_card_blue"></div>
-  <div class="wicon token_yellow"></div>
-  <div class="wicon token_yellow_leaves"></div>
 </div>
 <div id="supply"></div>
 
@@ -343,17 +292,6 @@ class GameXBody extends GameMachine {
     const tokenId = tokenInfo.tokenId;
     switch (mainType) {
       case "worker":
-        {
-          const tokenId = tokenInfo.key;
-          const name = tokenInfo.name;
-          tokenInfo.tooltip = {
-            log: "${name} (${color_name})",
-            args: {
-              name: this.getTr(name),
-              color_name: this.getTr(this.getColorName(getPart(tokenId, 2)))
-            }
-          };
-        }
         return;
       case "card": {
         tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
@@ -374,13 +312,19 @@ class GameXBody extends GameMachine {
   getColorName(color: string) {
     switch (color) {
       case "ff0000":
+      case "red":
         return _("Red");
       case "ffcc02":
+      case "yellow":
         return _("Yellow");
       case "982fff":
+      case "purple":
         return _("Purple");
       case "6cd0f6":
+      case "blue":
         return _("Blue");
+      case "green":
+        return _("Green");
       default:
         return _("Black");
     }

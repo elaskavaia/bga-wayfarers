@@ -14,30 +14,19 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\Games\wayfarers\OpCommon\Operation;
-
-class Op_upgBlack extends Operation {
-    function getPossibleMoves() {
-        $tokens = $this->game->tokens->getTokensOfTypeInLocation("upg_black", "mainarea");
-        $res = [];
-        foreach ($tokens as $card => $info) {
-            $cost = $this->getCost();
-            $res[$card] = ["q" => 0, "cost" => $cost];
-        }
-        return $res;
+/**
+ * Black upgrade tiles (1x2 vertical)
+ */
+class Op_upgBlack extends Op_upgBase {
+    function getTileType(): string {
+        return "black";
     }
 
-    function getCost(): int {
-        return 3;
+    function getTileWidth(): int {
+        return 1; // Black tiles are 1x2 (vertical)
     }
 
-    /** User does the action */
-    function resolve(): void {
-        $owner = $this->getOwner();
-        $card = $this->getCheckedArg();
-        $cost = $this->getCost();
-        $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", 0); //XXX pick location
-        return;
+    function getTileHeight(): int {
+        return 2;
     }
 }

@@ -14,17 +14,44 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_infAny extends Operation {
     function getPossibleMoves() {
-        return ["confirm"];
+        $owner = $this->getOwner();
+        $influence = $this->game->tokens->getTokensOfTypeInLocation("influence", "tableau_$owner");
+        
+        if (count($influence) == 0) {
+            return ["q" => Material::ERR_NONE_LEFT];
+        }
+        
+        return [
+            "guild_black" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_black")],
+            "guild_yellow" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_yellow")],
+            "guild_blue" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_blue")],
+        ];
     }
 
-    /** User does the action */
-    function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+    function canSkip() {
+        return true;
+    }
 
-        return;
+    function resolve(): void {
+        $owner = $this->getOwner();
+        $guild = $this->getCheckedArg();
+        $influence = $this->game->tokens->getTokensOfTypeInLocation("influence", "tableau_$owner");
+        $influenceKey = array_key_first($influence);
+        
+        $this->game->tokens->dbSetTokenLocation(
+            $influenceKey,
+            $guild,
+            0,
+            clienttranslate('${player_name} places ${token_name} on ${place_name}')
+        );
+    }
+
+    function getPrompt() {
+        return clienttranslate("Select a guild to place influence on");
     }
 }

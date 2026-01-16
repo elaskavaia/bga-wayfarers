@@ -17,12 +17,11 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
-class Op_diceMod extends Operation {
+class Op_dicePlus extends Operation {
     function getAllDice(): array {
         $owner = $this->getOwner();
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
 
-        // Also get dice placed on cards in player's tableau
         $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "tableau_$owner");
         foreach ($cards as $card => $info) {
             foreach ($info["children"] as $childKey => $childInfo) {
@@ -32,11 +31,10 @@ class Op_diceMod extends Operation {
             }
         }
 
-        // Group by value to avoid duplicates
         $res = [];
         foreach ($dice as $key => $die) {
             $value = $die["state"];
-            if (!isset($res[$value])) {
+            if ($value < 6 && !isset($res[$value])) {
                 $res[$value] = $die;
             }
         }
@@ -49,17 +47,8 @@ class Op_diceMod extends Operation {
 
         foreach ($dice as $value => $die) {
             $value = (int) $value;
-            $valuePlus = $value + 1;
-            $valueMinus = $value - 1;
             $key = $die["key"];
-            if ($value > 1 && $value < 6) {
-                $res["{$key}_up"] = ["q" => Material::RET_OK, "name" => "$value + 1 => $valuePlus"];
-                $res["{$key}_down"] = ["q" => Material::RET_OK, "name" => "$value - 1 => $valueMinus"];
-            } elseif ($value == 1) {
-                $res["{$key}_up"] = ["q" => Material::RET_OK, "name" => "$value + 1 => $valuePlus"];
-            } elseif ($value == 6) {
-                $res["{$key}_down"] = ["q" => Material::RET_OK, "name" => "$value - 1 => $valueMinus"];
-            }
+            $res[$key] = ["q" => Material::RET_OK, "name" => "$value + 1"];
         }
 
         return $res;
@@ -70,18 +59,14 @@ class Op_diceMod extends Operation {
     }
 
     function resolve(): void {
-        $choice = $this->getCheckedArg();
-        $parts = explode("_", $choice);
-        $direction = array_pop($parts);
-        $dieKey = implode("_", $parts);
-
+        $dieKey = $this->getCheckedArg();
         $currentValue = (int) $this->game->tokens->db->getTokenState($dieKey);
-        $newValue = $direction == "up" ? $currentValue + 1 : $currentValue - 1;
+        $newValue = $currentValue + 1;
 
         $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} sets ${token_name} to ${new_state}'));
     }
 
     function getPrompt() {
-        return clienttranslate("Select a die to modify by +1 or -1");
+        return clienttranslate("Select a die to increase by +1");
     }
 }

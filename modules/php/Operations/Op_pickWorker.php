@@ -14,18 +14,43 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_pickWorker extends Operation {
-    /** Get state arguments if we go to player's state */
-    function getPossibleMoves() {
-        return ["confirm"];
+    /** Get available workers that can be picked */
+    function getAvailableWorkers(): array {
+        $owner = $this->getOwner();
+        $workers = [];
+
+        // // Get green workers from journal track
+        // $greenWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker_green", "jbonus_%");
+        // foreach ($greenWorkers as $key => $worker) {
+        //     $workers[$key] = ["q" => Material::RET_OK];
+        // }
+
+        // Get workers from cards on main board (public workers)
+        $publicWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%");
+        foreach ($publicWorkers as $key => $worker) {
+            $workers[$key] = ["q" => Material::RET_OK];
+        }
+
+        return $workers;
     }
 
-    /** User does the action */
-    function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+    function getPossibleMoves() {
+        return $this->getAvailableWorkers();
+    }
 
-        return;
+    function resolve(): void {
+        $owner = $this->getOwner();
+        $workerKey = $this->getCheckedArg();
+
+        // Move worker to player's tableau
+        $this->game->tokens->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
+    }
+
+    function getPrompt() {
+        return clienttranslate("Select a worker to pick");
     }
 }

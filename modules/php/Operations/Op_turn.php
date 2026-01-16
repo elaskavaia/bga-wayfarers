@@ -84,6 +84,21 @@ class Op_turn extends Operation {
         return $cards;
     }
 
+    /**
+     * Get workers in player's supply (on their tableau)
+     */
+    function getWorkersInSupply(): array {
+        $owner = $this->getOwner();
+        return $this->game->tokens->getTokensOfTypeInLocation("worker", "tableau_$owner");
+    }
+
+    /**
+     * Check if player can place a worker (has workers in supply)
+     */
+    function canPlaceWorker(): bool {
+        return count($this->getWorkersInSupply()) > 0;
+    }
+
     public function getPossibleMoves() {
         $loc = $this->getLocation();
         $res = [];
@@ -100,6 +115,10 @@ class Op_turn extends Operation {
                 $state = $slot["state"];
                 $res[$key] = ["q" => $state == 0 ? Material::RET_OK : Material::ERR_OCCUPIED];
             }
+        }
+        // Worker placement option (only if player has workers in supply)
+        if ($this->canPlaceWorker()) {
+            $res["worker"] = ["q" => 0, "name" => clienttranslate("Place Worker")];
         }
         $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
         return $res;
@@ -118,6 +137,11 @@ class Op_turn extends Operation {
             $selected = $this->getCheckedArg();
             if ($selected === "rest") {
                 $this->queue("rest");
+                $this->queueNextTurnOrEnd();
+                return;
+            }
+            if ($selected === "worker") {
+                $this->queue("placeWorker");
                 $this->queueNextTurnOrEnd();
                 return;
             }

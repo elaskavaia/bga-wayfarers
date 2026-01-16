@@ -1331,189 +1331,174 @@ html[data-theme=dark] .restrackers .counter {
 
 .wicon {
   background-image: url(img/tokens.png);
-  background-size: auto 800%;
-  width: 32px;
-  height: 32px;
+  background-size: auto 1200%;
+  width: 128px;
+  height: 128px;
+  outline: 1px dashed red;
 }
 
-.icon_island {
-  background-position: 0% 0%;
+.icon_city {
+  background-position: 0% 1%;
+  background-size: auto 1200%;
+}
+
+.icon_harbour {
+  background-position: 6% 1%;
+  background-size: auto 1200%;
 }
 
 .icon_book {
-  background-position: 8% 0%;
+  background-position: 13% 1%;
+  background-size: auto 1200%;
 }
 
-.icon_tent {
-  background-position: 16% 0%;
+.icon_observatory {
+  background-position: 19.5% 1%;
+  background-size: auto 1200%;
 }
 
-.icon_fire {
-  background-position: 24% 0%;
+.icon_vista {
+  background-position: 26% 1%;
+  background-size: auto 1200%;
+}
+
+.icon_sea {
+  background-position: 32.5% 1%;
+  background-size: auto 1200%;
 }
 
 .icon_comet {
-  background-position: 32% 0%;
+  background-position: 39% 1%;
+  background-size: auto 1200%;
+}
+
+.icon_comet_up {
+  background-position: 47% 1%;
+  background-size: auto 1200%;
 }
 
 .icon_stars {
-  background-position: 40% 0%;
+  background-position: 54% 2%;
 }
 
-.icon_globe {
-  background-position: 48% 0%;
+.icon_planet {
+  background-position: 62% 2%;
 }
 
 .icon_moon {
-  background-position: 56% 0%;
+  background-position: 69.5% 2%;
 }
 
 .icon_sun {
-  background-position: 64% 0%;
+  background-position: 78% 2%;
 }
 
-.icon_gold {
-  background-position: 72% 0%;
+.icon_vp {
+  background-position: 86% 2%;
 }
 
-.lodge_green_plus {
-  background-position: 0% 14.3%;
+.upg_green {
+  background-position: 0% 28%;
 }
 
-.lodge_blue_plus {
-  background-position: 8% 14.3%;
+.upg_black {
+  background-position: 10% 28%;
 }
 
-.lodge_purple_plus {
-  background-position: 16% 14.3%;
+.upg_yellow {
+  background-position: 19% 28%;
 }
 
-.lodge_gray_plus {
-  background-position: 24% 14.3%;
+.upg_blue {
+  background-position: 30% 28%;
 }
 
-.icon_gear {
-  background-position: 32% 14.3%;
+.upg_pink {
+  background-position: 40% 28%;
 }
 
-.icon_water {
-  background-position: 72% 14.3%;
+.upg_any {
+  background-position: 50% 28%;
+}
+
+.upg_green_free {
+  background-position: 60% 28%;
+}
+
+.upg_black_free {
+  background-position: 70% 28%;
+}
+
+.upg_yellow_free {
+  background-position: 80% 28%;
+}
+
+.upg_blue_free {
+  background-position: 90% 28%;
 }
 
 .icon_camel {
-  background-position: 56% 14.3%;
+  background-position: 69% 28%;
+  background-size: auto 1000%;
 }
 
-.icon_sailboat {
-  background-position: 64% 14.3%;
+.icon_ship {
+  background-position: 77% 28%;
+  background-size: auto 1000%;
 }
 
-.icon_eagle {
-  background-position: 80% 14.3%;
+.icon_bird {
+  background-position: 85% 28%;
+  background-size: auto 1000%;
 }
 
 .icon_telescope {
-  background-position: 88% 14.3%;
+  background-position: 97% 28%;
+  background-size: auto 1000%;
 }
 
-.lodge_green_gear {
-  background-position: 0% 28.6%;
+.inf_blue {
+  background-position: 0% 42%;
 }
 
-.lodge_yellow_gear {
-  background-position: 8% 28.6%;
+.inf_black {
+  background-position: 8% 42%;
 }
 
-.lodge_brown_gear {
-  background-position: 16% 28.6%;
+.inf_yellow {
+  background-position: 16% 42%;
 }
 
-.lodge_blue_gear {
-  background-position: 24% 28.6%;
+.inf_any {
+  background-position: 24% 42%;
 }
 
-.icon_sphere {
-  background-position: 40% 28.6%;
+.inf_move {
+  background-position: 40% 42%;
 }
 
-.icon_bottle {
-  background-position: 48% 28.6%;
+.inf_blue_pay {
+  background-position: 48% 42%;
 }
 
-.icon_bottle_small {
-  background-position: 56% 28.6%;
+.inf_black_pay {
+  background-position: 56% 42%;
 }
 
-.meeple_blue {
-  background-position: 0% 42.9%;
+.inf_yellow_pay {
+  background-position: 56% 42%;
 }
 
-.meeple_green {
-  background-position: 8% 42.9%;
+.icon_reroll {
+  background-position: 50% 60%;
 }
 
-.meeple_yellow {
-  background-position: 16% 42.9%;
+.icon_journal {
+  background-position: 80% 60%;
 }
 
-.icon_shield {
-  background-position: 32% 42.9%;
-}
-
-.icon_shield_small {
-  background-position: 40% 42.9%;
-}
-
-.icon_wheat {
-  background-position: 48% 42.9%;
-}
-
-.icon_grass {
-  background-position: 56% 42.9%;
-}
-
-.icon_lodge_plus {
-  background-position: 0% 57.1%;
-}
-
-.icon_cards {
-  background-position: 8% 57.1%;
-}
-
-.token_green {
-  background-position: 16% 57.1%;
-}
-
-.icon_card {
-  background-position: 24% 57.1%;
-}
-
-.icon_coins {
-  background-position: 32% 57.1%;
-}
-
-.token_yellow_plant {
-  background-position: 40% 57.1%;
-}
-
-.icon_deck {
-  background-position: 0% 71.4%;
-}
-
-.token_oval_green {
-  background-position: 8% 71.4%;
-}
-
-.icon_card_blue {
-  background-position: 16% 71.4%;
-}
-
-.token_yellow {
-  background-position: 24% 71.4%;
-}
-
-.token_yellow_leaves {
-  background-position: 32% 71.4%;
+.icon_rest1 {
+  background-position: 100% 60%;
 }
 
 /* tooltips */

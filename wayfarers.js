@@ -1711,7 +1711,7 @@ var GameXBody = /** @class */ (function (_super) {
     function GameXBody() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n  <!-- Test icons - Row 1: Destinations -->\n  <div class=\"wicon icon_island\"></div>\n  <div class=\"wicon icon_book\"></div>\n  <div class=\"wicon icon_tent\"></div>\n  <div class=\"wicon icon_fire\"></div>\n  <div class=\"wicon icon_comet\"></div>\n  <div class=\"wicon icon_stars\"></div>\n  <div class=\"wicon icon_globe\"></div>\n  <div class=\"wicon icon_moon\"></div>\n  <div class=\"wicon icon_sun\"></div>\n  <div class=\"wicon icon_gold\"></div>\n  <!-- Row 2: Lodges with plus and travel -->\n  <div class=\"wicon lodge_green_plus\"></div>\n  <div class=\"wicon lodge_blue_plus\"></div>\n  <div class=\"wicon lodge_purple_plus\"></div>\n  <div class=\"wicon lodge_gray_plus\"></div>\n  <div class=\"wicon icon_gear\"></div>\n  <div class=\"wicon icon_camel\"></div>\n  <div class=\"wicon icon_sailboat\"></div>\n  <div class=\"wicon icon_water\"></div>\n  <div class=\"wicon icon_eagle\"></div>\n  <div class=\"wicon icon_telescope\"></div>\n  <!-- Row 3: Lodges with gear -->\n  <div class=\"wicon lodge_green_gear\"></div>\n  <div class=\"wicon lodge_yellow_gear\"></div>\n  <div class=\"wicon lodge_brown_gear\"></div>\n  <div class=\"wicon lodge_blue_gear\"></div>\n  <div class=\"wicon icon_sphere\"></div>\n  <div class=\"wicon icon_bottle\"></div>\n  <div class=\"wicon icon_bottle_small\"></div>\n  <!-- Row 4: Meeples and misc -->\n  <div class=\"wicon meeple_blue\"></div>\n  <div class=\"wicon meeple_green\"></div>\n  <div class=\"wicon meeple_yellow\"></div>\n  <div class=\"wicon icon_shield\"></div>\n  <div class=\"wicon icon_shield_small\"></div>\n  <div class=\"wicon icon_wheat\"></div>\n  <div class=\"wicon icon_grass\"></div>\n  <!-- Row 5: Cards and tokens -->\n  <div class=\"wicon icon_lodge_plus\"></div>\n  <div class=\"wicon icon_cards\"></div>\n  <div class=\"wicon token_green\"></div>\n  <div class=\"wicon icon_card\"></div>\n  <div class=\"wicon icon_coins\"></div>\n  <div class=\"wicon token_yellow_plant\"></div>\n  <!-- Row 6: Deck and tokens -->\n  <div class=\"wicon icon_deck\"></div>\n  <div class=\"wicon token_oval_green\"></div>\n  <div class=\"wicon icon_card_blue\"></div>\n  <div class=\"wicon token_yellow\"></div>\n  <div class=\"wicon token_yellow_leaves\"></div>\n</div>\n<div id=\"supply\"></div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\"></div>\n\n\n";
         return _this;
     }
     GameXBody.prototype.setup = function (gamedatas) {
@@ -1965,17 +1965,6 @@ var GameXBody = /** @class */ (function (_super) {
         var tokenId = tokenInfo.tokenId;
         switch (mainType) {
             case "worker":
-                {
-                    var tokenId_1 = tokenInfo.key;
-                    var name_2 = tokenInfo.name;
-                    tokenInfo.tooltip = {
-                        log: "${name} (${color_name})",
-                        args: {
-                            name: this.getTr(name_2),
-                            color_name: this.getTr(this.getColorName(getPart(tokenId_1, 2)))
-                        }
-                    };
-                }
                 return;
             case "card": {
                 tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
@@ -1995,13 +1984,19 @@ var GameXBody = /** @class */ (function (_super) {
     GameXBody.prototype.getColorName = function (color) {
         switch (color) {
             case "ff0000":
+            case "red":
                 return _("Red");
             case "ffcc02":
+            case "yellow":
                 return _("Yellow");
             case "982fff":
+            case "purple":
                 return _("Purple");
             case "6cd0f6":
+            case "blue":
                 return _("Blue");
+            case "green":
+                return _("Green");
             default:
                 return _("Black");
         }

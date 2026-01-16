@@ -532,13 +532,13 @@ class PGameTokens {
 
     function getTokensOfTypeInLocationWithChildren($type, $location = null, $state = null, $order_by = null) {
         $tokens = $this->db->getTokensOfTypeInLocation($type, $location, $state, $order_by);
+        // init children array
+        foreach ($tokens as $key => $token) {
+            $tokens[$key]["children"] = [];
+        }
         $children = $this->db->getTokensOnLocations(array_keys($tokens));
-        foreach ($children as $child) {
+        foreach ($children as $key => $child) {
             $parent = $child["location"];
-            if (!array_key_exists("children", $tokens[$parent])) {
-                $tokens[$parent]["children"] = [];
-            }
-            $key = $child["key"];
             $tokens[$parent]["children"][$key] = $this->db->getTokenInfo($key);
         }
         return $tokens;

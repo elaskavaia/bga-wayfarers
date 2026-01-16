@@ -12,3 +12,6 @@ limbo|Limbo||global|hidden|hidden|
 tableau|Player Area|players_panels|player|hidden|public|
 hand|Player Hand|players_panels|player|hidden|private|
 supply|Supply|supply|global|public|public|
+guild_black|Black Guild (Science)|mainarea|global|hidden|public
+guild_blue|Blue Guild (Exploration)|mainarea|global|hidden|public|
+guild_yellow|Yellow Guild (Trade)|mainarea|global|hidden|public|
