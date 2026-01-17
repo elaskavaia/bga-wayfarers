@@ -82,7 +82,7 @@ abstract class Op_cardBase extends Operation {
         // Check if player chose the deck
         if (str_starts_with($card, "deck_")) {
             $owner = $this->getOwner();
-            $this->queue("n_food", $owner, [], "cardDraw"); // TODO: food or bird
+            $this->queue("n_food", $owner, [], "cardDraw"); // TODO: food or pigeon
             $this->queue("3cardDraw({$this->getCardType()})");
             return;
         }

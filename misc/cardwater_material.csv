@@ -10,9 +10,9 @@ num|r|d|dr|tags|c1|c2
 39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx
 40|cardLand(draw1)|||Sea|___|___x
 #set ext=
-41||bird|food,journal|Harbour Book|__x_|bx_x
-42||bird|coin,journal|Harbour Book|__x_|u_xx
-43||bird|infCard,journal|Harbour Book|x__x|yxxx
+41||pigeon|food,journal|Harbour Book|__x_|bx_x
+42||pigeon|coin,journal|Harbour Book|__x_|u_xx
+43||pigeon|infCard,journal|Harbour Book|x__x|yxxx
 44||2ship|n_food:cardWater|Harbour Book|_xx_|yx__
 
 45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x

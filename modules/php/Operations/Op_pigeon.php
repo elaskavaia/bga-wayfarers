@@ -16,7 +16,7 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 
-class Op_bird extends Operation {
+class Op_pigeon extends Operation {
     function getPossibleMoves() {
         return ["confirm"];
     }

@@ -9,7 +9,7 @@ num|r|d|dr|tags|name
 3||ship|cardWater|Harbour|Capital Harbour
 #set type=card card_home card_slot
 10||telescope|(cardSpace/upgBlack)||Capital Observatory
-11||bird|(journal/(pickWorker,infAny))||Capital Library
+11||pigeon|(journal/(pickWorker,infAny))||Capital Library
 12||any|(cardFolk/2food)||Capital Market
 13||any|(upgGreen/2coin)||Capital Reserve
 
@@ -17,7 +17,7 @@ num|r|d|dr|tags|name
 #set id=card_folk_{num}
 #set type=card card_folk folk
 #set rest=1
-1|0||journal,coin||Townfolk
+1|0||journal,coin||Capital Townfolk
 #set rest=
 #set create=1
 #set location=deck_folk
@@ -26,8 +26,8 @@ num|r|d|dr|tags|name
 116|1||ship|Harbour|Adventurer
 117|0||telescope|Observatory|Astronomer
 118|2||pickWorker/infCard|Vista|Champion
-121|2||camel,bird|City|Envoy
-122|2||ship,bird|City|Envoy
+121|2||camel,pigeon|City|Envoy
+122|2||ship,pigeon|City|Envoy
 123|2||coin|City|Farmer
 124|2||food|City|Farmer
 125|2||coin|Harbour|Fisherman
@@ -39,7 +39,7 @@ num|r|d|dr|tags|name
 134|2||coin|Vista|Merchant
 135|2||food|Vista|Merchant
 136|2||food|Vista|Merchant
-137|1||bird|City Harbour|Messenger
+137|1||pigeon|City Harbour|Messenger
 138|1||infCard/infMove/diceMod|City Harbour|Rogue
 139|1||infBlue/infMove|City Harbour|Scholar
 140|1||infYellow/infMove|City Harbour|Scholar

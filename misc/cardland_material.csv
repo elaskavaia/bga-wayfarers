@@ -20,9 +20,9 @@ num|r|d|dr|tags|trig
 13||telescope,camel|cardSpace,infBlack|City Observatory
 14||telescope,camel|cardSpace(dis)|City Observatory
 15|infAny|camel|cardFolk,journal|City Book
-16||bird|infYellow,journal|City Book
-17||bird|infBlue,journal|City Book
-18||telescope,bird|infBlack,journal|City Book Observatory
+16||pigeon|infYellow,journal|City Book
+17||pigeon|infBlue,journal|City Book
+18||telescope,pigeon|infBlack,journal|City Book Observatory
 # Row 4-6: Vista (19-37)
 19|2infCard||infCard|Vista|Stars
 20|coin||food|Vista|Stars
@@ -44,4 +44,4 @@ num|r|d|dr|tags|trig
 36|reroll||food/coin|Vista|Observatory/Book
 # Row 7: City (38)
 37|coin||food|Vista|upgAny
-38||camel,bird|2food:cardLand,journal|City Book
+38||camel,pigeon|2food:cardLand,journal|City Book
