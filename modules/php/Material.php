@@ -332,7 +332,15 @@ class Material {
 ],
     "Op_diceMod" => [ 
         "type" => "diceMod",
-        "name" => clienttranslate("Modify Dice by One"),
+        "name" => clienttranslate("Modify Dice by +/- 1"),
+],
+    "Op_dicePlus" => [ 
+        "type" => "dicePlus",
+        "name" => clienttranslate("Modify Dice by +1"),
+],
+    "Op_diceMinus" => [ 
+        "type" => "diceMinus",
+        "name" => clienttranslate("Modify Dice by -1"),
 ],
     "Op_food" => [ 
         "class" => "Op_gain",
@@ -1416,9 +1424,7 @@ class Material {
             /* --- gen php end cardland_material --- */
             /* --- gen php begin upg_material --- */
     "upg_yellow_1" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 1,
@@ -1428,9 +1434,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_yellow_2" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 2,
@@ -1440,9 +1444,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_yellow_3" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 3,
@@ -1452,9 +1454,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_yellow_4" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 4,
@@ -1464,9 +1464,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_yellow_5" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 5,
@@ -1475,9 +1473,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_yellow_6" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 6,
@@ -1486,9 +1482,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_7" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 7,
@@ -1498,9 +1492,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_8" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 8,
@@ -1510,9 +1502,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_9" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 9,
@@ -1522,9 +1512,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_10" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 10,
@@ -1534,9 +1522,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_11" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 11,
@@ -1546,9 +1532,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_blue_12" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 2,
         "h" => 1,
         "num" => 12,
@@ -1558,9 +1542,7 @@ class Material {
         "vp" => "|1",
 ],
     "upg_black_20" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 2,
         "num" => 20,
@@ -1569,9 +1551,7 @@ class Material {
         "vp" => "|2",
 ],
     "upg_black_21" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 2,
         "num" => 21,
@@ -1580,9 +1560,7 @@ class Material {
         "vp" => "|3",
 ],
     "upg_black_22" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 2,
         "num" => 22,
@@ -1591,9 +1569,7 @@ class Material {
         "vp" => "|2",
 ],
     "upg_green_31" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 31,
@@ -1602,9 +1578,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_green_32" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 32,
@@ -1613,9 +1587,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_green_33" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 33,
@@ -1624,9 +1596,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_green_34" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 34,
@@ -1635,9 +1605,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_pink_40" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 40,
@@ -1646,9 +1614,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_pink_41" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 41,
@@ -1657,9 +1623,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_pink_42" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 42,
@@ -1668,9 +1632,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_pink_43" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 43,
@@ -1679,9 +1641,7 @@ class Material {
         "vp" => 1,
 ],
     "upg_pink_44" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 44,
@@ -1690,9 +1650,7 @@ class Material {
         "vp" => 5,
 ],
     "upg_pink_45" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 45,
@@ -1701,9 +1659,7 @@ class Material {
         "vp" => 5,
 ],
     "upg_pink_46" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 46,
@@ -1712,9 +1668,7 @@ class Material {
         "vp" => 3,
 ],
     "upg_pink_47" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 47,
@@ -1723,9 +1677,7 @@ class Material {
         "vp" => 5,
 ],
     "upg_pink_48" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 48,
@@ -1734,9 +1686,7 @@ class Material {
         "vp" => 4,
 ],
     "upg_pink_49" => [ 
-        "create" => 1,
         "type" => "upg tile",
-        "location" => "supply",
         "w" => 1,
         "h" => 1,
         "num" => 49,

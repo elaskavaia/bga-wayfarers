@@ -1,8 +1,6 @@
 num|t|r|r2|tags|vp
-#set create=1
 #set id=upg_{t}_{num}
 #set type=upg tile
-#set location=supply
 #set w=2
 #set h=1
 1|yellow|dicePlus|camel|||1

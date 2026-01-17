@@ -69,7 +69,7 @@ class Game extends Base {
         $this->tokens->createTokens();
         $tokens = $this->tokens->db;
         // setup
-
+        $pnum = $this->getPlayersNumber();
         //         Main Board Setup
 
         // Place the 3 Main Board Sections in the center of the play area (either side can be used for variety).
@@ -129,8 +129,18 @@ class Game extends Base {
             $this->tokens->db->moveToken("worker_green_$i", "jbonus_$k");
             $i++;
         }
-        // Place all 10 Special (Pink) Upgrade Tiles on their designated spaces on the Main Board.
-        // Place 1 of each unique Green, Black, Yellow, and Blue Upgrade Tile per player on the Main Board. Return extras to the box if playing with fewer than 4 players.
+
+        $token_types = $this->material->get();
+        foreach ($token_types as $key => $info) {
+            if (str_starts_with($key, "upg_pink")) {
+                // Place all 10 Special (Pink) Upgrade Tiles on their designated spaces on the Main Board.
+                $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", 1, 1);
+            } else {
+                // Place 1 of each unique Green, Black, Yellow, and Blue Upgrade Tile per player on the Main Board. Return extras to the box if playing with fewer than 4 players.
+                $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", $pnum, 1);
+            }
+        }
+
         // Place Silver and Provisions near the Main Board to form the Main Supply.
 
         // Player Setup
@@ -140,7 +150,6 @@ class Game extends Base {
         // Randomly determine the first player. Use the chart to distribute starting Provisions, Silver, and Guild Influence based on turn order.
         // Return any unused Player Boards, Dice, Influence tokens, Player Markers, and Workers to the box.
 
-        $pnum = $this->getPlayersNumber();
         $i = 1;
         $startingPlayer = $this->getActivePlayerId();
         $p = $this->getPlayerIdsInOrder($startingPlayer);

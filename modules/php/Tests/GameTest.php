@@ -200,6 +200,9 @@ final class GameTest extends TestCase {
             }
             $mne = preg_replace("/Op_(.*).php/", "\\1", $base);
             $key = "Op_{$mne}";
+            if (str_contains($key, "Base")) {
+                continue;
+            }
             if (array_key_exists($key, $tested)) {
                 continue;
             }

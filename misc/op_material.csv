@@ -44,7 +44,9 @@ infYellow|Influence on Yellow
 infBlack|Influence on Black
 infCard|Influence on Card
 infMove|Move Influence
-diceMod|Modify Dice by One
+diceMod|Modify Dice by +/- 1
+dicePlus|Modify Dice by +1
+diceMinus|Modify Dice by -1
 
 
 #set class=Op_gain

@@ -44,8 +44,47 @@ class GameXBody extends GameMachine {
 </div>
 <div id="players_panels"></div>
 <div id="test_stuff">
+  <h3>Blue Tiles (2x1)</h3>
+  <div class="upg upg_blue upg_blue_1"></div>
+  <div class="upg upg_blue upg_blue_2"></div>
+  <div class="upg upg_blue upg_blue_3"></div>
+  <div class="upg upg_blue upg_blue_4"></div>
+  <div class="upg upg_blue upg_blue_5"></div>
+  <div class="upg upg_blue upg_blue_6"></div>
+
+  <h3>Yellow Tiles (2x1)</h3>
+  <div class="upg upg_yellow upg_yellow_1"></div>
+  <div class="upg upg_yellow upg_yellow_2"></div>
+  <div class="upg upg_yellow upg_yellow_3"></div>
+  <div class="upg upg_yellow upg_yellow_4"></div>
+  <div class="upg upg_yellow upg_yellow_5"></div>
+  <div class="upg upg_yellow upg_yellow_6"></div>
+
+  <h3>Black Tiles (1x2)</h3>
+  <div class="upg upg_black upg_black_20"></div>
+  <div class="upg upg_black upg_black_21"></div>
+  <div class="upg upg_black upg_black_22"></div>
+
+  <h3>Green Tiles (1x1)</h3>
+  <div class="upg upg_green upg_green_31"></div>
+  <div class="upg upg_green upg_green_32"></div>
+  <div class="upg upg_green upg_green_33"></div>
+  <div class="upg upg_green upg_green_34"></div>
+
+  <h3>Pink Tiles (1x1)</h3>
+  <div class="upg upg_pink upg_pink_40"></div>
+  <div class="upg upg_pink upg_pink_41"></div>
+  <div class="upg upg_pink upg_pink_42"></div>
+  <div class="upg upg_pink upg_pink_43"></div>
+  <div class="upg upg_pink upg_pink_44"></div>
+  <div class="upg upg_pink upg_pink_45"></div>
+  <div class="upg upg_pink upg_pink_46"></div>
+  <div class="upg upg_pink upg_pink_47"></div>
+  <div class="upg upg_pink upg_pink_48"></div>
+  <div class="upg upg_pink upg_pink_49"></div>
 </div>
-<div id="supply"></div>
+<div id="supply">
+</div>
 
 
 `;
