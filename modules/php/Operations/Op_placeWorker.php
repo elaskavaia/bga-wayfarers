@@ -106,6 +106,9 @@ class Op_placeWorker extends Operation {
         // Step 2: Place worker on selected card and trigger card effect
         $targetCard = $this->getCheckedArg();
 
+        // Handle influence interaction if there's influence on the card (influence stays on card)
+        $this->queue("cardInteract", $owner, ["card" => $targetCard, "returnInfluence" => false]);
+
         // Move worker to the card
         $this->game->tokens->dbSetTokenLocation(
             $selectedWorker,

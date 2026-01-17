@@ -24,6 +24,8 @@ cardSpace|Gain Space Card
 cardFolk|Gain Townfolk Card
 cardWater|Gain Water Card
 cardLand|Gain Land Card
+cardDraw|Draw and Pick Card
+cardInteract|Card Influence Interaction
 
 upgBlack|Gain Black Upgrade
 upgBlue|Gain Blue Upgrade
@@ -61,3 +63,4 @@ n_coin|Pay Silver
 n_infBlue|Pay Blue Influence
 n_infYellow|Pay Yellow Influence
 n_infBlack|Pay Black Influence
+finalScoring|Final Scoring

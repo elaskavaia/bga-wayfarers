@@ -254,6 +254,14 @@ class Material {
         "type" => "cardLand",
         "name" => clienttranslate("Gain Land Card"),
 ],
+    "Op_cardDraw" => [ 
+        "type" => "cardDraw",
+        "name" => clienttranslate("Draw and Pick Card"),
+],
+    "Op_cardInteract" => [ 
+        "type" => "cardInteract",
+        "name" => clienttranslate("Card Influence Interaction"),
+],
     "Op_upgBlack" => [ 
         "type" => "upgBlack",
         "name" => clienttranslate("Gain Black Upgrade"),
@@ -373,6 +381,10 @@ class Material {
     "Op_n_infBlack" => [ 
         "type" => "n_infBlack",
         "name" => clienttranslate("Pay Black Influence"),
+],
+    "Op_finalScoring" => [ 
+        "type" => "finalScoring",
+        "name" => clienttranslate("Final Scoring"),
 ],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
@@ -2174,6 +2186,108 @@ class Material {
         "vp" => 5,
 ],
             /* --- gen php end upg_material --- */
+            /* --- gen php begin action_material --- */
+// # Land card worker actions (positions 1-4)
+    "action_land_1" => [ 
+        "type" => "action",
+        "ctype" => "land",
+        "num" => 1,
+        "name" => clienttranslate("cardFolk,diceMod"),
+],
+    "action_land_2" => [ 
+        "type" => "action",
+        "ctype" => "land",
+        "num" => 2,
+        "name" => clienttranslate("2coin,infYellow"),
+],
+    "action_land_3" => [ 
+        "type" => "action",
+        "ctype" => "land",
+        "num" => 3,
+        "name" => clienttranslate("upgYellow"),
+],
+    "action_land_4" => [ 
+        "type" => "action",
+        "ctype" => "land",
+        "num" => 4,
+        "name" => clienttranslate("3food,cardDraw(land)"),
+],
+// # Water card worker actions (positions 1-4)
+    "action_water_1" => [ 
+        "type" => "action",
+        "ctype" => "water",
+        "num" => 1,
+        "name" => clienttranslate("reroll,diceMod,diceMod"),
+],
+    "action_water_2" => [ 
+        "type" => "action",
+        "ctype" => "water",
+        "num" => 2,
+        "name" => clienttranslate("2food,infBlue"),
+],
+    "action_water_3" => [ 
+        "type" => "action",
+        "ctype" => "water",
+        "num" => 3,
+        "name" => clienttranslate("upgBlue"),
+],
+    "action_water_4" => [ 
+        "type" => "action",
+        "ctype" => "water",
+        "num" => 4,
+        "name" => clienttranslate("3food,cardDraw(water)"),
+],
+// # Folk card worker actions (positions 1-4)
+    "action_folk_1" => [ 
+        "type" => "action",
+        "ctype" => "folk",
+        "num" => 1,
+        "name" => clienttranslate("cardSpace(dis)"),
+],
+    "action_folk_2" => [ 
+        "type" => "action",
+        "ctype" => "folk",
+        "num" => 2,
+        "name" => clienttranslate("infYellow,infBlue,infBlack"),
+],
+    "action_folk_3" => [ 
+        "type" => "action",
+        "ctype" => "folk",
+        "num" => 3,
+        "name" => clienttranslate("upgGreen(free)"),
+],
+    "action_folk_4" => [ 
+        "type" => "action",
+        "ctype" => "folk",
+        "num" => 4,
+        "name" => clienttranslate("journal,food"),
+],
+// # Inspiration card worker actions (positions 1-4)
+    "action_insp_1" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 1,
+        "name" => clienttranslate("2food"),
+],
+    "action_insp_2" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 2,
+        "name" => clienttranslate("food,infAny"),
+],
+    "action_insp_3" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 3,
+        "name" => clienttranslate("coin,reroll"),
+],
+    "action_insp_4" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 4,
+        "name" => clienttranslate("2coin"),
+],
+            /* --- gen php end action_material --- */
         ];
     }
 

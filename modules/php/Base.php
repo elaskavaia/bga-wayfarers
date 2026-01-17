@@ -571,6 +571,23 @@ class Base extends Table {
         return (int) $this->getUniqueValueFromDB("SELECT player_state FROM player WHERE player_id = $player_id");
     }
 
+    function switchActivePlayer(int $playerId, bool $moreTime = true) {
+        if ($playerId <= 2) {
+            return;
+        }
+
+        if (!$this->gamestate->isPlayerActive($playerId)) {
+            if ($this->gamestate->isMultiactiveState()) {
+                $this->gamestate->setPlayersMultiactive([$playerId], "notpossible", false);
+            } else {
+                $this->gamestate->changeActivePlayer($playerId);
+            }
+            if ($moreTime) {
+                $this->giveExtraTime($playerId);
+            }
+        }
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //////////// Undo
     ////////////

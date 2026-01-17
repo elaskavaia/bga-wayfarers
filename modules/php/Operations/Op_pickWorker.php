@@ -50,6 +50,13 @@ class Op_pickWorker extends Operation {
         $owner = $this->getOwner();
         $workerKey = $this->getCheckedArg();
 
+        // Get the card the worker is on
+        $workerInfo = $this->game->tokens->db->getTokenInfo($workerKey);
+        $card = $workerInfo["location"];
+
+        // Handle influence interaction if there's influence on the card (influence stays on card)
+        $this->queue("cardInteract", $owner, ["card" => $card, "returnInfluence" => false]);
+
         // Move worker to player's tableau
         $this->game->tokens->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
     }

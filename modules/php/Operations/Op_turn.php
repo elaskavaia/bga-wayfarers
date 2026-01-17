@@ -41,21 +41,23 @@ class Op_turn extends Operation {
             // If the current player is the one who triggered end game,
             // that means everyone has had their final turn - end the game
             if ($currentPlayerNo == $triggeringPlayerNo) {
-                $this->game->tokens->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
-                $this->game->finalScoring();
+                $this->queue("finalScoring");
                 // Don't queue another turn - game will end
                 return;
             }
         }
 
         // Continue with the next turn
-        $this->queue("turn"); // XXX pick next player
+        $nextPlayerId = $this->game->getPlayerAfter($this->getPlayerId());
+        $this->queue("turn", $this->game->getPlayerColorById($nextPlayerId));
     }
 
     public function auto(): bool {
+        $this->game->switchActivePlayer($this->getPlayerId(), true);
         if ($this->getLocation() === null) {
             $this->game->customUndoSavepoint($this->getPlayerId(), 1);
         }
+
         return parent::auto();
     }
     function getDiceSlots() {

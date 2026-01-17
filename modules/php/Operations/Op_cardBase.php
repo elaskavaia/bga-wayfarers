@@ -25,6 +25,9 @@ abstract class Op_cardBase extends Operation {
     }
 
     function canAfford(string $op) {
+        if (!$op) {
+            return true;
+        }
         return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
     }
     public function getCard() {
@@ -35,6 +38,10 @@ abstract class Op_cardBase extends Operation {
     }
 
     function getPossibleMoves() {
+        $cardSelected = $this->getCard();
+        if ($cardSelected) {
+            return [$cardSelected];
+        }
         $res = [];
         $cardType = $this->getCardType();
 
@@ -42,7 +49,10 @@ abstract class Op_cardBase extends Operation {
 
         foreach ($tokens as $card => $info) {
             $payop = $this->getPaymentOperation($card);
-            $children = $info["children"] ?? [];
+            if ($this->getParam(0, "") == "free") {
+                $payop = "";
+            }
+            $children = $info["children"];
 
             $inf = "";
             if (count($children) > 0) {
@@ -69,19 +79,26 @@ abstract class Op_cardBase extends Operation {
         $owner = $this->getOwner();
         $card = $this->getCheckedArg();
 
+        // Check if player chose the deck
+        if (str_starts_with($card, "deck_")) {
+            $owner = $this->getOwner();
+            $this->queue("n_food", $owner, [], "cardDraw"); // TODO: food or bird
+            $this->queue("3cardDraw({$this->getCardType()})");
+            return;
+        }
+        // Handle influence interaction if there's influence on the card
+        $this->queue("cardInteract", $owner, ["card" => $card]);
+
         $args = $this->getArgs();
         $info = $args["info"][$card];
-        $this->queue($info["pay"]);
-        $inf = $info["inf"];
-        if ($inf) {
-            $this->queue("food/coin", $owner, [], $inf);
-            // return card influence
-            $opp = getPart($inf, 2);
-            $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
+        $payop = $info["pay"];
+        if ($payop) {
+            $this->queue($payop);
         }
 
         $this->placeCard($card);
 
+        // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
             $this->queue($r, $owner, ["card" => $card], $card);
