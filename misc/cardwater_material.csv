@@ -1,0 +1,55 @@
+num|r|d|dr|tags|c1|c2
+#set create=1
+#set location=deck_water
+#set type=card card_water water
+#set t=water
+#set id=card_{t}_{num}
+# Water Cards (39-76) - 6x7 sprite
+
+#set ext=1
+39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx
+40|cardLand(draw1)|||Sea|___|___x
+#set ext=
+41||bird|food,journal|Harbour Book|__x_|bx_x
+42||bird|coin,journal|Harbour Book|__x_|u_xx
+43||bird|infCard,journal|Harbour Book|x__x|yxxx
+44||2ship|n_food:cardWater|Harbour Book|_xx_|yx__
+
+45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x
+46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx
+47||ship|upgBlue/infBlue,infBlue|Harbour|xx__|u_x_
+48||ship|upgBlue/infBlue,infBlue|Harbour|__xx|yx__
+49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_
+50||2ship|pickWorker,reroll,infCard|Harbour|__xx|u__x
+
+51||2ship|infYellow,infBlack,coin|Harbour|xx__|__xx
+52||2ship|infBlue,infBlack,food|Harbour|x_x_|yx__
+53||2ship|cardFolk(free)|Harbour|x___|_xx_
+54||ship|cardFolk,food|Harbour|_x_x|_xx_
+55||2ship|4food|Harbour|_x_x|__xx
+56||2ship|4coin|Harbour|x_x_|__xx
+
+57||ship|infCard,2coin|Harbour|_x_x|bxxx
+58||ship|pickWorker,2food|Harbour|xx__|_x_x
+59|infBlack,coin,foo,infCard|||Sea|_x__|bxxx
+60|2coin,reroll|||Sea|__xx|_xx_
+61|upgBlack(free)|||Sea|___x|u___
+62|upgGreen(free),diceMod|||Sea|x__x|b_x_
+
+63|upgYellow(free)|||Sea|_x__|_x__
+64|upgBlue(free)|||Sea|__x_|__x_
+65|3food|||Sea|__xx|_xx_
+66|3coin|||Sea|xx__|_xx_
+67|cardFold(free)|||Sea|x___|_x__
+68|cardInsp|||Sea|____|_x__
+
+69|infBlack,journal|||Sea|_x__|_x_x
+70|journal|||Sea|__x_|ux__
+71|pickWorker,reroll|||Sea|x__x|y__x
+72|pickWorker,pickWorker|||Sea|_x__|b___
+73|infCard,infCard/infMove,infMove|||Sea|_xx_|_x_x
+74|infBlue,infBlue|||Sea|__x_|yx_x
+
+75|infYellow,infYellow|||Sea|_x__|u_xx
+76|infBlack,infBlack|||Sea|___x|_xx_
+

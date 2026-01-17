@@ -1730,6 +1730,7 @@ var GameXBody = /** @class */ (function (_super) {
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
+            document.querySelectorAll(".caravan_cell").forEach(function (node) { return _this.addListenerWithGuard(node, function (e) { return _this.onToken(e); }); });
             // document.rootElement?.classList.add("bgaext_cust_back");
             var parent = document.querySelector(".debug_section"); // studio only
             if (parent)
@@ -1757,7 +1758,7 @@ var GameXBody = /** @class */ (function (_super) {
                 caravanCells += "<div id='caravan_".concat(pos, "_").concat(pcolor, "' class='caravan_cell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
             }
         }
-        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
     };
     GameXBody.prototype.setupScoreSheet = function () {
         var _this = this;
@@ -1895,10 +1896,9 @@ var GameXBody = /** @class */ (function (_super) {
                 }
                 result.location = "pboard_column_".concat(x, "_").concat(color);
                 if (!$(result.location)) {
-                    if (x < 0)
-                        placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "' ></div>"), "tableau_".concat(color), "afterbegin");
-                    else
-                        placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "'></div>"), "pboard_".concat(color), "afterend");
+                    // if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
+                    // else
+                    placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "' style='order: ").concat(x, ";'></div>"), "pboard_".concat(color), "afterend");
                 }
             }
             else if (location.startsWith("discard")) {
@@ -1944,11 +1944,29 @@ var GameXBody = /** @class */ (function (_super) {
             result.location = "breakroom_".concat(color);
             result.onClick = function (x) { return _this.onToken(x); };
         }
-        else if (tokenId.startsWith("upg") && location.startsWith("tableau")) {
-            // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+        else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
             var color = getPart(location, 1);
-            var pos = Number(tokenInfo.state);
-            result.location = "caravan_".concat(pos, "_").concat(color);
+            result.location = "infsupply_".concat(color);
+        }
+        else if (tokenId.startsWith("upg")) {
+            if (location.startsWith("tableau")) {
+                // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+                var color = getPart(location, 1);
+                var pos = Number(tokenInfo.state);
+                result.location = "caravan_".concat(pos, "_").concat(color);
+            }
+            else if (location.startsWith("mainarea")) {
+                var cardType = getPart(tokenId, 1);
+                result.onClick = function (x) { return _this.onToken(x); };
+                switch (cardType) {
+                    case "pink":
+                        result.location = "mainboard_1";
+                        break;
+                    default:
+                        result.location = "mainboard_2";
+                        break;
+                }
+            }
         }
         return result;
     };

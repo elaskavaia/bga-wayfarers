@@ -35,7 +35,7 @@ upg|Upgrade Tile|10|upg tile|2|supply
 #create=1
 card_space|Space|36|card space|2|deck_space
 #card_land|Land|36|card land|2|deck_land
-card_water|Water|36|card water|2|deck_water
+#card_water|Water|36|card water|2|deck_water
 card_insp|Inspiration|16|card insp|2|deck_insp
 
 #boards

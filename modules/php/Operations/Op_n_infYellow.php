@@ -1,0 +1,25 @@
+<?php
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ *
+ */
+
+declare(strict_types=1);
+
+namespace Bga\Games\wayfarers\Operations;
+
+class Op_n_infYellow extends Op_n_infBase {
+    function getGuild(): string {
+        return "guild_yellow";
+    }
+
+    public function getPrompt() {
+        return clienttranslate('Pay ${count} Yellow Influence');
+    }
+}

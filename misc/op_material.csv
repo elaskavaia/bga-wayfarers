@@ -56,3 +56,8 @@ coin|Gain Silver
 #set class=Op_pay
 n_food|Pay Provisions
 n_coin|Pay Silver
+
+#set class=
+n_infBlue|Pay Blue Influence
+n_infYellow|Pay Yellow Influence
+n_infBlack|Pay Black Influence

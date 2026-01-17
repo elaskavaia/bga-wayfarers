@@ -177,6 +177,10 @@ class Game extends Base {
             }
             // 5 Dice in their chosen color (roll 3 and place them next to their Player Board; keep 2 in reserve near the Minarets on the Main Board).
             // 15 Influence tokens in their chosen color.
+            for ($j = 1; $j <= 3; $j++) {
+                $newValue = bga_rand(1, 6);
+                $this->tokens->db->setTokenState("dice_{$color}_{$j}", $newValue);
+            }
             $this->tokens->db->moveToken("dice_{$color}_4", "supply");
             $this->tokens->db->moveToken("dice_{$color}_5", "supply");
             $i++;

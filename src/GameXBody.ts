@@ -68,6 +68,8 @@ class GameXBody extends GameMachine {
       this.setupScoreSheet();
       this.updateBanner();
 
+      document.querySelectorAll(".caravan_cell").forEach((node: HTMLElement) => this.addListenerWithGuard(node, (e) => this.onToken(e)));
+
       // document.rootElement?.classList.add("bgaext_cust_back");
 
       var parent = document.querySelector(".debug_section"); // studio only
@@ -107,6 +109,7 @@ class GameXBody extends GameMachine {
 
          <div id='pboard_${pcolor}' class='pboard'>
            <div id='breakroom_${pcolor}' class='breakroom'></div>
+           <div id='infsupply_${pcolor}' class='infsupply'></div>
            <div id='caravan_${pcolor}' class='caravan'>
              ${caravanCells}
            </div>
@@ -239,8 +242,13 @@ class GameXBody extends GameMachine {
         }
         result.location = `pboard_column_${x}_${color}`;
         if (!$(result.location)) {
-          if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
-          else placeHtml(`<div id='${result.location}' class='column' data-state='${x}'></div>`, `pboard_${color}`, "afterend");
+          // if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
+          // else
+          placeHtml(
+            `<div id='${result.location}' class='column' data-state='${x}' style='order: ${x};'></div>`,
+            `pboard_${color}`,
+            "afterend"
+          );
         }
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);
@@ -273,11 +281,27 @@ class GameXBody extends GameMachine {
       const color = getPart(location, 1);
       result.location = `breakroom_${color}`;
       result.onClick = (x) => this.onToken(x);
-    } else if (tokenId.startsWith("upg") && location.startsWith("tableau")) {
-      // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+    } else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
       const color = getPart(location, 1);
-      const pos = Number(tokenInfo.state);
-      result.location = `caravan_${pos}_${color}`;
+      result.location = `infsupply_${color}`;
+    } else if (tokenId.startsWith("upg")) {
+      if (location.startsWith("tableau")) {
+        // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+        const color = getPart(location, 1);
+        const pos = Number(tokenInfo.state);
+        result.location = `caravan_${pos}_${color}`;
+      } else if (location.startsWith("mainarea")) {
+        const cardType = getPart(tokenId, 1);
+        result.onClick = (x) => this.onToken(x);
+        switch (cardType) {
+          case "pink":
+            result.location = "mainboard_1";
+            break;
+          default:
+            result.location = "mainboard_2";
+            break;
+        }
+      }
     }
     return result;
   }

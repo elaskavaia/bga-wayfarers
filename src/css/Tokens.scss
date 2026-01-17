@@ -13,8 +13,18 @@
   }
 }
 
-.miniboard,
-.restrackers {
+.counter,
+.influence {
+  color: black;
+  text-shadow: v.$textShadowWhite;
+
+  html[data-theme="dark"] & {
+    color: white;
+    text-shadow: v.$textShadowBlack;
+  }
+}
+
+.miniboard {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -329,25 +339,27 @@
   // Default: upgTiles2.jpg (Blue and Yellow tiles)
   background-image: url(img/upgTiles2.jpg);
   background-size: 300% 400%; // 3 columns, 4 rows
+  $w: 42px;
+  $h: 42px;
 
   // Blue and Yellow tiles are 2x1 (horizontal rectangles)
   &.upg_blue,
   &.upg_yellow {
-    width: 100px;
-    height: 50px;
+    width: calc(2 * $w);
+    height: $h;
   }
 
   // Pink and Green tiles are 1x1 (squares)
   &.upg_pink,
   &.upg_green {
-    width: 50px;
-    height: 50px;
+    width: $w;
+    height: $h;
   }
 
   // Black tiles are 1x2 (vertical rectangles)
   &.upg_black {
-    width: 50px;
-    height: 100px;
+    width: $w;
+    height: calc(2 * $h);
   }
 
   // Override background image and size for upgTiles1.jpg tiles
@@ -364,22 +376,22 @@
   }
 
   // Blue tiles (upgTiles2.jpg, rows 1-2)
-  &.upg_blue_1 {
+  &.upg_blue_7 {
     background-position: 0% 0%;
   }
-  &.upg_blue_2 {
+  &.upg_blue_8 {
     background-position: 50% 0%;
   }
-  &.upg_blue_3 {
+  &.upg_blue_9 {
     background-position: 100% 0%;
   }
-  &.upg_blue_4 {
+  &.upg_blue_10 {
     background-position: 0% 33.333%;
   }
-  &.upg_blue_5 {
+  &.upg_blue_11 {
     background-position: 50% 33.333%;
   }
-  &.upg_blue_6 {
+  &.upg_blue_12 {
     background-position: 100% 33.333%;
   }
 

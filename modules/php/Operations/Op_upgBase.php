@@ -17,6 +17,8 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+use function Bga\Games\wayfarers\getPart;
+
 /**
  * Base class for upgrade tile operations
  * Handles caravan grid placement (6x3 grid)
@@ -43,14 +45,9 @@ abstract class Op_upgBase extends Operation {
      */
     abstract function getTileHeight(): int;
 
-    /**
-     * Get the cost for this upgrade type
-     * Default is 3, can be overridden by subclasses
-     */
-    function getCost(): int {
-        return 3;
+    public function getUiArgs() {
+        return ["buttons" => false];
     }
-
     /**
      * Get the selected tile from step 1
      */
@@ -157,7 +154,7 @@ abstract class Op_upgBase extends Operation {
             $tileType = $this->getTileType();
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("upg_$tileType", "mainarea");
             $res = [];
-            $cost = $this->getCost();
+
             $seenTypes = [];
             foreach (array_keys($tokens) as $card) {
                 // Tile IDs are like upg_blue_1_1, upg_blue_1_2 - first 3 segments identify unique type
@@ -166,7 +163,7 @@ abstract class Op_upgBase extends Operation {
 
                 if (!isset($seenTypes[$uniqueType])) {
                     $seenTypes[$uniqueType] = true;
-                    $res[$card] = ["q" => 0, "cost" => $cost];
+                    $res[$card] = ["q" => 0];
                 }
             }
             return $res;
@@ -216,7 +213,9 @@ abstract class Op_upgBase extends Operation {
             // Step 1: Tile selected, pay cost and move to step 2
             $tile = $this->getCheckedArg();
             $op = $this->getPaymentOperation($tile);
-            $this->queue($op, $owner, [], $tile);
+            if ($op) {
+                $this->queue($op, $owner, [], $tile);
+            }
 
             // Queue step 2 with the selected tile
             $this->queue($this->getType(), $owner, ["tile" => $tile], $tile);
@@ -226,8 +225,8 @@ abstract class Op_upgBase extends Operation {
         // Step 2: Position selected, place tile in caravan
         $position = $this->getCheckedArg();
 
-        // Extract position from "pos_X" format
-        $posValue = (int) substr($position, 4);
+        // Extract position from "caravan_X_owner" format
+        $posValue = (int) getPart($position, 1);
 
         // Place tile in tableau with position encoded in state
         $this->game->tokens->dbSetTokenLocation(

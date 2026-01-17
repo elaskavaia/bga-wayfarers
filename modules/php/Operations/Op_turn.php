@@ -42,6 +42,7 @@ class Op_turn extends Operation {
             // that means everyone has had their final turn - end the game
             if ($currentPlayerNo == $triggeringPlayerNo) {
                 $this->game->tokens->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
+                $this->game->finalScoring();
                 // Don't queue another turn - game will end
                 return;
             }
