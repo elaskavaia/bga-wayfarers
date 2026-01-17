@@ -21,20 +21,21 @@ class Op_cardFolk extends Op_cardBase {
         $cardSelected = $this->getCard();
         $res = [];
         $owner = $this->getOwner();
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
+        $allCards = $this->game->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
 
-        // Get all folk cards in player's tableau and build a set of occupied states
-        $folkCards = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "tableau_$owner");
+        // Separate folk cards and other cards, build occupied states set
+        $cards = [];
         $occupiedStates = [];
-        foreach ($folkCards as $folkInfo) {
-            $occupiedStates[(int) $folkInfo["state"]] = true;
+        foreach ($allCards as $tcard => $info) {
+            if (str_starts_with($tcard, "card_folk")) {
+                $occupiedStates[(int) $info["state"]] = true;
+            } else {
+                $cards[$tcard] = $info;
+            }
         }
 
+        // Mark which card positions are occupied by folk cards
         foreach ($cards as $tcard => &$info) {
-            if (str_starts_with($tcard, "card_folk")) {
-                continue;
-            }
-            // Check if this card's state is already occupied by a folk card
             $cardState = (int) $info["state"];
             $info["folkon"] = $occupiedStates[$cardState] ?? false;
         }
@@ -49,10 +50,12 @@ class Op_cardFolk extends Op_cardBase {
                 foreach ($cards as $tcard => $cardInfo) {
                     if ($this->hasMatchingTags($card, $tcard)) {
                         if ($cardInfo["folkon"]) {
-                            $res[$card]["q"] = 0;
-                            $res[$card]["info"][$tcard] = ["q" => 0];
-                        } else {
+                            // Position already has a folk card - not available
                             $res[$card]["info"][$tcard] = ["q" => Material::ERR_OCCUPIED];
+                        } else {
+                            // Position available
+                            $res[$card]["q"] = Material::RET_OK;
+                            $res[$card]["info"][$tcard] = ["q" => Material::RET_OK];
                         }
                     }
                 }
@@ -62,7 +65,7 @@ class Op_cardFolk extends Op_cardBase {
         // where to put it
 
         foreach ($cards as $tcard => $info) {
-            if ($this->hasMatchingTags($cardSelected, $tcard)) {
+            if ($this->hasMatchingTags($cardSelected, $tcard) && !$info["folkon"]) {
                 $res[$tcard] = ["q" => 0];
             }
         }

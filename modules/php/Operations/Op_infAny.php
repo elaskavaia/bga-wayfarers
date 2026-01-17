@@ -15,47 +15,105 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_infAny extends Op_infBase {
-    function getPossibleMoves() {
-        $owner = $this->getOwner();
-        $influence = $this->game->tokens->getTokensOfTypeInLocation("influence", "tableau_$owner");
+    function getGuild(): string {
+        return $this->getDataField("guild", "");
+    }
 
-        if (count($influence) == 0) {
+    function getPossibleMoves() {
+        $selectedGuild = $this->getGuild();
+        $influence = $this->getInfluenceInPlayerSupply();
+
+        if ($selectedGuild === "") {
+            // Step 1: Select which guild to place on
+            // Check if player has any influence available (supply or movable)
+            if (count($influence) == 0 && count($this->getMovableInfluenceForAny()) == 0) {
+                return ["q" => Material::ERR_NONE_LEFT];
+            }
+
+            return [
+                "guild_black" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_black")],
+                "guild_yellow" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_yellow")],
+                "guild_blue" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_blue")],
+            ];
+        }
+
+        // Step 2: Guild selected, now place or select influence to move
+        if (count($influence) > 0) {
+            return ["confirm"];
+        }
+
+        // No influence in supply - show movable influence
+        $movable = $this->getMovableInfluence($selectedGuild);
+        if (count($movable) == 0) {
             return ["q" => Material::ERR_NONE_LEFT];
         }
 
-        return [
-            "guild_black" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_black")],
-            "guild_yellow" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_yellow")],
-            "guild_blue" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_blue")],
-        ];
+        return $movable;
     }
 
-    function getGuild(): string {
-        return $this->getDataField("guild", "guild_any");
+    /**
+     * Get movable influence for any guild (all guilds are valid targets)
+     */
+    function getMovableInfluenceForAny(): array {
+        return $this->getMovableInfluence("guild_any");
     }
 
     function canSkip() {
+        $influence = $this->getInfluenceInPlayerSupply();
+        if (count($influence) > 0) {
+            return false;
+        }
         return true;
     }
 
     function resolve(): void {
         $owner = $this->getOwner();
-        $guild = $this->getCheckedArg();
-        $influence = $this->game->tokens->getTokensOfTypeInLocation("influence", "tableau_$owner");
-        $influenceKey = array_key_first($influence);
+        $selectedGuild = $this->getGuild();
 
-        $this->game->tokens->dbSetTokenLocation(
-            $influenceKey,
-            $guild,
-            0,
-            clienttranslate('${player_name} places ${token_name} on ${place_name}')
-        );
+        if ($selectedGuild === "") {
+            // Step 1: Store selected guild and queue step 2
+            $guild = $this->getCheckedArg();
+            $this->queue($this->getType(), $owner, ["guild" => $guild]);
+            return;
+        }
+
+        // Step 2: Place or move influence
+        $influence = $this->getInfluenceInPlayerSupply();
+
+        if (count($influence) > 0) {
+            // Place from supply
+            $influenceKey = array_key_first($influence);
+            $this->game->tokens->dbSetTokenLocation(
+                $influenceKey,
+                $selectedGuild,
+                0,
+                clienttranslate('${player_name} places ${token_name} on ${place_name}')
+            );
+        } else {
+            // Move from another location
+            $influenceKey = $this->getCheckedArg();
+            $this->game->tokens->dbSetTokenLocation(
+                $influenceKey,
+                $selectedGuild,
+                0,
+                clienttranslate('${player_name} moves ${token_name} to ${place_name}')
+            );
+        }
     }
 
     function getPrompt() {
-        return clienttranslate("Select a guild to place influence on");
+        $selectedGuild = $this->getGuild();
+
+        if ($selectedGuild === "") {
+            return clienttranslate("Select a guild to place influence on");
+        }
+
+        $influence = $this->getInfluenceInPlayerSupply();
+        if (count($influence) > 0) {
+            return clienttranslate("Confirm to place influence");
+        }
+        return clienttranslate("No influence left in supply. Select influence to move or Skip");
     }
 }

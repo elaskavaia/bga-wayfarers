@@ -138,7 +138,7 @@
     // Generate positions for states 0-50
     @for $step from 0 through 30 {
       $i: calc($step / 3);
-      &[data-state="#{$i}"] {
+      &[data-state="#{$step}"] {
         left: #{$i * 10%};
       }
     }

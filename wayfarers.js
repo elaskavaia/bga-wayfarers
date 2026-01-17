@@ -1888,30 +1888,17 @@ var GameXBody = /** @class */ (function (_super) {
             }
             else if (location.startsWith("tableau")) {
                 var color = getPart(location, 1);
-                if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
+                var x = tokenInfo.state;
+                if (cardType == "home" || tokenId.startsWith("card_folk_1_")) {
                     result.location = "pboard_".concat(color);
+                    return result;
                 }
-                else if (cardType == "folk") {
-                    // Folk cards use state to determine which column they belong to (same as target card)
-                    var x = tokenInfo.state;
-                    result.location = "pboard_column_".concat(x, "_").concat(color);
-                    if (!$(result.location)) {
-                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
-                    }
-                }
-                else if (cardType == "water") {
-                    var x = tokenInfo.state;
-                    result.location = "pboard_column_".concat(x, "_").concat(color);
-                    if (!$(result.location)) {
-                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
-                    }
-                }
-                else if (cardType == "land") {
-                    var x = tokenInfo.state;
-                    result.location = "pboard_column_".concat(x, "_").concat(color);
-                    if (!$(result.location)) {
-                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "tableau_".concat(color), "afterbegin");
-                    }
+                result.location = "pboard_column_".concat(x, "_").concat(color);
+                if (!$(result.location)) {
+                    if (x < 0)
+                        placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "' ></div>"), "tableau_".concat(color), "afterbegin");
+                    else
+                        placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "'></div>"), "pboard_".concat(color), "afterend");
                 }
             }
             else if (location.startsWith("discard")) {

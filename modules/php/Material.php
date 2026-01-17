@@ -1196,7 +1196,7 @@ class Material {
         "type" => "card card_land land",
         "t" => "land",
         "num" => 15,
-        "r" => "infYellow",
+        "r" => "infAny",
         "d" => "camel",
         "dr" => "cardFolk,journal",
         "tags" => "City Book",

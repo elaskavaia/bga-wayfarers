@@ -18,45 +18,80 @@ use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_infMove extends Operation {
-    function getPlayerInfluenceOnGuilds(): array {
+    /**
+     * Get all player's influence that can be moved (on guilds or cards)
+     */
+    function getPlayerInfluenceToMove(): array {
         $owner = $this->getOwner();
         $influence = [];
-        
+
+        // Check guilds
         foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
-            if (count($tokens) > 0) {
-                $influence[$guild] = array_key_first($tokens);
+            foreach ($tokens as $tokenId => $info) {
+                $influence[$tokenId] = ["q" => Material::RET_OK, "from" => $guild];
             }
         }
-        
+
+        // Check cards
+        $cardsWithInfluence = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", "card_%", true);
+        foreach ($cardsWithInfluence as $tokenId => $info) {
+            $influence[$tokenId] = ["q" => Material::RET_OK, "from" => $info["location"]];
+        }
+
         return $influence;
     }
 
+    /**
+     * Get possible destinations (guilds and available cards)
+     */
+    function getPossibleDestinations(string $sourceLocation): array {
+        $owner = $this->getOwner();
+        $res = [];
+
+        // Add guilds (except source if it's a guild)
+        foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
+            if ($guild !== $sourceLocation) {
+                $res[$guild] = ["q" => Material::RET_OK, "name" => $this->game->getTokenName($guild)];
+            }
+        }
+
+        // Add cards that don't have player's influence yet
+        $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "mainarea");
+        $cardsWithMyInfluence = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", "card_%", true);
+        $occupiedCards = [];
+        foreach ($cardsWithMyInfluence as $info) {
+            $occupiedCards[$info["location"]] = true;
+        }
+
+        foreach ($cards as $cardId => $info) {
+            // Can move to card if it doesn't have my influence (unless moving from that same card)
+            if (!isset($occupiedCards[$cardId]) || $cardId === $sourceLocation) {
+                if ($cardId !== $sourceLocation) {
+                    $res[$cardId] = ["q" => Material::RET_OK];
+                }
+            }
+        }
+
+        return $res;
+    }
+
     function getPossibleMoves() {
-        $selectedFrom = $this->getDataField("from", null);
-        
-        if ($selectedFrom === null) {
-            // Step 1: Select source guild
-            $influence = $this->getPlayerInfluenceOnGuilds();
-            
+        $selectedInfluence = $this->getDataField("influence", null);
+
+        if ($selectedInfluence === null) {
+            // Step 1: Select influence to move
+            $influence = $this->getPlayerInfluenceToMove();
+
             if (count($influence) == 0) {
                 return ["q" => Material::ERR_NONE_LEFT];
             }
-            
-            $res = [];
-            foreach ($influence as $guild => $token) {
-                $res[$guild] = ["q" => Material::RET_OK, "name" => $this->game->getTokenName($guild)];
-            }
-            return $res;
+
+            return $influence;
         } else {
-            // Step 2: Select destination guild
-            $res = [];
-            foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
-                if ($guild !== $selectedFrom) {
-                    $res[$guild] = ["q" => Material::RET_OK, "name" => $this->game->getTokenName($guild)];
-                }
-            }
-            return $res;
+            // Step 2: Select destination
+            $sourceLocation = $this->getDataField("from", "");
+            return $this->getPossibleDestinations($sourceLocation);
         }
     }
 
@@ -66,33 +101,33 @@ class Op_infMove extends Operation {
 
     function resolve(): void {
         $owner = $this->getOwner();
-        $selectedFrom = $this->getDataField("from", null);
-        
-        if ($selectedFrom === null) {
-            // Step 1: Store source guild and queue step 2
-            $from = $this->getCheckedArg();
-            $this->queue($this->getType(), $owner, ["from" => $from]);
+        $selectedInfluence = $this->getDataField("influence", null);
+
+        if ($selectedInfluence === null) {
+            // Step 1: Store selected influence and its source, queue step 2
+            $influenceKey = $this->getCheckedArg();
+            $allInfluence = $this->getPlayerInfluenceToMove();
+            $from = $allInfluence[$influenceKey]["from"] ?? "";
+            $this->queue($this->getType(), $owner, ["influence" => $influenceKey, "from" => $from]);
             return;
         }
-        
-        // Step 2: Move influence from source to destination
+
+        // Step 2: Move influence to destination
         $to = $this->getCheckedArg();
-        $influence = $this->getPlayerInfluenceOnGuilds();
-        $influenceKey = $influence[$selectedFrom];
-        
+
         $this->game->tokens->dbSetTokenLocation(
-            $influenceKey,
+            $selectedInfluence,
             $to,
             0,
-            clienttranslate('${player_name} moves ${token_name} from ${place_from} to ${place_name}')
+            clienttranslate('${player_name} moves ${token_name} to ${place_name}')
         );
     }
 
     function getPrompt() {
-        $selectedFrom = $this->getDataField("from", null);
-        if ($selectedFrom === null) {
-            return clienttranslate("Select a guild to move influence from");
+        $selectedInfluence = $this->getDataField("influence", null);
+        if ($selectedInfluence === null) {
+            return clienttranslate("Select influence to move");
         }
-        return clienttranslate("Select a guild to move influence to");
+        return clienttranslate("Select destination for influence");
     }
 }

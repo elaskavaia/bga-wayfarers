@@ -31,9 +31,11 @@ abstract class Op_infBase extends Operation {
     /**
      * Get player's influence tokens that can be moved (from other guilds or cards)
      */
-    function getMovableInfluence(): array {
+    function getMovableInfluence(?string $targetGuild = null): array {
         $owner = $this->getOwner();
-        $targetGuild = $this->getGuild();
+        if ($targetGuild === null) {
+            $targetGuild = $this->getGuild();
+        }
         $movable = [];
 
         // Check other guilds

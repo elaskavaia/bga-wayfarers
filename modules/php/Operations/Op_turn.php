@@ -155,6 +155,18 @@ class Op_turn extends Operation {
 
         $this->game->systemAssert("parent rule empty '$loc'", $r);
         $this->queue($r, $owner, [], $loc);
+
+        // Check for folk card tucked under this card (same state) and activate its ability
+        $cardState = (int) $this->game->tokens->db->getTokenState($loc);
+        $folkCards = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "tableau_$owner", $cardState);
+        $folkCard = array_key_first($folkCards);
+        if ($folkCard !== null) {
+            $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
+            if ($folkRule !== "") {
+                $this->queue($folkRule, $owner, [], $folkCard);
+            }
+        }
+
         $this->queueNextTurnOrEnd();
     }
 

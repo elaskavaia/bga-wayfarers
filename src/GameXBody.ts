@@ -232,27 +232,15 @@ class GameXBody extends GameMachine {
         }
       } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
-        if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
+        const x = tokenInfo.state;
+        if (cardType == "home" || tokenId.startsWith("card_folk_1_")) {
           result.location = `pboard_${color}`;
-        } else if (cardType == "folk") {
-          // Folk cards use state to determine which column they belong to (same as target card)
-          const x = tokenInfo.state;
-          result.location = `pboard_column_${x}_${color}`;
-          if (!$(result.location)) {
-            placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
-          }
-        } else if (cardType == "water") {
-          const x = tokenInfo.state;
-          result.location = `pboard_column_${x}_${color}`;
-          if (!$(result.location)) {
-            placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
-          }
-        } else if (cardType == "land") {
-          const x = tokenInfo.state;
-          result.location = `pboard_column_${x}_${color}`;
-          if (!$(result.location)) {
-            placeHtml(`<div id='${result.location}' class='column'></div>`, `tableau_${color}`, "afterbegin");
-          }
+          return result;
+        }
+        result.location = `pboard_column_${x}_${color}`;
+        if (!$(result.location)) {
+          if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
+          else placeHtml(`<div id='${result.location}' class='column' data-state='${x}'></div>`, `pboard_${color}`, "afterend");
         }
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);
