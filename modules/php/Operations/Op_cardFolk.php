@@ -16,19 +16,27 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Material;
 
-class Op_cardGreen extends Op_gainCard {
+class Op_cardFolk extends Op_cardBase {
     function getPossibleMoves() {
         $cardSelected = $this->getCard();
         $res = [];
         $owner = $this->getOwner();
         $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
 
+        // Get all folk cards in player's tableau and build a set of occupied states
+        $folkCards = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "tableau_$owner");
+        $occupiedStates = [];
+        foreach ($folkCards as $folkInfo) {
+            $occupiedStates[(int) $folkInfo["state"]] = true;
+        }
+
         foreach ($cards as $tcard => &$info) {
-            $info["folkon"] = 0;
-            $folks = $this->game->tokens->getTokensOfTypeInLocation("card", $tcard);
-            if (count($folks) > 0) {
-                $info["folkon"] = 1;
+            if (str_starts_with($tcard, "card_folk")) {
+                continue;
             }
+            // Check if this card's state is already occupied by a folk card
+            $cardState = (int) $info["state"];
+            $info["folkon"] = $occupiedStates[$cardState] ?? false;
         }
         unset($info);
         if ($cardSelected == null) {
@@ -40,7 +48,7 @@ class Op_cardGreen extends Op_gainCard {
 
                 foreach ($cards as $tcard => $cardInfo) {
                     if ($this->hasMatchingTags($card, $tcard)) {
-                        if ($cardInfo["folkon"] == 0) {
+                        if ($cardInfo["folkon"]) {
                             $res[$card]["q"] = 0;
                             $res[$card]["info"][$tcard] = ["q" => 0];
                         } else {
@@ -90,10 +98,12 @@ class Op_cardGreen extends Op_gainCard {
         $cardTuck = $this->getCheckedArg();
         $cost = $this->getCost($cardSelected);
         $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
+        // Get the state of the target card to place folk card at same state
+        $targetState = (int) $this->game->tokens->db->getTokenState($cardTuck);
         $this->game->tokens->dbSetTokenLocation(
             $cardSelected,
-            $cardTuck,
-            0,
+            "tableau_$owner",
+            $targetState,
             clienttranslate('${player_name} buys Townfolk card ${token_name}')
         );
         $this->queue("drawTab", $owner, ["card" => $cardSelected]);

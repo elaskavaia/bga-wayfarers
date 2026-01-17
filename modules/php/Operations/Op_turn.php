@@ -41,11 +41,7 @@ class Op_turn extends Operation {
             // If the current player is the one who triggered end game,
             // that means everyone has had their final turn - end the game
             if ($currentPlayerNo == $triggeringPlayerNo) {
-                $this->game->tokens->dbSetTokenState(
-                    Game::GAME_STAGE,
-                    5,
-                    clienttranslate('Final turn complete. Game ends!')
-                );
+                $this->game->tokens->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
                 // Don't queue another turn - game will end
                 return;
             }
@@ -59,7 +55,7 @@ class Op_turn extends Operation {
         if ($this->getLocation() === null) {
             $this->game->customUndoSavepoint($this->getPlayerId(), 1);
         }
-        return false;
+        return parent::auto();
     }
     function getDiceSlots() {
         $owner = $this->getOwner();
@@ -78,10 +74,12 @@ class Op_turn extends Operation {
         return $slots;
     }
 
-    function getDice() {
+    /**
+     * Get dice in player's supply (tableau)
+     */
+    function getDiceInPlayerSupply(): array {
         $owner = $this->getOwner();
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
-        return $cards;
+        return $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
     }
 
     /**
@@ -102,15 +100,16 @@ class Op_turn extends Operation {
     public function getPossibleMoves() {
         $loc = $this->getLocation();
         $res = [];
+        $player_dice = $this->getDiceInPlayerSupply();
         if ($loc) {
-            $player_dice = $this->getDice();
-
             foreach ($player_dice as $key => $slot) {
                 $res[$key] = ["q" => 0];
             }
-        } else {
+            return $res;
+        }
+        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
+        if (count($player_dice) > 0) {
             $slots = $this->getDiceSlots();
-
             foreach ($slots as $key => $slot) {
                 $state = $slot["state"];
                 $res[$key] = ["q" => $state == 0 ? Material::RET_OK : Material::ERR_OCCUPIED];
@@ -120,7 +119,6 @@ class Op_turn extends Operation {
         if ($this->canPlaceWorker()) {
             $res["worker"] = ["q" => 0, "name" => clienttranslate("Place Worker")];
         }
-        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
         return $res;
     }
     public function getUiArgs() {
@@ -148,15 +146,15 @@ class Op_turn extends Operation {
             $this->queue($this->getType(), $owner, ["loc" => $selected]);
             return;
         }
-        $tool = $this->getCheckedArg();
-        $state = $this->game->tokens->db->getTokenState($tool);
-        $this->game->tokens->dbSetTokenLocation($tool, $loc, 0, clienttranslate('${player_name} places die ${num} onto ${token_name}'), [
+        $die = $this->getCheckedArg();
+        $state = $this->game->tokens->db->getTokenState($die);
+        $this->game->tokens->dbSetTokenLocation($die, $loc, 0, clienttranslate('${player_name} places die ${num} onto ${token_name}'), [
             "num" => $state,
         ]);
         $r = $this->game->getRulesFor($loc, "dr");
 
         $this->game->systemAssert("parent rule empty '$loc'", $r);
-        $this->queue($r);
+        $this->queue($r, $owner, [], $loc);
         $this->queueNextTurnOrEnd();
     }
 

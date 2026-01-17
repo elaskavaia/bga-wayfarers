@@ -3,12 +3,12 @@
 declare(strict_types=1);
 
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\Operations\Op_cardGreen;
+use Bga\Games\wayfarers\Operations\Op_cardFolk;
 use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
-final class Op_cardGreenTest extends TestCase {
+final class Op_cardFolkTest extends TestCase {
     private GameUT $game;
 
     protected function setUp(): void {
@@ -16,10 +16,10 @@ final class Op_cardGreenTest extends TestCase {
         $this->game->init();
     }
 
-    private function createOp(?string $card = null): Op_cardGreen {
+    private function createOp(?string $card = null): Op_cardFolk {
         $data = $card !== null ? ["card" => $card] : null;
-        /** @var Op_cardGreen */
-        $op = $this->game->machine->instanciateOperation("cardGreen", PCOLOR, $data);
+        /** @var Op_cardFolk */
+        $op = $this->game->machine->instanciateOperation("cardFolk", PCOLOR, $data);
         return $op;
     }
 

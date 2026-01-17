@@ -5,13 +5,13 @@ num|r|d|dr|tags|name
 #set type=card card_home
 #set location=tableau_{COLOR}
 1||||Book Observatory
-2||camel|cardLand,coin|City
-3||ship|cardWater|Harbour
+2||camel|cardLand,coin|City|Capital City
+3||ship|cardWater|Harbour|Capital Harbour
 #set type=card card_home card_slot
-10||telescope|(cardSpace/upgBlack)||Black Slot
-11||bird|(journal/(pickWorker,infAny))||Journal Slot
-12||any|(cardGreen/2food)||Food Slot
-13||any|(upgGreen/2coin)||Coin Slot
+10||telescope|(cardSpace/upgBlack)||Capital Observatory
+11||bird|(journal/(pickWorker,infAny))||Capital Library
+12||any|(cardFolk/2food)||Capital Market
+13||any|(upgGreen/2coin)||Capital Reserve
 
 #set t=folk
 #set id=card_folk_{num}

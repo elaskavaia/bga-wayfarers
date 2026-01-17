@@ -38,14 +38,14 @@ class Op_rest extends Operation {
     /**
      * Get dice in player's supply (tableau)
      */
-    function getDiceInSupply(): array {
+    function getDiceInPlayerSupply(): array {
         $owner = $this->getOwner();
         return $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
     }
 
     /**
-     * Get all townsfolk cards with rest abilities on player's tableau
-     * Returns array of card keys that have rest abilities
+     * Get all cards with rest abilities on player's tableau
+     * Returns assoc array of card keys that have rest abilities
      */
     function getRestAbilityCards(): array {
         $owner = $this->getOwner();
@@ -53,30 +53,19 @@ class Op_rest extends Operation {
         $restCards = [];
 
         foreach ($cards as $card => $info) {
-            // Check children (tucked folk cards)
-            if (isset($info["children"])) {
-                foreach ($info["children"] as $childKey => $childInfo) {
-                    if (str_starts_with($childKey, "card_folk_")) {
-                        // Check if this folk card has rest ability
-                        $hasRest = $this->game->getRulesFor($childKey, "rest", 0);
-                        if ($hasRest) {
-                            $restCards[$childKey] = $childInfo;
-                        }
-                    }
-                }
+            // Check if this card has rest ability
+            $hasRest = $this->game->getRulesFor($card, "rest", 0);
+            if ($hasRest) {
+                $restCards[$card] = $info;
             }
         }
         return $restCards;
     }
 
-    function getPossibleMoves() {
-        return ["confirm"];
-    }
-
     function resolve(): void {
         $owner = $this->getOwner();
         $placedDice = $this->getPlacedDice();
-        $diceInSupply = $this->getDiceInSupply();
+        $diceInSupply = $this->getDiceInPlayerSupply();
 
         // Count dice in supply before rest to determine if resting abilities activate
         $supplyCount = count($diceInSupply);
@@ -90,14 +79,14 @@ class Op_rest extends Operation {
                 $dieKey,
                 "tableau_$owner",
                 $newValue,
-                clienttranslate('${player_name} rests and retrieves ${token_name}')
+                clienttranslate('${player_name} rolls ${token_name} to ${new_state}')
             );
         }
 
-        // Also reroll dice that were already in supply (optional per rules)
+        // Also reroll dice that were already in supply (optional per rules) XXX ask player
         foreach ($diceInSupply as $dieKey => $dieInfo) {
             $newValue = bga_rand(1, 6);
-            $this->game->tokens->dbSetTokenState($dieKey, $newValue);
+            $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} rolls ${token_name} to ${new_state}'));
         }
 
         // Notify about rest action
@@ -108,14 +97,23 @@ class Op_rest extends Operation {
             $restCards = $this->getRestAbilityCards();
             foreach (array_keys($restCards) as $cardKey) {
                 $dr = $this->game->getRulesFor($cardKey, "dr", "");
-                if ($dr) {
-                    $this->queue($dr);
-                }
+                $this->game->systemAssert("Missing resting ability for $cardKey", $dr);
+                $this->queue($dr);
             }
         }
     }
 
     public function getPrompt() {
-        return clienttranslate("Confirm Rest");
+        $diceInSupply = $this->getDiceInPlayerSupply();
+
+        if (count($diceInSupply) <= 1) {
+            return clienttranslate("Confirm Rest");
+        } else {
+            return clienttranslate("Confirm Rest (no rest abilities will activate)");
+        }
+    }
+
+    public function requireConfirmation() {
+        return true;
     }
 }

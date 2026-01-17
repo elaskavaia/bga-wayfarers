@@ -73,7 +73,9 @@ abstract class Op_upgBase extends Operation {
                 $grid[$y][$x] = false;
             }
         }
-
+        // reserverd
+        $grid[0][0] = true; // camel
+        $grid[0][5] = true; // telescope
         // Mark occupied positions
         foreach ($tiles as $tileKey => $tileInfo) {
             $state = $tileInfo["state"];
@@ -81,14 +83,14 @@ abstract class Op_upgBase extends Operation {
                 // State encodes position: state = x + y * CARAVAN_WIDTH + 1
                 $pos = $state - 1;
                 $x = $pos % self::CARAVAN_WIDTH;
-                $y = (int)floor($pos / self::CARAVAN_WIDTH);
+                $y = (int) floor($pos / self::CARAVAN_WIDTH);
 
                 // Get tile dimensions from material
                 $dimensions = $this->getTileDimensions($tileKey);
 
                 // Mark all cells occupied by this tile
-                for ($dy = 0; $dy < $dimensions['h']; $dy++) {
-                    for ($dx = 0; $dx < $dimensions['w']; $dx++) {
+                for ($dy = 0; $dy < $dimensions["h"]; $dy++) {
+                    for ($dx = 0; $dx < $dimensions["w"]; $dx++) {
                         if ($y + $dy < self::CARAVAN_HEIGHT && $x + $dx < self::CARAVAN_WIDTH) {
                             $grid[$y + $dy][$x + $dx] = true;
                         }
@@ -108,7 +110,7 @@ abstract class Op_upgBase extends Operation {
         $w = $this->game->getRulesFor($tileKey, "w", 1);
         $h = $this->game->getRulesFor($tileKey, "h", 1);
 
-        return ['w' => $w, 'h' => $h];
+        return ["w" => $w, "h" => $h];
     }
 
     /**
@@ -117,6 +119,7 @@ abstract class Op_upgBase extends Operation {
     function getValidPositions(int $tileW, int $tileH): array {
         $grid = $this->getCaravanOccupancy();
         $validPositions = [];
+        $owner = $this->getOwner();
 
         for ($y = 0; $y <= self::CARAVAN_HEIGHT - $tileH; $y++) {
             for ($x = 0; $x <= self::CARAVAN_WIDTH - $tileW; $x++) {
@@ -134,10 +137,10 @@ abstract class Op_upgBase extends Operation {
                 if ($canPlace) {
                     // Encode position as single integer: x + y * CARAVAN_WIDTH + 1
                     $pos = $x + $y * self::CARAVAN_WIDTH + 1;
-                    $validPositions["pos_$pos"] = [
+                    $validPositions["caravan_{$pos}_{$owner}"] = [
                         "q" => Material::RET_OK,
                         "x" => $x,
-                        "y" => $y
+                        "y" => $y,
                     ];
                 }
             }
@@ -155,14 +158,53 @@ abstract class Op_upgBase extends Operation {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("upg_$tileType", "mainarea");
             $res = [];
             $cost = $this->getCost();
+            $seenTypes = [];
             foreach (array_keys($tokens) as $card) {
-                $res[$card] = ["q" => 0, "cost" => $cost];
+                // Tile IDs are like upg_blue_1_1, upg_blue_1_2 - first 3 segments identify unique type
+                $parts = explode("_", $card);
+                $uniqueType = $parts[0] . "_" . $parts[1] . "_" . $parts[2];
+
+                if (!isset($seenTypes[$uniqueType])) {
+                    $seenTypes[$uniqueType] = true;
+                    $res[$card] = ["q" => 0, "cost" => $cost];
+                }
             }
             return $res;
         } else {
             // Step 2: Select position on caravan grid
             return $this->getValidPositions($this->getTileWidth(), $this->getTileHeight());
         }
+    }
+
+    /**
+     * Check if this tile type is double-sided (yellow and blue are double-sided)
+     */
+    function isDoubleSided(): bool {
+        return false;
+    }
+
+    /**
+     * Get the reverse side tile key for a double-sided tile
+     * Odd numbers pair with next even number (1<->2, 3<->4, etc.)
+     */
+    function getReverseSideTileKey(string $tileKey): string {
+        // Tile key format: upg_color_num_copy (e.g., upg_blue_1_1)
+        $parts = explode("_", $tileKey);
+        $num = (int) $parts[2];
+
+        // Odd pairs with next even, even pairs with previous odd
+        if ($num % 2 === 1) {
+            $reverseNum = $num + 1;
+        } else {
+            $reverseNum = $num - 1;
+        }
+
+        $parts[2] = (string) $reverseNum;
+        return implode("_", $parts);
+    }
+
+    function getPaymentOperation(string $card) {
+        return "3n_coin";
     }
 
     /** User does the action */
@@ -173,11 +215,11 @@ abstract class Op_upgBase extends Operation {
         if ($selectedTile === null) {
             // Step 1: Tile selected, pay cost and move to step 2
             $tile = $this->getCheckedArg();
-            $cost = $this->getCost();
-            $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
+            $op = $this->getPaymentOperation($tile);
+            $this->queue($op, $owner, [], $tile);
 
             // Queue step 2 with the selected tile
-            $this->queue($this->getType(), $owner, ["tile" => $tile]);
+            $this->queue($this->getType(), $owner, ["tile" => $tile], $tile);
             return;
         }
 
@@ -185,7 +227,7 @@ abstract class Op_upgBase extends Operation {
         $position = $this->getCheckedArg();
 
         // Extract position from "pos_X" format
-        $posValue = (int)substr($position, 4);
+        $posValue = (int) substr($position, 4);
 
         // Place tile in tableau with position encoded in state
         $this->game->tokens->dbSetTokenLocation(
@@ -194,6 +236,12 @@ abstract class Op_upgBase extends Operation {
             $posValue,
             clienttranslate('${player_name} places ${token_name} in caravan')
         );
+
+        // For double-sided tiles (yellow/blue), remove the reverse side from mainarea
+        if ($this->isDoubleSided()) {
+            $reverseTile = $this->getReverseSideTileKey($selectedTile);
+            $this->game->tokens->db->moveToken($reverseTile, "limbo", 0);
+        }
     }
 
     public function getPrompt() {

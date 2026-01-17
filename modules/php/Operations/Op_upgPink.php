@@ -15,18 +15,20 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 /**
- * Green upgrade tiles (1x1 square)
+ * Pink (Special) upgrade tiles (1x1 square)
+ * These are unique tiles - only 1 copy of each exists
  */
-class Op_upgGreen extends Op_upgBase {
+class Op_upgPink extends Op_upgBase {
     function getTileType(): string {
-        return "green";
+        return "pink";
     }
 
-    function getPaymentOperation(string $card) {
-        return "2n_coin";
+    function getPaymentOperation(string $card): string {
+        return "nop";
     }
+
     function getTileWidth(): int {
-        return 1; // Green tiles are 1x1 (square)
+        return 1; // Pink tiles are 1x1 (square)
     }
 
     function getTileHeight(): int {

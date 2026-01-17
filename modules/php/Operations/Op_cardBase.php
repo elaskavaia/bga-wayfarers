@@ -19,7 +19,7 @@ use Bga\Games\wayfarers\OpCommon\Operation;
 
 use function Bga\Games\wayfarers\getPart;
 
-class Op_gainCard extends Operation {
+abstract class Op_cardBase extends Operation {
     public function getArgType() {
         return Operation::TTYPE_TOKEN;
     }
@@ -63,7 +63,7 @@ class Op_gainCard extends Operation {
         $owner = $this->getOwner();
         $cardType = $this->getCardType();
         $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens));
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens) + 1);
     }
     function resolve(): void {
         $owner = $this->getOwner();

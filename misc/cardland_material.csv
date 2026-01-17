@@ -11,15 +11,15 @@ num|r|d|dr|tags|trig
 4|infAny|camel|upgGreen,infAny|City
 5|pickWorker|camel|2food:cardLand,pickWorker|City
 6|infYellow|camel|2food:cardLand,infYellow|City
-7|infBlue|camel|cardGreen,infBlue|City
-8|infCard|camel|cardGreen,infCard|City
+7|infBlue|camel|cardFolk,infBlue|City
+8|infCard|camel|cardFolk,infCard|City
 9||telescope,camel|cardSpace,infBlue|City Observatory
 10||telescope,camel|cardSpace,infYellow|City Observatory
 11||telescope,camel|upgBlack/2infBlack|City Observatory
 12||telescope,camel|upgBlack/2infBlack|City Observatory
 13||telescope,camel|cardSpace,infBlack|City Observatory
 14||telescope,camel|cardSpace(dis)|City Observatory
-15|infYellow|camel|cardGreen,journal|City Book
+15|infYellow|camel|cardFolk,journal|City Book
 16||bird|infYellow,journal|City Book
 17||bird|infBlue,journal|City Book
 18||telescope,bird|infBlack,journal|City Book Observatory

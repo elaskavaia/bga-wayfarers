@@ -80,6 +80,44 @@
   }
 }
 
+// Caravan grid (6x3) for upgrade tiles
+.caravan {
+  position: absolute;
+  left: 1%;
+  top: 21%;
+  width: 64%;
+  height: 25%;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  z-index: 2;
+}
+
+.caravan_cell {
+  position: relative;
+
+  // Highlight on hover for placement
+  &:hover {
+    background-color: rgba(0, 0, 255, 0.404);
+  }
+
+  // Active/selectable state
+  &.active {
+    background-color: rgba(v.$activeColor, 0.3);
+    cursor: pointer;
+  }
+
+  // Upgrade tiles placed in caravan cells
+  .upg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+    width: 100% !important;
+    height: 100% !important;
+  }
+}
+
 .players_panels {
   display: flex;
   position: relative;

@@ -14,9 +14,8 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-class Op_cardWater extends Op_gainCard {
+class Op_cardWater extends Op_cardBase {
     function getCardType() {
         return "water";
     }
-
 }

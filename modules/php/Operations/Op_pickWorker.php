@@ -42,6 +42,10 @@ class Op_pickWorker extends Operation {
         return $this->getAvailableWorkers();
     }
 
+    public function canSkip() {
+        return true;
+    }
+
     function resolve(): void {
         $owner = $this->getOwner();
         $workerKey = $this->getCheckedArg();

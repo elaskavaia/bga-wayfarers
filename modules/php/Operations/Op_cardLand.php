@@ -14,8 +14,15 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-class Op_cardLand extends Op_gainCard {
+class Op_cardLand extends Op_cardBase {
     function getCardType() {
         return "land";
+    }
+
+    function placeCard($card) {
+        $owner = $this->getOwner();
+        $cardType = $this->getCardType();
+        $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", -count($tokens) - 1);
     }
 }

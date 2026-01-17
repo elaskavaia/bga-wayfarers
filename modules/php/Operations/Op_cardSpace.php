@@ -14,19 +14,66 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-class Op_cardSpace extends Op_gainCard {
+class Op_cardSpace extends Op_cardBase {
     public function getPossibleMoves() {
-        $owner = $this->getOwner();
-        $c = count($this->game->tokens->getTokensOfTypeInLocation("card_land", "tableau_$owner"));
-        $c += count($this->game->tokens->getTokensOfTypeInLocation("card_water", "tableau_$owner"));
-        $spaceC = count($this->game->tokens->getTokensOfTypeInLocation("card_space", "tableau_$owner"));
-        if ($spaceC >= $c) {
-            return ["err" => clienttranslate("Not enought space")];
+        // Check if there's an available position
+        if ($this->getNextAvailablePosition() === null) {
+            return ["err" => clienttranslate("No available position for space card")];
         }
         return parent::getPossibleMoves();
     }
+
+    /**
+     * Find the next available position where a land/water card exists but no space card
+     */
+    function getNextAvailablePosition(): ?int {
+        $owner = $this->getOwner();
+
+        // Get positions occupied by land and water cards
+        $landCards = $this->game->tokens->getTokensOfTypeInLocation("card_land", "tableau_$owner");
+        $waterCards = $this->game->tokens->getTokensOfTypeInLocation("card_water", "tableau_$owner");
+        $spaceCards = $this->game->tokens->getTokensOfTypeInLocation("card_space", "tableau_$owner");
+
+        // Build set of positions occupied by space cards
+        $occupiedBySpace = [];
+        foreach ($spaceCards as $spaceInfo) {
+            $occupiedBySpace[(int) $spaceInfo["state"]] = true;
+        }
+
+        // Find positions that have land/water but no space card
+        $availablePositions = [];
+        foreach ($landCards as $cardInfo) {
+            $pos = (int) $cardInfo["state"];
+            if (!isset($occupiedBySpace[$pos])) {
+                $availablePositions[$pos] = true;
+            }
+        }
+        foreach ($waterCards as $cardInfo) {
+            $pos = (int) $cardInfo["state"];
+            if (!isset($occupiedBySpace[$pos])) {
+                $availablePositions[$pos] = true;
+            }
+        }
+
+        if (count($availablePositions) == 0) {
+            return null;
+        }
+
+        // Return the position closest to 0
+        // For positive: pick lowest (e.g., 1 before 2)
+        // For negative: pick highest (e.g., -1 before -2)
+        $positions = array_keys($availablePositions);
+        usort($positions, fn($a, $b) => abs($a) <=> abs($b));
+        return $positions[0];
+    }
+
     function getCardType() {
         return "space";
+    }
+
+    public function getPaymentOperation(string $card) {
+        $c = $this->getCost($card);
+        return "{$c}n_coin";
     }
     public function getCost(string $card): int {
         return $this->getCostPos($this->game->tokens->db->getTokenState($card, 0));
@@ -40,19 +87,11 @@ class Op_cardSpace extends Op_gainCard {
             4 => 5,
         };
     }
-    function effect_pay(string $card) {
-        $owner = $this->getOwner();
-        $cost = $this->getCost($card);
-        $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
-    }
 
-    /** User does the action */
-    function resolve(): void {
+    function placeCard($card) {
         $owner = $this->getOwner();
-        $card = $this->getCheckedArg();
-
-        $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_space", "tableau_$owner");
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens)); //XXX pick location
-        return;
+        $pos = $this->getNextAvailablePosition();
+        $this->game->systemAssert("Cannot find position for space card", $pos);
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", $pos);
     }
 }

@@ -44,44 +44,6 @@ class GameXBody extends GameMachine {
 </div>
 <div id="players_panels"></div>
 <div id="test_stuff">
-  <h3>Blue Tiles (2x1)</h3>
-  <div class="upg upg_blue upg_blue_1"></div>
-  <div class="upg upg_blue upg_blue_2"></div>
-  <div class="upg upg_blue upg_blue_3"></div>
-  <div class="upg upg_blue upg_blue_4"></div>
-  <div class="upg upg_blue upg_blue_5"></div>
-  <div class="upg upg_blue upg_blue_6"></div>
-
-  <h3>Yellow Tiles (2x1)</h3>
-  <div class="upg upg_yellow upg_yellow_1"></div>
-  <div class="upg upg_yellow upg_yellow_2"></div>
-  <div class="upg upg_yellow upg_yellow_3"></div>
-  <div class="upg upg_yellow upg_yellow_4"></div>
-  <div class="upg upg_yellow upg_yellow_5"></div>
-  <div class="upg upg_yellow upg_yellow_6"></div>
-
-  <h3>Black Tiles (1x2)</h3>
-  <div class="upg upg_black upg_black_20"></div>
-  <div class="upg upg_black upg_black_21"></div>
-  <div class="upg upg_black upg_black_22"></div>
-
-  <h3>Green Tiles (1x1)</h3>
-  <div class="upg upg_green upg_green_31"></div>
-  <div class="upg upg_green upg_green_32"></div>
-  <div class="upg upg_green upg_green_33"></div>
-  <div class="upg upg_green upg_green_34"></div>
-
-  <h3>Pink Tiles (1x1)</h3>
-  <div class="upg upg_pink upg_pink_40"></div>
-  <div class="upg upg_pink upg_pink_41"></div>
-  <div class="upg upg_pink upg_pink_42"></div>
-  <div class="upg upg_pink upg_pink_43"></div>
-  <div class="upg upg_pink upg_pink_44"></div>
-  <div class="upg upg_pink upg_pink_45"></div>
-  <div class="upg upg_pink upg_pink_46"></div>
-  <div class="upg upg_pink upg_pink_47"></div>
-  <div class="upg upg_pink upg_pink_48"></div>
-  <div class="upg upg_pink upg_pink_49"></div>
 </div>
 <div id="supply">
 </div>
@@ -130,12 +92,24 @@ class GameXBody extends GameMachine {
       pp
     );
     let parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
+    // Generate caravan grid cells (6x3)
+    let caravanCells = "";
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 6; x++) {
+        const pos = x + y * 6 + 1; // pos_1 to pos_18
+        caravanCells += `<div id='caravan_${pos}_${pcolor}' class='caravan_cell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
+      }
+    }
+
     placeHtml(
       `
       <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${pcolor}'>
 
-         <div id='pboard_${pcolor}' class='pboard'> 
-         <div id='breakroom_${pcolor}' class='breakroom'></div>
+         <div id='pboard_${pcolor}' class='pboard'>
+           <div id='breakroom_${pcolor}' class='breakroom'></div>
+           <div id='caravan_${pcolor}' class='caravan'>
+             ${caravanCells}
+           </div>
          </div>
       </div>`,
       parent
@@ -143,31 +117,15 @@ class GameXBody extends GameMachine {
   }
 
   setupScoreSheet() {
-    // this.gamedatas.endScores = {};
-    // this.gamedatas.endScores[this.player_id] = {
-    //   game_vp_card_count: 5,
-    //   game_vp_card_sets: 8,
-    //   game_vp_trade: 3,
-    //   game_vp_action_tiles: 4,
-    //   game_vp_cards: 6,
-    //   game_vp_food: 2,
-    //   game_vp_skaill: 3,
-    //   game_vp_midden: -2,
-    //   game_vp_slider: -1,
-    //   game_vp_tasks: -3,
-    //   game_vp_goals: -1,
-    //   total: 24
-    // };
     const entries = [
-      { property: "game_vp_card_sets", label: _("VP for card sets") },
-      { property: "game_vp_space_cards", label: _("VP for space cards and inspiration") },
-      { property: "game_vp_caravan", label: _("VP from caraval") },
-      { property: "game_vp_guilds", label: _("VP from guild majorities") },
+      { property: "game_vp_tags", label: _("VP from Primary Tags") },
+      { property: "game_vp_sets", label: _("VP from Tag Sets") },
+      { property: "game_vp_space", label: _("VP from Space Cards") },
+      { property: "game_vp_inspiration", label: _("VP from Inspiration Cards") },
+      { property: "game_vp_caravan", label: _("VP from Caravan") },
+      { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
       { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
     ];
-    if (!this.isSolo()) {
-      entries.splice(9, 2);
-    }
     this.scoreSheet = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet`), {
       animationsActive: () => this.gameAnimationsActive(),
       playerNameWidth: 80,
@@ -276,11 +234,24 @@ class GameXBody extends GameMachine {
         const color = getPart(location, 1);
         if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
           result.location = `pboard_${color}`;
-        } else {
+        } else if (cardType == "folk") {
+          // Folk cards use state to determine which column they belong to (same as target card)
           const x = tokenInfo.state;
           result.location = `pboard_column_${x}_${color}`;
           if (!$(result.location)) {
             placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
+          }
+        } else if (cardType == "water") {
+          const x = tokenInfo.state;
+          result.location = `pboard_column_${x}_${color}`;
+          if (!$(result.location)) {
+            placeHtml(`<div id='${result.location}' class='column'></div>`, `pboard_${color}`, "afterend");
+          }
+        } else if (cardType == "land") {
+          const x = tokenInfo.state;
+          result.location = `pboard_column_${x}_${color}`;
+          if (!$(result.location)) {
+            placeHtml(`<div id='${result.location}' class='column'></div>`, `tableau_${color}`, "afterbegin");
           }
         }
       } else if (location.startsWith("discard")) {
@@ -314,6 +285,11 @@ class GameXBody extends GameMachine {
       const color = getPart(location, 1);
       result.location = `breakroom_${color}`;
       result.onClick = (x) => this.onToken(x);
+    } else if (tokenId.startsWith("upg") && location.startsWith("tableau")) {
+      // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+      const color = getPart(location, 1);
+      const pos = Number(tokenInfo.state);
+      result.location = `caravan_${pos}_${color}`;
     }
     return result;
   }

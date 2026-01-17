@@ -44,6 +44,15 @@ mainboard_2||1|mainboard_x middle|1|mainboardall|
 mainboard_3||1|mainboard_x right|1|mainboardall|
 game_stage||1|stage|1|limbo|
 
-#create=0
+#set create=0
+#set location=
 
+#names of the stats
+game_vp_tags|VP from Primary Tags (City, Vista, Harbour, Water)
+game_vp_sets|VP from Tag Sets
+game_vp_space|VP from Space Cards
+game_vp_inspiration|VP from Inspiration Cards
+game_vp_caravan|VP from Caravan Upgrade Tiles
+game_vp_guilds|VP from Guild Majorities
+game_vp_total|VP total
 

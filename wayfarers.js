@@ -1711,7 +1711,7 @@ var GameXBody = /** @class */ (function (_super) {
     function GameXBody() {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n  <h3>Blue Tiles (2x1)</h3>\n  <div class=\"upg upg_blue upg_blue_1\"></div>\n  <div class=\"upg upg_blue upg_blue_2\"></div>\n  <div class=\"upg upg_blue upg_blue_3\"></div>\n  <div class=\"upg upg_blue upg_blue_4\"></div>\n  <div class=\"upg upg_blue upg_blue_5\"></div>\n  <div class=\"upg upg_blue upg_blue_6\"></div>\n\n  <h3>Yellow Tiles (2x1)</h3>\n  <div class=\"upg upg_yellow upg_yellow_1\"></div>\n  <div class=\"upg upg_yellow upg_yellow_2\"></div>\n  <div class=\"upg upg_yellow upg_yellow_3\"></div>\n  <div class=\"upg upg_yellow upg_yellow_4\"></div>\n  <div class=\"upg upg_yellow upg_yellow_5\"></div>\n  <div class=\"upg upg_yellow upg_yellow_6\"></div>\n\n  <h3>Black Tiles (1x2)</h3>\n  <div class=\"upg upg_black upg_black_20\"></div>\n  <div class=\"upg upg_black upg_black_21\"></div>\n  <div class=\"upg upg_black upg_black_22\"></div>\n\n  <h3>Green Tiles (1x1)</h3>\n  <div class=\"upg upg_green upg_green_31\"></div>\n  <div class=\"upg upg_green upg_green_32\"></div>\n  <div class=\"upg upg_green upg_green_33\"></div>\n  <div class=\"upg upg_green upg_green_34\"></div>\n\n  <h3>Pink Tiles (1x1)</h3>\n  <div class=\"upg upg_pink upg_pink_40\"></div>\n  <div class=\"upg upg_pink upg_pink_41\"></div>\n  <div class=\"upg upg_pink upg_pink_42\"></div>\n  <div class=\"upg upg_pink upg_pink_43\"></div>\n  <div class=\"upg upg_pink upg_pink_44\"></div>\n  <div class=\"upg upg_pink upg_pink_45\"></div>\n  <div class=\"upg upg_pink upg_pink_46\"></div>\n  <div class=\"upg upg_pink upg_pink_47\"></div>\n  <div class=\"upg upg_pink upg_pink_48\"></div>\n  <div class=\"upg upg_pink upg_pink_49\"></div>\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea\">\n <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n </div>\n\n\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         return _this;
     }
     GameXBody.prototype.setup = function (gamedatas) {
@@ -1749,35 +1749,27 @@ var GameXBody = /** @class */ (function (_super) {
         document.querySelectorAll("#".concat(pp, ">.miniboard")).forEach(function (node) { return node.remove(); });
         placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n      </div>"), pp);
         var parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
-        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'> \n         <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n         </div>\n      </div>"), parent);
+        // Generate caravan grid cells (6x3)
+        var caravanCells = "";
+        for (var y = 0; y < 3; y++) {
+            for (var x = 0; x < 6; x++) {
+                var pos = x + y * 6 + 1; // pos_1 to pos_18
+                caravanCells += "<div id='caravan_".concat(pos, "_").concat(pcolor, "' class='caravan_cell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
+            }
+        }
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
     };
     GameXBody.prototype.setupScoreSheet = function () {
         var _this = this;
-        // this.gamedatas.endScores = {};
-        // this.gamedatas.endScores[this.player_id] = {
-        //   game_vp_card_count: 5,
-        //   game_vp_card_sets: 8,
-        //   game_vp_trade: 3,
-        //   game_vp_action_tiles: 4,
-        //   game_vp_cards: 6,
-        //   game_vp_food: 2,
-        //   game_vp_skaill: 3,
-        //   game_vp_midden: -2,
-        //   game_vp_slider: -1,
-        //   game_vp_tasks: -3,
-        //   game_vp_goals: -1,
-        //   total: 24
-        // };
         var entries = [
-            { property: "game_vp_card_sets", label: _("VP for card sets") },
-            { property: "game_vp_space_cards", label: _("VP for space cards and inspiration") },
-            { property: "game_vp_caravan", label: _("VP from caraval") },
-            { property: "game_vp_guilds", label: _("VP from guild majorities") },
+            { property: "game_vp_tags", label: _("VP from Primary Tags") },
+            { property: "game_vp_sets", label: _("VP from Tag Sets") },
+            { property: "game_vp_space", label: _("VP from Space Cards") },
+            { property: "game_vp_inspiration", label: _("VP from Inspiration Cards") },
+            { property: "game_vp_caravan", label: _("VP from Caravan") },
+            { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
             { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
         ];
-        if (!this.isSolo()) {
-            entries.splice(9, 2);
-        }
         this.scoreSheet = new BgaScoreSheet.ScoreSheet(document.getElementById("game-score-sheet"), {
             animationsActive: function () { return _this.gameAnimationsActive(); },
             playerNameWidth: 80,
@@ -1899,11 +1891,26 @@ var GameXBody = /** @class */ (function (_super) {
                 if (cardType == "home" || tokenId.startsWith("card_folk_1")) {
                     result.location = "pboard_".concat(color);
                 }
-                else {
+                else if (cardType == "folk") {
+                    // Folk cards use state to determine which column they belong to (same as target card)
                     var x = tokenInfo.state;
                     result.location = "pboard_column_".concat(x, "_").concat(color);
                     if (!$(result.location)) {
                         placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
+                    }
+                }
+                else if (cardType == "water") {
+                    var x = tokenInfo.state;
+                    result.location = "pboard_column_".concat(x, "_").concat(color);
+                    if (!$(result.location)) {
+                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "pboard_".concat(color), "afterend");
+                    }
+                }
+                else if (cardType == "land") {
+                    var x = tokenInfo.state;
+                    result.location = "pboard_column_".concat(x, "_").concat(color);
+                    if (!$(result.location)) {
+                        placeHtml("<div id='".concat(result.location, "' class='column'></div>"), "tableau_".concat(color), "afterbegin");
                     }
                 }
             }
@@ -1949,6 +1956,12 @@ var GameXBody = /** @class */ (function (_super) {
             var color = getPart(location, 1);
             result.location = "breakroom_".concat(color);
             result.onClick = function (x) { return _this.onToken(x); };
+        }
+        else if (tokenId.startsWith("upg") && location.startsWith("tableau")) {
+            // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+            var color = getPart(location, 1);
+            var pos = Number(tokenInfo.state);
+            result.location = "caravan_".concat(pos, "_").concat(color);
         }
         return result;
     };

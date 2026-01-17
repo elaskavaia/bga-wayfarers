@@ -21,6 +21,9 @@ class Op_upgBlue extends Op_upgBase {
     function getTileType(): string {
         return "blue";
     }
+    function getPaymentOperation(string $card) {
+        return "3n_coin/2n_infBlue";
+    }
 
     function getTileWidth(): int {
         return 2; // Blue tiles are 2x1 (horizontal)
@@ -28,5 +31,8 @@ class Op_upgBlue extends Op_upgBase {
 
     function getTileHeight(): int {
         return 1;
+    }
+    function isDoubleSided(): bool {
+        return true;
     }
 }

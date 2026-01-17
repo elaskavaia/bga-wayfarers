@@ -22,6 +22,10 @@ class Op_upgBlack extends Op_upgBase {
         return "black";
     }
 
+    function getPaymentOperation(string $card) {
+        return "3n_coin/2n_infBlack";
+    }
+
     function getTileWidth(): int {
         return 1; // Black tiles are 1x2 (vertical)
     }

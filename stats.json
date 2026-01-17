@@ -1,3 +1,39 @@
 {
-
+  "player": {
+    "game_vp_tags": {
+      "id": 11,
+      "name": "VP from Primary Tags (City, Vista, Harbour, Water)",
+      "type": "int"
+    },
+    "game_vp_sets": {
+      "id": 12,
+      "name": "VP from Tag Sets",
+      "type": "int"
+    },
+    "game_vp_space": {
+      "id": 13,
+      "name": "VP from Space Cards",
+      "type": "int"
+    },
+    "game_vp_inspiration": {
+      "id": 14,
+      "name": "VP from Inspiration Cards",
+      "type": "int"
+    },
+    "game_vp_caravan": {
+      "id": 15,
+      "name": "VP from Caravan Upgrade Tiles",
+      "type": "int"
+    },
+    "game_vp_guilds": {
+      "id": 16,
+      "name": "VP from Guild Majorities",
+      "type": "int"
+    },
+    "game_vp_total": {
+      "id": 29,
+      "name": "VP total",
+      "type": "int"
+    }
+  }
 }

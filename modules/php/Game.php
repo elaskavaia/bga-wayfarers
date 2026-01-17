@@ -132,10 +132,11 @@ class Game extends Base {
 
         $token_types = $this->material->get();
         foreach ($token_types as $key => $info) {
+            // Only process upgrade tiles
             if (str_starts_with($key, "upg_pink")) {
                 // Place all 10 Special (Pink) Upgrade Tiles on their designated spaces on the Main Board.
                 $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", 1, 1);
-            } else {
+            } elseif (str_starts_with($key, "upg_")) {
                 // Place 1 of each unique Green, Black, Yellow, and Blue Upgrade Tile per player on the Main Board. Return extras to the box if playing with fewer than 4 players.
                 $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", $pnum, 1);
             }
@@ -161,8 +162,8 @@ class Game extends Base {
             // 1 Player Marker in their chosen color (place it on the far-left end of the Journal Track).
             $this->tokens->db->moveToken("marker_$color", "mainarea", 0);
             // 1 Yellow Worker and 1 Blue Worker.
-            $this->tokens->db->moveToken("worker_blue_$i", "tableau_$color");
-            $this->tokens->db->moveToken("worker_yellow_$i", "tableau_$color");
+            $this->tokens->db->pickTokensForLocation(1, "worker_blue", "tableau_$color");
+            $this->tokens->db->pickTokensForLocation(1, "worker_yellow", "tableau_$color");
 
             if ($i <= 2) {
                 $this->effect_incCount($color, "coin", 3, "setup");
@@ -333,47 +334,169 @@ class Game extends Base {
         }
         return $res;
     }
-    function countTags(int $tagtype, string $owner) {
-        $count = 0; //XXX
+    /**
+     * Count tags of a specific type for a player
+     * @param string $tagName - the tag to count (City, Vista, Harbour, Water, etc.)
+     * @param string $owner - player color
+     * @return int - count of tags
+     */
+    function countPlayerTags(string $tagName, string $owner): int {
+        $count = 0;
+
+        // Count from cards in tableau
+        $cards = $this->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
+        foreach ($cards as $cardKey => $cardInfo) {
+            $tags = $this->getTagsSet($cardKey);
+            if (isset($tags[$tagName])) {
+                $count += $tags[$tagName];
+            }
+        }
+
+        // Count from upgrade tiles in caravan
+        $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
+        foreach ($tiles as $tileKey => $tileInfo) {
+            $tags = $this->getTagsSet($tileKey);
+            if (isset($tags[$tagName])) {
+                $count += $tags[$tagName];
+            }
+        }
 
         return $count;
     }
 
+    /**
+     * Get VP for primary tag count based on scoring table
+     * 2 tags = 2 VP, 3 = 4 VP, 4 = 7 VP, 5 = 10 VP, 6 = 13 VP, 7+ = 16 VP
+     */
+    function getTagVP(int $count): int {
+        return match (true) {
+            $count < 2 => 0,
+            $count == 2 => 2,
+            $count == 3 => 4,
+            $count == 4 => 7,
+            $count == 5 => 10,
+            $count == 6 => 13,
+            default => 16, // 7+
+        };
+    }
+
+    /**
+     * Count influence tokens in a guild for a player
+     */
+    function countGuildInfluence(string $guild, string $owner): int {
+        $tokens = $this->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
+        return count($tokens);
+    }
+
     function finalScoring() {
         $players = $this->loadPlayersBasicInfos();
+        $guildInfluence = []; // Track influence per guild per player for majority
+
         foreach ($players as $player_id => $player) {
             $color = $this->getPlayerColorById((int) $player_id);
-            //         Furnish Track (VP per Settler and completed rows of Settlers).
+
+            // 1. Primary Land and Water Tags (City, Vista, Harbour, Water)
+            $primaryTags = ["City", "Vista", "Harbour", "Water"];
+            $tagCounts = [];
+
+            foreach ($primaryTags as $tag) {
+                $count = $this->countPlayerTags($tag, $color);
+                $tagCounts[$tag] = $count;
+                $vp = $this->getTagVP($count);
+                if ($vp > 0) {
+                    $this->effect_incVp($color, $vp, "game_vp_tags");
+                }
+            }
+
+            // Sets bonus: 5 VP for each set of 4 unique primary tags
+            $sets = min($tagCounts);
+            if ($sets > 0) {
+                $this->effect_incVp($color, $sets * 5, "game_vp_sets");
+            }
+
+            // 2. Space Cards VP
+            $cards = $this->tokens->getTokensOfTypeInLocation("card_space", "tableau_$color");
+            foreach ($cards as $cardKey => $cardInfo) {
+                $vp = (int) $this->getRulesFor($cardKey, "vp", 0);
+                if ($vp > 0) {
+                    $this->effect_incVp($color, $vp, "game_vp_space");
+                }
+            }
+
+            // 3. Inspiration Cards (achieved goals double Space Card VP - already handled above if applicable)
+            $inspirationCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
+            foreach ($inspirationCards as $cardKey => $cardInfo) {
+                // TODO: inspiration is calculated diffrently
+                $vp = (int) $this->getRulesFor($cardKey, "vp", 0);
+                if ($vp > 0) {
+                    $this->effect_incVp($color, $vp, "game_vp_inspiration");
+                }
+            }
+
+            // 4. Caravan - VP from upgrade tiles
+            $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$color");
+            foreach ($tiles as $tileKey => $tileInfo) {
+                $vp = (int) $this->getRulesFor($tileKey, "vp", 0);
+                if ($vp > 0) {
+                    $this->effect_incVp($color, $vp, "game_vp_caravan");
+                }
+            }
+
+            // Track guild influence for majorities
+            foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
+                $guildInfluence[$guild][$color] = $this->countGuildInfluence($guild, $color);
+            }
         }
+
+        // 5. Guild Majorities - 3 VP to player with most influence in each guild
+        foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
+            $maxInfluence = 0;
+            $winners = [];
+
+            foreach ($guildInfluence[$guild] as $color => $influence) {
+                if ($influence > $maxInfluence) {
+                    $maxInfluence = $influence;
+                    $winners = [$color];
+                } elseif ($influence == $maxInfluence && $influence > 0) {
+                    $winners[] = $color;
+                }
+            }
+
+            // Only award VP if there's a single winner (no ties)
+            if (count($winners) == 1 && $maxInfluence > 0) {
+                $this->effect_incVp($winners[0], 3, "game_vp_guilds");
+            }
+        }
+
+        // Set tiebreaker: Black Influence, then Yellow, then Blue
+        foreach ($players as $player_id => $player) {
+            $color = $this->getPlayerColorById((int) $player_id);
+            $black = $guildInfluence["guild_black"][$color] ?? 0;
+            $yellow = $guildInfluence["guild_yellow"][$color] ?? 0;
+            $blue = $guildInfluence["guild_blue"][$color] ?? 0;
+            // Encode tiebreaker as single number: black * 10000 + yellow * 100 + blue
+            $tiebreaker = $black * 10000 + $yellow * 100 + $blue;
+            $this->playerScoreAux->set($player_id, $tiebreaker);
+
+            $score = $this->playerScore->get($player_id);
+            $this->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $score], $player_id);
+            $this->playerStats->set("game_vp_total", $score, $player_id);
+        }
+
         $this->notify->all("endScores", "", ["endScores" => $this->getEndScores(), "final" => true]);
     }
 
     function getEndScores(): array {
-        // this would be filled dynamically on your game, but should have the shape of this static example
         $endScores = [];
-        // $players = $this->loadPlayersBasicInfos();
-        // $vp_stats = [
-        //     "game_vp_card_count",
-        //     "game_vp_card_sets",
-        //     "game_vp_trade",
-        //     "game_vp_action_tiles",
-        //     "game_vp_cards",
-        //     "game_vp_food",
-        //     "game_vp_skaill",
-        //     "game_vp_midden",
-        //     "game_vp_slider",
-        // ];
-        // if ($this->isSolo()) {
-        //     $vp_stats[] = "game_vp_tasks";
-        //     $vp_stats[] = "game_vp_goals";
-        // }
+        $players = $this->loadPlayersBasicInfos();
+        $vp_stats = ["game_vp_tags", "game_vp_sets", "game_vp_space", "game_vp_inspiration", "game_vp_caravan", "game_vp_guilds"];
 
-        // foreach ($players as $player_id => $player) {
-        //     foreach ($vp_stats as $stat) {
-        //         $endScores[$player_id][$stat] = $this->playerStats->get($stat, $player_id);
-        //     }
-        //     $endScores[$player_id]["total"] = $this->playerStats->get("game_vp_total", $player_id);
-        // }
+        foreach ($players as $player_id => $player) {
+            foreach ($vp_stats as $stat) {
+                $endScores[$player_id][$stat] = $this->playerStats->get($stat, $player_id);
+            }
+            $endScores[$player_id]["total"] = $this->playerStats->get("game_vp_total", $player_id);
+        }
 
         return $endScores;
     }
