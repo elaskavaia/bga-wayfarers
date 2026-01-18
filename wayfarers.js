@@ -1313,7 +1313,7 @@ var GameMachine = /** @class */ (function (_super) {
             if (opInfo.ui.replicate == true) {
                 altNode = this.replicateTargetOnToolbar(target, paramInfo);
             }
-            if (!altNode && (opInfo.ui.buttons || (!div && active))) {
+            if (!altNode && (opInfo.ui.buttons || !div)) {
                 altNode = this.createTargetButton(target, paramInfo);
             }
             if (!altNode)
@@ -1402,8 +1402,9 @@ var GameMachine = /** @class */ (function (_super) {
             name = div.dataset.name;
         }
         if (!name)
-            name = target;
-        return this.getTr(name, (_a = paramInfo.args) !== null && _a !== void 0 ? _a : paramInfo);
+            return this.getTokenName(target);
+        else
+            return this.getTr(name, (_a = paramInfo.args) !== null && _a !== void 0 ? _a : paramInfo);
     };
     GameMachine.prototype.isMultiSelectArgs = function (args) {
         return args.ttype == "token_count" || args.ttype == "token_array";

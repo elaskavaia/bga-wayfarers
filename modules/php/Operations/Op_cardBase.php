@@ -25,7 +25,7 @@ abstract class Op_cardBase extends Operation {
     }
 
     function canAfford(string $op) {
-        if (!$op) {
+        if (!$op || $op == "nop") {
             return true;
         }
         return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
@@ -66,7 +66,7 @@ abstract class Op_cardBase extends Operation {
     }
 
     function getPaymentOperation(string $card) {
-        return "2n_food";
+        return "nop";
     }
 
     function placeCard($card) {
@@ -86,15 +86,15 @@ abstract class Op_cardBase extends Operation {
             $this->queue("3cardDraw({$this->getCardType()})");
             return;
         }
-        // Handle influence interaction if there's influence on the card
-        $this->queue("cardInteract", $owner, ["card" => $card]);
-
+        // Handle payment
         $args = $this->getArgs();
         $info = $args["info"][$card];
         $payop = $info["pay"];
         if ($payop) {
             $this->queue($payop);
         }
+        // Handle influence interaction if there's influence on the card
+        $this->queue("cardInteract", $owner, ["card" => $card]);
 
         $this->placeCard($card);
 

@@ -3,25 +3,25 @@ ctype|num|r|name
 #set type=action
 
 # Land card worker actions (positions 1-4)
-land|1||cardFolk,diceMod
-land|2||2coin,infYellow
-land|3||upgYellow
-land|4||3food,cardDraw(land)
+land|1|cardFolk,diceMod
+land|2|2coin,infYellow
+land|3|upgYellow
+land|4|3food,cardDraw(land)
 
 # Water card worker actions (positions 1-4)
-water|1||reroll,diceMod,diceMod
-water|2||2food,infBlue
-water|3||upgBlue
-water|4||3food,cardDraw(water)
+water|1|reroll,diceMod,diceMod
+water|2|2food,infBlue
+water|3|upgBlue
+water|4|3food,cardDraw(water)
 
 # Folk card worker actions (positions 1-4)
-folk|1||cardSpace(dis)
-folk|2||infYellow,infBlue,infBlack
-folk|3||upgGreen(free)
-folk|4||journal,food
+folk|1|cardSpace(dis)
+folk|2|infYellow,infBlue,infBlack
+folk|3|upgGreen(free)
+folk|4|journal,food
 
 # Inspiration card worker actions (positions 1-4)
-insp|1||2food
-insp|2||food,infAny
-insp|3||coin,reroll
-insp|4||2coin
+insp|1|2food
+insp|2|food,infAny
+insp|3|coin,reroll
+insp|4|2coin

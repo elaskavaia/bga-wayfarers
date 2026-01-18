@@ -9,8 +9,8 @@ num|r|d|dr|tags|trig
 2|infYellow|camel|upgYellow/2infYellow|City
 3|upgGreen(free)|camel|upgGreen,food|City
 4|infAny|camel|upgGreen,infAny|City
-5|pickWorker|camel|2food:cardLand,pickWorker|City
-6|infYellow|camel|2food:cardLand,infYellow|City
+5|pickWorker|camel|2n_food:cardLand,pickWorker|City
+6|infYellow|camel|2n_food:cardLand,infYellow|City
 7|infBlue|camel|cardFolk,infBlue|City
 8|infCard|camel|cardFolk,infCard|City
 9||telescope,camel|cardSpace,infBlue|City Observatory
@@ -44,4 +44,4 @@ num|r|d|dr|tags|trig
 36|reroll||food/coin|Vista|Observatory/Book
 # Row 7: City (38)
 37|coin||food|Vista|upgAny
-38||camel,pigeon|2food:cardLand,journal|City Book
+38||camel,pigeon|2n_food:cardLand,journal|City Book

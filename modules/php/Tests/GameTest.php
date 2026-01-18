@@ -264,10 +264,10 @@ final class GameTest extends TestCase {
                 continue;
             }
             echo "testing $key\n";
-            $r = $info["r"] ?? "";
+            $r = $info["cost"] ?? "";
             $this->assertTrue($r != "", "empty r for $key");
 
-            $r = $info["dr"] ?? "";
+            $r = $info["dr"] ?? ($info["da"] ?? "");
             $this->assertTrue($r != "", "empty dr for $key");
             $this->game->machine->instanciateOperation($r, PCOLOR);
         }
@@ -281,22 +281,25 @@ final class GameTest extends TestCase {
 
         // Die value 1 should have camel (column 0)
         $assets = $this->game->getCaravanAssetsForDie(1, PCOLOR);
-        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 1 should have 1 camel");
-        $this->assertEquals(0, $assets["telescope"] ?? 0, "Die 1 should have no telescope");
-        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 1 should have no ship");
-        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 1 should have no pigeon");
+        $this->assertEquals(1, $assets["camel"], "Die 1 should have 1 camel");
+        $this->assertEquals(0, $assets["telescope"], "Die 1 should have no telescope");
+        $this->assertEquals(0, $assets["ship"], "Die 1 should have no ship");
+        $this->assertEquals(0, $assets["pigeon"], "Die 1 should have no pigeon");
 
         // Die value 6 should have telescope (column 5)
         $assets = $this->game->getCaravanAssetsForDie(6, PCOLOR);
-        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 6 should have no camel");
-        $this->assertEquals(1, $assets["telescope"] ?? 0, "Die 6 should have 1 telescope");
-        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 6 should have no ship");
-        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 6 should have no pigeon");
+        $this->assertEquals(0, $assets["camel"], "Die 6 should have no camel");
+        $this->assertEquals(1, $assets["telescope"], "Die 6 should have 1 telescope");
+        $this->assertEquals(0, $assets["ship"], "Die 6 should have no ship");
+        $this->assertEquals(0, $assets["pigeon"], "Die 6 should have no pigeon");
 
         // Die values 2-5 should have no starting assets
         for ($die = 2; $die <= 5; $die++) {
             $assets = $this->game->getCaravanAssetsForDie($die, PCOLOR);
-            $this->assertEmpty($assets, "Die $die should have no starting assets");
+            $this->assertEquals(0, $assets["camel"], "Die $die should have no camel");
+            $this->assertEquals(0, $assets["telescope"], "Die $die should have no telescope");
+            $this->assertEquals(0, $assets["ship"], "Die $die should have no ship");
+            $this->assertEquals(0, $assets["pigeon"], "Die $die should have no pigeon");
         }
     }
 
@@ -311,11 +314,11 @@ final class GameTest extends TestCase {
 
         // Die value 3 (column 2) should now have camel from the tile
         $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
-        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 3 should have 1 camel from green tile");
+        $this->assertEquals(1, $assets["camel"], "Die 3 should have 1 camel from green tile");
 
         // Die value 2 (column 1) should not have the camel
         $assets = $this->game->getCaravanAssetsForDie(2, PCOLOR);
-        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 2 should have no camel");
+        $this->assertEquals(0, $assets["camel"], "Die 2 should have no camel");
     }
 
     /**
@@ -331,16 +334,16 @@ final class GameTest extends TestCase {
 
         // Die value 2 (column 1) should have camel from r field
         $assets = $this->game->getCaravanAssetsForDie(2, PCOLOR);
-        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 2 should have 1 camel from yellow tile left side");
-        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 2 should have no ship");
+        $this->assertEquals(1, $assets["camel"], "Die 2 should have 1 camel from yellow tile left side");
+        $this->assertEquals(0, $assets["ship"], "Die 2 should have no ship");
 
         // Die value 3 (column 2) should NOT have camel (r2=diceMinus has no assets)
         $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
-        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 3 should have no camel (right side has diceMinus)");
+        $this->assertEquals(0, $assets["camel"], "Die 3 should have no camel (right side has diceMinus)");
 
         // Die value 1 should still have starting camel only
         $assets = $this->game->getCaravanAssetsForDie(1, PCOLOR);
-        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 1 should have 1 starting camel");
+        $this->assertEquals(1, $assets["camel"], "Die 1 should have 1 starting camel");
     }
 
     /**
@@ -355,121 +358,97 @@ final class GameTest extends TestCase {
 
         // Die value 3 (column 2) should have ship from r field
         $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
-        $this->assertEquals(1, $assets["ship"] ?? 0, "Die 3 should have 1 ship from blue tile left side");
-        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 3 should have no pigeon");
+        $this->assertEquals(1, $assets["ship"], "Die 3 should have 1 ship from blue tile left side");
+        $this->assertEquals(0, $assets["pigeon"], "Die 3 should have no pigeon");
 
         // Die value 4 (column 3) should have pigeon from r2 field
         $assets = $this->game->getCaravanAssetsForDie(4, PCOLOR);
-        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 4 should have no ship");
-        $this->assertEquals(1, $assets["pigeon"] ?? 0, "Die 4 should have 1 pigeon from blue tile right side");
+        $this->assertEquals(0, $assets["ship"], "Die 4 should have no ship");
+        $this->assertEquals(1, $assets["pigeon"], "Die 4 should have 1 pigeon from blue tile right side");
     }
 
     /**
-     * Test checkAssetRequirements with empty requirements
+     * Test getMissingAssetRequirements with empty requirements
      */
-    public function testCheckAssetRequirements_EmptyRequirements() {
+    public function testgetMissingAssetRequirements_EmptyRequirements() {
         $this->game();
 
-        $result = $this->game->checkAssetRequirements("", [], false);
-        $this->assertTrue($result["met"], "Empty requirements should be met");
-        $this->assertFalse($result["needsBlueInfluence"], "Empty requirements should not need blue influence");
-        $this->assertEmpty($result["missing"], "Empty requirements should have no missing assets");
+        $missing = $this->game->getMissingAssetRequirements("", []);
+        $this->assertEmpty($missing, "Empty requirements should have no missing assets");
     }
 
     /**
-     * Test checkAssetRequirements with "any" requirements
+     * Test getMissingAssetRequirements with "any" requirements
      */
-    public function testCheckAssetRequirements_AnyRequirements() {
+    public function testgetMissingAssetRequirements_AnyRequirements() {
         $this->game();
 
         // "any" means any die can be placed - no specific assets needed
-        $result = $this->game->checkAssetRequirements("any", [], false);
-        $this->assertTrue($result["met"], "'any' requirements should be met with no assets");
+        $missing = $this->game->getMissingAssetRequirements("any", ["camel" => 0]);
+        $this->assertEmpty($missing, "'any' requirements should have no missing assets");
 
-        $result = $this->game->checkAssetRequirements("any", ["camel" => 1], false);
-        $this->assertTrue($result["met"], "'any' requirements should be met with assets");
+        $missing = $this->game->getMissingAssetRequirements("any", ["camel" => 1]);
+        $this->assertEmpty($missing, "'any' requirements should have no missing assets with assets");
     }
 
     /**
-     * Test checkAssetRequirements with single asset requirement
+     * Test getMissingAssetRequirements with single asset requirement
      */
-    public function testCheckAssetRequirements_SingleAsset() {
+    public function testgetMissingAssetRequirements_SingleAsset() {
         $this->game();
 
         // Has camel, requires camel - should pass
-        $result = $this->game->checkAssetRequirements("camel", ["camel" => 1], false);
-        $this->assertTrue($result["met"], "Should meet camel requirement with camel");
-        $this->assertEmpty($result["missing"]);
+        $missing = $this->game->getMissingAssetRequirements("camel", ["camel" => 1]);
+        $this->assertEmpty($missing, "Should meet camel requirement with camel");
 
         // No camel, requires camel - should fail
-        $result = $this->game->checkAssetRequirements("camel", [], false);
-        $this->assertFalse($result["met"], "Should not meet camel requirement without camel");
-        $this->assertEquals(["camel"], $result["missing"]);
+        $missing = $this->game->getMissingAssetRequirements("camel", ["camel" => 0]);
+        $this->assertEquals(["camel"], $missing, "Should be missing camel");
 
         // Has ship, requires camel - should fail
-        $result = $this->game->checkAssetRequirements("camel", ["ship" => 1], false);
-        $this->assertFalse($result["met"], "Should not meet camel requirement with ship");
+        $missing = $this->game->getMissingAssetRequirements("camel", ["ship" => 1, "camel" => 0]);
+        $this->assertEquals(["camel"], $missing, "Should be missing camel when only have ship");
     }
 
     /**
-     * Test checkAssetRequirements with multiple asset requirements
+     * Test getMissingAssetRequirements with multiple asset requirements
      */
-    public function testCheckAssetRequirements_MultipleAssets() {
+    public function testgetMissingAssetRequirements_MultipleAssets() {
         $this->game();
 
         // Requires telescope,camel - has both
-        $result = $this->game->checkAssetRequirements("telescope,camel", ["telescope" => 1, "camel" => 1], false);
-        $this->assertTrue($result["met"], "Should meet telescope,camel with both assets");
+        $missing = $this->game->getMissingAssetRequirements("telescope,camel", ["telescope" => 1, "camel" => 1]);
+        $this->assertEmpty($missing, "Should meet telescope,camel with both assets");
 
         // Requires telescope,camel - has only camel
-        $result = $this->game->checkAssetRequirements("telescope,camel", ["camel" => 1], false);
-        $this->assertFalse($result["met"], "Should not meet telescope,camel with only camel");
-        $this->assertEquals(["telescope"], $result["missing"]);
+        $missing = $this->game->getMissingAssetRequirements("telescope,camel", ["camel" => 1, "telescope" => 0]);
+        $this->assertEquals(["telescope"], $missing, "Should be missing telescope");
 
         // Requires telescope,camel - has neither
-        $result = $this->game->checkAssetRequirements("telescope,camel", [], false);
-        $this->assertFalse($result["met"], "Should not meet telescope,camel with no assets");
-        $this->assertCount(2, $result["missing"]);
+        $missing = $this->game->getMissingAssetRequirements("telescope,camel", ["camel" => 0, "telescope" => 0]);
+        $this->assertCount(2, $missing, "Should be missing both assets");
     }
 
     /**
-     * Test checkAssetRequirements with ship and blue influence
+     * Test getMissingAssetRequirements with ship requirements
      */
-    public function testCheckAssetRequirements_ShipWithBlueInfluence() {
+    public function testgetMissingAssetRequirements_Ship() {
         $this->game();
 
-        // Requires ship, no ship but has blue influence - should pass with needsBlueInfluence
-        $result = $this->game->checkAssetRequirements("ship", [], true);
-        $this->assertTrue($result["met"], "Should meet ship requirement with blue influence");
-        $this->assertTrue($result["needsBlueInfluence"], "Should need blue influence");
+        // Requires ship, no ship - should fail
+        $missing = $this->game->getMissingAssetRequirements("ship", ["ship" => 0]);
+        $this->assertEquals(["ship"], $missing, "Should be missing ship");
 
-        // Requires ship, has ship - should pass without needing blue influence
-        $result = $this->game->checkAssetRequirements("ship", ["ship" => 1], true);
-        $this->assertTrue($result["met"], "Should meet ship requirement with ship");
-        $this->assertFalse($result["needsBlueInfluence"], "Should not need blue influence when ship available");
+        // Requires ship, has ship - should pass
+        $missing = $this->game->getMissingAssetRequirements("ship", ["ship" => 1]);
+        $this->assertEmpty($missing, "Should meet ship requirement with ship");
 
-        // Requires 2 ships, has 1 ship and blue influence - should pass
-        $result = $this->game->checkAssetRequirements("ship,ship", ["ship" => 1], true);
-        $this->assertTrue($result["met"], "Should meet 2 ships with 1 ship + blue influence");
-        $this->assertTrue($result["needsBlueInfluence"], "Should need blue influence for second ship");
+        // Requires 2 ships, has 1 ship - should fail with 1 missing
+        $missing = $this->game->getMissingAssetRequirements("ship,ship", ["ship" => 1]);
+        $this->assertEquals(["ship"], $missing, "Should be missing 1 ship");
 
-        // Requires 2 ships, has 0 ships and blue influence - should fail (blue influence only provides 1)
-        $result = $this->game->checkAssetRequirements("ship,ship", [], true);
-        $this->assertFalse($result["met"], "Should not meet 2 ships with only blue influence");
-    }
-
-    /**
-     * Test checkAssetRequirements - blue influence only helps with ship, not other assets
-     */
-    public function testCheckAssetRequirements_BlueInfluenceOnlyForShip() {
-        $this->game();
-
-        // Requires camel, has blue influence but no camel - should fail
-        $result = $this->game->checkAssetRequirements("camel", [], true);
-        $this->assertFalse($result["met"], "Blue influence should not help with camel requirement");
-
-        // Requires telescope, has blue influence but no telescope - should fail
-        $result = $this->game->checkAssetRequirements("telescope", [], true);
-        $this->assertFalse($result["met"], "Blue influence should not help with telescope requirement");
+        // Requires 2 ships, has 0 ships - should fail with 2 missing
+        $missing = $this->game->getMissingAssetRequirements("ship,ship", ["ship" => 0]);
+        $this->assertCount(2, $missing, "Should be missing 2 ships");
     }
 }

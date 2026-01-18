@@ -30,6 +30,7 @@ use Bga\Games\wayfarers\States\GameDispatch;
 
 class Game extends Base {
     const GAME_STAGE = "game_stage";
+
     public static Game $instance;
     public OpMachine $machine;
     public Material $material;
@@ -162,8 +163,8 @@ class Game extends Base {
             // 1 Player Marker in their chosen color (place it on the far-left end of the Journal Track).
             $this->tokens->db->moveToken("marker_$color", "mainarea", 0);
             // 1 Yellow Worker and 1 Blue Worker.
-            $this->tokens->db->pickTokensForLocation(1, "worker_blue", "tableau_$color");
-            $this->tokens->db->pickTokensForLocation(1, "worker_yellow", "tableau_$color");
+            $this->tokens->db->moveToken("worker_blue_{$i}", "tableau_$color", 0);
+            $this->tokens->db->moveToken("worker_yellow_{$i}", "tableau_$color", 0);
 
             if ($i <= 2) {
                 $this->effect_incCount($color, "coin", 3, "setup");
@@ -384,6 +385,11 @@ class Game extends Base {
         };
     }
 
+    function countFolk(string $owner): int {
+        $tokens = $this->tokens->getTokensOfTypeInLocation("card_folk", "tableau_{$owner}");
+        return count($tokens) + 1; // +1 because one is pre-printed
+    }
+
     /**
      * Count influence tokens in a guild for a player
      */
@@ -403,6 +409,11 @@ class Game extends Base {
      */
     function getCaravanAssetsForDie(int $dieValue, string $owner): array {
         $assets = [];
+        // Assets are: camel, ship, pigeon, telescope
+        $assetTypes = ["camel", "ship", "pigeon", "telescope"];
+        foreach ($assetTypes as $assetType) {
+            $assets[$assetType] = 0;
+        }
         $column = $dieValue - 1; // Convert die value (1-6) to column index (0-5)
 
         // Starting assets (hardcoded positions in caravan)
@@ -415,8 +426,7 @@ class Game extends Base {
 
         // Get upgrade tiles in player's caravan
         $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
-        // Assets are: camel, ship, pigeon, telescope
-        $assetTypes = ["camel", "ship", "pigeon", "telescope"];
+
         foreach ($tiles as $tileKey => $tileInfo) {
             $state = $tileInfo["state"];
             if ($state <= 0) {
@@ -436,45 +446,51 @@ class Game extends Base {
                 // For 1x1 or 1x2 tiles: only r applies
                 $columnOffset = $column - $tileX; // 0 = left column, 1 = right column
 
-                $ruleField = "";
                 if ($w === 2) {
                     // 2x1 tile: use r for left column (offset 0), r2 for right column (offset 1)
-                    $ruleField = $columnOffset === 0 ? $this->getRulesFor($tileKey, "r", "") : $this->getRulesFor($tileKey, "r2", "");
+                    $ruleKey = $columnOffset === 0 ? "r" : "r2";
                 } else {
                     // 1x1 or 1x2 tile: just use r
-                    $ruleField = $this->getRulesFor($tileKey, "r", "");
+                    $ruleKey = "r";
                 }
 
                 // Parse assets from the rule field
-                foreach ($assetTypes as $assetType) {
-                    if ($ruleField && str_contains($ruleField, $assetType)) {
-                        $assets[$assetType] = ($assets[$assetType] ?? 0) + 1;
-                    }
-                }
+                $ruleField = $this->getRulesFor($tileKey, $ruleKey, "");
+                $this->updateMatchingAssetsFromRule($ruleField, $assets);
             }
         }
 
         return $assets;
     }
 
+    function updateMatchingAssetsFromRule(string|null $rule, array &$assets) {
+        if (!$rule) {
+            return;
+        }
+        $subrules = explode(",", $rule);
+        foreach ($subrules as $single) {
+            $single = trim($single);
+            if (!$single) {
+                continue;
+            }
+            $assets[$single] = ($assets[$single] ?? 0) + 1;
+        }
+    }
+
     /**
-     * Check if required assets are met for a die placement.
-     *
-     * @param string $requirements - comma-separated asset requirements (e.g., "camel,ship")
-     * @param array $availableAssets - assets available (from getCaravanAssetsForDie)
-     * @param bool $hasBlueInfluence - whether player can spend blue influence for ship
-     * @return array - ["met" => bool, "needsBlueInfluence" => bool, "missing" => array]
+     * Check if available assets meet requirements
+     * @param string $requirements - comma-separated list of required assets (e.g., "camel,ship")
+     * @param array $availableAssets - associative array of asset => count
+     * @return array - list of missing assets (empty array if all requirements met)
      */
-    function checkAssetRequirements(string $requirements, array $availableAssets, bool $hasBlueInfluence = false): array {
+    function getMissingAssetRequirements(string $requirements, array $available): array {
         // Empty or "any" means any die can be placed - no specific assets required
-        if (empty($requirements) || $requirements === "any") {
-            return ["met" => true, "needsBlueInfluence" => false, "missing" => []];
+        if ($requirements === "" || $requirements === "any") {
+            return [];
         }
 
         $required = explode(",", $requirements);
         $missing = [];
-        $needsBlueInfluence = false;
-        $available = $availableAssets; // Copy to track usage
 
         foreach ($required as $asset) {
             $asset = trim($asset);
@@ -482,21 +498,14 @@ class Game extends Base {
                 continue;
             }
 
-            if (isset($available[$asset]) && $available[$asset] > 0) {
+            if ($available[$asset] > 0) {
                 $available[$asset]--;
-            } elseif ($asset === "ship" && $hasBlueInfluence && !$needsBlueInfluence) {
-                // Can use blue influence for one ship
-                $needsBlueInfluence = true;
             } else {
                 $missing[] = $asset;
             }
         }
 
-        return [
-            "met" => empty($missing),
-            "needsBlueInfluence" => $needsBlueInfluence,
-            "missing" => $missing,
-        ];
+        return $missing;
     }
 
     function finalScoring() {

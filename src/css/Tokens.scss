@@ -63,6 +63,20 @@
 .wooden {
   background-image: url(img/tokens.png);
   background-size: auto 800%;
+
+  .log &,
+  #page-title & {
+    display: inline-block;
+    vertical-align: middle;
+    height: 24px;
+    width: 24px;
+    line-height: 24px;
+  }
+  #page-title & {
+    filter: v.$dropShadow2;
+    mask-image: unset;
+    background-blend-mode: unset;
+  }
 }
 
 .dice {
@@ -78,19 +92,24 @@
   &.color_ff0000 {
     background-color: #ff0000;
   }
-  &[data-state="1"] {
+  &[data-state="1"],
+  &.die_1 {
     background-position-x: 0%;
   }
-  &[data-state="2"] {
+  &[data-state="2"],
+  &.die_2 {
     background-position-x: 20%;
   }
-  &[data-state="3"] {
+  &[data-state="3"],
+  &.die_3 {
     background-position-x: 40%;
   }
-  &[data-state="4"] {
+  &[data-state="4"],
+  &.die_4 {
     background-position-x: 60%;
   }
-  &[data-state="5"] {
+  &[data-state="5"],
+  &.die_5 {
     background-position-x: 80%;
   }
 }

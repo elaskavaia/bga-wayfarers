@@ -22,7 +22,7 @@ use function Bga\Games\wayfarers\getPart;
 /**
  * Handle influence interaction when interacting with a card that has opponent's influence on it.
  * Data field "card" must be set to the card being interacted with.
- * Data field "returnInfluence" (default true) controls whether influence is returned to opponent's tableau.
+ * Data field "buy" (default true) controls whether influence is returned to opponent's tableau.
  * If the card has no influence, this operation does nothing.
  * Otherwise, the acting player must pay food or coin to the influence owner.
  */
@@ -31,8 +31,8 @@ class Op_cardInteract extends Operation {
         return $this->getDataField("card", null);
     }
 
-    public function shouldReturnInfluence(): bool {
-        return $this->getDataField("returnInfluence", true);
+    public function isBeingBought(): bool {
+        return $this->getDataField("buy", true);
     }
 
     public function getInfluenceOnCard(): ?string {
@@ -46,7 +46,6 @@ class Op_cardInteract extends Operation {
         }
         return null;
     }
-
 
     function getPossibleMoves() {
         $inf = $this->getInfluenceOnCard();
@@ -77,24 +76,39 @@ class Op_cardInteract extends Operation {
     }
 
     function resolve(): void {
+        $owner = $this->getOwner();
+        $card = $this->getCard();
         $inf = $this->getInfluenceOnCard();
-        if (!$inf) {
-            return;
+
+        if ($inf) {
+            $choice = $this->getCheckedArg();
+            $opp = getPart($inf, 2);
+
+            // Pay from acting player
+            $this->game->effect_incCount($owner, $choice, -1, $this->getOpId());
+
+            // Give to opponent
+            $this->game->effect_incCount($opp, $choice, 1, $this->getOpId());
+
+            // Return the influence token to the opponent's tableau (unless buy is false)
+            if ($this->isBeingBought()) {
+                $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
+            }
         }
 
-        $owner = $this->getOwner();
-        $choice = $this->getCheckedArg();
-        $opp = getPart($inf, 2);
-
-        // Pay from acting player
-        $this->game->effect_incCount($owner, $choice, -1, $this->getOpId());
-
-        // Give to opponent
-        $this->game->effect_incCount($opp, $choice, 1, $this->getOpId());
-
-        // Return the influence token to the opponent's tableau (unless returnInfluence is false)
-        if ($this->shouldReturnInfluence()) {
-            $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
+        // If card is being bought, move any workers on it to the buyer's tableau
+        if ($this->isBeingBought() && $card) {
+            $workers = $this->game->tokens->getTokensOfTypeInLocation("worker", $card);
+            foreach (array_keys($workers) as $workerKey) {
+                $this->game->tokens->dbSetTokenLocation(
+                    $workerKey,
+                    "tableau_$owner",
+                    0,
+                    clienttranslate('${player_name} gains ${token_name}'),
+                    [],
+                    $this->getPlayerId()
+                );
+            }
         }
     }
 

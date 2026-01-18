@@ -30,7 +30,7 @@ final class Op_cardFolkTest extends TestCase {
 
     private function setupFolkCardInMainArea(string $cardId, string $tags, int $cost): void {
         $this->game->tokens->db->moveToken($cardId, "mainarea");
-        $this->game->material->setRulesFor($cardId, ["tags" => $tags, "r" => (string)$cost]);
+        $this->game->material->setRulesFor($cardId, ["tags" => $tags, "r" => (string) $cost]);
     }
 
     private function setupFolkOnCard(string $folkId, string $tableauCardId): void {
@@ -127,7 +127,7 @@ final class Op_cardFolkTest extends TestCase {
         $op = $this->createOp();
         $cost = $op->getCost("card_folk_114");
 
-        $this->assertEquals(3, $cost);
+        $this->assertEquals(1, $cost);
     }
 
     public function testGetCostDefaultsToFive(): void {
@@ -216,7 +216,7 @@ final class Op_cardFolkTest extends TestCase {
 
         // Debug: let's see what we actually get
         error_log("Actual q value: " . $moves["card_folk_114"]["q"]);
-        
+
         // Based on the error, the implementation returns ERR_PREREQ when there are no available positions
         // This suggests that both positions are considered occupied
         $this->assertEquals(Material::ERR_PREREQ, $moves["card_folk_114"]["q"]);

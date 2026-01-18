@@ -5,62 +5,10 @@ num|r|d|dr|tags|name
 #set type=card card_home
 #set location=tableau_{COLOR}
 1||||Book Observatory
-2||camel|cardLand,coin|City|Capital City
-3||ship|cardWater|Harbour|Capital Harbour
+2||camel|2n_food:cardLand,coin|City|Capital City
+3||ship|2n_food:cardWater|Harbour|Capital Harbour
 #set type=card card_home card_slot
 10||telescope|(cardSpace/upgBlack)||Capital Observatory
 11||pigeon|(journal/(pickWorker,infAny))||Capital Library
 12||any|(cardFolk/2food)||Capital Market
 13||any|(upgGreen/2coin)||Capital Reserve
-
-#set t=folk
-#set id=card_folk_{num}
-#set type=card card_folk folk
-#set rest=1
-1|0||journal,coin||Capital Townfolk
-#set rest=
-#set create=1
-#set location=deck_folk
-114|1|*|(coin/food):(pickWorker,reroll)|Vista|Protector
-115|2|*|food:2coin|Observatory|Wanderer
-116|1||ship|Harbour|Adventurer
-117|0||telescope|Observatory|Astronomer
-118|2||pickWorker/infCard|Vista|Champion
-121|2||camel,pigeon|City|Envoy
-122|2||ship,pigeon|City|Envoy
-123|2||coin|City|Farmer
-124|2||food|City|Farmer
-125|2||coin|Harbour|Fisherman
-126|2||food|Harbour|Fisherman
-130|0||2diceMod|Vista|Hunter
-131|2||2ship|Harbour|Invader
-132|2||pickWorker/infCard|City Harbour|Mercenary
-133|2||coin|Vista|Merchant
-134|2||coin|Vista|Merchant
-135|2||food|Vista|Merchant
-136|2||food|Vista|Merchant
-137|1||pigeon|City Harbour|Messenger
-138|1||infCard/infMove/diceMod|City Harbour|Rogue
-139|1||infBlue/infMove|City Harbour|Scholar
-140|1||infYellow/infMove|City Harbour|Scholar
-141|2||infBlack/infMove|Book Observatory|Scholar
-142|1||infBlue/infMove|Book Observatory|Scribe
-143|1||infYellow/infMove|Book Observatory|Scribe
-144|2||infBlack/infMove|Vista|Scribe
-145|2||telescope,camel|City|Stargazer
-
-149|1||camel|City|Vagrant
-150|1||infCard/infMove/diceMod|Vista|Vigilante
-
-
-#set rest=1
-
-119|1||infMove,food|Water|Enforcer
-120|1||infMove,food|Water|Enforcer
-127|3||food,coin|Water|Guardian
-128|3||2coin|Water|Guardian
-129|3||2food|Water|Guardian
-146|1||infBlue/infMove|Water|Translator
-147|1||infYellow/infMove|Water|Translator
-148|2||infBlack/infMove|Water|Translator
-151|0||pickWorker/infMove|Water|Warrior

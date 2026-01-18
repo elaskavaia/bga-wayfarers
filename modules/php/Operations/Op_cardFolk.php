@@ -84,7 +84,7 @@ class Op_cardFolk extends Op_cardBase {
     }
 
     function getCost($card): int {
-        return (int) $this->game->getRulesFor("$card", "r", 5);
+        return (int) $this->game->getRulesFor("$card", "cost", 5);
     }
     public function getCard() {
         return $this->getDataField("card", null);

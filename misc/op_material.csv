@@ -20,6 +20,9 @@ paygain|Trade
 turn|Turn
 rest|Rest
 placeWorker|Place Worker
+placeDie|Place Die
+spendInfBlue|Spend Blue Influence for Ship
+spendInfYellow|Spend Yellow Influence to Modify Dice 
 cardSpace|Gain Space Card
 cardFolk|Gain Townfolk Card
 cardWater|Gain Water Card

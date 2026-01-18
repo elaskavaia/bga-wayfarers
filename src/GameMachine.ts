@@ -108,7 +108,7 @@ class GameMachine extends Game1Tokens {
         altNode = this.replicateTargetOnToolbar(target, paramInfo);
       }
 
-      if (!altNode && (opInfo.ui.buttons || (!div && active))) {
+      if (!altNode && (opInfo.ui.buttons || !div)) {
         altNode = this.createTargetButton(target, paramInfo);
       }
 
@@ -197,9 +197,8 @@ class GameMachine extends Game1Tokens {
     if (!name && div) {
       name = div.dataset.name;
     }
-    if (!name) name = target;
-
-    return this.getTr(name, paramInfo.args ?? paramInfo);
+    if (!name) return this.getTokenName(target);
+    else return this.getTr(name, paramInfo.args ?? paramInfo);
   }
 
   isMultiSelectArgs(args: OpInfo) {

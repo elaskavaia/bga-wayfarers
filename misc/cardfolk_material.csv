@@ -1,0 +1,49 @@
+num|cost|dr|tags|name|da
+#set rest=
+#set create=1
+#set location=deck_folk
+#set ext=1
+114|1|(coin/food):(pickWorker,reroll)|Vista|Protector
+115|2|food:2coin|Observatory|Wanderer
+#set ext=
+116|1||Harbour|Adventurer|ship
+117|0||Observatory|Astronomer|telescope
+118|2|pickWorker/infCard|Vista|Champion
+121|2||City|Envoy|camel,pigeon
+122|2||City|Envoy|ship,pigeon
+123|2|coin|City|Farmer
+124|2|food|City|Farmer
+125|2|coin|Harbour|Fisherman
+126|2|food|Harbour|Fisherman
+130|0|2diceMod|Vista|Hunter
+131|2|2ship|Harbour|Invader
+132|2|pickWorker/infCard|City Harbour|Mercenary
+133|2|coin|Vista|Merchant
+134|2|coin|Vista|Merchant
+135|2|food|Vista|Merchant
+136|2|food|Vista|Merchant
+137|1||City Harbour|Messenger|pigeon
+138|1|infCard/infMove/diceMod|City Harbour|Rogue
+139|1|infBlue/infMove|City Harbour|Scholar
+140|1|infYellow/infMove|City Harbour|Scholar
+141|2|infBlack/infMove|Book Observatory|Scholar
+142|1|infBlue/infMove|Book Observatory|Scribe
+143|1|infYellow/infMove|Book Observatory|Scribe
+144|2|infBlack/infMove|Vista|Scribe
+145|2||City|Stargazer|telescope,camel
+
+149|1||City|Vagrant|camel
+150|1|infCard/infMove/diceMod|Vista|Vigilante
+
+
+#set rest=1
+
+119|1|infMove,food|Water|Enforcer
+120|1|infMove,food|Water|Enforcer
+127|3|food,coin|Water|Guardian
+128|3|2coin|Water|Guardian
+129|3|2food|Water|Guardian
+146|1|infBlue/infMove|Water|Translator
+147|1|infYellow/infMove|Water|Translator
+148|2|infBlack/infMove|Water|Translator
+151|0|pickWorker/infMove|Water|Warrior

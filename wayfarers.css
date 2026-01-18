@@ -1257,6 +1257,18 @@ html[data-theme=dark] .miniboard .counter {
   background-image: url(img/tokens.png);
   background-size: auto 800%;
 }
+.log .wooden, #page-title .wooden {
+  display: inline-block;
+  vertical-align: middle;
+  height: 24px;
+  width: 24px;
+  line-height: 24px;
+}
+#page-title .wooden {
+  filter: drop-shadow(2px 2px 3px black);
+  mask-image: unset;
+  background-blend-mode: unset;
+}
 
 .dice {
   background-image: url(img/dice.png);
@@ -1272,19 +1284,19 @@ html[data-theme=dark] .miniboard .counter {
 .dice.color_ff0000 {
   background-color: #ff0000;
 }
-.dice[data-state="1"] {
+.dice[data-state="1"], .dice.die_1 {
   background-position-x: 0%;
 }
-.dice[data-state="2"] {
+.dice[data-state="2"], .dice.die_2 {
   background-position-x: 20%;
 }
-.dice[data-state="3"] {
+.dice[data-state="3"], .dice.die_3 {
   background-position-x: 40%;
 }
-.dice[data-state="4"] {
+.dice[data-state="4"], .dice.die_4 {
   background-position-x: 60%;
 }
-.dice[data-state="5"] {
+.dice[data-state="5"], .dice.die_5 {
   background-position-x: 80%;
 }
 

@@ -107,25 +107,20 @@ class Op_placeWorker extends Operation {
         $targetCard = $this->getCheckedArg();
 
         // Handle influence interaction if there's influence on the card (influence stays on card)
-        $this->queue("cardInteract", $owner, ["card" => $targetCard, "returnInfluence" => false]);
-
+        $this->queue("cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
+        $state = $this->game->tokens->db->getTokenState($targetCard);
+        $ctype = getPart($targetCard, 1);
         // Move worker to the card
         $this->game->tokens->dbSetTokenLocation(
             $selectedWorker,
             $targetCard,
             0,
-            clienttranslate('${player_name} places ${token_name} on ${token_name2}'),
-            ["token_name2" => $targetCard]
+            clienttranslate('${player_name} places ${token_name} on action ${card_type} position ${pos}'),
+            ["pos" => $state, "card_type" => $this->game->getTokenName($ctype)]
         );
 
-        $state = $this->game->tokens->db->getTokenState($targetCard);
-
-        // Get and queue the card's worker action (wr = worker rule)
-        $ctype = getPart($targetCard, 1);
         $workerRule = $this->game->getRulesFor("action_{$ctype}_{$state}", "r", "");
-        if ($workerRule) {
-            $this->queue($workerRule);
-        }
+        $this->queue($workerRule);
     }
 
     public function getPrompt() {
