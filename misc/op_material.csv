@@ -23,22 +23,22 @@ placeWorker|Place Worker
 placeDie|Place Die
 spendInfBlue|Spend Blue Influence for Ship
 spendInfYellow|Spend Yellow Influence to Modify Dice 
-cardSpace|Gain Space Card
-cardFolk|Gain Townfolk Card
-cardWater|Gain Water Card
-cardLand|Gain Land Card
+cardSpace|Acquire Space Card
+cardFolk|Acquire Townfolk Card
+cardWater|Acquire Water Card
+cardLand|Acquire Land Card
 cardDraw|Draw and Pick Card
-cardInteract|Card Influence Interaction
+cardInteract|Card Interaction
 
-upgBlack|Gain Black Upgrade
-upgBlue|Gain Blue Upgrade
-upgGreen|Gain Green Upgrade
-upgPink|Gain Pink Upgrade
-upgYellow|Gain Yellow Upgrade
+upgBlack|Acquire Space Upgrade
+upgBlue|Acquire Water Upgrade
+upgGreen|Acquire Basic Upgrade
+upgPink|Gain Special Upgrade
+upgYellow|Acquire Land Upgrade
 journal|Journal
 pickWorker|Pick a Worker
 drawTab|Refill Cards
-reroll|Re-roll
+reroll|Refresh a Die
 ship|Ship
 camel|Camel
 telescope|Telescope

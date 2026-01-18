@@ -288,7 +288,7 @@ class PGameTokens {
         if ($pick) {
             $this->game->tokens->dbSetTokenLocation(
                 $pick["key"],
-                "mainarea",
+                $to_place,
                 $state,
                 $notif,
                 ["place_from" => $from_place] + $args,

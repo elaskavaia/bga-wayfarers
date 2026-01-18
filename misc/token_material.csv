@@ -65,6 +65,8 @@ die_6||6
 
 #set type=
 #set name=
+#set create=
+#set count=
 #names of the upgrades
 upg_green|Basic Upgrade Tile
 upg_blue|Water Upgrade Tile

@@ -35,7 +35,7 @@ class Op_gain extends CountableOperation {
         if ($this->isRangedChoice()) {
             $max = $this->getCount();
             if ($max > 1) {
-                return clienttranslate('Select how many time to gain ${token_div}');
+                return clienttranslate('Select how many times to gain ${token_div}');
             }
             return clienttranslate('Gain ${token_div}');
         }

@@ -44,19 +44,19 @@ class Op_cardFolk extends Op_cardBase {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
 
             foreach ($tokens as $card => $tokenInfo) {
-                $cost = $this->getCost($card);
-                $res[$card] = ["q" => Material::ERR_PREREQ, "cost" => $cost, "info" => []];
+                $pay = $this->getPaymentOperation($card);
+                $can = $this->canAfford($pay);
+                $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $pay];
 
+                if (!$can) {
+                    continue;
+                }
+                $res[$card]["q"] = Material::ERR_PREREQ;
                 foreach ($cards as $tcard => $cardInfo) {
-                    if ($this->hasMatchingTags($card, $tcard)) {
-                        if ($cardInfo["folkon"]) {
-                            // Position already has a folk card - not available
-                            $res[$card]["info"][$tcard] = ["q" => Material::ERR_OCCUPIED];
-                        } else {
-                            // Position available
-                            $res[$card]["q"] = Material::RET_OK;
-                            $res[$card]["info"][$tcard] = ["q" => Material::RET_OK];
-                        }
+                    if ($this->hasMatchingTags($card, $tcard) && !$cardInfo["folkon"]) {
+                        // At least one position available
+                        $res[$card]["q"] = Material::RET_OK;
+                        break;
                     }
                 }
             }
@@ -86,9 +86,12 @@ class Op_cardFolk extends Op_cardBase {
     function getCost($card): int {
         return (int) $this->game->getRulesFor("$card", "cost", 5);
     }
-    public function getCard() {
-        return $this->getDataField("card", null);
+
+    public function getPaymentOperation(string $card) {
+        $cost = $this->getCost($card);
+        return "{$cost}n_coin";
     }
+
     /** User does the action */
     function resolve(): void {
         $cardSelected = $this->getCard();
@@ -97,27 +100,28 @@ class Op_cardFolk extends Op_cardBase {
             $this->queue($this->getType(), $owner, ["card" => $this->getCheckedArg()]);
             return;
         }
+
+        parent::resolve();
+    }
+
+    function placeCard($card) {
         $owner = $this->getOwner();
         $cardTuck = $this->getCheckedArg();
-        $cost = $this->getCost($cardSelected);
-        $this->game->effect_incCount($owner, "coin", -$cost, $this->getOpId());
         // Get the state of the target card to place folk card at same state
         $targetState = (int) $this->game->tokens->db->getTokenState($cardTuck);
         $this->game->tokens->dbSetTokenLocation(
-            $cardSelected,
+            $card,
             "tableau_$owner",
             $targetState,
             clienttranslate('${player_name} buys Townfolk card ${token_name}')
         );
-        $this->queue("drawTab", $owner, ["card" => $cardSelected]);
-        return;
     }
 
     public function getPrompt() {
         $card = $this->getCard();
         $owner = $this->getOwner();
         if ($card == null) {
-            return clienttranslate("Select a green card to buy");
+            return clienttranslate("Select a Townfolk card to buy");
         }
         return clienttranslate("Select a card to tuck under");
     }

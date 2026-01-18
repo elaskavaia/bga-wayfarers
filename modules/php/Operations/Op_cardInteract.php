@@ -35,16 +35,26 @@ class Op_cardInteract extends Operation {
         return $this->getDataField("buy", true);
     }
 
+    /**
+     * Get opponent's influence on the card (if any).
+     * Returns null if no influence or if the influence belongs to the acting player.
+     */
     public function getInfluenceOnCard(): ?string {
         $card = $this->getCard();
         if (!$card) {
             return null;
         }
         $children = $this->game->tokens->getTokensOfTypeInLocation("influence", $card);
-        if (count($children) > 0) {
-            return array_key_first($children);
+        $infKey = array_key_first($children);
+        if (!$infKey) {
+            return null;
         }
-        return null;
+        // Only return opponent's influence, not player's own
+        $infOwner = getPart($infKey, 2);
+        if ($infOwner === $this->getOwner()) {
+            return null;
+        }
+        return $infKey;
     }
 
     function getPossibleMoves() {
@@ -59,17 +69,17 @@ class Op_cardInteract extends Operation {
         // Check if player can afford food
         $foodCount = $this->game->tokens->db->getTokenState("tracker_food_$owner");
         if ($foodCount >= 1) {
-            $res["food"] = ["q" => 0];
+            $res["tracker_food_$owner"] = ["q" => 0];
         } else {
-            $res["food"] = ["q" => Material::ERR_COST];
+            $res["tracker_food_$owner"] = ["q" => Material::ERR_COST];
         }
 
         // Check if player can afford coin
         $coinCount = $this->game->tokens->db->getTokenState("tracker_coin_$owner");
         if ($coinCount >= 1) {
-            $res["coin"] = ["q" => 0];
+            $res["tracker_coin_$owner"] = ["q" => 0];
         } else {
-            $res["coin"] = ["q" => Material::ERR_COST];
+            $res["tracker_coin_$owner"] = ["q" => Material::ERR_COST];
         }
 
         return $res;
@@ -82,13 +92,14 @@ class Op_cardInteract extends Operation {
 
         if ($inf) {
             $choice = $this->getCheckedArg();
+            $counterType = getPart($choice, 1);
             $opp = getPart($inf, 2);
 
             // Pay from acting player
-            $this->game->effect_incCount($owner, $choice, -1, $this->getOpId());
+            $this->game->effect_incCount($owner, $counterType, -1, $this->getOpId());
 
             // Give to opponent
-            $this->game->effect_incCount($opp, $choice, 1, $this->getOpId());
+            $this->game->effect_incCount($opp, $counterType, 1, $this->getOpId());
 
             // Return the influence token to the opponent's tableau (unless buy is false)
             if ($this->isBeingBought()) {
@@ -113,6 +124,6 @@ class Op_cardInteract extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate("Pay to the opponent to iteract with a card");
+        return clienttranslate("Pay the opponent to interact with a card");
     }
 }

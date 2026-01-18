@@ -134,6 +134,9 @@ class Game extends Base {
         $token_types = $this->material->get();
         foreach ($token_types as $key => $info) {
             // Only process upgrade tiles
+            if (!getPart($key, 2, true)) {
+                continue;
+            }
             if (str_starts_with($key, "upg_pink")) {
                 // Place all 10 Special (Pink) Upgrade Tiles on their designated spaces on the Main Board.
                 $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", 1, 1);

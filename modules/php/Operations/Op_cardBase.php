@@ -36,6 +36,9 @@ abstract class Op_cardBase extends Operation {
     function getCardType() {
         return "home";
     }
+    function isFree() {
+        return $this->getParam(0) == "free";
+    }
 
     function getPossibleMoves() {
         $cardSelected = $this->getCard();
@@ -49,17 +52,13 @@ abstract class Op_cardBase extends Operation {
 
         foreach ($tokens as $card => $info) {
             $payop = $this->getPaymentOperation($card);
-            if ($this->getParam(0, "") == "free") {
+            if ($this->isFree()) {
                 $payop = "";
             }
             $children = $info["children"];
-
-            $inf = "";
-            if (count($children) > 0) {
-                $inf = array_key_first($children);
-            }
+            // XXX mark influence on the card?
             $can = $this->canAfford($payop);
-            $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop, "inf" => $inf];
+            $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop];
         }
 
         return $res;
@@ -73,11 +72,11 @@ abstract class Op_cardBase extends Operation {
         $owner = $this->getOwner();
         $cardType = $this->getCardType();
         $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens) + 1);
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens) + 2);
     }
     function resolve(): void {
         $owner = $this->getOwner();
-        $card = $this->getCheckedArg();
+        $card = $this->getCard() ?: $this->getCheckedArg();
 
         // Check if player chose the deck
         if (str_starts_with($card, "deck_")) {
@@ -87,9 +86,7 @@ abstract class Op_cardBase extends Operation {
             return;
         }
         // Handle payment
-        $args = $this->getArgs();
-        $info = $args["info"][$card];
-        $payop = $info["pay"];
+        $payop = $this->getPaymentOperation($card);
         if ($payop) {
             $this->queue($payop);
         }

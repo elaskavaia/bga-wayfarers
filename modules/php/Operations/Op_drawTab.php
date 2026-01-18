@@ -19,10 +19,6 @@ use Bga\Games\wayfarers\OpCommon\Operation;
 use function Bga\Games\wayfarers\getPart;
 
 class Op_drawTab extends Operation {
-    function getPossibleMoves() {
-        return ["confirm"];
-    }
-
     public function requireConfirmation() {
         return true;
     }

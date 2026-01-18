@@ -204,6 +204,10 @@ abstract class Op_upgBase extends Operation {
         return "3n_coin";
     }
 
+    function isFree() {
+        return $this->getParam(0) == "free";
+    }
+
     /** User does the action */
     function resolve(): void {
         $owner = $this->getOwner();
@@ -212,9 +216,11 @@ abstract class Op_upgBase extends Operation {
         if ($selectedTile === null) {
             // Step 1: Tile selected, pay cost and move to step 2
             $tile = $this->getCheckedArg();
-            $op = $this->getPaymentOperation($tile);
-            if ($op) {
-                $this->queue($op, $owner, [], $tile);
+            if (!$this->isFree()) {
+                $op = $this->getPaymentOperation($tile);
+                if ($op) {
+                    $this->queue($op, $owner, [], $tile);
+                }
             }
 
             // Queue step 2 with the selected tile

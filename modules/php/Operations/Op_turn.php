@@ -125,7 +125,7 @@ class Op_turn extends Operation {
     }
 
     public function getUiArgs() {
-        return ["buttons" => false];
+        return ["replicate" => true];
     }
 
     function resolve(): void {

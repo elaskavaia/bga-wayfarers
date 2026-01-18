@@ -260,7 +260,7 @@ abstract class Operation {
             $min = $args["mcount"] ?? $this->getDataField("mcount", 1);
 
             $this->game->userAssert(
-                clienttranslate("Cannot use this action because insuffient amount of elements is selected"),
+                clienttranslate("Cannot use this action because insufficient amount of elements is selected"),
                 $total >= $min
             );
         }

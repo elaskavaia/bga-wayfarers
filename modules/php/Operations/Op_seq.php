@@ -70,7 +70,7 @@ class Op_seq extends ComplexOperation {
         if ($this->isRangedChoice()) {
             $max = $this->getCount();
             if ($max > 1) {
-                return clienttranslate('Select how many time to perform ${name}');
+                return clienttranslate('Select how many times to perform ${name}');
             }
             return clienttranslate('Perform ${name}');
         }
