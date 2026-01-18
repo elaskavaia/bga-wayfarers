@@ -1201,6 +1201,63 @@ html[data-theme=dark] .deck .counter {
 .mainboard_2 .upg_black_22 {
   left: 79%;
 }
+.mainboard_2 .upg_yellow {
+  top: 81%;
+}
+.mainboard_2 .upg_yellow_1 {
+  left: 32%;
+}
+.mainboard_2 .upg_yellow_2 {
+  left: 32%;
+  top: 88%;
+  visibility: hidden;
+}
+.mainboard_2 .upg_yellow_3 {
+  left: 15%;
+}
+.mainboard_2 .upg_yellow_4 {
+  left: 15%;
+  top: 88%;
+  visibility: hidden;
+}
+.mainboard_2 .upg_yellow_5 {
+  left: 2%;
+}
+.mainboard_2 .upg_yellow_6 {
+  left: 2%;
+  visibility: hidden;
+  top: 88%;
+}
+.mainboard_2 .upg_blue {
+  top: 81%;
+}
+.mainboard_2 .upg_blue_7 {
+  left: 61%;
+}
+.mainboard_2 .upg_blue_8 {
+  left: 61%;
+  top: 88%;
+  visibility: hidden;
+}
+.mainboard_2 .upg_blue_9 {
+  left: 74%;
+}
+.mainboard_2 .upg_blue_10 {
+  left: 74%;
+  top: 88%;
+  visibility: hidden;
+}
+.mainboard_2 .upg_blue_11 {
+  left: 88%;
+}
+.mainboard_2 .upg_blue_12 {
+  left: 88%;
+  top: 88%;
+  visibility: hidden;
+}
+.mainboard_2 .active_slot.upg {
+  visibility: visible;
+}
 
 .mainboard_3 {
   background-image: url(img/MainBoard3.jpg);

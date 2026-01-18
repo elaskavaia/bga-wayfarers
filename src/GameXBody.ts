@@ -322,10 +322,25 @@ class GameXBody extends GameMachine {
         return;
       case "card": {
         tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
-          name: this.getTr(this.getRulesFor(tokenId, "name") ?? tokenInfo.t),
-          num: getPart(tokenId, 2)
+          name: this.getTr(this.getRulesFor(tokenId, "name") ?? tokenInfo.t) ?? "?",
+          num: getPart(tokenId, 2) ?? "?"
         });
 
+        return;
+      }
+      case "upg": {
+        //num|t|r|r2|tags|vp
+        const num = getPart(tokenId, 2) ?? "";
+        if (!num) return;
+        const color = getPart(tokenId, 1);
+        const name = this.getTokenName(`upg_${color}`);
+        tokenInfo.name = this.getTr(_("${name} #${num}"), {
+          name,
+          num
+        });
+        tokenInfo.tooltip = "";
+        if (tokenInfo.tags) tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
+        if (tokenInfo.vp) tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
         return;
       }
     }

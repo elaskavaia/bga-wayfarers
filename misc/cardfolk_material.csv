@@ -1,7 +1,10 @@
 num|cost|dr|tags|name|da
 #set rest=
+#set t=folk
+#set type=card card_folk folk
 #set create=1
 #set location=deck_folk
+#set id=card_folk_{num}
 #set ext=1
 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector
 115|2|food:2coin|Observatory|Wanderer

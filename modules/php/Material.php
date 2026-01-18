@@ -582,6 +582,27 @@ class Material {
         "name" => clienttranslate("Die 6"),
         "count" => 6,
 ],
+// #names of the upgrades
+    "upg_green" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Basic Upgrade Tile"),
+],
+    "upg_blue" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Water Upgrade Tile"),
+],
+    "upg_yellow" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Land Upgrade Tile"),
+],
+    "upg_black" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Space Upgrade Tile"),
+],
+    "upg_pink" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Special Upgrade Tile"),
+],
 // #names of the stats
     "game_vp_tags" => [ 
         "create" => 0,
@@ -686,15 +707,6 @@ class Material {
 ],
             /* --- gen php end card_material --- */
             /* --- gen php begin cardfolk_material --- */
-    "card_folk_1" => [ 
-        "t" => "folk",
-        "type" => "card card_folk folk",
-        "rest" => 1,
-        "num" => 1,
-        "cost" => 0,
-        "dr" => "journal,coin",
-        "name" => clienttranslate("Capital Townfolk"),
-],
     "card_folk_114" => [ 
         "t" => "folk",
         "type" => "card card_folk folk",
@@ -1017,9 +1029,9 @@ class Material {
         "name" => clienttranslate("Vigilante"),
 ],
     "card_folk_119" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 119,
@@ -1029,9 +1041,9 @@ class Material {
         "name" => clienttranslate("Enforcer"),
 ],
     "card_folk_120" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 120,
@@ -1041,9 +1053,9 @@ class Material {
         "name" => clienttranslate("Enforcer"),
 ],
     "card_folk_127" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 127,
@@ -1053,9 +1065,9 @@ class Material {
         "name" => clienttranslate("Guardian"),
 ],
     "card_folk_128" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 128,
@@ -1065,9 +1077,9 @@ class Material {
         "name" => clienttranslate("Guardian"),
 ],
     "card_folk_129" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 129,
@@ -1077,9 +1089,9 @@ class Material {
         "name" => clienttranslate("Guardian"),
 ],
     "card_folk_146" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 146,
@@ -1089,9 +1101,9 @@ class Material {
         "name" => clienttranslate("Translator"),
 ],
     "card_folk_147" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 147,
@@ -1101,9 +1113,9 @@ class Material {
         "name" => clienttranslate("Translator"),
 ],
     "card_folk_148" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 148,
@@ -1113,9 +1125,9 @@ class Material {
         "name" => clienttranslate("Translator"),
 ],
     "card_folk_151" => [ 
+        "rest" => 1,
         "t" => "folk",
         "type" => "card card_folk folk",
-        "rest" => 1,
         "create" => 1,
         "location" => "deck_folk",
         "num" => 151,
@@ -1989,7 +2001,6 @@ class Material {
         "t" => "yellow",
         "r" => "dicePlus",
         "r2" => "camel",
-        "vp" => "|1",
 ],
     "upg_yellow_2" => [ 
         "type" => "upg upg_yellow",
@@ -1999,7 +2010,6 @@ class Material {
         "t" => "yellow",
         "r" => "camel",
         "r2" => "diceMinus",
-        "vp" => "|1",
 ],
     "upg_yellow_3" => [ 
         "type" => "upg upg_yellow",
@@ -2009,7 +2019,6 @@ class Material {
         "t" => "yellow",
         "r" => "pigeon",
         "r2" => "dicePlus",
-        "vp" => "|1",
 ],
     "upg_yellow_4" => [ 
         "type" => "upg upg_yellow",
@@ -2019,7 +2028,6 @@ class Material {
         "t" => "yellow",
         "r" => "diceMinus",
         "r2" => "pigeon",
-        "vp" => "|1",
 ],
     "upg_yellow_5" => [ 
         "type" => "upg upg_yellow",
@@ -2028,7 +2036,7 @@ class Material {
         "num" => 5,
         "t" => "yellow",
         "r2" => "coinDis",
-        "vp" => "|1",
+        "vp" => 1,
 ],
     "upg_yellow_6" => [ 
         "type" => "upg upg_yellow",
@@ -2037,7 +2045,7 @@ class Material {
         "num" => 6,
         "t" => "yellow",
         "r" => "coinDis",
-        "vp" => "|1",
+        "vp" => 1,
 ],
     "upg_blue_7" => [ 
         "type" => "upg upg_blue",
@@ -2047,7 +2055,6 @@ class Material {
         "t" => "blue",
         "r" => "dicePlus",
         "r2" => "ship",
-        "vp" => "|1",
 ],
     "upg_blue_8" => [ 
         "type" => "upg upg_blue",
@@ -2057,7 +2064,6 @@ class Material {
         "t" => "blue",
         "r" => "ship",
         "r2" => "diceMinus",
-        "vp" => "|1",
 ],
     "upg_blue_9" => [ 
         "type" => "upg upg_blue",
@@ -2067,7 +2073,6 @@ class Material {
         "t" => "blue",
         "r" => "ship",
         "r2" => "pigeon",
-        "vp" => "|1",
 ],
     "upg_blue_10" => [ 
         "type" => "upg upg_blue",
@@ -2077,7 +2082,6 @@ class Material {
         "t" => "blue",
         "r" => "pigeon",
         "r2" => "ship",
-        "vp" => "|1",
 ],
     "upg_blue_11" => [ 
         "type" => "upg upg_blue",
@@ -2087,7 +2091,6 @@ class Material {
         "t" => "blue",
         "r" => "coinDis",
         "r2" => "dicePlus",
-        "vp" => "|1",
 ],
     "upg_blue_12" => [ 
         "type" => "upg upg_blue",
@@ -2097,7 +2100,6 @@ class Material {
         "t" => "blue",
         "r" => "diceMinus",
         "r2" => "coinDis",
-        "vp" => "|1",
 ],
     "upg_black_20" => [ 
         "type" => "upg upg_black",
@@ -2106,7 +2108,6 @@ class Material {
         "num" => 20,
         "t" => "black",
         "r" => "ship,pigeon,camel",
-        "vp" => "|2",
 ],
     "upg_black_21" => [ 
         "type" => "upg upg_black",
@@ -2115,7 +2116,7 @@ class Material {
         "num" => 21,
         "t" => "black",
         "r" => "diceMod",
-        "vp" => "|3",
+        "vp" => 3,
 ],
     "upg_black_22" => [ 
         "type" => "upg upg_black",
@@ -2124,7 +2125,6 @@ class Material {
         "num" => 22,
         "t" => "black",
         "r" => "telescope,foodDis",
-        "vp" => "|2",
 ],
     "upg_green_31" => [ 
         "type" => "upg upg_green",

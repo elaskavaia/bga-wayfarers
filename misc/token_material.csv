@@ -65,6 +65,12 @@ die_6||6
 
 #set type=
 #set name=
+#names of the upgrades
+upg_green|Basic Upgrade Tile
+upg_blue|Water Upgrade Tile
+upg_yellow|Land Upgrade Tile
+upg_black|Space Upgrade Tile
+upg_pink|Special Upgrade Tile
 #names of the stats
 game_vp_tags|VP from Primary Tags (City, Vista, Harbour, Water)
 game_vp_sets|VP from Tag Sets

@@ -3,25 +3,25 @@ num|t|r|r2|tags|vp
 #set type=upg upg_yellow
 #set w=2
 #set h=1
-1|yellow|dicePlus|camel|||1
-2|yellow|camel|diceMinus|||1
-3|yellow|pigeon|dicePlus|||1
-4|yellow|diceMinus|pigeon|||1
-5|yellow||coinDis|||1
-6|yellow|coinDis||||1
+1|yellow|dicePlus|camel|
+2|yellow|camel|diceMinus|
+3|yellow|pigeon|dicePlus|
+4|yellow|diceMinus|pigeon|
+5|yellow||coinDis||1
+6|yellow|coinDis|||1
 #set type=upg upg_blue
-7|blue|dicePlus|ship|||1
-8|blue|ship|diceMinus|||1
-9|blue|ship|pigeon|||1
-10|blue|pigeon|ship|||1
-11|blue|coinDis|dicePlus|||1
-12|blue|diceMinus|coinDis|||1
+7|blue|dicePlus|ship
+8|blue|ship|diceMinus
+9|blue|ship|pigeon
+10|blue|pigeon|ship
+11|blue|coinDis|dicePlus
+12|blue|diceMinus|coinDis
 #set w=1
 #set h=2
 #set type=upg upg_black
-20|black|ship,pigeon,camel||||2
-21|black|diceMod||||3
-22|black|telescope,foodDis||||2
+20|black|ship,pigeon,camel
+21|black|diceMod|||3
+22|black|telescope,foodDis
 #set w=1
 #set h=1
 #set type=upg upg_green

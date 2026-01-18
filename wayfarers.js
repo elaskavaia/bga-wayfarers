@@ -1975,7 +1975,7 @@ var GameXBody = /** @class */ (function (_super) {
         return gameui.bgaAnimationsActive() && !this.inSetup;
     };
     GameXBody.prototype.updateTokenDisplayInfo = function (tokenInfo) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e;
         // override to generate dynamic tooltips and such
         var mainType = tokenInfo.mainType;
         var token = $(tokenInfo.tokenId);
@@ -1987,9 +1987,27 @@ var GameXBody = /** @class */ (function (_super) {
                 return;
             case "card": {
                 tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
-                    name: this.getTr((_b = this.getRulesFor(tokenId, "name")) !== null && _b !== void 0 ? _b : tokenInfo.t),
-                    num: getPart(tokenId, 2)
+                    name: (_c = this.getTr((_b = this.getRulesFor(tokenId, "name")) !== null && _b !== void 0 ? _b : tokenInfo.t)) !== null && _c !== void 0 ? _c : "?",
+                    num: (_d = getPart(tokenId, 2)) !== null && _d !== void 0 ? _d : "?"
                 });
+                return;
+            }
+            case "upg": {
+                //num|t|r|r2|tags|vp
+                var num = (_e = getPart(tokenId, 2)) !== null && _e !== void 0 ? _e : "";
+                if (!num)
+                    return;
+                var color = getPart(tokenId, 1);
+                var name_2 = this.getTokenName("upg_".concat(color));
+                tokenInfo.name = this.getTr(_("${name} #${num}"), {
+                    name: name_2,
+                    num: num
+                });
+                tokenInfo.tooltip = "";
+                if (tokenInfo.tags)
+                    tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
+                if (tokenInfo.vp)
+                    tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
                 return;
             }
         }

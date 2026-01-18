@@ -251,27 +251,87 @@
     top: 7.5%;
   }
 
-  & .upg_green_31 {
+  .upg_green_31 {
     left: 0%;
   }
-  & .upg_green_32 {
+  .upg_green_32 {
     left: 15%;
   }
-  & .upg_green_33 {
+  .upg_green_33 {
     left: 22%;
   }
-  & .upg_green_34 {
+  .upg_green_34 {
     left: 7.5%;
   }
 
-  & .upg_black_20 {
+  .upg_black_20 {
     left: 94%;
   }
-  & .upg_black_21 {
+  .upg_black_21 {
     left: 86.5%;
   }
-  & .upg_black_22 {
+  .upg_black_22 {
     left: 79%;
+  }
+
+  .upg_yellow {
+    top: 81%;
+  }
+  .upg_yellow_1 {
+    left: 32%;
+  }
+  .upg_yellow_2 {
+    left: 32%;
+    top: 88%;
+    visibility: hidden;
+  }
+  .upg_yellow_3 {
+    left: 15%;
+  }
+  .upg_yellow_4 {
+    left: 15%;
+    top: 88%;
+    visibility: hidden;
+  }
+  .upg_yellow_5 {
+    left: 2%;
+  }
+  .upg_yellow_6 {
+    left: 2%;
+    visibility: hidden;
+    top: 88%;
+  }
+
+  .upg_blue {
+    top: 81%;
+  }
+  .upg_blue_7 {
+    left: 61%;
+  }
+  .upg_blue_8 {
+    left: 61%;
+    top: 88%;
+    visibility: hidden;
+  }
+  .upg_blue_9 {
+    left: 74%;
+  }
+  .upg_blue_10 {
+    left: 74%;
+    top: 88%;
+    visibility: hidden;
+  }
+  .upg_blue_11 {
+    left: 88%;
+  }
+  .upg_blue_12 {
+    left: 88%;
+    top: 88%;
+    visibility: hidden;
+  }
+
+  .active_slot.upg {
+    visibility: visible;
   }
 }
 
