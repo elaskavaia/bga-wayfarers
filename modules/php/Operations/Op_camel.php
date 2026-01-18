@@ -16,14 +16,28 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+/**
+ * Camel asset - provides camel asset for dice placement on land cards.
+ * When queued as an operation (e.g., from a townsfolk card), it provides
+ * a temporary camel asset for the current dice placement.
+ */
 class Op_camel extends Operation {
+    public function isVoid(): bool {
+        // Camel is an asset, not an action - it's always valid when queued
+        return false;
+    }
+
     function getPossibleMoves() {
         return ["confirm"];
     }
 
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        // Camel asset is consumed automatically when used for dice placement
+        // This operation is typically queued to provide a temporary camel from townsfolk
+        $this->notifyMessage(clienttranslate('${player_name} uses a Camel'));
+    }
 
-        return;
+    public function getPrompt() {
+        return clienttranslate('Use Camel asset');
     }
 }

@@ -25,6 +25,14 @@ use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_turn extends Operation {
+    public function auto(): bool {
+        $this->game->switchActivePlayer($this->getPlayerId(), true);
+        if ($this->getLocation() === null) {
+            $this->game->customUndoSavepoint($this->getPlayerId(), 1);
+        }
+
+        return parent::auto();
+    }
     /**
      * Queue the next turn, or end the game if this was the final turn
      * When end game is triggered, game_stage holds the player number (1-4) who triggered it.
@@ -52,14 +60,6 @@ class Op_turn extends Operation {
         $this->queue("turn", $this->game->getPlayerColorById($nextPlayerId));
     }
 
-    public function auto(): bool {
-        $this->game->switchActivePlayer($this->getPlayerId(), true);
-        if ($this->getLocation() === null) {
-            $this->game->customUndoSavepoint($this->getPlayerId(), 1);
-        }
-
-        return parent::auto();
-    }
     function getDiceSlots() {
         $owner = $this->getOwner();
 
@@ -100,24 +100,114 @@ class Op_turn extends Operation {
         return count($this->getWorkersInSupply()) > 0;
     }
 
+    /**
+     * Check if player has blue influence available to spend for a ship
+     */
+    function hasBlueInfluenceForShip(): bool {
+        $owner = $this->getOwner();
+        return $this->game->countGuildInfluence("guild_blue", $owner) > 0;
+    }
+
+    /**
+     * Check if a die can be placed on a card slot (considering asset requirements)
+     * @param int $dieValue - the die value (1-6)
+     * @param string $cardKey - the card to place the die on
+     * @return array - ["can" => bool, "needsBlueInfluence" => bool]
+     */
+    function canPlaceDieOnCard(int $dieValue, string $cardKey): array {
+        $owner = $this->getOwner();
+        $requirements = $this->game->getRulesFor($cardKey, "d", "");
+
+        if (empty($requirements)) {
+            return ["can" => true, "needsBlueInfluence" => false];
+        }
+
+        $assets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
+        $hasBlueInfluence = $this->hasBlueInfluenceForShip();
+
+        $check = $this->game->checkAssetRequirements($requirements, $assets, $hasBlueInfluence);
+
+        return [
+            "can" => $check["met"],
+            "needsBlueInfluence" => $check["needsBlueInfluence"],
+        ];
+    }
+
+    /**
+     * Check if ANY die in player's supply can be placed on a card slot
+     */
+    function canAnyDieBePlacedOnCard(string $cardKey): array {
+        $player_dice = $this->getDiceInPlayerSupply();
+        $canPlace = false;
+        $needsBlueInfluence = false;
+
+        foreach ($player_dice as $dieKey => $dieInfo) {
+            $dieValue = (int) $dieInfo["state"];
+            $check = $this->canPlaceDieOnCard($dieValue, $cardKey);
+            if ($check["can"]) {
+                $canPlace = true;
+                if (!$check["needsBlueInfluence"]) {
+                    // Found a die that can place without blue influence
+                    return ["can" => true, "needsBlueInfluence" => false];
+                }
+                $needsBlueInfluence = true;
+            }
+        }
+
+        return ["can" => $canPlace, "needsBlueInfluence" => $needsBlueInfluence];
+    }
+
     public function getPossibleMoves() {
         $loc = $this->getLocation();
         $res = [];
+        $owner = $this->getOwner();
         $player_dice = $this->getDiceInPlayerSupply();
+
         if ($loc) {
-            foreach ($player_dice as $key => $slot) {
-                $res[$key] = ["q" => 0];
+            // Step 2: Select which die to place on the chosen card
+            $requirements = $this->game->getRulesFor($loc, "d", "");
+
+            foreach ($player_dice as $key => $dieInfo) {
+                $dieValue = (int) $dieInfo["state"];
+                $check = $this->canPlaceDieOnCard($dieValue, $loc);
+
+                if ($check["can"]) {
+                    $res[$key] = [
+                        "q" => Material::RET_OK,
+                        "needsBlueInfluence" => $check["needsBlueInfluence"],
+                    ];
+                } else {
+                    $res[$key] = ["q" => Material::ERR_COST];
+                }
             }
             return $res;
         }
+
+        // Step 1: Select action (card slot, rest, or worker)
         $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
+
         if (count($player_dice) > 0) {
             $slots = $this->getDiceSlots();
             foreach ($slots as $key => $slot) {
                 $state = $slot["state"];
-                $res[$key] = ["q" => $state == 0 ? Material::RET_OK : Material::ERR_OCCUPIED];
+                if ($state > 0) {
+                    // Slot already occupied
+                    $res[$key] = ["q" => Material::ERR_OCCUPIED];
+                } else {
+                    // Check if any die can be placed here (considering assets)
+                    $check = $this->canAnyDieBePlacedOnCard($key);
+                    if ($check["can"]) {
+                        $res[$key] = [
+                            "q" => Material::RET_OK,
+                            "needsBlueInfluence" => $check["needsBlueInfluence"],
+                        ];
+                    } else {
+                        $res[$key] = ["q" => Material::ERR_COST];
+                    }
+                }
             }
         }
+
         // Worker placement option (only if player has workers in supply)
         if ($this->canPlaceWorker()) {
             $res["worker"] = ["q" => 0, "name" => clienttranslate("Place Worker")];
@@ -150,9 +240,17 @@ class Op_turn extends Operation {
             return;
         }
         $die = $this->getCheckedArg();
-        $state = $this->game->tokens->db->getTokenState($die);
+        $dieValue = (int) $this->game->tokens->db->getTokenState($die);
+
+        // Check if this placement requires spending blue influence for a ship
+        $check = $this->canPlaceDieOnCard($dieValue, $loc);
+        if ($check["needsBlueInfluence"]) {
+            // Spend 1 blue influence
+            $this->queue("n_infBlue", $owner, [], "ship");
+        }
+
         $this->game->tokens->dbSetTokenLocation($die, $loc, 0, clienttranslate('${player_name} places die ${num} onto ${token_name}'), [
-            "num" => $state,
+            "num" => $dieValue,
         ]);
         $r = $this->game->getRulesFor($loc, "dr");
 

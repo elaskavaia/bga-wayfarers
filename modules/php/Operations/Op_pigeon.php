@@ -16,14 +16,27 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+/**
+ * Pigeon asset - provides pigeon asset for dice placement.
+ * Pigeons are typically used for cards that require communication/messaging abilities.
+ * When queued as an operation (e.g., from a townsfolk card), it provides
+ * a temporary pigeon asset for the current dice placement.
+ */
 class Op_pigeon extends Operation {
+    public function isVoid(): bool {
+        return false;
+    }
+
     function getPossibleMoves() {
         return ["confirm"];
     }
 
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        // Pigeon asset is consumed automatically when used for dice placement
+        $this->notifyMessage(clienttranslate('${player_name} uses a Pigeon'));
+    }
 
-        return;
+    public function getPrompt() {
+        return clienttranslate('Use Pigeon asset');
     }
 }

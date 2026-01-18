@@ -16,14 +16,27 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+/**
+ * Ship asset - provides ship asset for dice placement on water cards.
+ * Ships can also be obtained by spending 1 Blue Influence (once per turn).
+ * When queued as an operation (e.g., from a townsfolk card), it provides
+ * a temporary ship asset for the current dice placement.
+ */
 class Op_ship extends Operation {
+    public function isVoid(): bool {
+        return false;
+    }
+
     function getPossibleMoves() {
         return ["confirm"];
     }
 
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        // Ship asset is consumed automatically when used for dice placement
+        $this->notifyMessage(clienttranslate('${player_name} uses a Ship'));
+    }
 
-        return;
+    public function getPrompt() {
+        return clienttranslate('Use Ship asset');
     }
 }

@@ -16,14 +16,28 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+/**
+ * Telescope asset - provides telescope asset for dice placement.
+ * Telescope is used for observatory/space-related cards.
+ * The caravan starts with a telescope in column 6 (die value 6).
+ * When queued as an operation (e.g., from a townsfolk card), it provides
+ * a temporary telescope asset for the current dice placement.
+ */
 class Op_telescope extends Operation {
+    public function isVoid(): bool {
+        return false;
+    }
+
     function getPossibleMoves() {
         return ["confirm"];
     }
 
     function resolve(): void {
-        $this->game->systemAssert("Not implemented");
+        // Telescope asset is consumed automatically when used for dice placement
+        $this->notifyMessage(clienttranslate('${player_name} uses a Telescope'));
+    }
 
-        return;
+    public function getPrompt() {
+        return clienttranslate('Use Telescope asset');
     }
 }

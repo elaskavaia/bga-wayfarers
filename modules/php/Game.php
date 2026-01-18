@@ -392,6 +392,113 @@ class Game extends Base {
         return count($tokens);
     }
 
+    /**
+     * Get assets available for a specific die value from the caravan.
+     * The caravan is a 6x3 grid where each column (0-5) corresponds to die values (1-6).
+     * Starting assets: camel at column 0 (die 1), telescope at column 5 (die 6).
+     *
+     * @param int $dieValue - the die value (1-6)
+     * @param string $owner - player color
+     * @return array - associative array of assets with counts (e.g., ["camel" => 1, "ship" => 2])
+     */
+    function getCaravanAssetsForDie(int $dieValue, string $owner): array {
+        $assets = [];
+        $column = $dieValue - 1; // Convert die value (1-6) to column index (0-5)
+
+        // Starting assets (hardcoded positions in caravan)
+        if ($column === 0) {
+            $assets["camel"] = 1;
+        }
+        if ($column === 5) {
+            $assets["telescope"] = 1;
+        }
+
+        // Get upgrade tiles in player's caravan
+        $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
+        // Assets are: camel, ship, pigeon, telescope
+        $assetTypes = ["camel", "ship", "pigeon", "telescope"];
+        foreach ($tiles as $tileKey => $tileInfo) {
+            $state = $tileInfo["state"];
+            if ($state <= 0) {
+                continue; // Not placed in caravan
+            }
+
+            // State encodes position: state = x + y * 6 + 1
+            $pos = $state - 1;
+            $tileX = $pos % 6;
+
+            // Get tile dimensions
+            $w = (int) $this->getRulesFor($tileKey, "w", 1);
+
+            // Check if this tile covers the target column
+            if ($tileX <= $column && $column < $tileX + $w) {
+                // For 2x1 tiles: r is left column, r2 is right column
+                // For 1x1 or 1x2 tiles: only r applies
+                $columnOffset = $column - $tileX; // 0 = left column, 1 = right column
+
+                $ruleField = "";
+                if ($w === 2) {
+                    // 2x1 tile: use r for left column (offset 0), r2 for right column (offset 1)
+                    $ruleField = $columnOffset === 0 ? $this->getRulesFor($tileKey, "r", "") : $this->getRulesFor($tileKey, "r2", "");
+                } else {
+                    // 1x1 or 1x2 tile: just use r
+                    $ruleField = $this->getRulesFor($tileKey, "r", "");
+                }
+
+                // Parse assets from the rule field
+                foreach ($assetTypes as $assetType) {
+                    if ($ruleField && str_contains($ruleField, $assetType)) {
+                        $assets[$assetType] = ($assets[$assetType] ?? 0) + 1;
+                    }
+                }
+            }
+        }
+
+        return $assets;
+    }
+
+    /**
+     * Check if required assets are met for a die placement.
+     *
+     * @param string $requirements - comma-separated asset requirements (e.g., "camel,ship")
+     * @param array $availableAssets - assets available (from getCaravanAssetsForDie)
+     * @param bool $hasBlueInfluence - whether player can spend blue influence for ship
+     * @return array - ["met" => bool, "needsBlueInfluence" => bool, "missing" => array]
+     */
+    function checkAssetRequirements(string $requirements, array $availableAssets, bool $hasBlueInfluence = false): array {
+        // Empty or "any" means any die can be placed - no specific assets required
+        if (empty($requirements) || $requirements === "any") {
+            return ["met" => true, "needsBlueInfluence" => false, "missing" => []];
+        }
+
+        $required = explode(",", $requirements);
+        $missing = [];
+        $needsBlueInfluence = false;
+        $available = $availableAssets; // Copy to track usage
+
+        foreach ($required as $asset) {
+            $asset = trim($asset);
+            if (empty($asset)) {
+                continue;
+            }
+
+            if (isset($available[$asset]) && $available[$asset] > 0) {
+                $available[$asset]--;
+            } elseif ($asset === "ship" && $hasBlueInfluence && !$needsBlueInfluence) {
+                // Can use blue influence for one ship
+                $needsBlueInfluence = true;
+            } else {
+                $missing[] = $asset;
+            }
+        }
+
+        return [
+            "met" => empty($missing),
+            "needsBlueInfluence" => $needsBlueInfluence,
+            "missing" => $missing,
+        ];
+    }
+
     function finalScoring() {
         $players = $this->loadPlayersBasicInfos();
         $guildInfluence = []; // Track influence per guild per player for majority

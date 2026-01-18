@@ -312,7 +312,7 @@ class Material {
 ],
     "Op_pigeon" => [ 
         "type" => "pigeon",
-        "name" => clienttranslate("Bird"),
+        "name" => clienttranslate("Pigeon"),
 ],
     "Op_infAny" => [ 
         "type" => "infAny",

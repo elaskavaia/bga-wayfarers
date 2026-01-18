@@ -272,4 +272,204 @@ final class GameTest extends TestCase {
             $this->game->machine->instanciateOperation($r, PCOLOR);
         }
     }
+
+    /**
+     * Test getCaravanAssetsForDie with starting assets only (no upgrade tiles)
+     */
+    public function testGetCaravanAssetsForDie_StartingAssets() {
+        $this->game();
+
+        // Die value 1 should have camel (column 0)
+        $assets = $this->game->getCaravanAssetsForDie(1, PCOLOR);
+        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 1 should have 1 camel");
+        $this->assertEquals(0, $assets["telescope"] ?? 0, "Die 1 should have no telescope");
+        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 1 should have no ship");
+        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 1 should have no pigeon");
+
+        // Die value 6 should have telescope (column 5)
+        $assets = $this->game->getCaravanAssetsForDie(6, PCOLOR);
+        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 6 should have no camel");
+        $this->assertEquals(1, $assets["telescope"] ?? 0, "Die 6 should have 1 telescope");
+        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 6 should have no ship");
+        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 6 should have no pigeon");
+
+        // Die values 2-5 should have no starting assets
+        for ($die = 2; $die <= 5; $die++) {
+            $assets = $this->game->getCaravanAssetsForDie($die, PCOLOR);
+            $this->assertEmpty($assets, "Die $die should have no starting assets");
+        }
+    }
+
+    /**
+     * Test getCaravanAssetsForDie with a 1x1 green upgrade tile
+     */
+    public function testGetCaravanAssetsForDie_With1x1Tile() {
+        $this->game();
+
+        // Place a 1x1 green camel tile (upg_green_31) at column 2 (state = 2 + 0*6 + 1 = 3)
+        $this->game->tokens->db->moveToken("upg_green_31_1", "tableau_" . PCOLOR, 3);
+
+        // Die value 3 (column 2) should now have camel from the tile
+        $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
+        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 3 should have 1 camel from green tile");
+
+        // Die value 2 (column 1) should not have the camel
+        $assets = $this->game->getCaravanAssetsForDie(2, PCOLOR);
+        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 2 should have no camel");
+    }
+
+    /**
+     * Test getCaravanAssetsForDie with a 2x1 yellow upgrade tile
+     * Yellow tiles: r is left column, r2 is right column
+     */
+    public function testGetCaravanAssetsForDie_With2x1Tile() {
+        $this->game();
+
+        // Place a 2x1 yellow tile (upg_yellow_2: r=camel, r2=diceMinus) at column 1 (state = 1 + 0*6 + 1 = 2)
+        // This tile covers columns 1 and 2
+        $this->game->tokens->db->moveToken("upg_yellow_2_1", "tableau_" . PCOLOR, 2);
+
+        // Die value 2 (column 1) should have camel from r field
+        $assets = $this->game->getCaravanAssetsForDie(2, PCOLOR);
+        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 2 should have 1 camel from yellow tile left side");
+        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 2 should have no ship");
+
+        // Die value 3 (column 2) should NOT have camel (r2=diceMinus has no assets)
+        $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
+        $this->assertEquals(0, $assets["camel"] ?? 0, "Die 3 should have no camel (right side has diceMinus)");
+
+        // Die value 1 should still have starting camel only
+        $assets = $this->game->getCaravanAssetsForDie(1, PCOLOR);
+        $this->assertEquals(1, $assets["camel"] ?? 0, "Die 1 should have 1 starting camel");
+    }
+
+    /**
+     * Test getCaravanAssetsForDie with a 2x1 blue tile that has ship on both sides
+     */
+    public function testGetCaravanAssetsForDie_With2x1TileShipBothSides() {
+        $this->game();
+
+        // Place blue tile upg_blue_9 (r=ship, r2=pigeon) at column 2 (state = 2 + 0*6 + 1 = 3)
+        // This tile covers columns 2 and 3
+        $this->game->tokens->db->moveToken("upg_blue_9_1", "tableau_" . PCOLOR, 3);
+
+        // Die value 3 (column 2) should have ship from r field
+        $assets = $this->game->getCaravanAssetsForDie(3, PCOLOR);
+        $this->assertEquals(1, $assets["ship"] ?? 0, "Die 3 should have 1 ship from blue tile left side");
+        $this->assertEquals(0, $assets["pigeon"] ?? 0, "Die 3 should have no pigeon");
+
+        // Die value 4 (column 3) should have pigeon from r2 field
+        $assets = $this->game->getCaravanAssetsForDie(4, PCOLOR);
+        $this->assertEquals(0, $assets["ship"] ?? 0, "Die 4 should have no ship");
+        $this->assertEquals(1, $assets["pigeon"] ?? 0, "Die 4 should have 1 pigeon from blue tile right side");
+    }
+
+    /**
+     * Test checkAssetRequirements with empty requirements
+     */
+    public function testCheckAssetRequirements_EmptyRequirements() {
+        $this->game();
+
+        $result = $this->game->checkAssetRequirements("", [], false);
+        $this->assertTrue($result["met"], "Empty requirements should be met");
+        $this->assertFalse($result["needsBlueInfluence"], "Empty requirements should not need blue influence");
+        $this->assertEmpty($result["missing"], "Empty requirements should have no missing assets");
+    }
+
+    /**
+     * Test checkAssetRequirements with "any" requirements
+     */
+    public function testCheckAssetRequirements_AnyRequirements() {
+        $this->game();
+
+        // "any" means any die can be placed - no specific assets needed
+        $result = $this->game->checkAssetRequirements("any", [], false);
+        $this->assertTrue($result["met"], "'any' requirements should be met with no assets");
+
+        $result = $this->game->checkAssetRequirements("any", ["camel" => 1], false);
+        $this->assertTrue($result["met"], "'any' requirements should be met with assets");
+    }
+
+    /**
+     * Test checkAssetRequirements with single asset requirement
+     */
+    public function testCheckAssetRequirements_SingleAsset() {
+        $this->game();
+
+        // Has camel, requires camel - should pass
+        $result = $this->game->checkAssetRequirements("camel", ["camel" => 1], false);
+        $this->assertTrue($result["met"], "Should meet camel requirement with camel");
+        $this->assertEmpty($result["missing"]);
+
+        // No camel, requires camel - should fail
+        $result = $this->game->checkAssetRequirements("camel", [], false);
+        $this->assertFalse($result["met"], "Should not meet camel requirement without camel");
+        $this->assertEquals(["camel"], $result["missing"]);
+
+        // Has ship, requires camel - should fail
+        $result = $this->game->checkAssetRequirements("camel", ["ship" => 1], false);
+        $this->assertFalse($result["met"], "Should not meet camel requirement with ship");
+    }
+
+    /**
+     * Test checkAssetRequirements with multiple asset requirements
+     */
+    public function testCheckAssetRequirements_MultipleAssets() {
+        $this->game();
+
+        // Requires telescope,camel - has both
+        $result = $this->game->checkAssetRequirements("telescope,camel", ["telescope" => 1, "camel" => 1], false);
+        $this->assertTrue($result["met"], "Should meet telescope,camel with both assets");
+
+        // Requires telescope,camel - has only camel
+        $result = $this->game->checkAssetRequirements("telescope,camel", ["camel" => 1], false);
+        $this->assertFalse($result["met"], "Should not meet telescope,camel with only camel");
+        $this->assertEquals(["telescope"], $result["missing"]);
+
+        // Requires telescope,camel - has neither
+        $result = $this->game->checkAssetRequirements("telescope,camel", [], false);
+        $this->assertFalse($result["met"], "Should not meet telescope,camel with no assets");
+        $this->assertCount(2, $result["missing"]);
+    }
+
+    /**
+     * Test checkAssetRequirements with ship and blue influence
+     */
+    public function testCheckAssetRequirements_ShipWithBlueInfluence() {
+        $this->game();
+
+        // Requires ship, no ship but has blue influence - should pass with needsBlueInfluence
+        $result = $this->game->checkAssetRequirements("ship", [], true);
+        $this->assertTrue($result["met"], "Should meet ship requirement with blue influence");
+        $this->assertTrue($result["needsBlueInfluence"], "Should need blue influence");
+
+        // Requires ship, has ship - should pass without needing blue influence
+        $result = $this->game->checkAssetRequirements("ship", ["ship" => 1], true);
+        $this->assertTrue($result["met"], "Should meet ship requirement with ship");
+        $this->assertFalse($result["needsBlueInfluence"], "Should not need blue influence when ship available");
+
+        // Requires 2 ships, has 1 ship and blue influence - should pass
+        $result = $this->game->checkAssetRequirements("ship,ship", ["ship" => 1], true);
+        $this->assertTrue($result["met"], "Should meet 2 ships with 1 ship + blue influence");
+        $this->assertTrue($result["needsBlueInfluence"], "Should need blue influence for second ship");
+
+        // Requires 2 ships, has 0 ships and blue influence - should fail (blue influence only provides 1)
+        $result = $this->game->checkAssetRequirements("ship,ship", [], true);
+        $this->assertFalse($result["met"], "Should not meet 2 ships with only blue influence");
+    }
+
+    /**
+     * Test checkAssetRequirements - blue influence only helps with ship, not other assets
+     */
+    public function testCheckAssetRequirements_BlueInfluenceOnlyForShip() {
+        $this->game();
+
+        // Requires camel, has blue influence but no camel - should fail
+        $result = $this->game->checkAssetRequirements("camel", [], true);
+        $this->assertFalse($result["met"], "Blue influence should not help with camel requirement");
+
+        // Requires telescope, has blue influence but no telescope - should fail
+        $result = $this->game->checkAssetRequirements("telescope", [], true);
+        $this->assertFalse($result["met"], "Blue influence should not help with telescope requirement");
+    }
 }
