@@ -41,7 +41,9 @@ class Op_pickWorker extends Operation {
     function getPossibleMoves() {
         return $this->getAvailableWorkers();
     }
-
+    public function getUiArgs() {
+        return ["replicate" => true];
+    }
     public function canSkip() {
         return true;
     }

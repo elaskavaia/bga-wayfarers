@@ -1,7 +1,6 @@
 Server
 
 - Split tag scoring
-- Dice Assets
 - Caravan placement bonus
 - Caravan different boards per player
 - Space cards

@@ -13,21 +13,21 @@ num|r|d|dr|tags|c1|c2
 41||pigeon|food,journal|Harbour Book|__x_|bx_x
 42||pigeon|coin,journal|Harbour Book|__x_|u_xx
 43||pigeon|infCard,journal|Harbour Book|x__x|yxxx
-44||2ship|n_food:cardWater|Harbour Book|_xx_|yx__
+44||ship,ship|n_food:cardWater|Harbour Book|_xx_|yx__
 
 45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x
 46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx
 47||ship|upgBlue/infBlue,infBlue|Harbour|xx__|u_x_
 48||ship|upgBlue/infBlue,infBlue|Harbour|__xx|yx__
 49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_
-50||2ship|pickWorker,reroll,infCard|Harbour|__xx|u__x
+50||ship,ship|pickWorker,reroll,infCard|Harbour|__xx|u__x
 
-51||2ship|infYellow,infBlack,coin|Harbour|xx__|__xx
-52||2ship|infBlue,infBlack,food|Harbour|x_x_|yx__
-53||2ship|cardFolk(free)|Harbour|x___|_xx_
+51||ship,ship|infYellow,infBlack,coin|Harbour|xx__|__xx
+52||ship,ship|infBlue,infBlack,food|Harbour|x_x_|yx__
+53||ship,ship|cardFolk(free)|Harbour|x___|_xx_
 54||ship|cardFolk,food|Harbour|_x_x|_xx_
-55||2ship|4food|Harbour|_x_x|__xx
-56||2ship|4coin|Harbour|x_x_|__xx
+55||ship,ship|4food|Harbour|_x_x|__xx
+56||ship,ship|4coin|Harbour|x_x_|__xx
 
 57||ship|infCard,2coin|Harbour|_x_x|bxxx
 58||ship|pickWorker,2food|Harbour|xx__|_x_x

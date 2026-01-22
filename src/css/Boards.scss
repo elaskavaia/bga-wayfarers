@@ -52,13 +52,17 @@
 .tableau {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
+  justify-content: safe center;
   align-items: flex-start;
   margin-top: 5px;
   padding-top: 32px; // player name
   height: calc(v.$cardHeight * 2.4);
-  gap: 2px;
+  gap: 1px;
+}
+#current_player_panel {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .pboard {
@@ -157,6 +161,8 @@
 
 .mainboardall {
   position: relative;
+  white-space: nowrap;
+
   & > * {
     display: inline-block;
     vertical-align: top;
@@ -278,10 +284,10 @@
     top: 81%;
   }
   .upg_yellow_1 {
-    left: 32%;
+    left: 29%;
   }
   .upg_yellow_2 {
-    left: 32%;
+    left: 29%;
     top: 88%;
     visibility: hidden;
   }
@@ -339,3 +345,84 @@
   background-image: url(img/MainBoard3.jpg);
   margin-right: 200px;
 }
+
+// Wrapper for mainarea that holds layout controls outside scroll area
+#mainarea_wrap {
+  width: 100%;
+  position: relative;
+}
+
+// Layout controls - positioned outside scroll area
+.board_layout_controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 10;
+  padding: 4px 8px;
+  margin: 5px;
+
+  .layout_label {
+    font-size: 12px;
+    color: #666;
+    margin-right: 4px;
+  }
+
+  .layout_separator {
+    color: #ccc;
+    margin: 0 4px;
+  }
+
+  .layout_btn {
+    width: 28px;
+    height: 28px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s;
+
+    &:hover {
+      background: #e0e0e0;
+      border-color: #999;
+    }
+
+    &.active {
+      background: v.$activeColor;
+      border-color: v.$activeColor;
+      color: white;
+    }
+  }
+}
+
+// Layout mode: Scale to fit
+#mainarea.layout_scale {
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+// Layout mode: Horizontal scroll
+#mainarea.layout_scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  // Center when content fits, align left when scrolling needed
+  justify-content: safe center;
+
+  .mainboardall {
+    min-width: max-content;
+  }
+}
+
+// Rotation (clockwise 90 degrees)
+.mainboardall.rotated {
+  // Transform origin at top-left so we can position predictably
+  transform-origin: top left;
+  // Rotation is handled via JavaScript which sets appropriate margins
+}
+
+// Combined: scale + rotated - JavaScript handles the combined transform

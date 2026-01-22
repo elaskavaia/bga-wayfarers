@@ -161,6 +161,13 @@ html[data-theme=dark] .deck .counter {
   z-index: 1;
   bottom: 9%;
 }
+.tableau .card_space {
+  z-index: 1;
+  top: 9%;
+}
+.tableau .card_insp {
+  z-index: 0;
+}
 .tableau .pboard {
   display: inline-block;
   vertical-align: top;
@@ -172,7 +179,7 @@ html[data-theme=dark] .deck .counter {
 }
 .tableau .pboard .card_home {
   z-index: 1;
-  bottom: 9%;
+  bottom: 8%;
 }
 .tableau .pboard .card[data-home-pos] {
   bottom: 0%;
@@ -199,18 +206,20 @@ html[data-theme=dark] .deck .counter {
 }
 .tableau .pboard .card_slot {
   left: 33%;
+  height: 7%;
 }
 .tableau .pboard .card_home_10 {
-  bottom: 31%;
+  bottom: 29.5%;
 }
 .tableau .pboard .card_home_11 {
-  bottom: 24%;
+  bottom: 23%;
 }
 .tableau .pboard .card_home_12 {
-  bottom: 17%;
+  bottom: 16%;
 }
 .tableau .pboard .card_home_13 {
   bottom: 9%;
+  height: 7.5%;
 }
 
 .card_home {
@@ -958,6 +967,12 @@ html[data-theme=dark] .deck .counter {
   bottom: 5%;
   left: 5%;
 }
+.card .worker,
+.card .influence {
+  position: relative;
+  margin-top: 21%;
+  margin-left: 4%;
+}
 
 .selection_area {
   position: sticky;
@@ -1014,13 +1029,18 @@ html[data-theme=dark] .deck .counter {
 .tableau {
   position: relative;
   display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-wrap: nowrap;
+  justify-content: safe center;
   align-items: flex-start;
   margin-top: 5px;
   padding-top: 32px;
   height: 480px;
-  gap: 2px;
+  gap: 1px;
+}
+
+#current_player_panel {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .pboard {
@@ -1111,6 +1131,7 @@ html[data-theme=dark] .deck .counter {
 
 .mainboardall {
   position: relative;
+  white-space: nowrap;
 }
 .mainboardall > * {
   display: inline-block;
@@ -1212,10 +1233,10 @@ html[data-theme=dark] .deck .counter {
   top: 81%;
 }
 .mainboard_2 .upg_yellow_1 {
-  left: 32%;
+  left: 29%;
 }
 .mainboard_2 .upg_yellow_2 {
-  left: 32%;
+  left: 29%;
   top: 88%;
   visibility: hidden;
 }
@@ -1269,6 +1290,71 @@ html[data-theme=dark] .deck .counter {
 .mainboard_3 {
   background-image: url(img/MainBoard3.jpg);
   margin-right: 200px;
+}
+
+#mainarea_wrap {
+  width: 100%;
+  position: relative;
+}
+
+.board_layout_controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  z-index: 10;
+  padding: 4px 8px;
+  margin: 5px;
+}
+.board_layout_controls .layout_label {
+  font-size: 12px;
+  color: #666;
+  margin-right: 4px;
+}
+.board_layout_controls .layout_separator {
+  color: #ccc;
+  margin: 0 4px;
+}
+.board_layout_controls .layout_btn {
+  width: 28px;
+  height: 28px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: white;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+.board_layout_controls .layout_btn:hover {
+  background: #e0e0e0;
+  border-color: #999;
+}
+.board_layout_controls .layout_btn.active {
+  background: #19bedb;
+  border-color: #19bedb;
+  color: white;
+}
+
+#mainarea.layout_scale {
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
+#mainarea.layout_scroll {
+  overflow-x: auto;
+  overflow-y: visible;
+  justify-content: safe center;
+}
+#mainarea.layout_scroll .mainboardall {
+  min-width: max-content;
+}
+
+.mainboardall.rotated {
+  transform-origin: top left;
 }
 
 .tracker {
@@ -1543,172 +1629,177 @@ html[data-theme=dark] .miniboard .counter {
 .wicon {
   background-image: url(img/tokens.png);
   background-size: auto 1200%;
-  width: 128px;
-  height: 128px;
-  outline: 1px dashed red;
+  width: 32px;
+  height: 32px;
+}
+.log .wicon, #page-title .wicon {
+  display: inline-block;
+  vertical-align: middle;
+  height: 24px;
+  line-height: 24px;
 }
 
-.icon_city {
+.wicon_city {
   background-position: 0% 1%;
   background-size: auto 1200%;
 }
 
-.icon_harbour {
+.wicon_harbour {
   background-position: 6% 1%;
   background-size: auto 1200%;
 }
 
-.icon_book {
+.wicon_book {
   background-position: 13% 1%;
   background-size: auto 1200%;
 }
 
-.icon_observatory {
+.wicon_observatory {
   background-position: 19.5% 1%;
   background-size: auto 1200%;
 }
 
-.icon_vista {
+.wicon_vista {
   background-position: 26% 1%;
   background-size: auto 1200%;
 }
 
-.icon_sea {
+.wicon_sea {
   background-position: 32.5% 1%;
   background-size: auto 1200%;
 }
 
-.icon_comet {
+.wicon_comet {
   background-position: 39% 1%;
   background-size: auto 1200%;
 }
 
-.icon_comet_up {
+.wicon_comet_up {
   background-position: 47% 1%;
   background-size: auto 1200%;
 }
 
-.icon_stars {
+.wicon_stars {
   background-position: 54% 2%;
 }
 
-.icon_planet {
+.wicon_planet {
   background-position: 62% 2%;
 }
 
-.icon_moon {
+.wicon_moon {
   background-position: 69.5% 2%;
 }
 
-.icon_sun {
+.wicon_sun {
   background-position: 78% 2%;
 }
 
-.icon_vp {
+.wicon_vp {
   background-position: 86% 2%;
 }
 
-.icon_upg_green {
+.wicon_upg_green {
   background-position: 0% 28%;
 }
 
-.icon_upg_black {
+.wicon_upg_black {
   background-position: 10% 28%;
 }
 
-.icon_upg_yellow {
+.wicon_upg_yellow {
   background-position: 19% 28%;
 }
 
-.icon_upg_blue {
+.wicon_upg_blue {
   background-position: 30% 28%;
 }
 
-.icon_upg_pink {
+.wicon_upg_pink {
   background-position: 40% 28%;
 }
 
-.icon_upg_any {
+.wicon_upg_any {
   background-position: 50% 28%;
 }
 
-.icon_upg_green_free {
+.wicon_upg_green_free {
   background-position: 60% 28%;
 }
 
-.icon_upg_black_free {
+.wicon_upg_black_free {
   background-position: 70% 28%;
 }
 
-.icon_upg_yellow_free {
+.wicon_upg_yellow_free {
   background-position: 80% 28%;
 }
 
-.icon_upg_blue_free {
+.wicon_upg_blue_free {
   background-position: 90% 28%;
 }
 
-.icon_camel {
+.wicon_camel {
   background-position: 69% 28%;
   background-size: auto 1000%;
 }
 
-.icon_ship {
+.wicon_ship {
   background-position: 77% 28%;
   background-size: auto 1000%;
 }
 
-.icon_pigeon {
+.wicon_pigeon {
   background-position: 85% 28%;
   background-size: auto 1000%;
 }
 
-.icon_telescope {
+.wicon_telescope {
   background-position: 97% 28%;
   background-size: auto 1000%;
 }
 
-.icon_inf_blue {
+.wicon_inf_blue {
   background-position: 0% 42%;
 }
 
-.icon_inf_black {
+.wicon_inf_black {
   background-position: 8% 42%;
 }
 
-.icon_inf_yellow {
+.wicon_inf_yellow {
   background-position: 16% 42%;
 }
 
-.icon_inf_any {
+.wicon_inf_any {
   background-position: 24% 42%;
 }
 
-.icon_inf_move {
+.wicon_inf_move {
   background-position: 40% 42%;
 }
 
-.icon_inf_blue_pay {
+.wicon_inf_blue_pay {
   background-position: 48% 42%;
 }
 
-.icon_inf_black_pay {
+.wicon_inf_black_pay {
   background-position: 56% 42%;
 }
 
-.icon_inf_yellow_pay {
+.wicon_inf_yellow_pay {
   background-position: 56% 42%;
 }
 
-.icon_reroll {
+.wicon_reroll {
   background-position: 50% 60%;
 }
 
-.icon_journal {
+.wicon_journal {
   background-position: 80% 60%;
 }
 
-.icon_rest1 {
+.wicon_rest1 {
   background-position: 100% 60%;
 }
 
@@ -2041,6 +2132,9 @@ a.bgabutton_white {
 .action-button {
   min-width: 4em;
   line-height: 24px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  min-height: 30px;
 }
 
 #undoredo_wrap {

@@ -4,7 +4,7 @@
 .deck,
 .discard {
   height: v.$cardHeight;
-  aspect-ratio: v.$ratioW / v.$ratioH;
+  aspect-ratio: calc(v.$ratioW / v.$ratioH);
   box-shadow: v.$boxShadowBlack;
   border-radius: 5%;
 
@@ -178,6 +178,13 @@
     z-index: 1;
     bottom: 9%;
   }
+  .card_space {
+    z-index: 1;
+    top: 9%;
+  }
+  .card_insp {
+    z-index: 0;
+  }
   .pboard {
     display: inline-block;
     vertical-align: top;
@@ -188,7 +195,7 @@
     }
     .card_home {
       z-index: 1;
-      bottom: 9%;
+      bottom: 8%;
     }
     .card[data-home-pos] {
       bottom: 0%;
@@ -216,18 +223,20 @@
 
     .card_slot {
       left: 33%;
+      height: 7%;
     }
     .card_home_10 {
-      bottom: 31%;
+      bottom: 29.5%;
     }
     .card_home_11 {
-      bottom: 24%;
+      bottom: 23%;
     }
     .card_home_12 {
-      bottom: 17%;
+      bottom: 16%;
     }
     .card_home_13 {
       bottom: 9%;
+      height: 7.5%;
     }
   }
 }
@@ -365,5 +374,11 @@
     position: absolute;
     bottom: 5%;
     left: 5%;
+  }
+  .worker,
+  .influence {
+    position: relative;
+    margin-top: 21%;
+    margin-left: 4%;
   }
 }

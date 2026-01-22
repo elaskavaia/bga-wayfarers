@@ -746,7 +746,7 @@ player_name (only for PlayerCounter)
       const node = $(name);
       if (node && this.gamedatas.tokens[name]) {
         args.nop = true; // no move animation
-        return this.placeTokenServer(name, this.gamedatas.tokens[name].location, value, args);
+        return Promise.all([this.placeTokenServer(name, this.gamedatas.tokens[name].location, value, args), this.game.wait(500)]);
       } else if (node) {
         node.dataset.state = value;
       }

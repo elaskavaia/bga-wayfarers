@@ -13,6 +13,8 @@
 class GameXBody extends GameMachine {
   private scoreSheet: any;
   private inSetup = true;
+  private boardLayout: string = "scale";
+  private boardRotated: boolean = false;
   readonly gameTemplate = `
 <div id="thething">
 
@@ -21,8 +23,15 @@ class GameXBody extends GameMachine {
 <div id='selection_area' class='selection_area'></div>
 <div id="game-score-sheet"></div>
 <div id="current_player_panel"></div>
-<div id="mainarea">
- <div id="mainboardall" class="mainboardall">
+<div id="mainarea_wrap">
+ <div id="board_layout_controls" class="board_layout_controls">
+   <button id="layout_scale" class="layout_btn active" title="${_("Board Layout: Scale to fit")}">⤢</button>
+   <button id="layout_scroll" class="layout_btn" title="${_("Board Layout: Horizontal scroll")}">↔</button>
+   <span class="layout_separator">|</span>
+   <button id="layout_rotate" class="layout_btn" title="${_("Board Layout: Rotate board 90°")}">↻</button>
+ </div>
+ <div id="mainarea">
+  <div id="mainboardall" class="mainboardall">
     <div id="mainboard_1">
          <div id="deck_folk" class="deck decl_folk"></div>
           <div id="deck_land" class="deck deck_land"></div>
@@ -38,9 +47,8 @@ class GameXBody extends GameMachine {
       <div id="guild_blue" class="guild guild_blue"></div>
       <div id="guild_black" class="guild guild_black"></div>
     </div>
+  </div>
  </div>
-
-
 </div>
 <div id="players_panels"></div>
 <div id="test_stuff">
@@ -74,12 +82,207 @@ class GameXBody extends GameMachine {
 
       var parent = document.querySelector(".debug_section"); // studio only
       if (parent) this.addActionButton("button_rcss", "Reload CSS", () => this.reloadCss(), "topbar_content");
+
+      this.setupLayoutControls();
     } catch (e) {
       console.error("Exception during game setup", e.stack);
     }
 
     console.log("Ending game setup");
     this.inSetup = false;
+  }
+
+  setupLayoutControls() {
+    // Load saved preferences from localStorage
+    const savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
+    const savedRotated = localStorage.getItem("wayfarers_board_rotated") === "true";
+
+    this.boardLayout = savedLayout;
+    this.boardRotated = savedRotated;
+
+    // Apply saved settings
+    this.applyBoardLayout();
+    this.applyBoardRotation();
+
+    // Add event listeners
+    $("layout_scale").addEventListener("click", () => this.setBoardLayout("scale"));
+    $("layout_scroll").addEventListener("click", () => this.setBoardLayout("scroll"));
+    $("layout_rotate").addEventListener("click", () => this.toggleBoardRotation());
+  }
+
+  setBoardLayout(layout: string) {
+    // If switching away from scale mode, turn off rotation
+    if (layout !== "scale" && this.boardRotated) {
+      this.setBoardRotated(false);
+    }
+
+    this.boardLayout = layout;
+    localStorage.setItem("wayfarers_board_layout", layout);
+    this.applyBoardLayout();
+  }
+
+  applyBoardLayout() {
+    const mainboardall = $("mainboardall") as HTMLElement;
+    const mainarea = $("mainarea") as HTMLElement;
+
+    // Remove all layout classes
+
+    mainarea.classList.remove("layout_scale", "layout_scroll");
+
+    // Reset any inline transform from previous scale mode
+    mainboardall.style.transform = "";
+    mainboardall.style.height = "";
+
+    // Add active layout class
+    mainarea.classList.add(`layout_${this.boardLayout}`);
+
+    // Update button active states
+    document.querySelectorAll(".layout_btn").forEach((btn) => btn.classList.remove("active"));
+    $(`layout_${this.boardLayout}`)?.classList.add("active");
+
+    // Handle scale mode with dynamic calculation
+    if (this.boardLayout === "scale") {
+      this.updateBoardScale();
+      // Add resize listener for scale mode
+      window.addEventListener("resize", this.boundUpdateBoardScale);
+    } else {
+      window.removeEventListener("resize", this.boundUpdateBoardScale);
+    }
+
+    // Re-apply rotation if needed
+    if (this.boardRotated) {
+      this.applyBoardRotation();
+    }
+  }
+
+  private boundUpdateBoardScale = () => this.updateBoardScale();
+
+  updateBoardScale() {
+    if (this.boardLayout !== "scale") return;
+
+    const mainboardall = $("mainboardall") as HTMLElement;
+    const mainarea = $("mainarea") as HTMLElement;
+
+    // Temporarily reset transform and force nowrap to measure natural size
+    mainboardall.style.transform = "none";
+    mainboardall.style.width = "";
+    mainboardall.style.height = "";
+    mainboardall.style.transformOrigin = "";
+    mainboardall.style.whiteSpace = "nowrap";
+
+    const naturalWidth = mainboardall.scrollWidth;
+    const naturalHeight = mainboardall.scrollHeight;
+    const availableWidth = mainarea.clientWidth - 20; // 20px for padding
+
+    // Reset whiteSpace - CSS classes will handle display
+    mainboardall.style.whiteSpace = "";
+
+    if (this.boardRotated) {
+      // When rotated 90deg clockwise, original height becomes visible width
+      let scale = 1;
+      if (naturalHeight > availableWidth) {
+        scale = availableWidth / naturalHeight;
+      }
+
+      // Final visible dimensions after rotation and scale
+      const finalWidth = naturalHeight * scale;
+      const finalHeight = naturalWidth * scale;
+
+      // Set container to final dimensions
+      mainboardall.style.width = `${finalWidth}px`;
+      mainboardall.style.height = `${finalHeight}px`;
+
+      // Transform: rotate around top-left, then translate to position correctly
+      // After rotating 90deg CW around top-left, the element extends upward and to the right
+      // We need to translate it: X by 0, Y by the original height (now pointing left after rotation)
+      mainboardall.style.transformOrigin = "top left";
+      mainboardall.style.transform = `translate(${finalWidth}px, 0) rotate(90deg) scale(${scale})`;
+    } else {
+      let scale = 1;
+      if (naturalWidth > availableWidth) {
+        scale = availableWidth / naturalWidth;
+      }
+
+      mainboardall.style.transform = `scale(${scale})`;
+      mainboardall.style.transformOrigin = "top center";
+      // Set container height to scaled height so content below doesn't overlap
+      mainboardall.style.height = `${naturalHeight * scale}px`;
+    }
+  }
+
+  toggleBoardRotation() {
+    this.setBoardRotated(!this.boardRotated);
+  }
+
+  setBoardRotated(x: boolean) {
+    if (x) {
+      this.setBoardLayout("scale");
+    }
+    this.boardRotated = x;
+    localStorage.setItem("wayfarers_board_rotated", String(this.boardRotated));
+    this.applyBoardRotation();
+  }
+
+  applyBoardRotation() {
+    const mainboardall = $("mainboardall") as HTMLElement;
+    const mainarea = $("mainarea") as HTMLElement;
+
+    if (this.boardRotated) {
+      mainboardall.classList.add("rotated");
+      mainarea.classList.add("rotated_container");
+      $("layout_rotate")?.classList.add("active");
+
+      // For rotated content, we need to adjust positioning
+      // After 90deg clockwise rotation around top-left, the element goes upward
+      // We need to translate it down by its original width
+      this.updateRotatedLayout();
+    } else {
+      mainboardall.classList.remove("rotated");
+      mainarea.classList.remove("rotated_container");
+      $("layout_rotate")?.classList.remove("active");
+      mainboardall.style.transform = "";
+      mainboardall.style.transformOrigin = "";
+      mainboardall.style.width = "";
+      mainboardall.style.height = "";
+    }
+
+    // If in scale mode, recalculate with rotation
+    if (this.boardLayout === "scale") {
+      this.updateBoardScale();
+    }
+  }
+
+  updateRotatedLayout() {
+    if (!this.boardRotated) return;
+    if (this.boardLayout === "scale") return; // Scale mode handles its own transform
+
+    const mainboardall = $("mainboardall") as HTMLElement;
+
+    // Temporarily remove transform and force nowrap to measure natural dimensions
+    mainboardall.style.transform = "none";
+    mainboardall.style.width = "";
+    mainboardall.style.height = "";
+    mainboardall.style.whiteSpace = "nowrap";
+
+    const naturalWidth = mainboardall.scrollWidth;
+    const naturalHeight = mainboardall.scrollHeight;
+
+    // Reset whiteSpace - CSS classes will handle display
+    mainboardall.style.whiteSpace = "";
+
+    // After 90deg clockwise rotation:
+    // - Original width becomes new height
+    // - Original height becomes new width
+    // - Element rotates around top-left, so we need to translate it
+
+    // Set the container to have swapped dimensions
+    mainboardall.style.width = `${naturalHeight}px`;
+    mainboardall.style.height = `${naturalWidth}px`;
+
+    // Apply rotation with translation to keep it in view
+    // Rotate 90deg clockwise, then translate down by original width
+    mainboardall.style.transform = `rotate(90deg) translateY(-${naturalWidth}px)`;
+    mainboardall.style.transformOrigin = "top left";
   }
   updateBanner() {}
   setupPlayer(playerInfo: any) {
@@ -280,6 +483,8 @@ class GameXBody extends GameMachine {
     } else if ((tokenId.startsWith("worker") || tokenId.startsWith("dice")) && location.startsWith("tableau")) {
       const color = getPart(location, 1);
       result.location = `breakroom_${color}`;
+      result.onClick = (x) => this.onToken(x);
+    } else if (tokenId.startsWith("dice") && location.startsWith("card")) {
       result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
       const color = getPart(location, 1);

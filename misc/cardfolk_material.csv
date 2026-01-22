@@ -12,14 +12,14 @@ num|cost|dr|tags|name|da
 116|1||Harbour|Adventurer|ship
 117|0||Observatory|Astronomer|telescope
 118|2|pickWorker/infCard|Vista|Champion
-121|2||City|Envoy|camel,pigeon
-122|2||City|Envoy|ship,pigeon
+121|2||Harbour|Envoy|camel,pigeon
+122|2||Harbour|Envoy|ship,pigeon
 123|2|coin|City|Farmer
 124|2|food|City|Farmer
 125|2|coin|Harbour|Fisherman
 126|2|food|Harbour|Fisherman
 130|0|2diceMod|Vista|Hunter
-131|2|2ship|Harbour|Invader
+131|2|ship,ship|Harbour|Invader
 132|2|pickWorker/infCard|City Harbour|Mercenary
 133|2|coin|Vista|Merchant
 134|2|coin|Vista|Merchant

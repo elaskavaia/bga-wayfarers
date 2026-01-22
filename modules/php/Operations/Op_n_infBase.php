@@ -68,7 +68,7 @@ abstract class Op_n_infBase extends CountableOperation {
 
     public function getExtraArgs() {
         $infcolor = getPart($this->getGuild(), 1);
-        return parent::getExtraArgs() + ["token_div" => "icon_inf_{$infcolor}_pay"];
+        return parent::getExtraArgs() + ["token_div" => "wicon_inf_{$infcolor}_pay"];
     }
 
     function getButtonName() {

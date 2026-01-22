@@ -44,6 +44,9 @@ class Op_reroll extends Operation {
         }
         return $res;
     }
+    public function getUiArgs() {
+        return ["replicate" => true];
+    }
 
     function resolve(): void {
         $dieKey = $this->getCheckedArg();

@@ -177,6 +177,9 @@ a.bgabutton_white {
 .action-button {
   min-width: 4em;
   line-height: 24px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  min-height: 30px;
 }
 
 #undoredo_wrap {

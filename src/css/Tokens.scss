@@ -206,146 +206,153 @@
 .wicon {
   background-image: url(img/tokens.png);
   background-size: auto 1200%;
-  width: 128px;
-  height: 128px;
-  outline: 1px dashed red;
+  width: 32px;
+  height: 32px;
+
+  .log &,
+  #page-title & {
+    display: inline-block;
+    vertical-align: middle;
+    height: 24px;
+    line-height: 24px;
+  }
 }
 
 // Row 1: Destination/Location icons
-.icon_city {
+.wicon_city {
   background-position: 0% 1%;
   background-size: auto 1200%;
 }
-.icon_harbour {
+.wicon_harbour {
   background-position: 6% 1%;
   background-size: auto 1200%;
 }
-.icon_book {
+.wicon_book {
   background-position: 13% 1%;
   background-size: auto 1200%;
 }
-.icon_observatory {
+.wicon_observatory {
   background-position: 19.5% 1%;
   background-size: auto 1200%;
 }
-.icon_vista {
+.wicon_vista {
   background-position: 26% 1%;
   background-size: auto 1200%;
 }
-.icon_sea {
+.wicon_sea {
   background-position: 32.5% 1%;
   background-size: auto 1200%;
 }
-.icon_comet {
+.wicon_comet {
   background-position: 39% 1%;
   background-size: auto 1200%;
 }
-.icon_comet_up {
+.wicon_comet_up {
   background-position: 47% 1%;
   background-size: auto 1200%;
 }
-.icon_stars {
+.wicon_stars {
   background-position: 54% 2%;
 }
-.icon_planet {
+.wicon_planet {
   background-position: 62% 2%;
 }
-.icon_moon {
+.wicon_moon {
   background-position: 69.5% 2%;
 }
-.icon_sun {
+.wicon_sun {
   background-position: 78% 2%;
 }
-.icon_vp {
+.wicon_vp {
   background-position: 86% 2%;
 }
 
 // Row 2: upgrades
-.icon_upg_green {
+.wicon_upg_green {
   background-position: 0% 28%;
 }
-.icon_upg_black {
+.wicon_upg_black {
   background-position: 10% 28%;
 }
-.icon_upg_yellow {
+.wicon_upg_yellow {
   background-position: 19% 28%;
 }
-.icon_upg_blue {
+.wicon_upg_blue {
   background-position: 30% 28%;
 }
-.icon_upg_pink {
+.wicon_upg_pink {
   background-position: 40% 28%;
 }
-.icon_upg_any {
+.wicon_upg_any {
   background-position: 50% 28%;
 }
-.icon_upg_green_free {
+.wicon_upg_green_free {
   background-position: 60% 28%;
 }
-.icon_upg_black_free {
+.wicon_upg_black_free {
   background-position: 70% 28%;
 }
-.icon_upg_yellow_free {
+.wicon_upg_yellow_free {
   background-position: 80% 28%;
 }
-.icon_upg_blue_free {
+.wicon_upg_blue_free {
   background-position: 90% 28%;
 }
 
 // Row 3: cards and assets
 
-.icon_camel {
+.wicon_camel {
   background-position: 69% 28%;
   background-size: auto 1000%;
 }
-.icon_ship {
+.wicon_ship {
   background-position: 77% 28%;
   background-size: auto 1000%;
 }
-.icon_pigeon {
+.wicon_pigeon {
   background-position: 85% 28%;
   background-size: auto 1000%;
 }
-.icon_telescope {
+.wicon_telescope {
   background-position: 97% 28%;
   background-size: auto 1000%;
 }
 
 // Row 4: influence
-.icon_inf_blue {
+.wicon_inf_blue {
   background-position: 0% 42%;
 }
-.icon_inf_black {
+.wicon_inf_black {
   background-position: 8% 42%;
 }
-.icon_inf_yellow {
+.wicon_inf_yellow {
   background-position: 16% 42%;
 }
-.icon_inf_any {
+.wicon_inf_any {
   background-position: 24% 42%;
 }
-.icon_inf_move {
+.wicon_inf_move {
   background-position: 40% 42%;
 }
-.icon_inf_blue_pay {
+.wicon_inf_blue_pay {
   background-position: 48% 42%;
 }
-.icon_inf_black_pay {
+.wicon_inf_black_pay {
   background-position: 56% 42%;
 }
-.icon_inf_yellow_pay {
+.wicon_inf_yellow_pay {
   background-position: 56% 42%;
 }
 
 // Row 5: Meeples and dice
 
-.icon_reroll {
+.wicon_reroll {
   background-position: 50% 60%;
 }
-.icon_journal {
+.wicon_journal {
   background-position: 80% 60%;
 }
-.icon_rest1 {
+.wicon_rest1 {
   background-position: 100% 60%;
 }
 

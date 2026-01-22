@@ -46,6 +46,10 @@ abstract class Op_upgBase extends Operation {
     abstract function getTileHeight(): int;
 
     public function getUiArgs() {
+        $selectedTile = $this->getSelectedTile();
+        if ($selectedTile === null) {
+            return ["replicate" => true];
+        }
         return ["buttons" => false];
     }
     /**
@@ -76,21 +80,22 @@ abstract class Op_upgBase extends Operation {
         // Mark occupied positions
         foreach ($tiles as $tileKey => $tileInfo) {
             $state = $tileInfo["state"];
-            if ($state > 0) {
-                // State encodes position: state = x + y * CARAVAN_WIDTH + 1
-                $pos = $state - 1;
-                $x = $pos % self::CARAVAN_WIDTH;
-                $y = (int) floor($pos / self::CARAVAN_WIDTH);
+            if ($state <= 0) {
+                continue;
+            }
+            // State encodes position: state = x + y * CARAVAN_WIDTH + 1
+            $pos = $state - 1;
+            $x = $pos % self::CARAVAN_WIDTH;
+            $y = (int) floor($pos / self::CARAVAN_WIDTH);
 
-                // Get tile dimensions from material
-                $dimensions = $this->getTileDimensions($tileKey);
+            // Get tile dimensions from material
+            $dimensions = $this->getTileDimensions($tileKey);
 
-                // Mark all cells occupied by this tile
-                for ($dy = 0; $dy < $dimensions["h"]; $dy++) {
-                    for ($dx = 0; $dx < $dimensions["w"]; $dx++) {
-                        if ($y + $dy < self::CARAVAN_HEIGHT && $x + $dx < self::CARAVAN_WIDTH) {
-                            $grid[$y + $dy][$x + $dx] = true;
-                        }
+            // Mark all cells occupied by this tile
+            for ($dy = 0; $dy < $dimensions["h"]; $dy++) {
+                for ($dx = 0; $dx < $dimensions["w"]; $dx++) {
+                    if ($y + $dy < self::CARAVAN_HEIGHT && $x + $dx < self::CARAVAN_WIDTH) {
+                        $grid[$y + $dy][$x + $dx] = true;
                     }
                 }
             }
@@ -136,8 +141,6 @@ abstract class Op_upgBase extends Operation {
                     $pos = $x + $y * self::CARAVAN_WIDTH + 1;
                     $validPositions["caravan_{$pos}_{$owner}"] = [
                         "q" => Material::RET_OK,
-                        "x" => $x,
-                        "y" => $y,
                     ];
                 }
             }
@@ -247,6 +250,38 @@ abstract class Op_upgBase extends Operation {
             $reverseTile = $this->getReverseSideTileKey($selectedTile);
             $this->game->tokens->db->moveToken($reverseTile, "limbo", 0);
         }
+
+        $bonus = $this->getBonus($posValue);
+        if ($bonus) {
+            $this->queue($bonus, $owner, [], "caravanBonus");
+        }
+    }
+
+    public function getBonus(int $posValue) {
+        $i = $posValue - 1;
+        $bonuses = [
+            0,
+            0,
+            "coin",
+            "food",
+            0,
+            0,
+            // row2
+            0,
+            "infMove",
+            0,
+            0,
+            "food",
+            0,
+            // row 3
+            "food",
+            0,
+            "infCard",
+            "reroll",
+            0,
+            "coin",
+        ];
+        return $bonuses[$i] ?: "";
     }
 
     public function getPrompt() {
