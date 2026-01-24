@@ -55,6 +55,7 @@ interface OpInfo {
   ui: {
     buttons?: boolean;
     replicate?: boolean;
+    imagebuttons?: boolean;
     undo?: boolean;
     color?: string; // buton color fallback
   };
@@ -105,6 +106,10 @@ class GameMachine extends Game1Tokens {
       // we also can have one addition way of selection (possibly)
       let altNode: HTMLElement;
       if (opInfo.ui.replicate == true) {
+        altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
+      }
+
+      if (opInfo.ui.imagebuttons == true) {
         altNode = this.replicateTargetOnToolbar(target, paramInfo);
       }
 
@@ -176,6 +181,25 @@ class GameMachine extends Game1Tokens {
     return button;
   }
   replicateTargetOnToolbar(target: string, paramInfo: ParamInfo): HTMLElement | undefined {
+    const q = paramInfo.q;
+    const active = q == 0;
+    const color: any = paramInfo.color ?? "secondary";
+    const div = $(target);
+    if (!div) return undefined;
+    const clone = div.cloneNode(true) as HTMLElement;
+    clone.id = div.id + "_temp";
+    clone.classList.remove(this.classActiveSlot);
+    clone.classList.add(this.classActiveSlotHidden);
+
+    const button = this.statusBar.addActionButton(clone.outerHTML, (event: Event) => this.onToken(event), {
+      color,
+      disabled: !active,
+      id: "button_" + target
+    });
+    return button;
+  }
+
+  replicateTargetOnSelectionArea(target: string, paramInfo: ParamInfo): HTMLElement | undefined {
     const div = $(target);
     if (!div) return undefined;
     const parent = document.createElement("div");

@@ -4,7 +4,7 @@
 .discard {
   height: 200px;
   aspect-ratio: 0.6282722513;
-  box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.5019607843);
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.6901960784);
   border-radius: 5%;
   z-index: 5;
 }
@@ -55,65 +55,65 @@ html[data-theme=dark] .deck .counter {
 .mainarea .card_folk[data-state="1"] {
   left: 22%;
 }
-.mainarea .card.land {
+.mainarea .card_land {
   top: 99%;
 }
-.mainarea .card.land[data-state="4"] {
+.mainarea .card_land[data-state="4"] {
   left: 36%;
 }
-.mainarea .card.land[data-state="3"] {
+.mainarea .card_land[data-state="3"] {
   left: 68%;
 }
-.mainarea .card.land[data-state="2"] {
+.mainarea .card_land[data-state="2"] {
   left: 1%;
 }
-.mainarea .card.land[data-state="1"] {
+.mainarea .card_land[data-state="1"] {
   left: 22%;
 }
-.mainarea .card.space {
+.mainarea .card_space {
   bottom: 99%;
 }
-.mainarea .card.space[data-state="4"] {
+.mainarea .card_space[data-state="4"] {
   left: 35%;
 }
-.mainarea .card.space[data-state="3"] {
+.mainarea .card_space[data-state="3"] {
   left: 1%;
 }
-.mainarea .card.space[data-state="2"] {
+.mainarea .card_space[data-state="2"] {
   left: 80%;
 }
-.mainarea .card.space[data-state="1"] {
+.mainarea .card_space[data-state="1"] {
   left: 59%;
 }
-.mainarea .card.water {
+.mainarea .card_water {
   top: 99%;
 }
-.mainarea .card.water[data-state="4"] {
+.mainarea .card_water[data-state="4"] {
   left: 35%;
 }
-.mainarea .card.water[data-state="3"] {
+.mainarea .card_water[data-state="3"] {
   left: 1%;
 }
-.mainarea .card.water[data-state="2"] {
+.mainarea .card_water[data-state="2"] {
   left: 80%;
 }
-.mainarea .card.water[data-state="1"] {
+.mainarea .card_water[data-state="1"] {
   left: 59%;
 }
-.mainarea .card.insp {
+.mainarea .card_insp {
   left: 108%;
   transform: rotate(90deg);
 }
-.mainarea .card.insp[data-state="4"] {
+.mainarea .card_insp[data-state="4"] {
   top: 70%;
 }
-.mainarea .card.insp[data-state="3"] {
+.mainarea .card_insp[data-state="3"] {
   top: 45%;
 }
-.mainarea .card.insp[data-state="2"] {
+.mainarea .card_insp[data-state="2"] {
   top: 20%;
 }
-.mainarea .card.insp[data-state="1"] {
+.mainarea .card_insp[data-state="1"] {
   top: -5%;
 }
 
@@ -159,11 +159,11 @@ html[data-theme=dark] .deck .counter {
 .tableau .card_water,
 .tableau .card_land {
   z-index: 1;
-  bottom: 9%;
+  bottom: 8.5%;
 }
 .tableau .card_space {
-  z-index: 1;
-  top: 9%;
+  z-index: 0;
+  top: 8.5%;
 }
 .tableau .card_insp {
   z-index: 0;
@@ -890,6 +890,54 @@ html[data-theme=dark] .deck .counter {
   background-position: 100% 83.3333333333%;
 }
 
+.card_space_37 {
+  background-position: 0% 100%;
+}
+
+.card_water_75 {
+  background-position: 0% 100%;
+}
+
+.card_land_37 {
+  background-position: 0% 100%;
+}
+
+.card_space_38 {
+  background-position: 20% 100%;
+}
+
+.card_water_76 {
+  background-position: 20% 100%;
+}
+
+.card_land_38 {
+  background-position: 20% 100%;
+}
+
+.card_space_39 {
+  background-position: 40% 100%;
+}
+
+.card_water_77 {
+  background-position: 40% 100%;
+}
+
+.card_land_39 {
+  background-position: 40% 100%;
+}
+
+.card_space_40 {
+  background-position: 60% 100%;
+}
+
+.card_water_78 {
+  background-position: 60% 100%;
+}
+
+.card_land_40 {
+  background-position: 60% 100%;
+}
+
 .card_insp_1 {
   background-position: 0% 0%;
 }
@@ -1064,12 +1112,14 @@ html[data-theme=dark] .deck .counter {
 }
 
 .infsupply {
+  counter-reset: item-counter; /* Initialize the counter on the parent */
+}
+.pboard .infsupply {
   position: absolute;
   top: 42%;
   right: 0%;
   width: 26%;
   height: 24%;
-  counter-reset: item-counter; /* Initialize the counter on the parent */
 }
 .infsupply > * {
   position: absolute;
@@ -1411,27 +1461,24 @@ html[data-theme=dark] .miniboard .counter {
   display: inline-block;
   vertical-align: middle;
   height: 24px;
-  width: 24px;
   line-height: 24px;
 }
 #page-title .wooden {
   filter: drop-shadow(2px 2px 3px black);
-  mask-image: unset;
-  background-blend-mode: unset;
 }
 
 .dice {
   background-image: url(img/dice.png);
   background-size: 600% 100%;
-  mask-image: url(img/dice.png);
   mask-size: 600% 100%;
-  width: 32px;
   height: 32px;
+  border-radius: 20%;
   aspect-ratio: 1/1;
+  background-color: white;
   background-blend-mode: multiply;
   background-position-x: 100%;
 }
-.dice.color_ff0000 {
+.dice.dice_ff0000 {
   background-color: #ff0000;
 }
 .dice[data-state="1"], .dice.die_1 {
@@ -1495,6 +1542,7 @@ html[data-theme=dark] .miniboard .counter {
 .mainboardall .marker {
   position: absolute;
   top: 50%;
+  filter: drop-shadow(2px 2px 3px black);
 }
 .mainboardall .marker[data-state="0"] {
   left: 0%;
@@ -1605,7 +1653,6 @@ html[data-theme=dark] .miniboard .counter {
 .worker {
   background-position: 0% 57%;
   background-size: auto 800%;
-  width: 26px;
   height: 39px;
   aspect-ratio: 2/3;
 }
@@ -1807,6 +1854,9 @@ html[data-theme=dark] .miniboard .counter {
   background-image: url(img/upgTiles2.jpg);
   background-size: 300% 400%;
 }
+#mainarea .upg {
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.6901960784);
+}
 .upg.upg_blue, .upg.upg_yellow {
   width: 84px;
   height: 42px;
@@ -1959,9 +2009,6 @@ html[data-theme=dark] .miniboard .counter {
 .tooltipcontainer .tooltiptext {
   max-width: 500px;
   top: unset;
-}
-.tooltipcontainer .tooltiptitle {
-  font-family: "Caesar Dressing";
 }
 
 .tooltip-left {
@@ -2204,4 +2251,25 @@ a.bgabutton_white {
 .target_container:hover {
   background-color: #e0e0e0;
   cursor: pointer;
+}
+
+html {
+  background: none;
+  background-color: #b9ecbe;
+}
+
+html:before {
+  background-image: url(img/bg.jpg);
+  background-position: 50% 100%;
+  background-repeat: no-repeat;
+  background-size: cover;
+  content: " ";
+  display: block;
+  height: 100%;
+  width: 100%;
+  left: 0;
+  top: 0;
+  opacity: 0.7;
+  position: fixed;
+  z-index: -1;
 }

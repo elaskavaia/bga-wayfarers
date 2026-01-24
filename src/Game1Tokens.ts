@@ -584,12 +584,17 @@ class Game1Tokens extends Game0Basics {
     const imageTypes = tokenInfo._chain ?? tokenId ?? "";
     const ita = imageTypes.split(" ");
     const tokenKey = ita[ita.length - 1];
-    const declaredTypes = tokenInfo.type || "token";
+
+    const parentParts = getParentParts(tokenId);
+    tokenInfo.type ??= this.getRulesFor(parentParts, "type", "token");
+    const declaredTypes = tokenInfo.type;
 
     tokenInfo.typeKey = tokenKey; // this is key in token_types structure
     tokenInfo.mainType = getPart(tokenId, 0); // first type
     tokenInfo.imageTypes = `${tokenInfo.mainType} ${declaredTypes} ${imageTypes}`.trim(); // other types used for div
-    const create = tokenInfo.create;
+
+    tokenInfo.location ??= this.getRulesFor(parentParts, "location", undefined);
+    const create = tokenInfo.create ?? 0;
     if (create == 3 || create == 4) {
       const prefix = tokenKey.split("_").length;
       tokenInfo.color = getPart(tokenId, prefix);

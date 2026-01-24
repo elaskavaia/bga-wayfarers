@@ -63,68 +63,68 @@
   .card_folk[data-state="1"] {
     left: 22%;
   }
-  .card.land {
+  .card_land {
     top: 99%;
   }
-  .card.land[data-state="4"] {
+  .card_land[data-state="4"] {
     left: 36%;
   }
-  .card.land[data-state="3"] {
+  .card_land[data-state="3"] {
     left: 68%;
   }
-  .card.land[data-state="2"] {
+  .card_land[data-state="2"] {
     left: 1%;
   }
-  .card.land[data-state="1"] {
+  .card_land[data-state="1"] {
     left: 22%;
   }
 
-  .card.space {
+  .card_space {
     bottom: 99%;
   }
-  .card.space[data-state="4"] {
+  .card_space[data-state="4"] {
     left: 35%;
   }
-  .card.space[data-state="3"] {
+  .card_space[data-state="3"] {
     left: 1%;
   }
-  .card.space[data-state="2"] {
+  .card_space[data-state="2"] {
     left: 80%;
   }
-  .card.space[data-state="1"] {
+  .card_space[data-state="1"] {
     left: 59%;
   }
 
-  .card.water {
+  .card_water {
     top: 99%;
   }
-  .card.water[data-state="4"] {
+  .card_water[data-state="4"] {
     left: 35%;
   }
-  .card.water[data-state="3"] {
+  .card_water[data-state="3"] {
     left: 1%;
   }
-  .card.water[data-state="2"] {
+  .card_water[data-state="2"] {
     left: 80%;
   }
-  .card.water[data-state="1"] {
+  .card_water[data-state="1"] {
     left: 59%;
   }
 
-  .card.insp {
+  .card_insp {
     left: 108%;
     transform: rotate(90deg);
   }
-  .card.insp[data-state="4"] {
+  .card_insp[data-state="4"] {
     top: 70%;
   }
-  .card.insp[data-state="3"] {
+  .card_insp[data-state="3"] {
     top: 45%;
   }
-  .card.insp[data-state="2"] {
+  .card_insp[data-state="2"] {
     top: 20%;
   }
-  .card.insp[data-state="1"] {
+  .card_insp[data-state="1"] {
     top: -5%;
   }
 }
@@ -176,11 +176,11 @@
   .card_water,
   .card_land {
     z-index: 1;
-    bottom: 9%;
+    bottom: 8.5%;
   }
   .card_space {
-    z-index: 1;
-    top: 9%;
+    z-index: 0;
+    top: 8.5%;
   }
   .card_insp {
     z-index: 0;
@@ -281,13 +281,13 @@
 // .card_folk {
 //   border-color: green;
 // }
-// .card.space {
+// .card_space {
 //   border-color: black;
 // }
-// .card.land {
+// .card_land {
 //   border-color: beige;
 // }
-// .card.water {
+// .card_water {
 //   border-color: blue;
 // }
 
@@ -339,7 +339,7 @@
   background-size: 600% auto;
   background-position: 100% 100%;
 }
-@for $i from 1 through 36 {
+@for $i from 1 through 40 {
   $num: $i - 1;
   $cols: 6;
   $rows: 7;

@@ -150,7 +150,7 @@ final class Op_cardFolkTest extends TestCase {
         $op = $this->createOp();
         $prompt = $op->getPrompt();
 
-        $this->assertEquals("Select a green card to buy", $prompt);
+        $this->assertEquals("Select a Townsfolk card to buy", $prompt);
     }
 
     public function testGetPromptWithCardSelected(): void {

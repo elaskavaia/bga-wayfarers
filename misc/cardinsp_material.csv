@@ -1,0 +1,22 @@
+num|collect|count|tooltip
+#set create=1
+#set id=card_insp_{num}
+# Inspiration cards (1-18)
+1|tag_Comet|6|Have at least 6 Comet tags
+2|tag_Stars|5|Have at least 5 Stars tags, including starting tag
+3|tag_Planet|3|Have at least 3 Planet tags
+4|card_folk|6|Have at least 6 Townsfolk cards, including starting card
+5|tag_Library|4|Have at least 4 Library tags, including starting tag
+6|tag_Vista|4|Have at least 4 Vista tags
+7|tag_Sea|4|Have at least 4 Open Water tags
+8|tag_Harbour|5|Have at least 5 Harbour tags, including starting tag
+9|upg_green+upg_black|2|Have at least two Basic upgrades and two Space upgrades
+10|upg_blue|3|Have at least 3 Water upgrades
+11|upg_yellow|3|Have at least 3 Land upgrades
+12|inf_yellow+inf_blue+inf_black|10|Have at least 10 combined influence in all guilds
+13|tag_Observatory|4|Have at least 4 Observatory tags, including starting tag
+14|tag_City|5|Have at least 5 City tags, including starting tag
+15|tracker_food|6|Have at least 6 Provisions
+15|tracker_coin|6|Have at least 6 Silver
+17|card_land|8|Have at least 8 Land cards, including starting card
+18|card_water|8|Have at least 8 Water cards, including starting card

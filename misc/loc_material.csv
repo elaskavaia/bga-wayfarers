@@ -2,7 +2,7 @@ id|name|location|scope|counter|content|php
 #set type=location
 #set showtooltip=0
 #set create=0
-deck_folk|Townfolk Cards|supply|global|public|hidden|
+deck_folk|Townsfolk Cards|supply|global|public|hidden|
 deck_land|Land Cards|supply|global|public|hidden|
 deck_water|Water Cards|supply|global|public|hidden|
 deck_space|Space Cards|supply|global|public|hidden|

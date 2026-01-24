@@ -94,7 +94,7 @@ class Op_rest extends Operation {
 
         // Queue resting abilities if eligible (0-1 dice in supply before rest)
         if ($activateRestingAbilities) {
-            //journal,coin||Capital Townfolk
+            //journal,coin||Capital Townsfolk
             $this->queue("coin");
             $this->queue("journal");
             $restCards = $this->getRestAbilityCards();

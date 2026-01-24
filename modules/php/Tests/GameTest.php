@@ -260,12 +260,12 @@ final class GameTest extends TestCase {
 
         foreach ($token_types as $key => $info) {
             $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_folk")) {
+            if (!startsWith($key, "card_folk_")) {
                 continue;
             }
             echo "testing $key\n";
             $r = $info["cost"] ?? "";
-            $this->assertTrue($r != "", "empty r for $key");
+            $this->assertTrue($r != "", "empty cost for $key");
 
             $r = $info["dr"] ?? ($info["da"] ?? "");
             $this->assertTrue($r != "", "empty dr for $key");

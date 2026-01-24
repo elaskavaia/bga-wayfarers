@@ -1,55 +1,54 @@
-num|r|d|dr|tags|c1|c2
+num|r|d|dr|tags|c1|c2|tor|todr
 #set create=1
-#set location=deck_water
-#set type=card card_water water
-#set t=water
-#set id=card_{t}_{num}
+#set id=card_water_{num}
+#set _tr=tor
+#set _tr=todr
 # Water Cards (39-76) - 6x7 sprite
 
 #set ext=1
-39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx
-40|cardLand(draw1)|||Sea|___|___x
+39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx||Pay 4 Silver to draw and acquire a Space card
+40|cardLand(draw1)|||Sea|___|___x|Draw and acquire 1 Land card|
 #set ext=
-41||pigeon|food,journal|Harbour Book|__x_|bx_x
-42||pigeon|coin,journal|Harbour Book|__x_|u_xx
-43||pigeon|infCard,journal|Harbour Book|x__x|yxxx
-44||ship,ship|n_food:cardWater|Harbour Book|_xx_|yx__
+41||pigeon|food,journal|Harbour Book|__x_|bx_x||Gain 1 Provision and Journal
+42||pigeon|coin,journal|Harbour Book|__x_|u_xx||Gain 1 Silver and Journal
+43||pigeon|infCard,journal|Harbour Book|x__x|yxxx||Gain Influence on any card and Journal
+44||ship,ship|n_food:cardWater|Harbour Book|_xx_|yx__||Pay 1 Provision to acquire a Water card
 
-45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x
-46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx
-47||ship|upgBlue/infBlue,infBlue|Harbour|xx__|u_x_
-48||ship|upgBlue/infBlue,infBlue|Harbour|__xx|yx__
-49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_
-50||ship,ship|pickWorker,reroll,infCard|Harbour|__xx|u__x
+45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x||Pay 2 Provisions to acquire a Water card, then gain Silver
+46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx||Pay 2 Provisions to acquire a Water card, then pick a Worker
+47||ship|upgBlue/(infBlue,infBlue)|Harbour|xx__|u_x_||Acquire a Water upgrade or gain 2 Blue influence
+48||ship|upgBlue/(infBlue,infBlue)|Harbour|__xx|yx__||Acquire a Water upgrade or gain 2 Blue influence
+49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_||Refresh a die, modify dice by +/- 1, then gain 1 Provision
+50||ship,ship|pickWorker,reroll,infCard|Harbour|__xx|u__x||Pick a Worker, refresh a die, then gain Influence on any card
 
-51||ship,ship|infYellow,infBlack,coin|Harbour|xx__|__xx
-52||ship,ship|infBlue,infBlack,food|Harbour|x_x_|yx__
-53||ship,ship|cardFolk(free)|Harbour|x___|_xx_
-54||ship|cardFolk,food|Harbour|_x_x|_xx_
-55||ship,ship|4food|Harbour|_x_x|__xx
-56||ship,ship|4coin|Harbour|x_x_|__xx
+51||ship,ship|infYellow,infBlack,coin|Harbour|xx__|__xx||Gain Yellow influence, Black influence, and 1 Silver
+52||ship,ship|infBlue,infBlack,food|Harbour|x_x_|yx__||Gain Blue influence, Black influence, and 1 Provision
+53||ship,ship|cardFolk(free)|Harbour|x___|_xx_||Acquire a free Townsfolk card
+54||ship|food,cardFolk|Harbour|_x_x|_xx_||Acquire a Townsfolk card and gain Provision
+55||ship,ship|4food|Harbour|_x_x|__xx||Gain 4 Provisions
+56||ship,ship|4coin|Harbour|x_x_|__xx||Gain 4 Silver
 
-57||ship|infCard,2coin|Harbour|_x_x|bxxx
-58||ship|pickWorker,2food|Harbour|xx__|_x_x
-59|infBlack,coin,foo,infCard|||Sea|_x__|bxxx
-60|2coin,reroll|||Sea|__xx|_xx_
-61|upgBlack(free)|||Sea|___x|u___
-62|upgGreen(free),diceMod|||Sea|x__x|b_x_
+57||ship|infCard,2coin|Harbour|_x_x|bxxx||Gain Influence on any card and gain 2 Silver
+58||ship|pickWorker,2food|Harbour|xx__|_x_x||Pick a Worker and gain 2 Provisions
+59|infBlack,coin,foo,infCard|||Sea|_x__|bxxx|Gain Black influence, 1 Silver, 1 Provision, and Influence on any card|
+60|2coin,reroll|||Sea|__xx|_xx_|Gain 2 Silver and refresh a die|
+61|upgBlack(free)|||Sea|___x|u___|Acquire a free Space upgrade|
+62|upgGreen(free),diceMod|||Sea|x__x|b_x_|Acquire a free Basic upgrade and modify dice by +/- 1|
 
-63|upgYellow(free)|||Sea|_x__|_x__
-64|upgBlue(free)|||Sea|__x_|__x_
-65|3food|||Sea|__xx|_xx_
-66|3coin|||Sea|xx__|_xx_
-67|cardFold(free)|||Sea|x___|_x__
-68|cardInsp|||Sea|____|_x__
+63|upgYellow(free)|||Sea|_x__|_x__|Acquire a free Land upgrade|
+64|upgBlue(free)|||Sea|__x_|__x_|Acquire a free Water upgrade|
+65|3food|||Sea|__xx|_xx_|Gain 3 Provisions|
+66|3coin|||Sea|xx__|_xx_|Gain 3 Silver|
+67|cardFold(free)|||Sea|x___|_x__|Acquire a free Townsfolk card|
+68|cardInsp|||Sea|____|_x__|Acquire an Inspiration card|
 
-69|infBlack,journal|||Sea|_x__|_x_x
-70|journal|||Sea|__x_|ux__
-71|pickWorker,reroll|||Sea|x__x|y__x
-72|pickWorker,pickWorker|||Sea|_x__|b___
-73|infCard,infCard/infMove,infMove|||Sea|_xx_|_x_x
-74|infBlue,infBlue|||Sea|__x_|yx_x
+69|infBlack,journal|||Sea|_x__|_x_x|Gain Black influence and Journal|
+70|journal|||Sea|__x_|ux__|Gain Journal|
+71|pickWorker,reroll|||Sea|x__x|y__x|Pick a Worker and refresh a die|
+72|pickWorker,pickWorker|||Sea|_x__|b___|Pick 2 Workers|
+73|(infCard,infCard)/(infMove,infMove)|||Sea|_xx_|_x_x|Gain 2 Influence on any card or move 2 Influence|
+74|infBlue,infBlue|||Sea|__x_|yx_x|Gain 2 Blue influence|
 
-75|infYellow,infYellow|||Sea|_x__|u_xx
-76|infBlack,infBlack|||Sea|___x|_xx_
+75|infYellow,infYellow|||Sea|_x__|u_xx|Gain 2 Yellow influence|
+76|infBlack,infBlack|||Sea|___x|_xx_|Gain 2 Black influence|
 

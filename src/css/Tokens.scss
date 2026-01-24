@@ -69,27 +69,25 @@
     display: inline-block;
     vertical-align: middle;
     height: 24px;
-    width: 24px;
     line-height: 24px;
   }
   #page-title & {
     filter: v.$dropShadow2;
-    mask-image: unset;
-    background-blend-mode: unset;
   }
 }
 
 .dice {
   background-image: url(img/dice.png);
   background-size: 600% 100%;
-  mask-image: url(img/dice.png);
+  //mask-image: url(img/dice.png);
   mask-size: 600% 100%;
-  width: 32px;
   height: 32px;
+  border-radius: 20%;
   aspect-ratio: 1 / 1;
+  background-color: white;
   background-blend-mode: multiply;
   background-position-x: 100%;
-  &.color_ff0000 {
+  &.dice_ff0000 {
     background-color: #ff0000;
   }
   &[data-state="1"],
@@ -160,6 +158,8 @@
   .mainboardall & {
     position: absolute;
     top: 50%;
+    filter: v.$dropShadow2;
+
     // Generate positions for states 0-50
     @for $step from 0 through 30 {
       $i: calc($step / 3);
@@ -183,7 +183,6 @@
 .worker {
   background-position: 0% 57%;
   background-size: auto 800%;
-  width: 26px;
   height: 39px;
   aspect-ratio: 2 / 3;
 }
@@ -363,6 +362,10 @@
   background-size: 300% 400%; // 3 columns, 4 rows
   $w: 42px;
   $h: 42px;
+
+  #mainarea & {
+    box-shadow: v.$boxShadowBlack;
+  }
 
   // Blue and Yellow tiles are 2x1 (horizontal rectangles)
   &.upg_blue,

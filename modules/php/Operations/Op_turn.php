@@ -93,7 +93,6 @@ class Op_turn extends Operation {
         $res = [];
 
         // Select a die, worker, or rest
-        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
 
         // Add dice options - group by die value (1-6)
         $player_dice = $this->getDiceInPlayerSupply();
@@ -121,11 +120,13 @@ class Op_turn extends Operation {
             $res[$workerKey] = ["q" => Material::RET_OK];
         }
 
+        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
+
         return $res;
     }
 
     public function getUiArgs() {
-        return ["replicate" => true];
+        return ["imagebuttons" => true];
     }
 
     function resolve(): void {

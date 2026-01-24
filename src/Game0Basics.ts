@@ -159,10 +159,6 @@ class Game0Basics extends GameGui<any> {
     return this.gamedatas.gamestate.name;
   }
 
-  getServerStateName() {
-    return this.last_server_state.name;
-  }
-
   getPlayerColor(playerId: number) {
     return this.gamedatas.players[playerId]?.color ?? "ffffff";
   }
@@ -225,7 +221,7 @@ class Game0Basics extends GameGui<any> {
   }
   /** @Override onScriptError from gameui */
   onScriptError(msg: any, url, linenumber) {
-    if (gameui.page_is_unloading) {
+    if ((gameui as any).page_is_unloading) {
       // Don't report errors during page unloading
       return;
     }
@@ -345,14 +341,14 @@ class Game0Basics extends GameGui<any> {
   notif_message_warning(notif: Notif) {
     if (this.bgaAnimationsActive()) {
       var message = this.format_string_recursive(notif.log, notif.args);
-      this.showMessage(_("Warning:") + " " + message, "warning");
+      this.bga.dialogs.showMessage(_("Warning:") + " " + message, "info");
     }
   }
 
   notif_message_info(notif: Notif) {
     if (this.bgaAnimationsActive()) {
       var message = this.format_string_recursive(notif.log, notif.args);
-      this.showMessage(_("Announcement:") + " " + message, "info");
+      this.bga.dialogs.showMessage(_("Announcement:") + " " + message, "info");
     }
   }
 }

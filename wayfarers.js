@@ -185,9 +185,6 @@ var Game0Basics = /** @class */ (function (_super) {
     Game0Basics.prototype.getStateName = function () {
         return this.gamedatas.gamestate.name;
     };
-    Game0Basics.prototype.getServerStateName = function () {
-        return this.last_server_state.name;
-    };
     Game0Basics.prototype.getPlayerColor = function (playerId) {
         var _a, _b;
         return (_b = (_a = this.gamedatas.players[playerId]) === null || _a === void 0 ? void 0 : _a.color) !== null && _b !== void 0 ? _b : "ffffff";
@@ -368,13 +365,13 @@ var Game0Basics = /** @class */ (function (_super) {
     Game0Basics.prototype.notif_message_warning = function (notif) {
         if (this.bgaAnimationsActive()) {
             var message = this.format_string_recursive(notif.log, notif.args);
-            this.showMessage(_("Warning:") + " " + message, "warning");
+            this.bga.dialogs.showMessage(_("Warning:") + " " + message, "info");
         }
     };
     Game0Basics.prototype.notif_message_info = function (notif) {
         if (this.bgaAnimationsActive()) {
             var message = this.format_string_recursive(notif.log, notif.args);
-            this.showMessage(_("Announcement:") + " " + message, "info");
+            this.bga.dialogs.showMessage(_("Announcement:") + " " + message, "info");
         }
     };
     return Game0Basics;
@@ -1029,7 +1026,7 @@ var Game1Tokens = /** @class */ (function (_super) {
         return def;
     };
     Game1Tokens.prototype.getTokenDisplayInfo = function (tokenId, force) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e;
         if (force === void 0) { force = false; }
         tokenId = String(tokenId);
         var cache = this.tokenInfoCache[tokenId];
@@ -1051,11 +1048,14 @@ var Game1Tokens = /** @class */ (function (_super) {
         var imageTypes = (_b = (_a = tokenInfo._chain) !== null && _a !== void 0 ? _a : tokenId) !== null && _b !== void 0 ? _b : "";
         var ita = imageTypes.split(" ");
         var tokenKey = ita[ita.length - 1];
-        var declaredTypes = tokenInfo.type || "token";
+        var parentParts = getParentParts(tokenId);
+        (_c = tokenInfo.type) !== null && _c !== void 0 ? _c : (tokenInfo.type = this.getRulesFor(parentParts, "type", "token"));
+        var declaredTypes = tokenInfo.type;
         tokenInfo.typeKey = tokenKey; // this is key in token_types structure
         tokenInfo.mainType = getPart(tokenId, 0); // first type
         tokenInfo.imageTypes = "".concat(tokenInfo.mainType, " ").concat(declaredTypes, " ").concat(imageTypes).trim(); // other types used for div
-        var create = tokenInfo.create;
+        (_d = tokenInfo.location) !== null && _d !== void 0 ? _d : (tokenInfo.location = this.getRulesFor(parentParts, "location", undefined));
+        var create = (_e = tokenInfo.create) !== null && _e !== void 0 ? _e : 0;
         if (create == 3 || create == 4) {
             var prefix = tokenKey.split("_").length;
             tokenInfo.color = getPart(tokenId, prefix);
@@ -1311,6 +1311,9 @@ var GameMachine = /** @class */ (function (_super) {
             // we also can have one addition way of selection (possibly)
             var altNode = void 0;
             if (opInfo.ui.replicate == true) {
+                altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
+            }
+            if (opInfo.ui.imagebuttons == true) {
                 altNode = this.replicateTargetOnToolbar(target, paramInfo);
             }
             if (!altNode && (opInfo.ui.buttons || !div)) {
@@ -1379,6 +1382,26 @@ var GameMachine = /** @class */ (function (_super) {
         return button;
     };
     GameMachine.prototype.replicateTargetOnToolbar = function (target, paramInfo) {
+        var _this = this;
+        var _a;
+        var q = paramInfo.q;
+        var active = q == 0;
+        var color = (_a = paramInfo.color) !== null && _a !== void 0 ? _a : "secondary";
+        var div = $(target);
+        if (!div)
+            return undefined;
+        var clone = div.cloneNode(true);
+        clone.id = div.id + "_temp";
+        clone.classList.remove(this.classActiveSlot);
+        clone.classList.add(this.classActiveSlotHidden);
+        var button = this.statusBar.addActionButton(clone.outerHTML, function (event) { return _this.onToken(event); }, {
+            color: color,
+            disabled: !active,
+            id: "button_" + target
+        });
+        return button;
+    };
+    GameMachine.prototype.replicateTargetOnSelectionArea = function (target, paramInfo) {
         var _this = this;
         var div = $(target);
         if (!div)
@@ -1747,6 +1770,26 @@ var GameXBody = /** @class */ (function (_super) {
         console.log("Ending game setup");
         this.inSetup = false;
     };
+    GameXBody.prototype.setupPlayer = function (playerInfo) {
+        console.log("player info " + playerInfo.id, playerInfo);
+        var pcolor = playerInfo.color;
+        var pp = "player_panel_content_".concat(pcolor);
+        document.querySelectorAll("#".concat(pp, ">.miniboard")).forEach(function (node) { return node.remove(); });
+        document.querySelectorAll(".guild").forEach(function (guild) {
+            placeHtml("<div id='".concat(guild.id, "_").concat(pcolor, "' class='").concat(guild.id, "_").concat(pcolor, " infsupply'></div>"), guild);
+        });
+        placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n      </div>"), pp);
+        var parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
+        // Generate caravan grid cells (6x3)
+        var caravanCells = "";
+        for (var y = 0; y < 3; y++) {
+            for (var x = 0; x < 6; x++) {
+                var pos = x + y * 6 + 1; // pos_1 to pos_18
+                caravanCells += "<div id='caravan_".concat(pos, "_").concat(pcolor, "' class='caravan_cell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
+            }
+        }
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
+    };
     GameXBody.prototype.setupLayoutControls = function () {
         var _this = this;
         // Load saved preferences from localStorage
@@ -1910,23 +1953,6 @@ var GameXBody = /** @class */ (function (_super) {
         mainboardall.style.transformOrigin = "top left";
     };
     GameXBody.prototype.updateBanner = function () { };
-    GameXBody.prototype.setupPlayer = function (playerInfo) {
-        console.log("player info " + playerInfo.id, playerInfo);
-        var pcolor = playerInfo.color;
-        var pp = "player_panel_content_".concat(pcolor);
-        document.querySelectorAll("#".concat(pp, ">.miniboard")).forEach(function (node) { return node.remove(); });
-        placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n      </div>"), pp);
-        var parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
-        // Generate caravan grid cells (6x3)
-        var caravanCells = "";
-        for (var y = 0; y < 3; y++) {
-            for (var x = 0; x < 6; x++) {
-                var pos = x + y * 6 + 1; // pos_1 to pos_18
-                caravanCells += "<div id='caravan_".concat(pos, "_").concat(pcolor, "' class='caravan_cell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
-            }
-        }
-        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
-    };
     GameXBody.prototype.setupScoreSheet = function () {
         var _this = this;
         var entries = [
@@ -2118,6 +2144,10 @@ var GameXBody = /** @class */ (function (_super) {
             var color = getPart(location, 1);
             result.location = "infsupply_".concat(color);
         }
+        else if (tokenId.startsWith("inf") && location.startsWith("guild")) {
+            var color = getPart(tokenId, 1);
+            result.location = "".concat(location, "_").concat(color);
+        }
         else if (tokenId.startsWith("upg")) {
             if (location.startsWith("tableau")) {
                 // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
@@ -2155,10 +2185,37 @@ var GameXBody = /** @class */ (function (_super) {
             case "worker":
                 return;
             case "card": {
-                tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
-                    name: (_c = this.getTr((_b = this.getRulesFor(tokenId, "name")) !== null && _b !== void 0 ? _b : tokenInfo.t)) !== null && _c !== void 0 ? _c : "?",
-                    num: (_d = getPart(tokenId, 2)) !== null && _d !== void 0 ? _d : "?"
-                });
+                var t = getPart(tokenId, 1);
+                var num = getPart(tokenId, 2);
+                if (!num)
+                    return;
+                var name_2 = (_c = (_b = this.getTr(this.getRulesFor(tokenId, "name"))) !== null && _b !== void 0 ? _b : this.getTokenName("card_".concat(t))) !== null && _c !== void 0 ? _c : "?";
+                tokenInfo.name = this.getTr(_("Card ${name} #${num}"), { name: name_2, num: num });
+                (_d = tokenInfo.tooltip) !== null && _d !== void 0 ? _d : (tokenInfo.tooltip = "");
+                switch (t) {
+                    case "land":
+                        tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+                        if (tokenInfo.r)
+                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                        if (tokenInfo.d)
+                            tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+                        if (tokenInfo.trig) {
+                            tokenInfo.tooltip += this.ttSection(_("Triggers on"), this.getTagsListTr(tokenInfo.trig));
+                            tokenInfo.tooltip += this.ttSection(_("Trigger Effect"), this.getTr(tokenInfo.todr));
+                        }
+                        break;
+                    case "water":
+                        tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+                        if (tokenInfo.r)
+                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                        if (tokenInfo.dr)
+                            tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+                        break;
+                    case "insp":
+                        tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
+                        tokenInfo.tooltip += this.ttSection(undefined, _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
+                        break;
+                }
                 return;
             }
             case "upg": {
@@ -2167,9 +2224,9 @@ var GameXBody = /** @class */ (function (_super) {
                 if (!num)
                     return;
                 var color = getPart(tokenId, 1);
-                var name_2 = this.getTokenName("upg_".concat(color));
+                var name_3 = this.getTokenName("upg_".concat(color));
                 tokenInfo.name = this.getTr(_("${name} #${num}"), {
-                    name: name_2,
+                    name: name_3,
                     num: num
                 });
                 tokenInfo.tooltip = "";
@@ -2186,6 +2243,19 @@ var GameXBody = /** @class */ (function (_super) {
             return "<p><b>".concat(prefix, "</b>: ").concat(text, "</p>");
         else
             return "<p>".concat(text, "</p>");
+    };
+    GameXBody.prototype.getTagsListTr = function (tags) {
+        var _a;
+        // get translated tags
+        var tagList = tags.split(/[, \/]/);
+        var trTags = [];
+        for (var _i = 0, tagList_1 = tagList; _i < tagList_1.length; _i++) {
+            var tag = tagList_1[_i];
+            if (!tag)
+                continue;
+            trTags.push((_a = this.getTr(this.getRulesFor("tag_".concat(tag), "name"))) !== null && _a !== void 0 ? _a : tag);
+        }
+        return trTags.join(", ");
     };
     GameXBody.prototype.getColorName = function (color) {
         switch (color) {

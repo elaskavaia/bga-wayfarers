@@ -91,7 +91,45 @@ class GameXBody extends GameMachine {
     console.log("Ending game setup");
     this.inSetup = false;
   }
+  setupPlayer(playerInfo: any) {
+    console.log("player info " + playerInfo.id, playerInfo);
+    const pcolor = playerInfo.color;
+    const pp = `player_panel_content_${pcolor}`;
+    document.querySelectorAll(`#${pp}>.miniboard`).forEach((node) => node.remove());
 
+    document.querySelectorAll(`.guild`).forEach((guild) => {
+      placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
+    });
+    placeHtml(
+      `<div id='miniboard_${pcolor}' class='miniboard'>
+      </div>`,
+      pp
+    );
+    let parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
+    // Generate caravan grid cells (6x3)
+    let caravanCells = "";
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 6; x++) {
+        const pos = x + y * 6 + 1; // pos_1 to pos_18
+        caravanCells += `<div id='caravan_${pos}_${pcolor}' class='caravan_cell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
+      }
+    }
+
+    placeHtml(
+      `
+      <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${pcolor}'>
+
+         <div id='pboard_${pcolor}' class='pboard'>
+           <div id='breakroom_${pcolor}' class='breakroom'></div>
+           <div id='infsupply_${pcolor}' class='infsupply'></div>
+           <div id='caravan_${pcolor}' class='caravan'>
+             ${caravanCells}
+           </div>
+         </div>
+      </div>`,
+      parent
+    );
+  }
   setupLayoutControls() {
     // Load saved preferences from localStorage
     const savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
@@ -285,42 +323,6 @@ class GameXBody extends GameMachine {
     mainboardall.style.transformOrigin = "top left";
   }
   updateBanner() {}
-  setupPlayer(playerInfo: any) {
-    console.log("player info " + playerInfo.id, playerInfo);
-    const pcolor = playerInfo.color;
-    const pp = `player_panel_content_${pcolor}`;
-    document.querySelectorAll(`#${pp}>.miniboard`).forEach((node) => node.remove());
-
-    placeHtml(
-      `<div id='miniboard_${pcolor}' class='miniboard'>
-      </div>`,
-      pp
-    );
-    let parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
-    // Generate caravan grid cells (6x3)
-    let caravanCells = "";
-    for (let y = 0; y < 3; y++) {
-      for (let x = 0; x < 6; x++) {
-        const pos = x + y * 6 + 1; // pos_1 to pos_18
-        caravanCells += `<div id='caravan_${pos}_${pcolor}' class='caravan_cell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
-      }
-    }
-
-    placeHtml(
-      `
-      <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${pcolor}'>
-
-         <div id='pboard_${pcolor}' class='pboard'>
-           <div id='breakroom_${pcolor}' class='breakroom'></div>
-           <div id='infsupply_${pcolor}' class='infsupply'></div>
-           <div id='caravan_${pcolor}' class='caravan'>
-             ${caravanCells}
-           </div>
-         </div>
-      </div>`,
-      parent
-    );
-  }
 
   setupScoreSheet() {
     const entries = [
@@ -489,6 +491,9 @@ class GameXBody extends GameMachine {
     } else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
       const color = getPart(location, 1);
       result.location = `infsupply_${color}`;
+    } else if (tokenId.startsWith("inf") && location.startsWith("guild")) {
+      const color = getPart(tokenId, 1);
+      result.location = `${location}_${color}`;
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
@@ -526,10 +531,43 @@ class GameXBody extends GameMachine {
       case "worker":
         return;
       case "card": {
-        tokenInfo.name = this.getTr(_("Card ${name} #${num}"), {
-          name: this.getTr(this.getRulesFor(tokenId, "name") ?? tokenInfo.t) ?? "?",
-          num: getPart(tokenId, 2) ?? "?"
-        });
+        const t = getPart(tokenId, 1);
+        const num = getPart(tokenId, 2);
+        if (!num) return;
+
+        const name = this.getTr(this.getRulesFor(tokenId, "name")) ?? this.getTokenName(`card_${t}`) ?? "?";
+
+        tokenInfo.name = this.getTr(_("Card ${name} #${num}"), { name, num });
+        tokenInfo.tooltip ??= "";
+
+        switch (t) {
+          case "land":
+            tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+            if (tokenInfo.d) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+            if (tokenInfo.trig) {
+              tokenInfo.tooltip += this.ttSection(_("Triggers on"), this.getTagsListTr(tokenInfo.trig));
+              tokenInfo.tooltip += this.ttSection(_("Trigger Effect"), this.getTr(tokenInfo.todr));
+            }
+            break;
+          case "water":
+            tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+            if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+            break;
+          case "insp":
+            tokenInfo.tooltip += this.ttSection(
+              undefined,
+              _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring")
+            );
+
+            tokenInfo.tooltip += this.ttSection(
+              undefined,
+              _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to")
+            );
+
+            break;
+        }
 
         return;
       }
@@ -554,6 +592,17 @@ class GameXBody extends GameMachine {
   ttSection(prefix: string, text: string) {
     if (prefix) return `<p><b>${prefix}</b>: ${text}</p>`;
     else return `<p>${text}</p>`;
+  }
+
+  getTagsListTr(tags: string) {
+    // get translated tags
+    const tagList = tags.split(/[, \/]/);
+    const trTags: string[] = [];
+    for (const tag of tagList) {
+      if (!tag) continue;
+      trTags.push(this.getTr(this.getRulesFor(`tag_${tag}`, "name")) ?? tag);
+    }
+    return trTags.join(", ");
   }
 
   getColorName(color: string) {
