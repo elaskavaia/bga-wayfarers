@@ -1,4 +1,4 @@
-num|collect|count|tooltip
+num|collect|goal|tooltip
 #set create=1
 #set id=card_insp_{num}
 # Inspiration cards (1-18)
@@ -10,7 +10,7 @@ num|collect|count|tooltip
 6|tag_Vista|4|Have at least 4 Vista tags
 7|tag_Sea|4|Have at least 4 Open Water tags
 8|tag_Harbour|5|Have at least 5 Harbour tags, including starting tag
-9|upg_green+upg_black|2|Have at least two Basic upgrades and two Space upgrades
+9|(upg_green>1) & (upg_black>1)|1|Have at least two Basic upgrades and two Space upgrades
 10|upg_blue|3|Have at least 3 Water upgrades
 11|upg_yellow|3|Have at least 3 Land upgrades
 12|inf_yellow+inf_blue+inf_black|10|Have at least 10 combined influence in all guilds

@@ -254,6 +254,42 @@ final class GameTest extends TestCase {
         }
     }
 
+    public function testAllInstRules() {
+        $this->game();
+        $token_types = $this->game->material->get();
+
+        foreach ($token_types as $key => $info) {
+            $this->assertTrue(!!$key);
+            if (!startsWith($key, "card_")) {
+                continue;
+            }
+            echo "testing insta $key\n";
+            $r = $info["r"] ?? "";
+            if (!$r) {
+                continue;
+            }
+
+            $this->game->machine->instanciateOperation($r, PCOLOR);
+        }
+    }
+
+    public function testAllInspExpr() {
+        $this->game();
+        $token_types = $this->game->material->get();
+
+        foreach ($token_types as $key => $info) {
+            $this->assertTrue(!!$key);
+            if (!startsWith($key, "card_insp_")) {
+                continue;
+            }
+            echo "testing insp card $key\n";
+            $r = $info["collect"] ?? "";
+            $this->assertTrue($r != "", "empty collect for $key");
+            echo "testing insp card expr $r\n";
+            $this->game->evaluateExpression($r, PCOLOR);
+        }
+    }
+
     public function testFolk() {
         $this->game();
         $token_types = $this->game->material->get();

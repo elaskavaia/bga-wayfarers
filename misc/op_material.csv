@@ -28,6 +28,7 @@ cardFolk|Acquire Townsfolk Card
 cardWater|Acquire Water Card
 cardLand|Acquire Land Card
 cardDraw|Draw and Pick Card
+cardInsp|Acquire Inspiration Card
 cardInteract|Card Interaction
 
 upgBlack|Acquire Space Upgrade

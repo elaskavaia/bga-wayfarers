@@ -275,7 +275,7 @@ class Game extends Base {
         }
     }
 
-    function effect_incVp(string $owner, int $inc, string $stat = "", array $options = []) {
+    function effect_incVp(string $owner, int $inc, string $stat = "", string $target = "") {
         $player_id = $this->getPlayerIdByColor($owner);
 
         if ($inc < 0) {
@@ -285,28 +285,18 @@ class Game extends Base {
             $message = clienttranslate('${player_name} gains ${absInc} VP ${reason}');
         }
 
-        $score = $this->playerScore->inc(
+        $this->playerScore->inc(
             $player_id,
             $inc,
             new NotificationMessage($message, [
                 "reason" => $stat,
+                "target" => $target,
             ])
         );
 
-        $this->playerStats->inc($stat, $inc, $player_id);
-
-        $this->notifyWithName(
-            "score",
-            "",
-            [
-                "player_score" => $score,
-                "inc" => $inc,
-                "absImc" => abs((int) $inc),
-                "duration" => 500,
-                //"target" => $target,
-            ],
-            $player_id
-        );
+        if ($stat) {
+            $this->playerStats->inc($stat, $inc, $player_id);
+        }
     }
 
     function isSimultanousPlay() {
@@ -344,7 +334,7 @@ class Game extends Base {
     }
     /**
      * Count tags of a specific type for a player
-     * @param string $tagName - the tag to count (City, Vista, Harbour, Water, etc.)
+     * @param string $tagName - the tag to count (City, Vista, Harbour, Open Water, etc.)
      * @param string $owner - player color
      * @return int - count of tags
      */
@@ -399,6 +389,52 @@ class Game extends Base {
     function countGuildInfluence(string $guild, string $owner): int {
         $tokens = $this->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
         return count($tokens);
+    }
+
+    /**
+     * Check if a player has achieved an inspiration card's goal
+     * @param string $cardKey - the inspiration card key (e.g., "card_insp_1")
+     * @param string $owner - player color
+     * @return bool - true if goal is achieved
+     */
+    function isInspirationGoalAchieved(string $cardKey, string $owner): bool {
+        $collect = $this->getRulesFor($cardKey, "collect", "");
+        $required = (int) $this->getRulesFor($cardKey, "goal", 0);
+
+        if (!$collect || $required <= 0) {
+            return false;
+        }
+
+        // Single requirement
+        $count = $this->game->evaluateExpression($collect, $owner);
+        return $count >= $required;
+    }
+
+    /**
+     * Count collectibles of a given type for a player
+     * Used for inspiration card goal checking
+     */
+    function countCollectible(string $type, string $owner): int {
+        // Use existing evaluateTerm for tracker_, tag_, and inf_ types
+        if (str_starts_with($type, "tracker_") || str_starts_with($type, "tag_") || str_starts_with($type, "inf_")) {
+            return $this->evaluateTerm($type, $owner);
+        }
+
+        // Handle upg_ (upgrade tiles)
+        if (str_starts_with($type, "upg_")) {
+            $upgType = substr($type, 4); // Remove "upg_" prefix
+            $tokens = $this->tokens->getTokensOfTypeInLocation("upg_$upgType", "tableau_$owner");
+            return count($tokens);
+        }
+
+        // Handle card_ (card counts)
+        if (str_starts_with($type, "card_")) {
+            $cardType = substr($type, 5); // Remove "card_" prefix
+            $tokens = $this->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
+            return count($tokens);
+        }
+
+        return 0;
     }
 
     /**
@@ -537,26 +573,39 @@ class Game extends Base {
                 $this->effect_incVp($color, $sets * 5, "game_vp_sets");
             }
 
-            // 2. Space Cards VP
+            // 2. Space and Inspriration Cards VP
             $cards = $this->tokens->getTokensOfTypeInLocation("card_space", "tableau_$color");
+            $inspCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
+
             foreach ($cards as $cardKey => $cardInfo) {
                 $vp = (int) $this->getRulesFor($cardKey, "vp", 0);
-                if ($vp > 0) {
-                    $this->effect_incVp($color, $vp, "game_vp_space");
+                if (!$vp) {
+                    continue;
+                }
+                $this->effect_incVp($color, $vp, "game_vp_space", $cardKey);
+
+                // Check if there's a tucked inspiration card at the same position
+                $spacePos = (int) $cardInfo["state"];
+                foreach ($inspCards as $inspKey => $inspInfo) {
+                    $inspPos = (int) $inspInfo["state"];
+                    if ($inspPos === $spacePos) {
+                        // Found tucked inspiration card, check if goal is achieved
+                        if ($this->isInspirationGoalAchieved($inspKey, $color)) {
+                            // Goal achieved - score space card VP again
+                            $this->effect_incVp($color, $vp, "game_vp_inspiration", $inspKey);
+                        } else {
+                            $this->notifyMessage(
+                                clienttranslate('${player_name} did not achieve the goal for tucked inspiration card ${token_name}'),
+                                ["token_name" => $this->getTokenName($inspKey)],
+                                $player_id
+                            );
+                        }
+                        break; // Only one inspiration card per space card
+                    }
                 }
             }
 
-            // 3. Inspiration Cards (achieved goals double Space Card VP - already handled above if applicable)
-            $inspirationCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
-            foreach ($inspirationCards as $cardKey => $cardInfo) {
-                // TODO: inspiration is calculated diffrently
-                $vp = (int) $this->getRulesFor($cardKey, "vp", 0);
-                if ($vp > 0) {
-                    $this->effect_incVp($color, $vp, "game_vp_inspiration");
-                }
-            }
-
-            // 4. Caravan - VP from upgrade tiles
+            // 3. Caravan - VP from upgrade tiles
             $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$color");
             foreach ($tiles as $tileKey => $tileInfo) {
                 $vp = (int) $this->getRulesFor($tileKey, "vp", 0);
@@ -571,7 +620,7 @@ class Game extends Base {
             }
         }
 
-        // 5. Guild Majorities - 3 VP to player with most influence in each guild
+        // 4. Guild Majorities - 3 VP to player with most influence in each guild
         foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
             $maxInfluence = 0;
             $winners = [];
@@ -607,6 +656,37 @@ class Game extends Base {
         }
 
         $this->notify->all("endScores", "", ["endScores" => $this->getEndScores(), "final" => true]);
+    }
+
+    function evaluateTerm($x, $owner, $context = null, ?array $options = null) {
+        if (str_starts_with($x, "tracker_")) {
+            return $this->tokens->getTrackerValue($owner, getPart($x, 1));
+        }
+        if (str_starts_with($x, "tag_")) {
+            return $this->countPlayerTags(getPart($x, 1), $owner);
+        }
+        if (str_starts_with($x, "inf_")) {
+            return $this->countGuildInfluence(getPart($x, 1), $owner);
+        }
+
+        // Handle upg_ (upgrade tiles)
+        if (str_starts_with($x, "upg_")) {
+            $tokens = $this->tokens->getTokensOfTypeInLocation("$x", "tableau_$owner");
+            return count($tokens);
+        }
+
+        // Handle card_ (card counts)
+        if (str_starts_with($x, "card_")) {
+            $tokens = $this->tokens->getTokensOfTypeInLocation($x, "tableau_$owner");
+            $ttype = getPart($x, 1);
+            $plus = 0;
+            if ($ttype === "folk" || $ttype == "land" || $ttype == "water" || $ttype == "star") {
+                $plus = 1; // player starts with 1 of other pre-printed cards
+            }
+            return count($tokens) + $plus;
+        }
+
+        return parent::evaluateTerm($x, $owner, $context, $options);
     }
 
     function getEndScores(): array {

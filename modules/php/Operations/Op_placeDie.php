@@ -175,12 +175,12 @@ class Op_placeDie extends Operation {
         if ($folkCard) {
             $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
             if ($folkRule) {
-                $this->queue($folkRule, $owner, [], $folkCard);
+                $this->queue($folkRule, $owner, ["die" => $selectedDie], $folkCard);
             }
         }
         // XXX player can chose order
         $r = $this->game->getRulesFor($cardId, "dr");
-        $this->queue($r, $owner, [], $cardId);
+        $this->queue($r, $owner, ["die" => $selectedDie], $cardId);
     }
 
     public function getTuckedFolk(string $card) {

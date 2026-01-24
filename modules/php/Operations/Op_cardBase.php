@@ -40,6 +40,42 @@ abstract class Op_cardBase extends Operation {
         return $this->getParam(0) == "free";
     }
 
+    function getDie() {
+        return $this->getDataField("die", null);
+    }
+
+    /**
+     * Check if pigeon is available as a leftover asset from die placement
+     */
+    function hasPigeonLeftover(): bool {
+        $die = $this->getDie();
+        if (!$die) {
+            return false;
+        }
+
+        $owner = $this->getOwner();
+        $dieValue = (int) $this->game->tokens->db->getTokenState($die);
+
+        // Get caravan assets for this die value
+        $caravanAssets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
+
+        // Get the card where the die was placed (from reason)
+        $placedCard = $this->getReason();
+        if (!$placedCard) {
+            return false;
+        }
+
+        // Get asset requirements for that card
+        $requirements = $this->game->getRulesFor($placedCard, "d", "");
+
+        // Calculate leftover assets after meeting requirements
+
+        $missing = $this->game->getMissingAssetRequirements($requirements . ",pigeon", $caravanAssets);
+
+        // If pigeon is not missing its available
+        return array_search("pigeon", $missing) === false;
+    }
+
     function getPossibleMoves() {
         $cardSelected = $this->getCard();
         if ($cardSelected) {
@@ -81,7 +117,10 @@ abstract class Op_cardBase extends Operation {
         // Check if player chose the deck
         if (str_starts_with($card, "deck_")) {
             $owner = $this->getOwner();
-            $this->queue("n_food", $owner, [], "Op_cardDraw"); // TODO: food or pigeon
+            // If pigeon is a leftover asset, skip food payment
+            if (!$this->hasPigeonLeftover()) {
+                $this->queue("n_food", $owner, [], "Op_cardDraw");
+            }
             $this->queue("3cardDraw({$this->getCardType()})");
             return;
         }

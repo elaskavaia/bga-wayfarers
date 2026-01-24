@@ -30,7 +30,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 
 57||ship|infCard,2coin|Harbour|_x_x|bxxx||Gain Influence on any card and gain 2 Silver
 58||ship|pickWorker,2food|Harbour|xx__|_x_x||Pick a Worker and gain 2 Provisions
-59|infBlack,coin,foo,infCard|||Sea|_x__|bxxx|Gain Black influence, 1 Silver, 1 Provision, and Influence on any card|
+59|infBlack,coin,food,infCard|||Sea|_x__|bxxx|Gain Black influence, 1 Silver, 1 Provision, and Influence on any card|
 60|2coin,reroll|||Sea|__xx|_xx_|Gain 2 Silver and refresh a die|
 61|upgBlack(free)|||Sea|___x|u___|Acquire a free Space upgrade|
 62|upgGreen(free),diceMod|||Sea|x__x|b_x_|Acquire a free Basic upgrade and modify dice by +/- 1|
@@ -39,7 +39,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 64|upgBlue(free)|||Sea|__x_|__x_|Acquire a free Water upgrade|
 65|3food|||Sea|__xx|_xx_|Gain 3 Provisions|
 66|3coin|||Sea|xx__|_xx_|Gain 3 Silver|
-67|cardFold(free)|||Sea|x___|_x__|Acquire a free Townsfolk card|
+67|cardFolk(free)|||Sea|x___|_x__|Acquire a free Townsfolk card|
 68|cardInsp|||Sea|____|_x__|Acquire an Inspiration card|
 
 69|infBlack,journal|||Sea|_x__|_x_x|Gain Black influence and Journal|

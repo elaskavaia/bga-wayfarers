@@ -18,7 +18,7 @@ class Op_cardSpace extends Op_cardBase {
     public function getPossibleMoves() {
         // Check if there's an available position
         if ($this->getNextAvailablePosition() === null) {
-            return ["err" => clienttranslate("No available position for space card")];
+            return ["err" => clienttranslate("No available position for this card")];
         }
         return parent::getPossibleMoves();
     }
@@ -92,6 +92,6 @@ class Op_cardSpace extends Op_cardBase {
         $owner = $this->getOwner();
         $pos = $this->getNextAvailablePosition();
         $this->game->systemAssert("Cannot find position for space card", $pos);
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", $pos);
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", $pos, clienttranslate('${player_name} acquires ${token_name}'));
     }
 }

@@ -23,10 +23,12 @@ namespace Bga\Games\wayfarers;
 use Bga\GameFramework\NotificationMessage;
 use Bga\GameFramework\Table;
 use Bga\GameFramework\UserException;
+use Bga\Games\wayfarers\OpCommon\MathExpression;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
 use BgaSystemException;
 use BgaUserException;
 use Exception;
+use ReflectionMethod;
 
 class Base extends Table {
     const PLAYER_AUTOMA = 1;
@@ -586,6 +588,38 @@ class Base extends Table {
                 $this->giveExtraTime($playerId);
             }
         }
+    }
+
+    function evaluateExpression($cond, $owner = 0, $context = null, $options = null): int {
+        try {
+            if (!$owner) {
+                $owner = $this->getActivePlayerColor();
+            }
+            if (strlen($cond) > 80) {
+                throw new BgaSystemException("Parse expression is too long '$cond'");
+            }
+            $expr = MathExpression::parse($cond);
+            $mapper = function ($x) use ($owner, $context, $options) {
+                return $this->evaluateTerm($x, $owner, $context, $options);
+            };
+            return $expr->evaluate($mapper);
+        } catch (Exception $e) {
+            $this->error(toJson($e));
+            throw new BgaSystemException("Cannot evaluate math expression '$cond'");
+        }
+    }
+
+    function evaluateTerm($x, $owner, $context = null, ?array $options = null) {
+        if (startsWith($x, "count") && strlen($x) > 6) {
+            $method = new ReflectionMethod(get_class($this), "$x");
+            if (!$method) {
+                throw new Exception("Uknown term $x");
+            }
+            return $method->invoke($this, $owner, $context, $options);
+        } else {
+            throw new Exception("Uknown term $x");
+        }
+        return 0;
     }
 
     //////////////////////////////////////////////////////////////////////////////

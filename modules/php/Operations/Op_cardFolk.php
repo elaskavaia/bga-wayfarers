@@ -113,13 +113,12 @@ class Op_cardFolk extends Op_cardBase {
             $card,
             "tableau_$owner",
             $targetState,
-            clienttranslate('${player_name} buys Townsfolk card ${token_name}')
+            clienttranslate('${player_name} acquires ${token_name}')
         );
     }
 
     public function getPrompt() {
         $card = $this->getCard();
-        $owner = $this->getOwner();
         if ($card == null) {
             return clienttranslate("Select a Townsfolk card to buy");
         }
