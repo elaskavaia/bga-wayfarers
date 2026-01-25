@@ -8,10 +8,8 @@
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
- * Op_cardInsp: Acquire an inspiration card (goal card)
+ * Op_cardInsp: Acquire an inspiration card
  *
- * Inspiration cards are goal cards that players can claim when they have met
- * certain collection requirements (tags, cards, upgrades, influence, resources).
  */
 
 declare(strict_types=1);
@@ -21,6 +19,16 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 
 class Op_cardInsp extends Op_cardBase {
+    // RULES:     When gaining an Inspiration Card, players may tuck it above any
+    // of their Space Cards that doesn’t already have an Inspiration Card.
+    // If they have no Space Cards available, or if they don’t wish to gain
+    // an Inspiration Card (because they don’t think they can achieve its
+    // goal), players always have the option to instead discard it for an
+    // immediate effect. The immediate effect they gain is from the Worker
+    // Placement spot that the Card was adjacent to (see page 16). Cards
+    // discarded this way should be placed facedown under the Inspiration
+    // Card Draw Pile.
+
     function getCardType() {
         return "insp";
     }
@@ -37,7 +45,7 @@ class Op_cardInsp extends Op_cardBase {
             $availablePositions = $this->getAvailablePositions();
 
             foreach (array_keys($tokens) as $card) {
-                // there is requirement on playing the card
+                // there is NO requirement on playing the card excp placement below
                 $res[$card] = ["q" => Material::RET_OK];
 
                 // Check if there's at least one available position
@@ -56,6 +64,8 @@ class Op_cardInsp extends Op_cardBase {
         foreach ($availablePositions as $spaceCard) {
             $res[$spaceCard] = ["q" => Material::RET_OK];
         }
+
+        $res["discard"] = ["q" => 0, "name" => clienttranslate("Discard")];
 
         return $res;
     }
@@ -98,6 +108,24 @@ class Op_cardInsp extends Op_cardBase {
             return;
         }
 
+        $arg = $this->getCheckedArg();
+        if ($arg == "discard") {
+            $state = $this->game->tokens->db->getTokenState($cardSelected);
+            // Gain the benefit
+            $workerRule = $this->game->getRulesFor("action_insp_{$state}", "r", "");
+            $this->queue($workerRule);
+            // Discard the card
+            $deck = "deck_insp";
+            $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);
+            $this->game->tokens->dbSetTokenLocation(
+                $cardSelected,
+                $deck,
+                $extreme_pos - 1,
+                clienttranslate('${player_name} discards ${token_name}')
+            );
+
+            return;
+        }
         // Second step: place the card
         parent::resolve();
     }

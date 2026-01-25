@@ -1069,7 +1069,12 @@ var Game1Tokens = /** @class */ (function (_super) {
             tokenInfo.key = tokenId;
         }
         tokenInfo.tokenId = tokenId;
-        this.updateTokenDisplayInfo(tokenInfo);
+        try {
+            this.updateTokenDisplayInfo(tokenInfo);
+        }
+        catch (e) {
+            console.error("Failed to update token info for ".concat(tokenId), e);
+        }
         this.tokenInfoCache[tokenId] = tokenInfo;
         //console.log("cached", tokenId);
         return tokenInfo;
@@ -1736,8 +1741,7 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
         _this.boardLayout = "scale";
-        _this.boardRotated = false;
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_btn active\" title=\"".concat(_("Board Layout: Scale to fit"), "\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_btn\" title=\"").concat(_("Board Layout: Horizontal scroll"), "\">\u2194</button>\n   <span class=\"layout_separator\">|</span>\n   <button id=\"layout_rotate\" class=\"layout_btn\" title=\"").concat(_("Board Layout: Rotate board 90°"), "\">\u21BB</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n");
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_btn active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_btn\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () { return _this.updateBoardScale(); };
         return _this;
     }
@@ -1794,22 +1798,16 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = this;
         // Load saved preferences from localStorage
         var savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
-        var savedRotated = localStorage.getItem("wayfarers_board_rotated") === "true";
         this.boardLayout = savedLayout;
-        this.boardRotated = savedRotated;
         // Apply saved settings
         this.applyBoardLayout();
-        this.applyBoardRotation();
         // Add event listeners
         $("layout_scale").addEventListener("click", function () { return _this.setBoardLayout("scale"); });
         $("layout_scroll").addEventListener("click", function () { return _this.setBoardLayout("scroll"); });
-        $("layout_rotate").addEventListener("click", function () { return _this.toggleBoardRotation(); });
+        $("layout_scale").title = _("Board Layout: Scale to fit");
+        $("layout_scroll").title = _("Board Layout: Horizontal scroll");
     };
     GameXBody.prototype.setBoardLayout = function (layout) {
-        // If switching away from scale mode, turn off rotation
-        if (layout !== "scale" && this.boardRotated) {
-            this.setBoardRotated(false);
-        }
         this.boardLayout = layout;
         localStorage.setItem("wayfarers_board_layout", layout);
         this.applyBoardLayout();
@@ -1837,120 +1835,28 @@ var GameXBody = /** @class */ (function (_super) {
         else {
             window.removeEventListener("resize", this.boundUpdateBoardScale);
         }
-        // Re-apply rotation if needed
-        if (this.boardRotated) {
-            this.applyBoardRotation();
-        }
     };
     GameXBody.prototype.updateBoardScale = function () {
         if (this.boardLayout !== "scale")
             return;
         var mainboardall = $("mainboardall");
         var mainarea = $("mainarea");
-        // Temporarily reset transform and force nowrap to measure natural size
+        // Temporarily reset transform to measure
         mainboardall.style.transform = "none";
         mainboardall.style.width = "";
         mainboardall.style.height = "";
         mainboardall.style.transformOrigin = "";
-        mainboardall.style.whiteSpace = "nowrap";
         var naturalWidth = mainboardall.scrollWidth;
         var naturalHeight = mainboardall.scrollHeight;
         var availableWidth = mainarea.clientWidth - 20; // 20px for padding
-        // Reset whiteSpace - CSS classes will handle display
-        mainboardall.style.whiteSpace = "";
-        if (this.boardRotated) {
-            // When rotated 90deg clockwise, original height becomes visible width
-            var scale = 1;
-            if (naturalHeight > availableWidth) {
-                scale = availableWidth / naturalHeight;
-            }
-            // Final visible dimensions after rotation and scale
-            var finalWidth = naturalHeight * scale;
-            var finalHeight = naturalWidth * scale;
-            // Set container to final dimensions
-            mainboardall.style.width = "".concat(finalWidth, "px");
-            mainboardall.style.height = "".concat(finalHeight, "px");
-            // Transform: rotate around top-left, then translate to position correctly
-            // After rotating 90deg CW around top-left, the element extends upward and to the right
-            // We need to translate it: X by 0, Y by the original height (now pointing left after rotation)
-            mainboardall.style.transformOrigin = "top left";
-            mainboardall.style.transform = "translate(".concat(finalWidth, "px, 0) rotate(90deg) scale(").concat(scale, ")");
+        var scale = 1;
+        if (naturalWidth > availableWidth) {
+            scale = availableWidth / naturalWidth;
         }
-        else {
-            var scale = 1;
-            if (naturalWidth > availableWidth) {
-                scale = availableWidth / naturalWidth;
-            }
-            mainboardall.style.transform = "scale(".concat(scale, ")");
-            mainboardall.style.transformOrigin = "top center";
-            // Set container height to scaled height so content below doesn't overlap
-            mainboardall.style.height = "".concat(naturalHeight * scale, "px");
-        }
-    };
-    GameXBody.prototype.toggleBoardRotation = function () {
-        this.setBoardRotated(!this.boardRotated);
-    };
-    GameXBody.prototype.setBoardRotated = function (x) {
-        if (x) {
-            this.setBoardLayout("scale");
-        }
-        this.boardRotated = x;
-        localStorage.setItem("wayfarers_board_rotated", String(this.boardRotated));
-        this.applyBoardRotation();
-    };
-    GameXBody.prototype.applyBoardRotation = function () {
-        var _a, _b;
-        var mainboardall = $("mainboardall");
-        var mainarea = $("mainarea");
-        if (this.boardRotated) {
-            mainboardall.classList.add("rotated");
-            mainarea.classList.add("rotated_container");
-            (_a = $("layout_rotate")) === null || _a === void 0 ? void 0 : _a.classList.add("active");
-            // For rotated content, we need to adjust positioning
-            // After 90deg clockwise rotation around top-left, the element goes upward
-            // We need to translate it down by its original width
-            this.updateRotatedLayout();
-        }
-        else {
-            mainboardall.classList.remove("rotated");
-            mainarea.classList.remove("rotated_container");
-            (_b = $("layout_rotate")) === null || _b === void 0 ? void 0 : _b.classList.remove("active");
-            mainboardall.style.transform = "";
-            mainboardall.style.transformOrigin = "";
-            mainboardall.style.width = "";
-            mainboardall.style.height = "";
-        }
-        // If in scale mode, recalculate with rotation
-        if (this.boardLayout === "scale") {
-            this.updateBoardScale();
-        }
-    };
-    GameXBody.prototype.updateRotatedLayout = function () {
-        if (!this.boardRotated)
-            return;
-        if (this.boardLayout === "scale")
-            return; // Scale mode handles its own transform
-        var mainboardall = $("mainboardall");
-        // Temporarily remove transform and force nowrap to measure natural dimensions
-        mainboardall.style.transform = "none";
-        mainboardall.style.width = "";
-        mainboardall.style.height = "";
-        mainboardall.style.whiteSpace = "nowrap";
-        var naturalWidth = mainboardall.scrollWidth;
-        var naturalHeight = mainboardall.scrollHeight;
-        // Reset whiteSpace - CSS classes will handle display
-        mainboardall.style.whiteSpace = "";
-        // After 90deg clockwise rotation:
-        // - Original width becomes new height
-        // - Original height becomes new width
-        // - Element rotates around top-left, so we need to translate it
-        // Set the container to have swapped dimensions
-        mainboardall.style.width = "".concat(naturalHeight, "px");
-        mainboardall.style.height = "".concat(naturalWidth, "px");
-        // Apply rotation with translation to keep it in view
-        // Rotate 90deg clockwise, then translate down by original width
-        mainboardall.style.transform = "rotate(90deg) translateY(-".concat(naturalWidth, "px)");
-        mainboardall.style.transformOrigin = "top left";
+        mainboardall.style.transform = "scale(".concat(scale, ")");
+        mainboardall.style.transformOrigin = "top center";
+        // Set container height to scaled height so content below doesn't overlap
+        mainboardall.style.height = "".concat(naturalHeight * scale, "px");
     };
     GameXBody.prototype.updateBanner = function () { };
     GameXBody.prototype.setupScoreSheet = function () {
@@ -2210,6 +2116,12 @@ var GameXBody = /** @class */ (function (_super) {
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
                         if (tokenInfo.dr)
                             tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+                        break;
+                    case "space":
+                        tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+                        if (tokenInfo.r)
+                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                        tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
                         break;
                     case "insp":
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));

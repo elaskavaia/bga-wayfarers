@@ -406,35 +406,13 @@ class Game extends Base {
         }
 
         // Single requirement
-        $count = $this->game->evaluateExpression($collect, $owner);
+        $count = $this->evaluateExpression($collect, $owner);
         return $count >= $required;
     }
 
-    /**
-     * Count collectibles of a given type for a player
-     * Used for inspiration card goal checking
-     */
-    function countCollectible(string $type, string $owner): int {
-        // Use existing evaluateTerm for tracker_, tag_, and inf_ types
-        if (str_starts_with($type, "tracker_") || str_starts_with($type, "tag_") || str_starts_with($type, "inf_")) {
-            return $this->evaluateTerm($type, $owner);
-        }
-
-        // Handle upg_ (upgrade tiles)
-        if (str_starts_with($type, "upg_")) {
-            $upgType = substr($type, 4); // Remove "upg_" prefix
-            $tokens = $this->tokens->getTokensOfTypeInLocation("upg_$upgType", "tableau_$owner");
-            return count($tokens);
-        }
-
-        // Handle card_ (card counts)
-        if (str_starts_with($type, "card_")) {
-            $cardType = substr($type, 5); // Remove "card_" prefix
-            $tokens = $this->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-            return count($tokens);
-        }
-
-        return 0;
+    function countVpForSpaceCard(string $card) {
+        // TODO proper calculation
+        return (int) $this->getRulesFor($card, "vp", 0);
     }
 
     /**
@@ -578,7 +556,7 @@ class Game extends Base {
             $inspCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
 
             foreach ($cards as $cardKey => $cardInfo) {
-                $vp = (int) $this->getRulesFor($cardKey, "vp", 0);
+                $vp = $this->countVpForSpaceCard($cardKey);
                 if (!$vp) {
                     continue;
                 }
@@ -667,6 +645,24 @@ class Game extends Base {
         }
         if (str_starts_with($x, "inf_")) {
             return $this->countGuildInfluence(getPart($x, 1), $owner);
+        }
+
+        if (str_starts_with($x, "win_")) {
+            // check if player has more Comet tags than all individual opponents
+            $tag = getPart($x, 1);
+            $tagCount = $this->countPlayerTags($tag, $owner);
+            $players = $this->loadPlayersBasicInfos();
+            foreach ($players as $player_id => $player) {
+                $color = $this->getPlayerColorById((int) $player_id);
+                if ($color === $owner) {
+                    continue;
+                }
+                $oppCount = $this->countPlayerTags($tag, $color);
+                if ($oppCount >= $tagCount) {
+                    return 0;
+                }
+            }
+            return 1;
         }
 
         // Handle upg_ (upgrade tiles)

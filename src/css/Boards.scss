@@ -428,3 +428,16 @@
 }
 
 // Combined: scale + rotated - JavaScript handles the combined transform
+
+#supply {
+  position: absolute;
+  top: 6%;
+  left: 28%;
+  width: 70%;
+  height: 20%;
+
+  & > * {
+    display: inline-block;
+    vertical-align: top;
+  }
+}

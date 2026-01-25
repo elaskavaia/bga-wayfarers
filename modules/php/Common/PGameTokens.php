@@ -210,8 +210,9 @@ class PGameTokens {
             if (strpos($token_id, "{INDEX}") === false) {
                 $count = 1;
             }
-            $location = array_get($info, "location", "limbo");
-            $state = array_get($info, "state", 0);
+            // location and state use recursive parent fallback
+            $location = $this->game->getRulesFor($id, "location", "limbo");
+            $state = $this->game->getRulesFor($id, "state", 0);
             $start = array_get($info, "start", 1);
             if (strpos($token_id, "{COLOR}") === false) {
                 $this->db->createTokensPack($token_id, $location, $count, $start, null, $state);

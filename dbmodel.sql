@@ -23,7 +23,7 @@ CREATE TABLE IF NOT EXISTS `token` (
   `token_location` varchar(64) NOT NULL,
   `token_state` int(10),
   PRIMARY KEY (`token_key`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE IF NOT EXISTS `machine` (
    `id` int(10) unsigned NOT NULL AUTO_INCREMENT,

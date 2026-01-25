@@ -612,7 +612,11 @@ class Game1Tokens extends Game0Basics {
 
     tokenInfo.tokenId = tokenId;
 
-    this.updateTokenDisplayInfo(tokenInfo);
+    try {
+      this.updateTokenDisplayInfo(tokenInfo);
+    } catch (e) {
+      console.error(`Failed to update token info for ${tokenId}`, e);
+    }
     this.tokenInfoCache[tokenId] = tokenInfo;
     //console.log("cached", tokenId);
     return tokenInfo;

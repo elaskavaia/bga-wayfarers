@@ -290,6 +290,28 @@ final class GameTest extends TestCase {
         }
     }
 
+    public function testAllSpaceCards() {
+        $this->game();
+        $token_types = $this->game->material->get();
+
+        foreach ($token_types as $key => $info) {
+            $this->assertTrue(!!$key);
+            if (!startsWith($key, "card_space_")) {
+                continue;
+            }
+            echo "testing card $key\n";
+            $r = $info["vpexp"] ?? "";
+            $this->assertTrue($r != "", "empty vpexp for $key");
+            $this->game->evaluateExpression((string) $r, PCOLOR);
+            $r = $info["r"] ?? "";
+            if ($r) {
+                $this->game->machine->instanciateOperation($r, PCOLOR);
+            }
+            $r = $info["tags"] ?? "";
+            $this->assertTrue($r != "", "empty tags for $key");
+        }
+    }
+
     public function testFolk() {
         $this->game();
         $token_types = $this->game->material->get();
@@ -486,5 +508,197 @@ final class GameTest extends TestCase {
         // Requires 2 ships, has 0 ships - should fail with 2 missing
         $missing = $this->game->getMissingAssetRequirements("ship,ship", ["ship" => 0]);
         $this->assertCount(2, $missing, "Should be missing 2 ships");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns false when collect field is empty
+     */
+    public function testIsInspirationGoalAchieved_EmptyCollect() {
+        $this->game();
+
+        // Create a mock card key
+        $cardKey = "card_insp_test_1";
+
+        // Mock material to return empty collect
+        $this->game->material->setRulesFor($cardKey, ["collect" => "", "goal" => 5]);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result, "Should return false when collect is empty");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns false when goal is 0
+     */
+    public function testIsInspirationGoalAchieved_ZeroGoal() {
+        $this->game();
+
+        $cardKey = "card_insp_test_2";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_City", "goal" => 0]);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result, "Should return false when goal is 0");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns false when goal is negative
+     */
+    public function testIsInspirationGoalAchieved_NegativeGoal() {
+        $this->game();
+
+        $cardKey = "card_insp_test_3";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_City", "goal" => -1]);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result, "Should return false when goal is negative");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns false when count is less than required
+     */
+    public function testIsInspirationGoalAchieved_CountLessThanRequired() {
+        $this->game();
+
+        $cardKey = "card_insp_test_4";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_City", "goal" => 5]);
+
+        // Add 2 City tags (less than 5)
+        $this->game->tokens->db->moveToken("card_land_1_1", "tableau_" . PCOLOR);
+        $this->game->material->setRulesFor("card_land_1_1", ["tags" => "City"]);
+        $this->game->tokens->db->moveToken("card_land_2_1", "tableau_" . PCOLOR);
+        $this->game->material->setRulesFor("card_land_2_1", ["tags" => "City"]);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result, "Should return false when count (2) is less than goal (5)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns true when count equals required
+     */
+    public function testIsInspirationGoalAchieved_CountEqualsRequired() {
+        $this->game();
+
+        $cardKey = "card_insp_test_5";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_Vista", "goal" => 3]);
+
+        // Add exactly 3 Vista tags
+        for ($i = 1; $i <= 3; $i++) {
+            $this->game->tokens->db->moveToken("card_land_vista_{$i}_1", "tableau_" . PCOLOR);
+            $this->game->material->setRulesFor("card_land_vista_{$i}_1", ["tags" => "Vista"]);
+        }
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when count (3) equals goal (3)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved returns true when count exceeds required
+     */
+    public function testIsInspirationGoalAchieved_CountExceedsRequired() {
+        $this->game();
+
+        $cardKey = "card_insp_test_6";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_Harbour", "goal" => 2]);
+
+        // Add 4 Harbour tags (more than 2)
+        for ($i = 1; $i <= 4; $i++) {
+            $this->game->tokens->db->moveToken("card_water_harbour_{$i}_1", "tableau_" . PCOLOR);
+            $this->game->material->setRulesFor("card_water_harbour_{$i}_1", ["tags" => "Harbour"]);
+        }
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when count (4) exceeds goal (2)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved with tracker expression
+     */
+    public function testIsInspirationGoalAchieved_TrackerExpression() {
+        $this->game();
+
+        $cardKey = "card_insp_test_7";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tracker_coin", "goal" => 5]);
+
+        // Set player's coin tracker to 6
+        $trackerId = $this->game->tokens->getTrackerId(PCOLOR, "coin");
+        $this->game->tokens->db->setTokenState($trackerId, 6);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when coin tracker (6) exceeds goal (5)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved with card count expression
+     */
+    public function testIsInspirationGoalAchieved_CardExpression() {
+        $this->game();
+
+        $cardKey = "card_insp_test_8";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "card_folk", "goal" => 3]);
+
+        // Add 2 folk cards (plus 1 pre-printed = 3 total)
+        $this->game->tokens->db->moveToken("card_folk_1_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_folk_2_1", "tableau_" . PCOLOR);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when folk count (3 with pre-printed) meets goal (3)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved with upgrade tile expression
+     */
+    public function testIsInspirationGoalAchieved_UpgradeTileExpression() {
+        $this->game();
+
+        $cardKey = "card_insp_test_9";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "upg_green", "goal" => 2]);
+
+        // Add 2 green upgrade tiles
+        $this->game->tokens->db->moveToken("upg_green_1_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("upg_green_2_1", "tableau_" . PCOLOR);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when green tile count (2) meets goal (2)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved edge case: goal is 1, count is 1
+     */
+    public function testIsInspirationGoalAchieved_MinimalGoal() {
+        $this->game();
+
+        $cardKey = "card_insp_test_10";
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_Water", "goal" => 1]);
+
+        // Add exactly 1 Water tag
+        $this->game->tokens->db->moveToken("card_water_1_1", "tableau_" . PCOLOR);
+        $this->game->material->setRulesFor("card_water_1_1", ["tags" => "Water"]);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result, "Should return true when count (1) meets minimal goal (1)");
+    }
+
+    /**
+     * Test isInspirationGoalAchieved edge case: goal is 1, count is 1
+     */
+    public function testIsInspirationGoalAchieved_9() {
+        $this->game();
+
+        $cardKey = "card_insp_9";
+
+        $this->game->tokens->db->moveToken("upg_green_1_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("upg_green_2_1", "tableau_" . PCOLOR);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result);
+
+        $this->game->tokens->db->moveToken("upg_black_2_1", "tableau_" . PCOLOR);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertFalse($result);
+
+        $this->game->tokens->db->moveToken("upg_black_3_1", "tableau_" . PCOLOR);
+
+        $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
+        $this->assertTrue($result);
     }
 }

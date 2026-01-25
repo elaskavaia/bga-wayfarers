@@ -5,6 +5,9 @@ namespace Bga\Games\wayfarers\OpCommon;
 
 use Exception;
 
+// MathExpression depends on OpLexer which is defined in OpExpression.php
+require_once __DIR__ . "/OpExpression.php";
+
 /** This can evaluate simple math expressions for purposes of pre-condition or achievements evaluation
  *
  */
@@ -30,14 +33,14 @@ class MathTerminalExpression extends MathExpression {
     public function evaluate($mapper) {
         $value = $this->left;
         if (is_numeric($value)) {
-            return $value;
+            return (int) $value;
         }
         if (!$value) {
             return 0;
         }
         $value = $mapper($value);
         if (is_numeric($value)) {
-            return $value;
+            return (int) $value;
         }
         if (!$value) {
             return 0;
@@ -157,6 +160,46 @@ class MathBinaryExpression extends MathExpression {
     }
 }
 
+class MathFunctionExpression extends MathExpression {
+    public $name;
+    public $args;
+
+    function __construct(string $name, array $args) {
+        $this->name = $name;
+        $this->args = $args;
+    }
+
+    public function __toString() {
+        $argStrings = array_map(function ($arg) {
+            return (string) $arg;
+        }, $this->args);
+        return sprintf("%s(%s)", $this->name, implode(",", $argStrings));
+    }
+
+    public function toArray() {
+        $argArrays = array_map(function ($arg) {
+            return $arg->toArray();
+        }, $this->args);
+        return [$this->name, ...$argArrays];
+    }
+
+    public function evaluate($mapper) {
+        $evaluatedArgs = array_map(function ($arg) use ($mapper) {
+            return $arg->evaluate($mapper);
+        }, $this->args);
+
+        switch ($this->name) {
+            case "min":
+                if (count($evaluatedArgs) < 2) {
+                    throw new Exception("min function requires at least 2 arguments");
+                }
+                return (int) min(...$evaluatedArgs);
+            default:
+                throw new Exception("Unknown function: {$this->name}");
+        }
+    }
+}
+
 class MathExpressionParser {
     private $tokens;
     private $lexer;
@@ -211,13 +254,42 @@ class MathExpressionParser {
         if ($tt != "T_IDENTIFIER" && $tt != "T_NUMBER") {
             throw new Exception("Unexpected token '$op' $tt");
         }
+
+        // Check if this is a function call
+        if ($tt == "T_IDENTIFIER" && $this->peek() == "(") {
+            $this->consume("(");
+            $args = $this->parseFunctionArgs();
+            $this->consume(")");
+            return new MathFunctionExpression($op, $args);
+        }
+
         return new MathTerminalExpression($op);
     }
-    function parseExpression() {
+
+    function parseFunctionArgs() {
+        $args = [];
+
+        // Handle empty argument list
+        if ($this->peek() == ")") {
+            return $args;
+        }
+
+        // Parse first argument (stop at comma)
+        $args[] = $this->parseExpression([","]);
+
+        // Parse remaining arguments separated by commas
+        while ($this->peek() == ",") {
+            $this->consume(",");
+            $args[] = $this->parseExpression([","]);
+        }
+
+        return $args;
+    }
+    function parseExpression($stopTokens = []) {
         $left = $this->parseTerm();
         $lookup = $this->peek();
 
-        if ($lookup === null || $lookup === ")") {
+        if ($lookup === null || $lookup === ")" || in_array($lookup, $stopTokens)) {
             return $left;
         }
         $op = $this->pop();

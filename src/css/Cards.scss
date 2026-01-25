@@ -346,7 +346,8 @@
 
   $col: $num % $cols;
   $row: calc(($num - $col) / $cols);
-  .card_space_#{$i} {
+  $sn: calc($i + 76);
+  .card_space_#{$sn} {
     background-position: calc($col * 100% / ($cols - 1)) calc($row * 100% / ($rows - 1));
   }
   $wn: calc($i + 38);

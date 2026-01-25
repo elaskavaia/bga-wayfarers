@@ -590,8 +590,9 @@ class Base extends Table {
         }
     }
 
-    function evaluateExpression($cond, $owner = 0, $context = null, $options = null): int {
+    function evaluateExpression(mixed $cond, $owner = 0, $context = null, $options = null): int {
         try {
+            $cond = (string) $cond;
             if (!$owner) {
                 $owner = $this->getActivePlayerColor();
             }
