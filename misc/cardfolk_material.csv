@@ -1,49 +1,49 @@
-num|cost|dr|tags|name|da
-#set rest=
+num|cost|dr|tags|nom|da|tooltip
+#set _tr=nom
 #set create=1
 #set id=card_folk_{num}
 #set ext=1
-114|1|(coin/food):(pickWorker,reroll)|Vista|Protector
-115|2|food:2coin|Observatory|Wanderer
+114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
+115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
 #set ext=
-116|1||Harbour|Adventurer|ship
-117|0||Observatory|Astronomer|telescope
-118|2|pickWorker/infCard|Vista|Champion
-121|2||Harbour|Envoy|camel,pigeon
-122|2||Harbour|Envoy|ship,pigeon
-123|2|coin|City|Farmer
-124|2|food|City|Farmer
-125|2|coin|Harbour|Fisherman
-126|2|food|Harbour|Fisherman
-130|0|2diceMod|Vista|Hunter
-131|2|ship,ship|Harbour|Invader
-132|2|pickWorker/infCard|City Harbour|Mercenary
-133|2|coin|Vista|Merchant
-134|2|coin|Vista|Merchant
-135|2|food|Vista|Merchant
-136|2|food|Vista|Merchant
-137|1||City Harbour|Messenger|pigeon
-138|1|infCard/infMove/diceMod|City Harbour|Rogue
-139|1|infBlue/infMove|City Harbour|Scholar
-140|1|infYellow/infMove|City Harbour|Scholar
-141|2|infBlack/infMove|Book Observatory|Scholar
-142|1|infBlue/infMove|Book Observatory|Scribe
-143|1|infYellow/infMove|Book Observatory|Scribe
-144|2|infBlack/infMove|Vista|Scribe
-145|2||City|Stargazer|telescope,camel
+116|1||Harbour|Adventurer|ship|Ship
+117|0||Observatory|Astronomer|telescope|Telescope
+118|2|pickWorker/infCard|Vista|Champion||Pick a Worker or Place Influence on a Card
+121|2||Harbour|Envoy|camel,pigeon|Camel and Pigeon
+122|2||Harbour|Envoy|ship,pigeon|Ship and Pigeon
+123|2|coin|City|Farmer||Gain Silver
+124|2|food|City|Farmer||Gain Provision
+125|2|coin|Harbour|Fisherman||Gain Silver
+126|2|food|Harbour|Fisherman||Gain Provision
+130|0|2diceMod|Vista|Hunter||Modify Dice by +/- 1 twice
+131|2|ship,ship|Harbour|Invader||Gain 2 Ships
+132|2|pickWorker/infCard|City Harbour|Mercenary||Pick a Worker or Place Influence on a Card
+133|2|coin|Vista|Merchant||Gain Silver
+134|2|coin|Vista|Merchant||Gain Silver
+135|2|food|Vista|Merchant||Gain Provision
+136|2|food|Vista|Merchant||Gain Provision
+137|1||City Harbour|Messenger|pigeon|Pigeon
+138|1|infCard/infMove/diceMod|City Harbour|Rogue||Place Influence on a Card or Move Influence or Modify Dice
+139|1|infBlue/infMove|City Harbour|Scholar||Place an Influence in Blue Guild or Move Influence
+140|1|infYellow/infMove|City Harbour|Scholar||Place an Influence in Yellow Guild or Move Influence
+141|2|infBlack/infMove|Book Observatory|Scholar||Place an Influence in Black Guild or Move Influence
+142|1|infBlue/infMove|Book Observatory|Scribe||Place an Influence in Blue Guild or Move Influence
+143|1|infYellow/infMove|Book Observatory|Scribe||Place an Influence in Yellow Guild or Move Influence
+144|2|infBlack/infMove|Vista|Scribe||Place an Influence in Black Guild or Move Influence
+145|2||City|Stargazer|telescope,camel|Telescope, Camel
 
-149|1||City|Vagrant|camel
-150|1|infCard/infMove/diceMod|Vista|Vigilante
+149|1||City|Vagrant|camel|Camel
+150|1|infCard/infMove/diceMod|Vista|Vigilante||Place Influence on a Card or Move Influence or Modify Dice
 
 
 #set rest=1
 
-119|1|infMove,food|Water|Enforcer
-120|1|infMove,food|Water|Enforcer
-127|3|food,coin|Water|Guardian
-128|3|2coin|Water|Guardian
-129|3|2food|Water|Guardian
-146|1|infBlue/infMove|Water|Translator
-147|1|infYellow/infMove|Water|Translator
-148|2|infBlack/infMove|Water|Translator
-151|0|pickWorker/infMove|Water|Warrior
+119|1|infMove,food|Water|Enforcer||Move Influence and Gain Provision
+120|1|infMove,food|Water|Enforcer||Move Influence and Gain Provision
+127|3|food,coin|Water|Guardian||Gain Provision and Gain Silver
+128|3|2coin|Water|Guardian||Gain 2 Silver
+129|3|2food|Water|Guardian||Gain 2 Provision
+146|1|infBlue/infMove|Water|Translator||Place an Influence in Blue Guild or Move Influence
+147|1|infYellow/infMove|Water|Translator||Place an Influence in Yellow Guild or Move Influence
+148|2|infBlack/infMove|Water|Translator||Place an Influence in Black Guild or Move Influence
+151|0|pickWorker/infMove|Water|Warrior||Pick a Worker or Move Influence

@@ -262,18 +262,6 @@ var Game0Basics = /** @class */ (function (_super) {
         //super.onScriptError(msg, url, linenumber);
         return this.inherited(arguments);
     };
-    Game0Basics.prototype.bgaFormatText = function (log, args) {
-        if (log && args && !args.processed) {
-            args.processed = true;
-            if (!args.player_id) {
-                args.player_id = this.bga.players.getActivePlayerId();
-            }
-            if (args.player_id && !args.player_name) {
-                args.player_name = this.gamedatas.players[args.player_id].name;
-            }
-        }
-        return { log: this.format_string_recursive(log, args), args: args };
-    };
     Game0Basics.prototype.divYou = function () {
         var color = "black";
         var color_bg = "";
@@ -292,11 +280,11 @@ var Game0Basics = /** @class */ (function (_super) {
             return null;
         if (name.log !== undefined) {
             var notif = name;
-            var log = this.bgaFormatText(notif.log, notif.args).log;
+            var log = this.format_string_recursive(notif.log, notif.args);
             return this.clienttranslate_string(log);
         }
         else {
-            var log = this.bgaFormatText(name, args).log;
+            var log = this.format_string_recursive(name, args);
             return this.clienttranslate_string(log);
         }
     };
@@ -1142,7 +1130,7 @@ var Game1Tokens = /** @class */ (function (_super) {
                 console.error(log, args, "Exception thrown", e.stack);
             }
         }
-        return _super.prototype.bgaFormatText.call(this, log, args);
+        return { log: log, args: args };
     };
     Game1Tokens.prototype.slideAndPlace = function (token, finalPlace, duration, delay, mobileStyle, onEnd) {
         var _a;
@@ -2080,7 +2068,7 @@ var GameXBody = /** @class */ (function (_super) {
         return gameui.bgaAnimationsActive() && !this.inSetup;
     };
     GameXBody.prototype.updateTokenDisplayInfo = function (tokenInfo) {
-        var _a, _b, _c, _d, _e;
+        var _a, _b, _c;
         // override to generate dynamic tooltips and such
         var mainType = tokenInfo.mainType;
         var token = $(tokenInfo.tokenId);
@@ -2095,9 +2083,11 @@ var GameXBody = /** @class */ (function (_super) {
                 var num = getPart(tokenId, 2);
                 if (!num)
                     return;
-                var name_2 = (_c = (_b = this.getTr(this.getRulesFor(tokenId, "name"))) !== null && _b !== void 0 ? _b : this.getTokenName("card_".concat(t))) !== null && _c !== void 0 ? _c : "?";
-                tokenInfo.name = this.getTr(_("Card ${name} #${num}"), { name: name_2, num: num });
-                (_d = tokenInfo.tooltip) !== null && _d !== void 0 ? _d : (tokenInfo.tooltip = "");
+                var tname = this.getTokenName("card_".concat(t));
+                var gname = this.getTr(tokenInfo.nom);
+                tokenInfo.name = gname ? "".concat(gname) : "".concat(tname, " #").concat(num);
+                var origtt = ((_b = tokenInfo.tooltip) !== null && _b !== void 0 ? _b : (tokenInfo.tooltip = ""));
+                tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                 switch (t) {
                     case "land":
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
@@ -2118,27 +2108,50 @@ var GameXBody = /** @class */ (function (_super) {
                             tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
                         break;
                     case "space":
+                        //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
                         tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
                         break;
+                    case "home":
+                        // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+                        if (tokenInfo.dr)
+                            tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+                        break;
+                    case "folk":
+                        tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+                        tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
+                        tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, " / "));
+                        if (tokenInfo.rest) {
+                            tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
+                        }
+                        else {
+                            if (tokenInfo.dr) {
+                                tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
+                            }
+                        }
+                        if (tokenInfo.da) {
+                            tokenInfo.tooltip += this.ttSection(_("Provided Assets"), this.getOpListTr(tokenInfo.da));
+                        }
+                        break;
                     case "insp":
+                        tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
-                        tokenInfo.tooltip += this.ttSection(undefined, _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
+                        tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
                         break;
                 }
                 return;
             }
             case "upg": {
                 //num|t|r|r2|tags|vp
-                var num = (_e = getPart(tokenId, 2)) !== null && _e !== void 0 ? _e : "";
+                var num = (_c = getPart(tokenId, 2)) !== null && _c !== void 0 ? _c : "";
                 if (!num)
                     return;
                 var color = getPart(tokenId, 1);
-                var name_3 = this.getTokenName("upg_".concat(color));
+                var name_2 = this.getTokenName("upg_".concat(color));
                 tokenInfo.name = this.getTr(_("${name} #${num}"), {
-                    name: name_3,
+                    name: name_2,
                     num: num
                 });
                 tokenInfo.tooltip = "";
@@ -2156,8 +2169,11 @@ var GameXBody = /** @class */ (function (_super) {
         else
             return "<p>".concat(text, "</p>");
     };
-    GameXBody.prototype.getTagsListTr = function (tags) {
+    GameXBody.prototype.getTagsListTr = function (tags, sep) {
         var _a;
+        if (sep === void 0) { sep = ", "; }
+        if (!tags)
+            return "";
         // get translated tags
         var tagList = tags.split(/[, \/]/);
         var trTags = [];
@@ -2167,7 +2183,21 @@ var GameXBody = /** @class */ (function (_super) {
                 continue;
             trTags.push((_a = this.getTr(this.getRulesFor("tag_".concat(tag), "name"))) !== null && _a !== void 0 ? _a : tag);
         }
-        return trTags.join(", ");
+        return trTags.join(sep);
+    };
+    GameXBody.prototype.getOpListTr = function (tags, sep) {
+        var _a;
+        if (sep === void 0) { sep = ", "; }
+        // get translated ops
+        var tagList = tags.split(/[, \/]/);
+        var trTags = [];
+        for (var _i = 0, tagList_2 = tagList; _i < tagList_2.length; _i++) {
+            var tag = tagList_2[_i];
+            if (!tag)
+                continue;
+            trTags.push((_a = this.getTr(this.getRulesFor("Op_".concat(tag), "name"))) !== null && _a !== void 0 ? _a : tag);
+        }
+        return trTags.join(sep);
     };
     GameXBody.prototype.getColorName = function (color) {
         switch (color) {
@@ -2243,7 +2273,7 @@ var GameXBody = /** @class */ (function (_super) {
     /** @Override */
     GameXBody.prototype.bgaFormatText = function (log, args) {
         try {
-            if (log && args && !args.processed) {
+            if (log && args && !args.processed && log.includes("$")) {
                 args.processed = true;
                 if (!args.player_id) {
                     args.player_id = this.bga.players.getActivePlayerId();

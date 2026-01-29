@@ -1,10 +1,13 @@
 Server
 
 - Split tag scoring
-- Caravan placement bonus
+- Caravan discount assets
 - Caravan different boards per player
-- Space cards
-- Inspiration cards
+- bonus did not ask to move inf
 - Journal
 - Journal bonus tiles
-- Anytime guild actions
+
+Client
+
+- Game end trigger banner
+- Styling of scoring page

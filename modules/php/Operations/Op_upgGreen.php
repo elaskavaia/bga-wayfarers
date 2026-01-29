@@ -22,7 +22,7 @@ class Op_upgGreen extends Op_upgBase {
         return "green";
     }
 
-    function getPaymentOperation(string $card) {
+    function getPaymentOperation(?string $card = null) {
         return "2n_coin";
     }
     function getTileWidth(): int {

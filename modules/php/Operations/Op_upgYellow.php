@@ -21,7 +21,7 @@ class Op_upgYellow extends Op_upgBase {
     function getTileType(): string {
         return "yellow";
     }
-    function getPaymentOperation(string $card) {
+    function getPaymentOperation(?string $card = null) {
         return "3n_coin/2n_infYellow";
     }
 

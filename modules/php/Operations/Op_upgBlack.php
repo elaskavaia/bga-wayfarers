@@ -22,7 +22,7 @@ class Op_upgBlack extends Op_upgBase {
         return "black";
     }
 
-    function getPaymentOperation(string $card) {
+    function getPaymentOperation(?string $card = null) {
         return "3n_coin/2n_infBlack";
     }
 

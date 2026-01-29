@@ -166,7 +166,7 @@ class Op_placeDie extends Operation {
             $selectedDie,
             $cardId,
             $dieValue,
-            clienttranslate('${player_name} places die ${new_state} onto ${token_name}'),
+            clienttranslate('${player_name} places Die ${new_state} onto ${place_name}'),
             [],
             $this->getPlayerId()
         );

@@ -232,19 +232,6 @@ class Game0Basics extends GameGui<any> {
     return this.inherited(arguments);
   }
 
-  bgaFormatText(log: string, args: any) {
-    if (log && args && !args.processed) {
-      args.processed = true;
-
-      if (!args.player_id) {
-        args.player_id = this.bga.players.getActivePlayerId();
-      }
-      if (args.player_id && !args.player_name) {
-        args.player_name = this.gamedatas.players[args.player_id].name;
-      }
-    }
-    return { log: this.format_string_recursive(log, args), args };
-  }
   divYou() {
     var color = "black";
     var color_bg = "";
@@ -263,10 +250,10 @@ class Game0Basics extends GameGui<any> {
 
     if ((name as any).log !== undefined) {
       const notif = name as NotificationMessage;
-      const { log } = this.bgaFormatText(notif.log, notif.args);
+      const log = this.format_string_recursive(notif.log, notif.args);
       return this.clienttranslate_string(log);
     } else {
-      const { log } = this.bgaFormatText(name as string, args);
+      const log = this.format_string_recursive(name as string, args);
       return this.clienttranslate_string(log);
     }
   }

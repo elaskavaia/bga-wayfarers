@@ -42,7 +42,7 @@ class Op_pickWorker extends Operation {
         return $this->getAvailableWorkers();
     }
     public function getUiArgs() {
-        return ["replicate" => true];
+        return ["imagebuttons" => true];
     }
     public function canSkip() {
         return true;

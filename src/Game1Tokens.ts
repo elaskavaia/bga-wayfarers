@@ -681,7 +681,7 @@ class Game1Tokens extends Game0Basics {
       }
     }
 
-    return super.bgaFormatText(log, args);
+    return { log, args };
   }
 
   async slideAndPlace(

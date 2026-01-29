@@ -176,6 +176,16 @@ abstract class Op_upgBase extends Operation {
         }
     }
 
+    public function getExtraArgs() {
+        $payop = $this->getPaymentOperation($this->getSelectedTile());
+
+        if ($payop) {
+            $op = $this->game->machine->instanciateOperation($payop, $this->getOwner());
+            return ["payop" => $payop, "payop_name" => $op->getOpName()] + parent::getExtraArgs();
+        }
+        return ["payop" => "?", "payop_name" => "?"] + parent::getExtraArgs();
+    }
+
     /**
      * Check if this tile type is double-sided (yellow and blue are double-sided)
      */
@@ -203,7 +213,7 @@ abstract class Op_upgBase extends Operation {
         return implode("_", $parts);
     }
 
-    function getPaymentOperation(string $card) {
+    function getPaymentOperation(?string $card = null) {
         return "3n_coin";
     }
 
@@ -290,5 +300,10 @@ abstract class Op_upgBase extends Operation {
             return clienttranslate("Select an upgrade tile to buy");
         }
         return clienttranslate("Select where to place the tile in your caravan");
+    }
+
+    public function getSubTitle() {
+        $payop_name = $this->getArgs()["payop_name"];
+        return $payop_name;
     }
 }

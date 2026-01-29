@@ -82,6 +82,7 @@
   & > * {
     display: inline-block;
     vertical-align: top;
+    margin-right: 5px;
   }
 }
 .infsupply {
@@ -94,9 +95,6 @@
   }
   & > * {
     position: absolute;
-  }
-  & > *:not(:last-child) {
-    visibility: hidden;
   }
 
   counter-reset: item-counter; /* Initialize the counter on the parent */

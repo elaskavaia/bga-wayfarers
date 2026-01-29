@@ -160,6 +160,35 @@ class MathBinaryExpression extends MathExpression {
     }
 }
 
+class MathTernaryExpression extends MathExpression {
+    public $condition;
+    public $consequent;
+    public $alternate;
+
+    function __construct($condition, $consequent, $alternate) {
+        $this->condition = $condition;
+        $this->consequent = $consequent;
+        $this->alternate = $alternate;
+    }
+
+    public function __toString() {
+        return sprintf("(%s ? %s : %s)", $this->condition, $this->consequent, $this->alternate);
+    }
+
+    public function toArray() {
+        return ["?:", $this->condition->toArray(), $this->consequent->toArray(), $this->alternate->toArray()];
+    }
+
+    public function evaluate($mapper) {
+        $conditionValue = $this->condition->evaluate($mapper);
+        if ($conditionValue) {
+            return $this->consequent->evaluate($mapper);
+        } else {
+            return $this->alternate->evaluate($mapper);
+        }
+    }
+}
+
 class MathFunctionExpression extends MathExpression {
     public $name;
     public $args;
@@ -292,13 +321,35 @@ class MathExpressionParser {
         if ($lookup === null || $lookup === ")" || in_array($lookup, $stopTokens)) {
             return $left;
         }
+
+        // Check for ternary operator
+        if ($lookup === "?") {
+            return $this->parseTernary($left, $stopTokens);
+        }
+
         $op = $this->pop();
         $tt = $this->lexer->getTerminalName($op);
         if ($tt == "T_IDENTIFIER" || $tt == "T_NUMBER") {
             throw new Exception("Unexpected token $op");
         }
         $right = $this->parseTerm();
-        return new MathBinaryExpression($op, $left, $right);
+        $result = new MathBinaryExpression($op, $left, $right);
+
+        // Check for ternary operator after binary expression
+        $lookup = $this->peek();
+        if ($lookup === "?") {
+            return $this->parseTernary($result, $stopTokens);
+        }
+
+        return $result;
+    }
+
+    function parseTernary($condition, $stopTokens = []) {
+        $this->consume("?");
+        $consequent = $this->parseExpression(array_merge($stopTokens, [":"]));
+        $this->consume(":");
+        $alternate = $this->parseExpression($stopTokens);
+        return new MathTernaryExpression($condition, $consequent, $alternate);
     }
 }
 

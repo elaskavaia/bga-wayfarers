@@ -4,8 +4,8 @@ num|r|d|dr|tags|trig|tor|todr
 #set _tr=tor
 #set _tr=todr
 # Row 1-3: City (1-18)
-1|infYellow|camel|upgYellow/2infYellow|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
-2|infYellow|camel|upgYellow/2infYellow|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
+1|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
+2|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
 3|upgGreen(free)|camel|upgGreen,food|City||Acquire a free Basic upgrade|Acquire a Basic upgrade and gain 1 Provision
 4|infAny|camel|upgGreen,infAny|City||Gain Influence on any guild|Acquire a Basic upgrade and gain Influence on any guild
 5|pickWorker|camel|2n_food:cardLand,pickWorker|City||Pick a Worker|Pay 2 Provisions to acquire a Land card, then pick a Worker
@@ -14,8 +14,8 @@ num|r|d|dr|tags|trig|tor|todr
 8|infCard|camel|cardFolk,infCard|City||Gain Influence on any card|Acquire a Townsfolk card and gain Influence on any card
 9||telescope,camel|cardSpace,infBlue|City Observatory||Acquire a Space card and gain Blue influence
 10||telescope,camel|cardSpace,infYellow|City Observatory|||Acquire a Space card and gain Yellow influence
-11||telescope,camel|upgBlack/2infBlack|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
-12||telescope,camel|upgBlack/2infBlack|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
+11||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
+12||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
 13||telescope,camel|cardSpace,infBlack|City Observatory|||Acquire a Space card and gain Black influence
 14||telescope,camel|cardSpace(dis)|City Observatory|||Acquire a discounted Space card
 15|infAny|camel|cardFolk,journal|City Book||Gain Influence on any guild|Acquire a Townsfolk card and gain Journal
@@ -23,7 +23,7 @@ num|r|d|dr|tags|trig|tor|todr
 17||pigeon|infBlue,journal|City Book|||Gain Blue influence and Journal
 18||telescope,pigeon|infBlack,journal|City Book Observatory|||Gain Black influence and Journal
 # Row 4-6: Vista (19-37)
-19|2infCard||infCard|Vista|Stars|Gain 2 Influence on any card|Gain Influence on any card
+19|infCard,infCard||infCard|Vista|Stars|Gain 2 Influence on any card|Gain Influence on any card
 20|coin||food|Vista|Stars|Gain 1 Silver|Gain 1 Provision
 21|coin||coin|Vista|Sea|Gain 1 Silver|Gain 1 Silver
 22|infBlue||infBlue/infMove|Vista|Sea|Gain Blue influence|Gain Blue influence or move Influence

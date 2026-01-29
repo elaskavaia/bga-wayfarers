@@ -15,11 +15,31 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Game;
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_journal extends Operation {
     function getPossibleMoves() {
-        return ["confirm"];
+        $owner = $this->getOwner();
+        $markerId = "marker_$owner";
+        $currentState = (int) $this->game->tokens->db->getTokenState($markerId);
+        $conn = $this->game->getRulesFor("jpos_$currentState", "conn", "");
+
+        $res = [];
+        if ($conn === "") {
+            return $res;
+        }
+
+        $positions = explode(",", (string) $conn);
+        foreach ($positions as $pos) {
+            $pos = trim($pos);
+            $res["jpos_$pos"] = ["q" => Material::RET_OK, "name" => $pos];
+        }
+        return $res;
+    }
+
+    public function getPrompt() {
+        return clienttranslate("Select a journal position to move to");
     }
 
     /** User does the action */
@@ -27,18 +47,18 @@ class Op_journal extends Operation {
         $owner = $this->getOwner();
         $markerId = "marker_$owner";
 
-        // Get current position on Journal Track
-        $currentState = $this->game->tokens->db->getTokenState($markerId);
-
-        $newState = $currentState + 3;
+        // Get user selected position (e.g., "jpos_15")
+        $selected = $this->getCheckedArg();
+        $newState = (int) str_replace("jpos_", "", $selected);
 
         // Update marker state
         $this->game->tokens->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [
             "num" => $newState,
         ]);
 
-        // Check if end game is triggered (reaching position 30)
-        if ($newState >= 30) {
+        // Check if end game is triggered (terminal position with no connections)
+        $conn = $this->game->getRulesFor("jpos_$newState", "conn", "");
+        if ($conn === "") {
             $this->triggerEndGame();
         }
     }

@@ -55,12 +55,12 @@ dicePlus|Modify Dice by +1
 diceMinus|Modify Dice by -1
 
 #set class=Op_gain
-food|Gain Provisions
+food|Gain Provision
 coin|Gain Silver
 
 
 #set class=Op_pay
-n_food|Pay Provisions
+n_food|Pay Provision
 n_coin|Pay Silver
 
 #set class=

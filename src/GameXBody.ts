@@ -422,11 +422,12 @@ class GameXBody extends GameMachine {
         const num = getPart(tokenId, 2);
         if (!num) return;
 
-        const name = this.getTr(this.getRulesFor(tokenId, "name")) ?? this.getTokenName(`card_${t}`) ?? "?";
+        const tname = this.getTokenName(`card_${t}`);
+        const gname = this.getTr(tokenInfo.nom);
 
-        tokenInfo.name = this.getTr(_("Card ${name} #${num}"), { name, num });
-        tokenInfo.tooltip ??= "";
-
+        tokenInfo.name = gname ? `${gname}` : `${tname} #${num}`;
+        const origtt = (tokenInfo.tooltip ??= "");
+        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
         switch (t) {
           case "land":
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
@@ -444,18 +445,42 @@ class GameXBody extends GameMachine {
             break;
 
           case "space":
+            //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
             break;
+
+          case "home":
+            // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+            if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+            break;
+
+          case "folk":
+            tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+            tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
+            tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
+            if (tokenInfo.rest) {
+              tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
+            } else {
+              if (tokenInfo.dr) {
+                tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
+              }
+            }
+            if (tokenInfo.da) {
+              tokenInfo.tooltip += this.ttSection(_("Provided Assets"), this.getOpListTr(tokenInfo.da));
+            }
+
+            break;
           case "insp":
+            tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
             tokenInfo.tooltip += this.ttSection(
               undefined,
               _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring")
             );
 
             tokenInfo.tooltip += this.ttSection(
-              undefined,
+              _("Instant"),
               _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to")
             );
 
@@ -487,7 +512,8 @@ class GameXBody extends GameMachine {
     else return `<p>${text}</p>`;
   }
 
-  getTagsListTr(tags: string) {
+  getTagsListTr(tags: string, sep: string = ", ") {
+    if (!tags) return "";
     // get translated tags
     const tagList = tags.split(/[, \/]/);
     const trTags: string[] = [];
@@ -495,7 +521,18 @@ class GameXBody extends GameMachine {
       if (!tag) continue;
       trTags.push(this.getTr(this.getRulesFor(`tag_${tag}`, "name")) ?? tag);
     }
-    return trTags.join(", ");
+    return trTags.join(sep);
+  }
+
+  getOpListTr(tags: string, sep: string = ", ") {
+    // get translated ops
+    const tagList = tags.split(/[, \/]/);
+    const trTags: string[] = [];
+    for (const tag of tagList) {
+      if (!tag) continue;
+      trTags.push(this.getTr(this.getRulesFor(`Op_${tag}`, "name")) ?? tag);
+    }
+    return trTags.join(sep);
   }
 
   getColorName(color: string) {
@@ -557,7 +594,7 @@ class GameXBody extends GameMachine {
   /** @Override */
   bgaFormatText(log: string, args: any) {
     try {
-      if (log && args && !args.processed) {
+      if (log && args && !args.processed && log.includes("$")) {
         args.processed = true;
 
         if (!args.player_id) {

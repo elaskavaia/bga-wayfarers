@@ -278,11 +278,20 @@ class Game extends Base {
     function effect_incVp(string $owner, int $inc, string $stat = "", string $target = "") {
         $player_id = $this->getPlayerIdByColor($owner);
 
-        if ($inc < 0) {
-            $message = clienttranslate('${player_name} loses ${absInc} VP ${reason}');
+        if ($target) {
+            if ($inc < 0) {
+                $message = clienttranslate('${player_name} loses ${absInc} VP for ${token_name} ${reason}');
+            } else {
+                // if 0 print gain 0
+                $message = clienttranslate('${player_name} gains ${absInc} VP for ${token_name} ${reason}');
+            }
         } else {
-            // if 0 print gain 0
-            $message = clienttranslate('${player_name} gains ${absInc} VP ${reason}');
+            if ($inc < 0) {
+                $message = clienttranslate('${player_name} loses ${absInc} VP ${reason}');
+            } else {
+                // if 0 print gain 0
+                $message = clienttranslate('${player_name} gains ${absInc} VP ${reason}');
+            }
         }
 
         $this->playerScore->inc(
@@ -291,6 +300,7 @@ class Game extends Base {
             new NotificationMessage($message, [
                 "reason" => $stat,
                 "target" => $target,
+                "token_name" => $target,
             ])
         );
 
@@ -314,7 +324,13 @@ class Game extends Base {
         if (!$default) {
             $default = "$token_id ?";
         }
-        return $this->material->getRulesFor($token_id, "name", $default);
+        $name = $this->material->getRulesFor($token_id, "nom", null);
+        if ($name) {
+            return $name;
+        }
+        $name = $this->material->getRulesFor($token_id, "name", $default);
+
+        return $name;
     }
 
     function getTrackerIdAndValue(?string $color, string $type, ?array &$arr = null) {
@@ -410,9 +426,9 @@ class Game extends Base {
         return $count >= $required;
     }
 
-    function countVpForSpaceCard(string $card) {
-        // TODO proper calculation
-        return (int) $this->getRulesFor($card, "vp", 0);
+    function countVpForSpaceCard(string $card, string $owner) {
+        $vpexp = $this->getRulesFor($card, "vpexp", 0);
+        return $this->evaluateExpression($vpexp, $owner);
     }
 
     /**
@@ -556,12 +572,12 @@ class Game extends Base {
             $inspCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
 
             foreach ($cards as $cardKey => $cardInfo) {
-                $vp = $this->countVpForSpaceCard($cardKey);
+                $vp = $this->countVpForSpaceCard($cardKey, $color);
+
+                $this->effect_incVp($color, $vp, "game_vp_space", $cardKey);
                 if (!$vp) {
                     continue;
                 }
-                $this->effect_incVp($color, $vp, "game_vp_space", $cardKey);
-
                 // Check if there's a tucked inspiration card at the same position
                 $spacePos = (int) $cardInfo["state"];
                 foreach ($inspCards as $inspKey => $inspInfo) {
