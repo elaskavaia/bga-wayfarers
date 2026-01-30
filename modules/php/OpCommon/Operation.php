@@ -371,12 +371,12 @@ abstract class Operation {
         $movesInfo = $this->getPossibleMoves();
         $this->extractPossibleMoves($res, $movesInfo);
         $res = array_merge($res, $this->getExtraArgs());
-        $res["descriptionOnMyTurn"] = $this->getPrompt();
         $res["description"] = $this->getDescription();
-        $res["subtitle"] = $this->getSubTitle();
+        $res["prompt"] ??= $this->getPrompt();
+        $res["subtitle"] ??= $this->getSubTitle();
 
         if ($this->canSkip()) {
-            $res["info"]["skip"] = $this->getSkipArgs();
+            $res["info"]["skip"] ??= $this->getSkipArgs();
         }
 
         $res["ui"] = $this->getUiArgs();
@@ -425,6 +425,13 @@ abstract class Operation {
             if ($target == "err") {
                 // top level error
                 $error = $info;
+                unset($details[$target]);
+                continue;
+            }
+
+            if ($target == "prompt") {
+                // top level prompt skips
+                $res["prompt"] = $info;
                 unset($details[$target]);
                 continue;
             }
@@ -530,8 +537,7 @@ abstract class Operation {
     function getDescription() {
         return "";
     }
-
-    public function getSubTitle() {
+    function getSubTitle() {
         return "";
     }
 

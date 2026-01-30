@@ -191,14 +191,6 @@ class Op_placeDie extends Op_acquireBase {
         $this->queue($r, $owner, ["die" => $selectedDie], $cardId);
     }
 
-    public function getTuckedFolk(string $card) {
-        $owner = $this->getOwner();
-        $cardState = (int) $this->game->tokens->db->getTokenState($card);
-        $folkCards = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "tableau_$owner", $cardState);
-        $folkCard = array_key_first($folkCards);
-        return $folkCard;
-    }
-
     public function getExtraArgs() {
         $dieValue = $this->getDieValue();
         return parent::getExtraArgs() + ["token_div" => "die_$dieValue"];

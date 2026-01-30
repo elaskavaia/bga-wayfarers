@@ -46,7 +46,7 @@ class DbMachine {
     }
 
     function gettablearr() {
-        $arr = $this->game->getCollectionFromDB("SELECT * from machine WHERE rank >= 0 ORDER BY rank ASC");
+        $arr = $this->game->getCollectionFromDB("SELECT * from machine WHERE `rank` >= 0 ORDER BY `rank` ASC");
         return array_values($arr);
     }
 
@@ -122,7 +122,7 @@ class DbMachine {
             $andowner = " AND owner = '$owner'";
         }
 
-        $sql = "SELECT $min FROM machine WHERE rank > 0 $andowner $andpool";
+        $sql = "SELECT $min FROM machine WHERE `rank` > 0 $andowner $andpool";
         $res = $this->game->getUniqueValueFromDB($sql);
         if ($res) {
             return (int) $res;
@@ -140,24 +140,24 @@ class DbMachine {
      */
     function hide($list) {
         $ids = $this->getIdsWhereExpr($list);
-        $this->game->DbQuery("UPDATE machine SET rank = rank - 1 WHERE rank < 0");
-        $sql = "UPDATE machine SET rank = -1 WHERE $ids";
+        $this->game->DbQuery("UPDATE machine SET `rank` = `rank` - 1 WHERE `rank` < 0");
+        $sql = "UPDATE machine SET `rank` = -1 WHERE $ids";
         $this->game->DbQuery($sql);
     }
 
     function renice($list, $rank) {
         $ids = $this->getIdsWhereExpr($list);
-        $this->game->DbQuery("UPDATE machine SET rank = $rank WHERE $ids");
+        $this->game->DbQuery("UPDATE machine SET `rank` = $rank WHERE $ids");
     }
 
     function interrupt(int $from = 0, int $count = 1) {
-        $this->game->DbQuery("UPDATE machine SET rank = rank + $count WHERE rank >= $from");
+        $this->game->DbQuery("UPDATE machine SET `rank` = `rank` + $count WHERE `rank` >= $from");
     }
 
     function normalize() {
         $top = $this->getTopRank();
         if ($top > 1) {
-            $this->game->DbQuery("UPDATE machine SET rank = rank - $top + 1 WHERE rank >= $top");
+            $this->game->DbQuery("UPDATE machine SET `rank` = `rank` - $top + 1 WHERE `rank` >= $top");
         }
     }
 
@@ -224,7 +224,7 @@ class DbMachine {
         if ($owner !== null) {
             $andowner = " AND owner = '$owner'";
         }
-        return $this->game->getCollectionFromDB("SELECT * from machine WHERE rank = $rank $andowner");
+        return $this->game->getCollectionFromDB("SELECT * from machine WHERE `rank` = $rank $andowner");
     }
 
     function getOperations($owner = null, $type = null) {
@@ -237,7 +237,7 @@ class DbMachine {
             $andtype = " AND type = '$type'";
         }
 
-        return $this->game->getCollectionFromDB("SELECT * from machine WHERE rank >= 0 $andowner $andtype ORDER BY rank ASC");
+        return $this->game->getCollectionFromDB("SELECT * from machine WHERE `rank` >= 0 $andowner $andtype ORDER BY `rank` ASC");
     }
 
     function getHistoricalOperations($owner = null, $type = null) {
@@ -250,7 +250,7 @@ class DbMachine {
             $andtype = " AND type = '$type'";
         }
 
-        return $this->game->getCollectionFromDB("SELECT * from machine WHERE rank < 0 $andowner $andtype ORDER BY rank ASC");
+        return $this->game->getCollectionFromDB("SELECT * from machine WHERE `rank` < 0 $andowner $andtype ORDER BY `rank` ASC");
     }
 
     function createRow($type, $owner = null, $data = null) {

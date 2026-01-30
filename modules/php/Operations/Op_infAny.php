@@ -107,13 +107,9 @@ class Op_infAny extends Op_infBase {
         $selectedGuild = $this->getGuild();
 
         if ($selectedGuild === "") {
-            return clienttranslate("Select a guild to place influence on");
+            return clienttranslate("Select one guild to place influence on");
         }
 
-        $influence = $this->getInfluenceInPlayerSupply();
-        if (count($influence) > 0) {
-            return clienttranslate("Confirm to place influence");
-        }
-        return clienttranslate("No influence left in supply. Select influence to move or Skip");
+        return parent::getPrompt();
     }
 }

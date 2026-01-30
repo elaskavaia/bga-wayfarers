@@ -5,33 +5,13 @@ namespace Bga\Games\wayfarers\Tests;
 
 use Bga\GameFramework\NotificationMessage;
 use Bga\GameFramework\Notify;
-use Bga\Games\wayfarers\OpCommon\OpExpression;
+use Bga\Games\wayfarers\Common\PGameTokens;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\Operation;
-use Bga\Games\wayfarers\Common\PGameTokens;
-use Bga\Games\wayfarers\OpCommon\ComplexOperation;
-use Bga\Games\wayfarers\Operations\Op_or;
-use Bga\Games\wayfarers\Operations\Op_paygain;
-use Bga\Games\wayfarers\Operations\Op_seq;
-use Bga\Games\wayfarers\Operations\Op_cotag;
-use Bga\Games\wayfarers\Operations\Op_craft;
-use Bga\Games\wayfarers\Operations\Op_pay;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
-use Bga\Games\wayfarers\Operations\Op_barrier;
-use Bga\Games\wayfarers\Operations\Op_furnish;
-use Bga\Games\wayfarers\Operations\Op_furnishPay;
-use Bga\Games\wayfarers\Operations\Op_task;
-use Bga\Games\wayfarers\Operations\Op_turn;
-use Bga\Games\wayfarers\Operations\Op_turnall;
-use Bga\Games\wayfarers\Operations\Op_turnpick;
 use Bga\Games\wayfarers\StateConstants;
 use Bga\Games\wayfarers\States\GameDispatch;
-use Bga\Games\wayfarers\States\GameDispatchForced;
-use Bga\Games\wayfarers\States\MachineHalted;
-use Bga\Games\wayfarers\States\MultiPlayerMaster;
-use Bga\Games\wayfarers\States\PlayerTurn;
-use Bga\Games\wayfarers\Tests\MachineInMem;
-use Bga\Games\wayfarers\Tests\TokensInMem;
+use BgaVisibleSystemException;
 use PHPUnit\Framework\TestCase;
 
 use function Bga\Games\wayfarers\array_get;
@@ -700,5 +680,69 @@ final class GameTest extends TestCase {
 
         $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
         $this->assertTrue($result);
+    }
+
+    public function testTriggeredVistaAbilities() {
+        // Setup: Place a Vista card in player's tableau
+        // card_land_20: trig="Stars", dr="food", tags="Vista"
+        $vistaCard = "card_land_20_1";
+        $this->game->tokens->db->moveToken($vistaCard, "tableau_" . PCOLOR, -2);
+
+        // Setup: Tuck a folk card under the Vista card (same state in tableau)
+        // card_folk_133: dr="coin", tags="Vista", cost=2
+        $folkCard = "card_folk_133_1";
+        $this->game->tokens->db->moveToken($folkCard, "tableau_" . PCOLOR, -2);
+
+        // Test 1: getVistaTriggeredRules finds trigger when a Stars-tagged card is played
+        // card_space_91 has tags="Stars" in material
+        $starsCard = "card_space_91_1";
+        $triggers = $this->game->getVistaTriggeredRules($starsCard, PCOLOR);
+        $this->assertArrayHasKey($vistaCard, $triggers, "Vista card should trigger on Stars tag");
+        $this->assertEquals("food", $triggers[$vistaCard], "Vista dr should be 'food'");
+
+        // Test 2: Non-matching tag does NOT trigger
+        // card_land_1 has tags="City" — should not match trig="Stars"
+        $triggers = $this->game->getVistaTriggeredRules("card_land_1_1", PCOLOR);
+        $this->assertEmpty($triggers, "City tag should not trigger Stars Vista");
+
+        // Test 3: Implicit CardFolk tag triggers matching Vista card
+        // card_land_31: trig="CardFolk", dr="diceMod,infMove"
+        $folkVistaCard = "card_land_31_1";
+        $this->game->tokens->db->moveToken($folkVistaCard, "tableau_" . PCOLOR, -3);
+        $playedFolk = "card_folk_100_1";
+        $triggers = $this->game->getVistaTriggeredRules($playedFolk, PCOLOR);
+        $this->assertArrayHasKey($folkVistaCard, $triggers, "CardFolk Vista should trigger on folk card");
+
+        // Test 4: Implicit UpgradeAny tag triggers matching Vista card
+        // card_land_37: trig="UpgradeAny", dr="food"
+        $upgVistaCard = "card_land_37_1";
+        $this->game->tokens->db->moveToken($upgVistaCard, "tableau_" . PCOLOR, -4);
+        $playedUpg = "upg_green_1_1";
+        $triggers = $this->game->getVistaTriggeredRules($playedUpg, PCOLOR);
+        $this->assertArrayHasKey($upgVistaCard, $triggers, "UpgradeAny Vista should trigger on upgrade tile");
+
+        // Test 5: Vista card does not trigger itself
+        $newVistaCard = "card_land_25_1"; // trig="Vista", tags="Vista"
+        $this->game->tokens->db->moveToken($newVistaCard, "tableau_" . PCOLOR, -5);
+        $triggers = $this->game->getVistaTriggeredRules($newVistaCard, PCOLOR);
+        $this->assertArrayNotHasKey($newVistaCard, $triggers, "Vista card should not trigger itself");
+
+        // Test 6: queueVistaTriggers queues both Vista dr and tucked folk dr
+        /** @var \Bga\Games\wayfarers\Operations\Op_cardLand */
+        $op = $this->game->machine->instanciateOperation("cardLand", PCOLOR);
+        $op->queueVistaTriggers($starsCard);
+
+        $ops = $this->game->machine->db->getOperations();
+        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
+
+        // Vista card_land_20 dr="food" should be queued
+        $this->assertContains("food", $opTypes, "Vista card's dr (food) should be queued");
+        // Tucked folk card_folk_133 dr="coin" should be queued
+        $this->assertContains("coin", $opTypes, "Tucked folk card's dr (coin) should be queued");
+
+        // Folk trigger should be queued before Vista trigger (folk first)
+        $folkIdx = array_search("coin", $opTypes);
+        $vistaIdx = array_search("food", $opTypes);
+        $this->assertLessThan($vistaIdx, $folkIdx, "Folk card trigger should be queued before Vista trigger");
     }
 }

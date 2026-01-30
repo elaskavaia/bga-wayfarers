@@ -44,48 +44,22 @@ class Op_infCard extends Op_infBase {
         return $res;
     }
 
-    /**
-     * Get movable influence (from guilds or other cards, excluding target card)
-     */
-    function getMovableInfluenceForCard(string $targetCard): array {
-        $movable = $this->getMovableInfluence("card_any");
-        unset($movable[$targetCard]);
-        return $movable;
-    }
-
     function getPossibleMoves() {
         $selectedCard = $this->getGuild();
-        $influence = $this->getInfluenceInPlayerSupply();
 
         if ($selectedCard === "") {
             // Step 1: Select which card to place influence on
             $availableCards = $this->getAvailableCards();
 
-            // Check if player has any influence available
-            $movableForAny = $this->getMovableInfluence("card_any");
-            if (count($influence) == 0 && count($movableForAny) == 0) {
-                return ["q" => Material::ERR_NONE_LEFT];
-            }
-
             if (count($availableCards) == 0) {
                 return ["q" => Material::ERR_NONE_LEFT];
             }
 
-            return $availableCards;
+            return ["prompt" => clienttranslate("Select a card to place influence on")] + $availableCards;
         }
 
         // Step 2: Card selected, now place or select influence to move
-        if (count($influence) > 0) {
-            return ["confirm"];
-        }
-
-        // No influence in supply - show movable influence
-        $movable = $this->getMovableInfluenceForCard($selectedCard);
-        if (count($movable) == 0) {
-            return ["q" => Material::ERR_NONE_LEFT];
-        }
-
-        return $movable;
+        return parent::getPossibleMoves();
     }
 
     function canSkip() {
@@ -108,40 +82,6 @@ class Op_infCard extends Op_infBase {
         }
 
         // Step 2: Place or move influence
-        $influence = $this->getInfluenceInPlayerSupply();
-
-        if (count($influence) > 0) {
-            // Place from supply
-            $influenceKey = array_key_first($influence);
-            $this->game->tokens->dbSetTokenLocation(
-                $influenceKey,
-                $selectedCard,
-                0,
-                clienttranslate('${player_name} places ${token_name} on ${place_name}')
-            );
-        } else {
-            // Move from another location
-            $influenceKey = $this->getCheckedArg();
-            $this->game->tokens->dbSetTokenLocation(
-                $influenceKey,
-                $selectedCard,
-                0,
-                clienttranslate('${player_name} moves ${token_name} to ${place_name}')
-            );
-        }
-    }
-
-    function getPrompt() {
-        $selectedCard = $this->getGuild();
-
-        if ($selectedCard === "") {
-            return clienttranslate("Select a card to place influence on");
-        }
-
-        $influence = $this->getInfluenceInPlayerSupply();
-        if (count($influence) > 0) {
-            return clienttranslate("Confirm to place influence on card");
-        }
-        return clienttranslate("No influence left in supply. Select influence to move or Skip");
+        parent::resolve();
     }
 }

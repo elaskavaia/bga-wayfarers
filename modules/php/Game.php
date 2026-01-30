@@ -379,6 +379,49 @@ class Game extends Base {
     }
 
     /**
+     * Check if any Vista cards in the player's tableau are triggered by a newly played item.
+     * Vista cards have a "trig" field that matches tags on incoming cards/upgrades.
+     * @return array - [vistaCardKey => drRule] pairs for each triggered vista card
+     */
+    function getVistaTriggeredRules(string $playedItem, string $owner): array {
+        $tags = $this->getTagsSet($playedItem);
+
+        // Add implicit tags based on token type
+        if (str_starts_with($playedItem, "card_folk")) {
+            $tags["CardFolk"] = 1;
+        }
+        if (str_starts_with($playedItem, "upg_")) {
+            $tags["UpgradeAny"] = 1;
+        }
+
+        $results = [];
+        $cards = $this->tokens->getTokensOfTypeInLocation("card_land", "tableau_$owner");
+        foreach ($cards as $cardKey => $cardInfo) {
+            if ($cardKey === $playedItem) {
+                continue;
+            } // Don't trigger self
+
+            $trig = $this->getRulesFor($cardKey, "trig", "");
+            if (!$trig) {
+                continue;
+            }
+
+            // trig can be "Planet/Sun/Moon" meaning OR
+            $trigParts = explode("/", $trig);
+            foreach ($trigParts as $trigTag) {
+                if (isset($tags[trim($trigTag)])) {
+                    $dr = $this->getRulesFor($cardKey, "dr", "");
+                    if ($dr) {
+                        $results[$cardKey] = $dr;
+                    }
+                    break;
+                }
+            }
+        }
+        return $results;
+    }
+
+    /**
      * Get VP for primary tag count based on scoring table
      * 2 tags = 2 VP, 3 = 4 VP, 4 = 7 VP, 5 = 10 VP, 6 = 13 VP, 7+ = 16 VP
      */
@@ -841,6 +884,8 @@ class Game extends Base {
         $this->DbQuery("DELETE FROM token");
         $this->DbQuery("DELETE FROM machine");
         $this->DbQuery("DELETE FROM multiundo");
+        $this->DbQuery("DELETE FROM `stats`");
+        $this->DbQuery("DELETE FROM `gamelog`");
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
         $this->setupGameTables();
         //$newGameDatas = $this->getAllTableDatas(); // this is framework function

@@ -216,16 +216,12 @@ abstract class Op_upgBase extends Op_acquireBase {
         return implode("_", $parts);
     }
 
-    function getPaymentOperation(?string $card = null) {
+    function getPaymentOperation(?string $card = null): string {
         $c = max(0, 3 - $this->getCoinDiscount());
         if ($c <= 0) {
             return "nop";
         }
         return "{$c}n_coin";
-    }
-
-    function isFree() {
-        return $this->getParam(0) == "free" || $this->getPaymentOperation() == "nop";
     }
 
     /** User does the action */
@@ -267,6 +263,9 @@ abstract class Op_upgBase extends Op_acquireBase {
             $reverseTile = $this->getReverseSideTileKey($selectedTile);
             $this->game->tokens->db->moveToken($reverseTile, "limbo", 0);
         }
+
+        // Check if any Vista cards are triggered by this upgrade tile
+        $this->queueVistaTriggers($selectedTile);
 
         $bonus = $this->getBonus($posValue);
         if ($bonus) {

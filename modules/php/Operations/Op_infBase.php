@@ -33,27 +33,28 @@ abstract class Op_infBase extends Operation {
      */
     function getMovableInfluence(?string $targetGuild = null): array {
         $owner = $this->getOwner();
-        if ($targetGuild === null) {
-            $targetGuild = $this->getGuild();
-        }
         $movable = [];
 
-        // Check other guilds
-        foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
-            if ($guild === $targetGuild) {
+        $inf = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}");
+        foreach ($inf as $tokenId => $info) {
+            $place = $info["location"];
+            if ($place === $targetGuild) {
                 continue;
             }
-            $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
-            foreach ($tokens as $tokenId => $info) {
-                $movable[$tokenId] = ["q" => Material::RET_OK, "from" => $guild];
-            }
+            $movable[$tokenId] = ["q" => Material::RET_OK, "place_from" => $place];
         }
+        return $movable;
 
-        // Check cards in mainarea (influence placed on cards)
-        $cardsWithInfluence = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", "card_%", true);
-        foreach ($cardsWithInfluence as $tokenId => $info) {
-            $movable[$tokenId] = ["q" => Material::RET_OK, "from" => $info["location"]];
-        }
+        // Check other guilds
+        // foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
+        //     if ($guild === $targetGuild) {
+        //         continue;
+        //     }
+        //     $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
+        //     foreach ($tokens as $tokenId => $info) {
+        //         $movable[$tokenId] = ["q" => Material::RET_OK, "from" => $guild];
+        //     }
+        // }
 
         return $movable;
     }
@@ -68,19 +69,23 @@ abstract class Op_infBase extends Operation {
 
         // No influence in supply - check for movable influence
         $movable = $this->getMovableInfluence();
-        if (count($movable) == 0) {
-            return ["q" => Material::ERR_NONE_LEFT];
-        }
+        return ["prompt" => clienttranslate("No influence left in supply. Select influence to move or Skip")] + $movable;
+    }
+    public function getUiArgs() {
+        return ["buttons" => false];
+    }
 
-        return $movable;
+    function getPrompt() {
+        return clienttranslate("Confirm to place influence");
     }
 
     function resolve(): void {
         $guild = $this->getGuild();
-        $influence = $this->getInfluenceInPlayerSupply();
+        $influenceKey = $this->getCheckedArg();
 
-        if (count($influence) > 0) {
+        if ($influenceKey == "confirm") {
             // Place from supply
+            $influence = $this->getInfluenceInPlayerSupply();
             $influenceKey = array_key_first($influence);
             $this->game->tokens->dbSetTokenLocation(
                 $influenceKey,
@@ -90,7 +95,7 @@ abstract class Op_infBase extends Operation {
             );
         } else {
             // Move from another location
-            $influenceKey = $this->getCheckedArg();
+
             $this->game->tokens->dbSetTokenLocation(
                 $influenceKey,
                 $guild,
@@ -108,14 +113,5 @@ abstract class Op_infBase extends Operation {
             return false;
         }
         return true;
-    }
-
-    function getPrompt() {
-        $influence = $this->getInfluenceInPlayerSupply();
-
-        if (count($influence) > 0) {
-            return clienttranslate("Confirm to place influence");
-        }
-        return clienttranslate("No influence left in supply. Select influence to move or Skip");
     }
 }

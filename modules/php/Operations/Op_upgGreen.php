@@ -22,7 +22,7 @@ class Op_upgGreen extends Op_upgBase {
         return "green";
     }
 
-    function getPaymentOperation(?string $card = null) {
+    function getPaymentOperation(?string $card = null): string {
         $c = max(0, 2 - $this->getCoinDiscount());
         return "{$c}n_coin";
     }

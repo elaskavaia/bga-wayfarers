@@ -15,7 +15,7 @@ num|cost|dr|tags|nom|da|tooltip
 124|2|food|City|Farmer||Gain Provision
 125|2|coin|Harbour|Fisherman||Gain Silver
 126|2|food|Harbour|Fisherman||Gain Provision
-130|0|2diceMod|Vista|Hunter||Modify Dice by +/- 1 twice
+130|0|2diceMod|Vista|Hunter||Modify Dice twice
 131|2|ship,ship|Harbour|Invader||Gain 2 Ships
 132|2|pickWorker/infCard|City Harbour|Mercenary||Pick a Worker or Place Influence on a Card
 133|2|coin|Vista|Merchant||Gain Silver

@@ -1274,10 +1274,13 @@ var GameMachine = /** @class */ (function (_super) {
         }
         this.completeOpInfo(opInfo);
         this.opInfo = opInfo;
-        if (opInfo.descriptionOnMyTurn) {
-            this.statusBar.setTitle(this.getTr(opInfo.descriptionOnMyTurn, opInfo));
+        if (opInfo.prompt) {
+            this.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
         }
-        this.setSubPrompt(opInfo.subtitle, opInfo);
+        if (opInfo.subtitle)
+            this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
+        else
+            this.setSubPrompt(this.getReasonText(opInfo.data.reason));
         if (opInfo.err) {
             var button = this.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), function () { }, {
                 color: "alert",
@@ -1409,6 +1412,9 @@ var GameMachine = /** @class */ (function (_super) {
         clone.classList.remove(this.classActiveSlot);
         clone.classList.add(this.classActiveSlotHidden);
         return clone;
+    };
+    GameMachine.prototype.getReasonText = function (reason) {
+        return _("Reason:") + " " + this.getTokenName(reason);
     };
     GameMachine.prototype.getTargetButtonName = function (target, paramInfo) {
         var _a;
@@ -1746,6 +1752,9 @@ var GameXBody = /** @class */ (function (_super) {
             }
             _super.prototype.setupGame.call(this, gamedatas);
             $("mainboard_3").appendChild($("supply"));
+            this.addListenerWithGuard($("guild_black"), function (e) { return _this.onToken(e); });
+            this.addListenerWithGuard($("guild_yellow"), function (e) { return _this.onToken(e); });
+            this.addListenerWithGuard($("guild_blue"), function (e) { return _this.onToken(e); });
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
@@ -2034,13 +2043,17 @@ var GameXBody = /** @class */ (function (_super) {
         else if (tokenId.startsWith("dice") && location.startsWith("card")) {
             result.onClick = function (x) { return _this.onToken(x); };
         }
-        else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
-            var color = getPart(location, 1);
-            result.location = "infsupply_".concat(color);
-        }
-        else if (tokenId.startsWith("inf") && location.startsWith("guild")) {
-            var color = getPart(tokenId, 1);
-            result.location = "".concat(location, "_").concat(color);
+        else if (tokenId.startsWith("inf")) {
+            // influence
+            result.onClick = function (x) { return _this.onToken(x); };
+            if (location.startsWith("tableau")) {
+                var color = getPart(location, 1);
+                result.location = "infsupply_".concat(color);
+            }
+            else if (location.startsWith("guild")) {
+                var color = getPart(tokenId, 1);
+                result.location = "".concat(location, "_").concat(color);
+            }
         }
         else if (tokenId.startsWith("upg")) {
             if (location.startsWith("tableau")) {

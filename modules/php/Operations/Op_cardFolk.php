@@ -87,7 +87,7 @@ class Op_cardFolk extends Op_cardBase {
         return (int) $this->game->getRulesFor("$card", "cost", 5);
     }
 
-    public function getPaymentOperation(string $card) {
+    public function getPaymentOperation(?string $card = null): string {
         $cost = max(0, $this->getCost($card) - $this->getCoinDiscount());
         return "{$cost}n_coin";
     }

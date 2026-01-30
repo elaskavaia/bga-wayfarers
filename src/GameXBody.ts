@@ -69,6 +69,9 @@ class GameXBody extends GameMachine {
 
       super.setupGame(gamedatas);
       $("mainboard_3").appendChild($("supply"));
+      this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
+      this.addListenerWithGuard($("guild_yellow"), (e) => this.onToken(e));
+      this.addListenerWithGuard($("guild_blue"), (e) => this.onToken(e));
 
       this.setupNotifications();
       this.setupScoreSheet();
@@ -375,12 +378,16 @@ class GameXBody extends GameMachine {
       result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("dice") && location.startsWith("card")) {
       result.onClick = (x) => this.onToken(x);
-    } else if (tokenId.startsWith("inf") && location.startsWith("tableau")) {
-      const color = getPart(location, 1);
-      result.location = `infsupply_${color}`;
-    } else if (tokenId.startsWith("inf") && location.startsWith("guild")) {
-      const color = getPart(tokenId, 1);
-      result.location = `${location}_${color}`;
+    } else if (tokenId.startsWith("inf")) {
+      // influence
+      result.onClick = (x) => this.onToken(x);
+      if (location.startsWith("tableau")) {
+        const color = getPart(location, 1);
+        result.location = `infsupply_${color}`;
+      } else if (location.startsWith("guild")) {
+        const color = getPart(tokenId, 1);
+        result.location = `${location}_${color}`;
+      }
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1

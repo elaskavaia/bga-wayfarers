@@ -23,7 +23,7 @@ class Op_upgPink extends Op_upgBase {
         return "pink";
     }
 
-    function getPaymentOperation(?string $card = null) {
+    function getPaymentOperation(?string $card = null): string {
         return "nop";
     }
 

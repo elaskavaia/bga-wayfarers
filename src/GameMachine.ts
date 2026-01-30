@@ -45,7 +45,7 @@ interface OpInfo {
 
   confirm?: boolean; // require confirmation before sending to server
   description?: string; // for other players
-  descriptionOnMyTurn?: string | NotificationMessage; // prompt when op is single/active
+  prompt?: string | NotificationMessage; // prompt when op is single/active
   subtitle?: string; // sub prompt when op is single/active (rended small subtext)
 
   err?: string | NotificationMessage; // error string or notification object XXX
@@ -73,10 +73,11 @@ class GameMachine extends Game1Tokens {
     }
     this.completeOpInfo(opInfo);
     this.opInfo = opInfo;
-    if (opInfo.descriptionOnMyTurn) {
-      this.statusBar.setTitle(this.getTr(opInfo.descriptionOnMyTurn, opInfo));
+    if (opInfo.prompt) {
+      this.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
     }
-    this.setSubPrompt(opInfo.subtitle, opInfo);
+    if (opInfo.subtitle) this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
+    else this.setSubPrompt(this.getReasonText(opInfo.data.reason));
     if (opInfo.err) {
       const button = this.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), () => {}, {
         color: "alert",
@@ -213,6 +214,10 @@ class GameMachine extends Game1Tokens {
     clone.classList.add(this.classActiveSlotHidden);
 
     return clone;
+  }
+
+  getReasonText(reason: string) {
+    return _("Reason:") + " " + this.getTokenName(reason);
   }
   getTargetButtonName(target: string, paramInfo: ParamInfo) {
     const div = $(target);

@@ -122,17 +122,11 @@ class Op_or extends ComplexOperation {
 
     function getPrompt() {
         if ($this->getCount() > 1) {
-            return clienttranslate('Choose one of the options ${name} (count: ${count})');
+            return clienttranslate('Choose one of the options (count: ${count})');
         }
-        return clienttranslate('Choose one of the options ${name}');
+        return clienttranslate("Choose one of the options");
     }
 
-    public function getSubTitle() {
-        if ($this->getReason()) {
-            return $this->game->getTokenName($this->getReason());
-        }
-        return "";
-    }
     function getDescription() {
         return clienttranslate('${actplayer} chooses one of the options');
     }

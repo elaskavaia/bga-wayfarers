@@ -21,7 +21,7 @@ class Op_upgYellow extends Op_upgBase {
     function getTileType(): string {
         return "yellow";
     }
-    function getPaymentOperation(?string $card = null) {
+    function getPaymentOperation(?string $card = null): string {
         $c = max(0, 3 - $this->getCoinDiscount());
         return "{$c}n_coin/2n_infYellow";
     }

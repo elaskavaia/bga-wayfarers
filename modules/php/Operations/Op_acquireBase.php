@@ -24,6 +24,7 @@ abstract class Op_acquireBase extends Operation {
     function getDie() {
         return $this->getDataField("die", null);
     }
+
     /**
      * Get the die value
      */
@@ -32,6 +33,21 @@ abstract class Op_acquireBase extends Operation {
             return 0;
         }
         return (int) $this->game->tokens->db->getTokenState($this->getDie());
+    }
+
+    function canAfford(string $op): bool {
+        if (!$op || $op == "nop") {
+            return true;
+        }
+        return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
+    }
+
+    function isFree(): bool {
+        return $this->getParam(0) == "free";
+    }
+
+    function getPaymentOperation(?string $card = null): string {
+        return "nop";
     }
 
     /**
@@ -58,6 +74,35 @@ abstract class Op_acquireBase extends Operation {
         $owner = $this->getOwner();
         $caravanAssets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
         return $caravanAssets["foodDis"] ?? 0;
+    }
+
+    /**
+     * Get the folk card tucked under a given card (same state in tableau)
+     */
+    function getTuckedFolk(string $card): ?string {
+        $owner = $this->getOwner();
+        $cardState = (int) $this->game->tokens->db->getTokenState($card);
+        $folkCards = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "tableau_$owner", $cardState);
+        return array_key_first($folkCards);
+    }
+
+    /**
+     * Queue triggered Vista card abilities for a newly played card/upgrade.
+     * Also triggers the folk card tucked under the Vista card if present.
+     */
+    function queueVistaTriggers(string $playedItem): void {
+        $owner = $this->getOwner();
+        $triggers = $this->game->getVistaTriggeredRules($playedItem, $owner);
+        foreach ($triggers as $vistaCard => $dr) {
+            $this->notifyMessage(clienttranslate('${player_name} triggers Vista ability of ${token_name}'), ["token_name" => $vistaCard]);
+            // Trigger folk card tucked under this Vista card
+            $folkCard = $this->getTuckedFolk($vistaCard);
+            if ($folkCard) {
+                $folkRule = $this->game->getRulesFor($folkCard, "dr", "abort");
+                $this->queue($folkRule, $owner, [], $folkCard);
+            }
+            $this->queue($dr, $owner, [], $vistaCard);
+        }
     }
 
     /**

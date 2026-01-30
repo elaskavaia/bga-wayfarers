@@ -22,22 +22,12 @@ abstract class Op_cardBase extends Op_acquireBase {
         return Operation::TTYPE_TOKEN;
     }
 
-    function canAfford(string $op) {
-        if (!$op || $op == "nop") {
-            return true;
-        }
-        return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
-    }
     public function getCard() {
         return $this->getDataField("card", null);
     }
     function getCardType() {
         return "home";
     }
-    function isFree() {
-        return $this->getParam(0) == "free";
-    }
-
     /**
      * Check if pigeon is available as a leftover asset from die placement
      */
@@ -85,17 +75,13 @@ abstract class Op_cardBase extends Op_acquireBase {
             if ($this->isFree()) {
                 $payop = "";
             }
-            $children = $info["children"];
+            //$children = $info["children"];
             // XXX mark influence on the card?
             $can = $this->canAfford($payop);
             $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop];
         }
 
         return $res;
-    }
-
-    function getPaymentOperation(string $card) {
-        return "nop";
     }
 
     function placeCard($card) {
@@ -127,12 +113,14 @@ abstract class Op_cardBase extends Op_acquireBase {
         $this->queue("cardInteract", $owner, ["card" => $card]);
 
         $this->placeCard($card);
-
         // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
-            $this->queue($r, $owner, ["card" => $card], $card);
+            $this->queue($r, $owner, ["card" => $card], $this->getOpId());
         }
+        // Check if any Vista cards are triggered by this card
+        $this->queueVistaTriggers($card);
+
         $this->queue("drawTab", $owner, ["card" => $card]);
         return;
     }
