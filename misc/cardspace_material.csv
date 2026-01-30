@@ -25,9 +25,9 @@ num|r|vpexp|tags|tor|tovp|nom
 94||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
 95||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
 96|cardInsp|card_insp|Stars|Acquire Inspiration Card|1 VP per Inspiration card|Muse's Light
-97|infBlack,infMove|1+inf_black/2|Stars|Place an Influence in Black Guild, then move any influence|1 VP + 1 VP per 2 influence on Black Guild|Shadow Guide
-98|infBlue,infMove|1+inf_blue/2|Stars|Place an Influence in Blue Guild, then move any influence|1 VP + 1 VP per 2 influence on Blue Guild|Tide Navigator
-99|infYellow,infMove|1+inf_yellow/2|Stars|Place an Influence in Yellow Guild, then move any influence|1 VP + 1 VP per 2 influence on Yellow Guild|Path Finder
+97|infBlack,infMove|1+(inf_black/2)|Stars|Place an Influence in Black Guild, then move any influence|1 VP + 1 VP per 2 influence on Black Guild|Shadow Guide
+98|infBlue,infMove|1+(inf_blue/2)|Stars|Place an Influence in Blue Guild, then move any influence|1 VP + 1 VP per 2 influence on Blue Guild|Tide Navigator
+99|infYellow,infMove|1+(inf_yellow/2)|Stars|Place an Influence in Yellow Guild, then move any influence|1 VP + 1 VP per 2 influence on Yellow Guild|Path Finder
 100|food|1+tag_Book|Stars|Gain Provision|1 VP + 1 VP per Book tag|Scholar's Star
 101|food|1+tag_Observatory|Stars|Gain Provision|1 VP + 1 VP per Observatory tag|Observer's Eye
 102||tag_Sea|Stars||1 VP per Open Water tag|Ocean Star

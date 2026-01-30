@@ -1414,6 +1414,8 @@ var GameMachine = /** @class */ (function (_super) {
         return clone;
     };
     GameMachine.prototype.getReasonText = function (reason) {
+        if (!reason)
+            return "";
         return _("Reason:") + " " + this.getTokenName(reason);
     };
     GameMachine.prototype.getTargetButtonName = function (target, paramInfo) {

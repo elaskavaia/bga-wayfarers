@@ -745,4 +745,141 @@ final class GameTest extends TestCase {
         $vistaIdx = array_search("food", $opTypes);
         $this->assertLessThan($vistaIdx, $folkIdx, "Folk card trigger should be queued before Vista trigger");
     }
+
+    /**
+     * Test countVpForSpaceCard with simple tag count: tag_City
+     * card_space_92: vpexp="tag_City" — 1 VP per City tag
+     */
+    public function testCountVpForSpaceCard_TagCount() {
+        // No City tags → 0 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_92", PCOLOR);
+        $this->assertEquals(0, $vp);
+
+        // Add 3 City-tagged cards (card_land_1..3 have tags="City")
+        $this->game->tokens->db->moveToken("card_land_1_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_land_2_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_land_3_1", "tableau_" . PCOLOR);
+
+        $vp = $this->game->countVpForSpaceCard("card_space_92", PCOLOR);
+        $this->assertEquals(3, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with constant + tag: 1+tag_Planet
+     * card_space_86: vpexp="1+tag_Planet" — 1 VP + 1 VP per Planet tag
+     */
+    public function testCountVpForSpaceCard_ConstPlusTag() {
+        // No Planet tags → 1 VP (constant only)
+        $vp = $this->game->countVpForSpaceCard("card_space_86", PCOLOR);
+        $this->assertEquals(1, $vp);
+
+        // Place the card itself (has Planet tag) + another Planet card
+        $this->game->tokens->db->moveToken("card_space_86_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_space_87_1", "tableau_" . PCOLOR);
+
+        // 1 + 2 Planet tags = 3 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_86", PCOLOR);
+        $this->assertEquals(3, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with min function: min(tag_Planet,tag_Comet,tag_Stars)*3
+     * card_space_91: vpexp="min(tag_Planet,tag_Comet,tag_Stars)*3" — 3 VP per complete set
+     */
+    public function testCountVpForSpaceCard_MinSets() {
+        // No tags → 0 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_91", PCOLOR);
+        $this->assertEquals(0, $vp);
+
+        // 2 Planet, 1 Comet, 3 Stars → min(2,1,3) * 3 = 3 VP
+        $this->game->tokens->db->moveToken("card_space_86_1", "tableau_" . PCOLOR); // Planet
+        $this->game->tokens->db->moveToken("card_space_87_1", "tableau_" . PCOLOR); // Planet
+        $this->game->tokens->db->moveToken("card_space_77_1", "tableau_" . PCOLOR); // Comet
+        $this->game->tokens->db->moveToken("card_space_91_1", "tableau_" . PCOLOR); // Stars
+        $this->game->tokens->db->moveToken("card_space_92_1", "tableau_" . PCOLOR); // Stars
+        $this->game->tokens->db->moveToken("card_space_93_1", "tableau_" . PCOLOR); // Stars
+
+        $vp = $this->game->countVpForSpaceCard("card_space_91", PCOLOR);
+        $this->assertEquals(3, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with win condition: win_Comet?4:3
+     * card_space_77: vpexp="win_Comet?4:3" — 4 VP if more Comet tags than all opponents, else 3
+     */
+    public function testCountVpForSpaceCard_WinCondition() {
+        // No Comet tags for either player → tied at 0, so lose condition → 3 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_77", PCOLOR);
+        $this->assertEquals(3, $vp);
+
+        // Give PCOLOR 2 Comets, opponent 0 → win → 4 VP
+        $this->game->tokens->db->moveToken("card_space_77_1", "tableau_" . PCOLOR); // Comet
+        $this->game->tokens->db->moveToken("card_space_78_1", "tableau_" . PCOLOR); // Comet
+
+        $vp = $this->game->countVpForSpaceCard("card_space_77", PCOLOR);
+        $this->assertEquals(4, $vp);
+
+        // Give opponent 2 Comets too (need 2 separate cards — duplicate tags on one card count as 1)
+        $this->game->tokens->db->moveToken("card_space_79_1", "tableau_" . BCOLOR); // Comet
+        $this->game->tokens->db->moveToken("card_space_80_1", "tableau_" . BCOLOR); // Comet
+        // Tied at 2 each → lose → 3 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_77", PCOLOR);
+        $this->assertEquals(3, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with tag existence ternary: tag_Sun?7:3
+     * card_space_85 (Moon): vpexp="tag_Sun?7:3" — 7 VP if Sun tag present, else 3
+     */
+    public function testCountVpForSpaceCard_TagTernary() {
+        // No Sun tag → 3 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_85", PCOLOR);
+        $this->assertEquals(3, $vp);
+
+        // Place a Sun card (card_space_112 has tags="Sun")
+        $this->game->tokens->db->moveToken("card_space_112_1", "tableau_" . PCOLOR);
+
+        // Has Sun tag → 7 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_85", PCOLOR);
+        $this->assertEquals(7, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with influence: 1+(inf_black/2)
+     * card_space_97: vpexp="1+(inf_black/2)" — 1 VP + 1 VP per 2 black influence
+     */
+    public function testCountVpForSpaceCard_Influence() {
+        // No influence → 1 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_97", PCOLOR);
+        $this->assertEquals(1, $vp);
+
+        // Place 5 influence tokens in black guild
+        // evaluateTerm extracts "black" from "inf_black", so location is "black"
+        for ($i = 1; $i <= 5; $i++) {
+            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_{$i}", "black");
+        }
+
+        // 1 + (5/2) = 1 + 2 = 3 VP (integer division)
+        $vp = $this->game->countVpForSpaceCard("card_space_97", PCOLOR);
+        $this->assertEquals(3, $vp);
+    }
+
+    /**
+     * Test countVpForSpaceCard with upgrade tile count: 1+upg_green
+     * card_space_108: vpexp="1+upg_green" — 1 VP + 1 VP per Basic upgrade tile
+     */
+    public function testCountVpForSpaceCard_UpgradeTiles() {
+        // No upgrade tiles → 1 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_108", PCOLOR);
+        $this->assertEquals(1, $vp);
+
+        // Place 3 green upgrade tiles
+        $this->game->tokens->db->moveToken("upg_green_31_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("upg_green_32_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("upg_green_33_1", "tableau_" . PCOLOR);
+
+        // 1 + 3 = 4 VP
+        $vp = $this->game->countVpForSpaceCard("card_space_108", PCOLOR);
+        $this->assertEquals(4, $vp);
+    }
 }

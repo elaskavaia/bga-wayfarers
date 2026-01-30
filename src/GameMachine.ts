@@ -217,6 +217,7 @@ class GameMachine extends Game1Tokens {
   }
 
   getReasonText(reason: string) {
+    if (!reason) return "";
     return _("Reason:") + " " + this.getTokenName(reason);
   }
   getTargetButtonName(target: string, paramInfo: ParamInfo) {

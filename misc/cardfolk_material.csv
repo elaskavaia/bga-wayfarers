@@ -38,12 +38,12 @@ num|cost|dr|tags|nom|da|tooltip
 
 #set rest=1
 
-119|1|infMove,food|Water|Enforcer||Move Influence and Gain Provision
-120|1|infMove,food|Water|Enforcer||Move Influence and Gain Provision
-127|3|food,coin|Water|Guardian||Gain Provision and Gain Silver
-128|3|2coin|Water|Guardian||Gain 2 Silver
-129|3|2food|Water|Guardian||Gain 2 Provision
-146|1|infBlue/infMove|Water|Translator||Place an Influence in Blue Guild or Move Influence
-147|1|infYellow/infMove|Water|Translator||Place an Influence in Yellow Guild or Move Influence
-148|2|infBlack/infMove|Water|Translator||Place an Influence in Black Guild or Move Influence
-151|0|pickWorker/infMove|Water|Warrior||Pick a Worker or Move Influence
+119|1|infMove,food|Sea|Enforcer||Move Influence and Gain Provision
+120|1|infMove,food|Sea|Enforcer||Move Influence and Gain Provision
+127|3|food,coin|Sea|Guardian||Gain Provision and Gain Silver
+128|3|2coin|Sea|Guardian||Gain 2 Silver
+129|3|2food|Sea|Guardian||Gain 2 Provision
+146|1|infBlue/infMove|Sea|Translator||Place an Influence in Blue Guild or Move Influence
+147|1|infYellow/infMove|Sea|Translator||Place an Influence in Yellow Guild or Move Influence
+148|2|infBlack/infMove|Sea|Translator||Place an Influence in Black Guild or Move Influence
+151|0|pickWorker/infMove|Sea|Warrior||Pick a Worker or Move Influence
