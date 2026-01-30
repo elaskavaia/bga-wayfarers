@@ -88,7 +88,7 @@ class Op_cardFolk extends Op_cardBase {
     }
 
     public function getPaymentOperation(string $card) {
-        $cost = $this->getCost($card);
+        $cost = max(0, $this->getCost($card) - $this->getCoinDiscount());
         return "{$cost}n_coin";
     }
 

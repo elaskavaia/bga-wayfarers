@@ -23,7 +23,8 @@ class Op_upgGreen extends Op_upgBase {
     }
 
     function getPaymentOperation(?string $card = null) {
-        return "2n_coin";
+        $c = max(0, 2 - $this->getCoinDiscount());
+        return "{$c}n_coin";
     }
     function getTileWidth(): int {
         return 1; // Green tiles are 1x1 (square)

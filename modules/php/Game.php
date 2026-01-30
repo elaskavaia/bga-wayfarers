@@ -447,6 +447,9 @@ class Game extends Base {
         foreach ($assetTypes as $assetType) {
             $assets[$assetType] = 0;
         }
+        if (!$dieValue) {
+            return $assets;
+        }
         $column = $dieValue - 1; // Convert die value (1-6) to column index (0-5)
 
         // Starting assets (hardcoded positions in caravan)

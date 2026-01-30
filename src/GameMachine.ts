@@ -45,7 +45,7 @@ interface OpInfo {
 
   confirm?: boolean; // require confirmation before sending to server
   description?: string; // for other players
-  descriptionOnMyTurn?: string; // prompt when op is single/active
+  descriptionOnMyTurn?: string | NotificationMessage; // prompt when op is single/active
   subtitle?: string; // sub prompt when op is single/active (rended small subtext)
 
   err?: string | NotificationMessage; // error string or notification object XXX
@@ -66,7 +66,7 @@ class GameMachine extends Game1Tokens {
   opInfo: OpInfo;
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
     if (!this.bga.players.isCurrentPlayerActive()) {
-      if (opInfo?.description) this.statusBar.setTitle(opInfo.description, opInfo);
+      if (opInfo?.description) this.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
       this.setSubPrompt("");
       this.addUndoButton(opInfo.ui?.undo);
       return;
@@ -74,7 +74,7 @@ class GameMachine extends Game1Tokens {
     this.completeOpInfo(opInfo);
     this.opInfo = opInfo;
     if (opInfo.descriptionOnMyTurn) {
-      this.statusBar.setTitle(opInfo.descriptionOnMyTurn, opInfo);
+      this.statusBar.setTitle(this.getTr(opInfo.descriptionOnMyTurn, opInfo));
     }
     this.setSubPrompt(opInfo.subtitle, opInfo);
     if (opInfo.err) {
@@ -335,8 +335,8 @@ class GameMachine extends Game1Tokens {
       ?.then((x) => {
         console.log("action complete", x);
       })
-      .catch((e: Error) => {
-        this.setSubPrompt(e.message);
+      .catch((e: any) => {
+        this.setSubPrompt(e.message, e.args);
       });
   }
 
@@ -349,8 +349,8 @@ class GameMachine extends Game1Tokens {
             .performAction("action_undo", [], {
               checkAction: false
             })
-            ?.catch((e: Error) => {
-              this.setSubPrompt(e.message);
+            ?.catch((e: any) => {
+              this.setSubPrompt(e.message, e.args);
             }),
         {
           color: "alert",

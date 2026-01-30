@@ -9,7 +9,7 @@ num|cost|dr|tags|nom|da|tooltip
 116|1||Harbour|Adventurer|ship|Ship
 117|0||Observatory|Astronomer|telescope|Telescope
 118|2|pickWorker/infCard|Vista|Champion||Pick a Worker or Place Influence on a Card
-121|2||Harbour|Envoy|camel,pigeon|Camel and Pigeon
+121|2||City|Envoy|camel,pigeon|Camel and Pigeon
 122|2||Harbour|Envoy|ship,pigeon|Ship and Pigeon
 123|2|coin|City|Farmer||Gain Silver
 124|2|food|City|Farmer||Gain Provision

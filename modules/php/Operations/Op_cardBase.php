@@ -17,9 +17,7 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
-use function Bga\Games\wayfarers\getPart;
-
-abstract class Op_cardBase extends Operation {
+abstract class Op_cardBase extends Op_acquireBase {
     public function getArgType() {
         return Operation::TTYPE_TOKEN;
     }
@@ -38,10 +36,6 @@ abstract class Op_cardBase extends Operation {
     }
     function isFree() {
         return $this->getParam(0) == "free";
-    }
-
-    function getDie() {
-        return $this->getDataField("die", null);
     }
 
     /**
@@ -117,7 +111,7 @@ abstract class Op_cardBase extends Operation {
         // Check if player chose the deck
         if (str_starts_with($card, "deck_")) {
             $owner = $this->getOwner();
-            // If pigeon is a leftover asset, skip food payment
+            // If pigeon is a leftover asset
             if (!$this->hasPigeonLeftover()) {
                 $this->queue("n_food", $owner, [], "Op_cardDraw");
             }

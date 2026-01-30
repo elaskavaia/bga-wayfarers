@@ -49,17 +49,22 @@ class Op_cardInteract extends Operation {
         if (!$infKey) {
             return null;
         }
+
+        return $infKey;
+    }
+
+    public function isOwnInfluence(string $infKey) {
         // Only return opponent's influence, not player's own
         $infOwner = getPart($infKey, 2);
         if ($infOwner === $this->getOwner()) {
-            return null;
+            return true;
         }
-        return $infKey;
+        return false;
     }
 
     function getPossibleMoves() {
         $inf = $this->getInfluenceOnCard();
-        if (!$inf) {
+        if (!$inf || $this->isOwnInfluence($inf)) {
             return ["confirm"];
         }
 
@@ -91,17 +96,19 @@ class Op_cardInteract extends Operation {
         $inf = $this->getInfluenceOnCard();
 
         if ($inf) {
-            $choice = $this->getCheckedArg();
-            $counterType = getPart($choice, 1);
             $opp = getPart($inf, 2);
+            if (!$this->isOwnInfluence($inf)) {
+                $choice = $this->getCheckedArg();
+                $resourceType = getPart($choice, 1);
 
-            // Pay from acting player
-            $this->game->effect_incCount($owner, $counterType, -1, $this->getOpId());
+                // Pay from acting player
+                $this->game->effect_incCount($owner, $resourceType, -1, $this->getOpId());
 
-            // Give to opponent
-            $this->game->effect_incCount($opp, $counterType, 1, $this->getOpId());
+                // Give to opponent
+                $this->game->effect_incCount($opp, $resourceType, 1, $this->getOpId());
+            }
 
-            // Return the influence token to the opponent's tableau (unless buy is false)
+            // Return the influence token to the player's tableau (unless buy is false)
             if ($this->isBeingBought()) {
                 $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
             }

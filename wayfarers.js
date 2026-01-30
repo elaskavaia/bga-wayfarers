@@ -1267,7 +1267,7 @@ var GameMachine = /** @class */ (function (_super) {
         var _a, _b, _c, _d;
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo === null || opInfo === void 0 ? void 0 : opInfo.description)
-                this.statusBar.setTitle(opInfo.description, opInfo);
+                this.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
             this.setSubPrompt("");
             this.addUndoButton((_a = opInfo.ui) === null || _a === void 0 ? void 0 : _a.undo);
             return;
@@ -1275,7 +1275,7 @@ var GameMachine = /** @class */ (function (_super) {
         this.completeOpInfo(opInfo);
         this.opInfo = opInfo;
         if (opInfo.descriptionOnMyTurn) {
-            this.statusBar.setTitle(opInfo.descriptionOnMyTurn, opInfo);
+            this.statusBar.setTitle(this.getTr(opInfo.descriptionOnMyTurn, opInfo));
         }
         this.setSubPrompt(opInfo.subtitle, opInfo);
         if (opInfo.err) {
@@ -1520,7 +1520,7 @@ var GameMachine = /** @class */ (function (_super) {
         })) === null || _a === void 0 ? void 0 : _a.then(function (x) {
             console.log("action complete", x);
         }).catch(function (e) {
-            _this.setSubPrompt(e.message);
+            _this.setSubPrompt(e.message, e.args);
         });
     };
     GameMachine.prototype.addUndoButton = function (cond) {
@@ -1534,7 +1534,7 @@ var GameMachine = /** @class */ (function (_super) {
                     .performAction("action_undo", [], {
                     checkAction: false
                 })) === null || _a === void 0 ? void 0 : _a.catch(function (e) {
-                    _this.setSubPrompt(e.message);
+                    _this.setSubPrompt(e.message, e.args);
                 });
             }, {
                 color: "alert",

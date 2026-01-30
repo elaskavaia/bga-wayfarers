@@ -22,7 +22,8 @@ class Op_upgBlue extends Op_upgBase {
         return "blue";
     }
     function getPaymentOperation(?string $card = null) {
-        return "3n_coin/2n_infBlue";
+        $c = max(0, 3 - $this->getCoinDiscount());
+        return "{$c}n_coin/2n_infBlue";
     }
 
     function getTileWidth(): int {

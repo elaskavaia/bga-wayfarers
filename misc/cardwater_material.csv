@@ -12,7 +12,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 41||pigeon|food,journal|Harbour Book|__x_|bx_x||Gain 1 Provision and Journal
 42||pigeon|coin,journal|Harbour Book|__x_|u_xx||Gain 1 Silver and Journal
 43||pigeon|infCard,journal|Harbour Book|x__x|yxxx||Gain Influence on any card and Journal
-44||ship,ship|n_food:cardWater|Harbour Book|_xx_|yx__||Pay 1 Provision to acquire a Water card
+44||ship,ship|1n_food:cardWater|Harbour Book|_xx_|yx__||Pay 1 Provision to acquire a Water card
 
 45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x||Pay 2 Provisions to acquire a Water card, then gain Silver
 46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx||Pay 2 Provisions to acquire a Water card, then pick a Worker

@@ -15,31 +15,12 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\OpCommon\Operation;
-use BgaUserException;
 
 /**
  * Place a Die on a card in the player's tableau
  * Dice placement requires matching assets from the caravan
  */
-class Op_placeDie extends Operation {
-    /**
-     * Get the selected die from the data field
-     */
-    function getSelectedDie(): string {
-        return $this->getDataField("die", "");
-    }
-
-    /**
-     * Get the die value
-     */
-    function getDieValue(): int {
-        if (!$this->getSelectedDie()) {
-            return 0;
-        }
-        return (int) $this->game->tokens->db->getTokenState($this->getSelectedDie());
-    }
-
+class Op_placeDie extends Op_acquireBase {
     /**
      * Get available dice slots on player's tableau cards
      */
@@ -97,6 +78,23 @@ class Op_placeDie extends Operation {
         $slots = $this->getDiceSlots();
         $res = [];
 
+        if ($dieValue === 0) {
+            // Die was reset
+            // Add dice options - group by die value (1-6)
+            $player_dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
+            $diceByValue = [];
+            foreach ($player_dice as $dieKey => $dieInfo) {
+                $dieValue = (int) $dieInfo["state"];
+                $diceByValue[$dieValue] = $dieKey;
+            }
+
+            // Add one option per unique die value
+            foreach ($diceByValue as $dieValue => $diceKey) {
+                $res[$diceKey] = ["q" => Material::RET_OK];
+            }
+            return $res;
+        }
+
         // Get caravan assets once for this die value
         $caravanAssets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
         if ($this->isBlueInfluenceSpentThisTurn()) {
@@ -139,6 +137,8 @@ class Op_placeDie extends Operation {
             }
         }
 
+        $res["change"] = ["q" => Material::RET_OK, "name" => clienttranslate("Change Die")];
+
         return $res;
     }
 
@@ -148,10 +148,17 @@ class Op_placeDie extends Operation {
 
     function resolve(): void {
         $owner = $this->getOwner();
-        $selectedDie = $this->getSelectedDie();
+        $selectedDie = $this->getDie();
         $dieValue = $this->getDieValue();
         $selected = $this->getCheckedArg();
-
+        if ($selected === "change") {
+            $this->queue("placeDie", $owner, [], $this->getReason());
+            return;
+        }
+        if (str_starts_with($selected, "dice_")) {
+            $this->queue("placeDie", $owner, ["die" => $selected], $this->getReason());
+            return;
+        }
         // Handle extra action - queue the operation and re-enter placeDie
         if (str_starts_with($selected, "Op_")) {
             $optype = str_replace("Op_", "", $selected);
@@ -180,6 +187,7 @@ class Op_placeDie extends Operation {
         }
         // XXX player can chose order
         $r = $this->game->getRulesFor($cardId, "dr");
+        $r = $this->applyFoodDiscount($r);
         $this->queue($r, $owner, ["die" => $selectedDie], $cardId);
     }
 
@@ -196,6 +204,10 @@ class Op_placeDie extends Operation {
         return parent::getExtraArgs() + ["token_div" => "die_$dieValue"];
     }
     public function getPrompt() {
+        $dieValue = $this->getDieValue();
+        if ($dieValue == 0) {
+            return clienttranslate("Select a die");
+        }
         return clienttranslate('Select where to place the die ${token_div}');
     }
 }

@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\OpCommon;
 
+use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\States\GameDispatch;
 use Bga\Games\wayfarers\States\PlayerTurn;
@@ -387,6 +388,10 @@ abstract class Operation {
             }
             if ($value === null || $value === false || $value === "") {
                 unset($res[$key]);
+                continue;
+            }
+            if ($value instanceof NotificationMessage) {
+                $res[$key] = ["log" => $value->message, "args" => $value->args];
             }
         }
 

@@ -23,7 +23,8 @@ class Op_upgBlack extends Op_upgBase {
     }
 
     function getPaymentOperation(?string $card = null) {
-        return "3n_coin/2n_infBlack";
+        $c = max(0, 3 - $this->getCoinDiscount());
+        return "{$c}n_coin/2n_infBlack";
     }
 
     function getTileWidth(): int {

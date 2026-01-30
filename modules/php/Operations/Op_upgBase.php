@@ -14,8 +14,11 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\GameFramework\NotificationMessage;
+use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\OpCommon\Operation;
+use BgaUserException;
+use Dom\Node;
 
 use function Bga\Games\wayfarers\getPart;
 
@@ -23,7 +26,7 @@ use function Bga\Games\wayfarers\getPart;
  * Base class for upgrade tile operations
  * Handles caravan grid placement (6x3 grid)
  */
-abstract class Op_upgBase extends Operation {
+abstract class Op_upgBase extends Op_acquireBase {
     const CARAVAN_WIDTH = 6;
     const CARAVAN_HEIGHT = 3;
 
@@ -214,11 +217,15 @@ abstract class Op_upgBase extends Operation {
     }
 
     function getPaymentOperation(?string $card = null) {
-        return "3n_coin";
+        $c = max(0, 3 - $this->getCoinDiscount());
+        if ($c <= 0) {
+            return "nop";
+        }
+        return "{$c}n_coin";
     }
 
     function isFree() {
-        return $this->getParam(0) == "free";
+        return $this->getParam(0) == "free" || $this->getPaymentOperation() == "nop";
     }
 
     /** User does the action */
@@ -296,14 +303,15 @@ abstract class Op_upgBase extends Operation {
 
     public function getPrompt() {
         $selectedTile = $this->getSelectedTile();
+        $payop_name = $this->getArgs()["payop_name"];
         if ($selectedTile === null) {
-            return clienttranslate("Select an upgrade tile to buy");
+            if ($this->isFree()) {
+                return clienttranslate("Select an Upgrade Tile free of charge");
+            }
+            return new NotificationMessage(clienttranslate('Select an Upgrade Tile to buy, will cost ${cost}'), [
+                "cost" => $payop_name,
+            ]);
         }
         return clienttranslate("Select where to place the tile in your caravan");
-    }
-
-    public function getSubTitle() {
-        $payop_name = $this->getArgs()["payop_name"];
-        return $payop_name;
     }
 }
