@@ -451,29 +451,7 @@ class OpMachine {
     }
 
     function action_undo(int $player_id, int $move_id = 0) {
-        if ($this->game->gamestate->isMultiactiveState()) {
-            $color = $this->game->getPlayerColorById($player_id);
-            if (!$this->game->gamestate->isPlayerActive($player_id)) {
-                $this->game->gamestate->setPlayersMultiactive([$player_id], "");
-                $this->game->gamestate->initializePrivateState($player_id);
-                $ops = $this->db->getHistoricalOperations($color);
-            } else {
-                $ops = $this->db->getOperations($color);
-            }
-            if (count($ops) > 0) {
-                $op = array_shift($ops);
-                $this->instanciateOperationFromDbRow($op)->undo();
-                return $this->multiplayerDistpatchAfterAction($player_id);
-            }
-            $this->game->userAssert("Nothing to undo");
-
-            throw new BgaSystemException("Undo in multi active state is not supported yet $player_id is active");
-        } else {
-            //$op = $this->createTopOperationFromDb($player_id);
-            //$op->undo($move_id);
-            //$this->push("nop", $this->game->getActivePlayerColor());
-            $this->game->undoRestorePoint();
-            return GameDispatch::class;
-        }
+        $this->game->undoRestorePoint();
+        return GameDispatch::class;
     }
 }

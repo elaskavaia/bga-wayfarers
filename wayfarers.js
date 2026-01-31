@@ -367,7 +367,7 @@ var Game0Basics = /** @class */ (function (_super) {
 /** This is essentically dojo.place but without dojo */
 function placeHtml(html, parent, how) {
     if (how === void 0) { how = "beforeend"; }
-    return $(parent).insertAdjacentHTML(how, html);
+    $(parent).insertAdjacentHTML(how, html);
 }
 function getIntPart(word, i) {
     return parseInt(getPart(word, i));
@@ -1384,18 +1384,26 @@ var GameMachine = /** @class */ (function (_super) {
         var active = q == 0;
         var color = (_a = paramInfo.color) !== null && _a !== void 0 ? _a : "secondary";
         var div = $(target);
-        if (!div)
+        var cloneHtml = this.createCustomButtonImageHtml(target, paramInfo);
+        if (!cloneHtml && div) {
+            var clone = div.cloneNode(true);
+            clone.id = target + "_temp";
+            clone.classList.remove(this.classActiveSlot);
+            clone.classList.add(this.classActiveSlotHidden);
+            cloneHtml = clone.outerHTML;
+        }
+        if (!cloneHtml) {
             return undefined;
-        var clone = div.cloneNode(true);
-        clone.id = div.id + "_temp";
-        clone.classList.remove(this.classActiveSlot);
-        clone.classList.add(this.classActiveSlotHidden);
-        var button = this.statusBar.addActionButton(clone.outerHTML, function (event) { return _this.onToken(event); }, {
+        }
+        var button = this.statusBar.addActionButton(cloneHtml, function (event) { return _this.onToken(event); }, {
             color: color,
             disabled: !active,
             id: "button_" + target
         });
         return button;
+    };
+    GameMachine.prototype.createCustomButtonImageHtml = function (target, paramInfo) {
+        return undefined;
     };
     GameMachine.prototype.replicateTargetOnSelectionArea = function (target, paramInfo) {
         var _this = this;
@@ -1737,7 +1745,7 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
         _this.boardLayout = "scale";
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_btn active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_btn\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n          <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"mainboard_2\">\n    </div>\n    <div id=\"mainboard_3\">\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_btn active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_btn\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () { return _this.updateBoardScale(); };
         return _this;
     }
@@ -2019,12 +2027,14 @@ var GameXBody = /** @class */ (function (_super) {
         }
         else if (tokenId.startsWith("tableau")) {
             result.nop = true;
+            // } else if (tokenId.startsWith("jpos")) {
+            //   result.location = this.getRulesFor(tokenId, "location");
         }
         else if (tokenId.startsWith("mainboard_")) {
             result.location = "mainboardall";
         }
         else if (tokenId.startsWith("marker")) {
-            result.location = "mainboardall";
+            result.location = "jpos_".concat(tokenInfo.state);
         }
         else if (tokenId.startsWith("hand")) {
             result.nop = true;
@@ -2082,6 +2092,20 @@ var GameXBody = /** @class */ (function (_super) {
             }
         }
         return result;
+    };
+    GameXBody.prototype.createCustomButtonImageHtml = function (target, paramInfo) {
+        var op = this.opInfo.type;
+        switch (op) {
+            case "diceMod":
+                // special rendering
+                var from = paramInfo.from;
+                var to = paramInfo.to;
+                var clases = $(paramInfo.token_id).className;
+                var elem = "<div class='".concat(clases, "' data-state='").concat(from, "'></div>\u2907<div class='").concat(clases, "' data-state='").concat(to, "'></div>");
+                return elem;
+            default:
+                return undefined;
+        }
     };
     GameXBody.prototype.gameAnimationsActive = function () {
         return gameui.bgaAnimationsActive() && !this.inSetup;

@@ -186,18 +186,27 @@ class GameMachine extends Game1Tokens {
     const active = q == 0;
     const color: any = paramInfo.color ?? "secondary";
     const div = $(target);
-    if (!div) return undefined;
-    const clone = div.cloneNode(true) as HTMLElement;
-    clone.id = div.id + "_temp";
-    clone.classList.remove(this.classActiveSlot);
-    clone.classList.add(this.classActiveSlotHidden);
+    let cloneHtml = this.createCustomButtonImageHtml(target, paramInfo);
+    if (!cloneHtml && div) {
+      const clone = div.cloneNode(true) as HTMLElement;
+      clone.id = target + "_temp";
+      clone.classList.remove(this.classActiveSlot);
+      clone.classList.add(this.classActiveSlotHidden);
+      cloneHtml = clone.outerHTML;
+    }
+    if (!cloneHtml) {
+      return undefined;
+    }
 
-    const button = this.statusBar.addActionButton(clone.outerHTML, (event: Event) => this.onToken(event), {
+    const button = this.statusBar.addActionButton(cloneHtml, (event: Event) => this.onToken(event), {
       color,
       disabled: !active,
       id: "button_" + target
     });
     return button;
+  }
+  createCustomButtonImageHtml(target: string, paramInfo: ParamInfo): string | undefined {
+    return undefined;
   }
 
   replicateTargetOnSelectionArea(target: string, paramInfo: ParamInfo): HTMLElement | undefined {

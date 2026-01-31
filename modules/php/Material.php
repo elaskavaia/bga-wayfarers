@@ -12,6 +12,7 @@ class Material {
     const ERR_MAX = 4;
     const ERR_NONE_LEFT = 5;
     const ERR_NOT_APPLICABLE = 6;
+    const ERR_NO_PLACE = 7;
 
     private array $token_types;
     private bool $adjusted = false;
@@ -61,6 +62,13 @@ class Material {
                 "code" => Material::ERR_NOT_APPLICABLE,
                 "type" => "err",
                 "name" => clienttranslate("Not applicable"),
+            ],
+
+            "err_7" => [
+                //
+                "code" => Material::ERR_NO_PLACE,
+                "type" => "err",
+                "name" => clienttranslate("Not valid placement"),
             ],
 
             /* --- gen php begin loc_material --- */
@@ -369,6 +377,14 @@ class Material {
     "Op_newDie" => [ 
         "type" => "newDie",
         "name" => clienttranslate("Gain Die"),
+],
+    "Op_jtile" => [ 
+        "type" => "jtile",
+        "name" => clienttranslate("Journal Tile Bonus"),
+],
+    "Op_pickGreen" => [ 
+        "type" => "pickGreen",
+        "name" => clienttranslate("Pick Green Worker"),
 ],
     "Op_food" => [ 
         "class" => "Op_gain",
@@ -2212,31 +2228,31 @@ class Material {
         "name" => clienttranslate("Journal"),
 ],
 // # Inspiration card worker actions (positions 1-4)
-    "action_insp_1" => [ 
+    "action_insp_4" => [ 
         "type" => "action",
         "ctype" => "insp",
-        "num" => 1,
+        "num" => 4,
         "r" => "2food",
         "name" => clienttranslate("Forage"),
-],
-    "action_insp_2" => [ 
-        "type" => "action",
-        "ctype" => "insp",
-        "num" => 2,
-        "r" => "food,infAny",
-        "name" => clienttranslate("Network"),
 ],
     "action_insp_3" => [ 
         "type" => "action",
         "ctype" => "insp",
         "num" => 3,
+        "r" => "food,infAny",
+        "name" => clienttranslate("Network"),
+],
+    "action_insp_2" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 2,
         "r" => "coin,reroll",
         "name" => clienttranslate("Barter"),
 ],
-    "action_insp_4" => [ 
+    "action_insp_1" => [ 
         "type" => "action",
         "ctype" => "insp",
-        "num" => 4,
+        "num" => 1,
         "r" => "2coin",
         "name" => clienttranslate("Earn"),
 ],
@@ -2758,142 +2774,211 @@ class Material {
 
             /* --- gen php begin journal_material --- */
     "jpos_0" => [ 
+        "location" => "mainboard_1",
         "num" => 0,
         "conn" => "10,15",
 ],
     "jpos_10" => [ 
+        "location" => "mainboard_1",
         "num" => 10,
         "conn" => "20,2",
         "r" => "jtile,pickGreen",
         "gw"=>1,
 ],
     "jpos_15" => [ 
+        "location" => "mainboard_1",
         "num" => 15,
         "conn" => "23,27",
         "r" => "jtile,pickGreen",
 ],
     "jpos_20" => [ 
+        "location" => "mainboard_1",
         "num" => 20,
         "conn" => "40,32",
         "r" => "cardInsp,newDie",
 ],
     "jpos_23" => [ 
+        "location" => "mainboard_1",
         "num" => 23,
         "conn" => "32,36",
         "r" => "cardInsp,newDie",
 ],
     "jpos_27" => [ 
+        "location" => "mainboard_1",
         "num" => 27,
         "conn" => "36,47",
         "r" => "cardInsp,newDie",
 ],
     "jpos_32" => [ 
+        "location" => "mainboard_1",
         "num" => 32,
         "conn" => "40,43",
         "r" => "jtile,pickGreen",
         "gw"=>2,
 ],
     "jpos_36" => [ 
+        "location" => "mainboard_1",
         "num" => 36,
         "conn" => "43,47",
         "r" => "jtile,pickGreen",
 ],
     "jpos_40" => [ 
+        "location" => "mainboard_2",
         "num" => 40,
         "conn" => 50,
         "r" => "upgPink",
 ],
     "jpos_43" => [ 
+        "location" => "mainboard_2",
         "num" => 43,
         "conn" => "50,55",
         "r" => "upgPink",
 ],
     "jpos_47" => [ 
+        "location" => "mainboard_2",
         "num" => 47,
         "conn" => 55,
         "r" => "upgPink",
 ],
     "jpos_50" => [ 
+        "location" => "mainboard_2",
         "num" => 50,
         "conn" => "60,63",
         "r" => "jtile,pickGreen",
         "gw"=>3,
 ],
     "jpos_55" => [ 
+        "location" => "mainboard_2",
         "num" => 55,
         "conn" => "63,67",
         "r" => "jtile,pickGreen",
 ],
     "jpos_60" => [ 
+        "location" => "mainboard_2",
         "num" => 60,
         "conn" => "80,72",
         "r" => "cardInsp,newDie",
 ],
     "jpos_63" => [ 
+        "location" => "mainboard_2",
         "num" => 63,
         "conn" => "72,76",
         "r" => "cardInsp,newDie",
 ],
     "jpos_67" => [ 
+        "location" => "mainboard_2",
         "num" => 67,
         "conn" => "76,87",
         "r" => "cardInsp,newDie",
 ],
     "jpos_72" => [ 
+        "location" => "mainboard_2",
         "num" => 72,
         "conn" => "80,83",
         "r" => "jtile,pickGreen",
         "gw"=>4,
 ],
     "jpos_76" => [ 
+        "location" => "mainboard_2",
         "num" => 76,
         "conn" => "83,87",
         "r" => "jtile,pickGreen",
 ],
     "jpos_80" => [ 
+        "location" => "mainboard_2",
         "num" => 80,
         "conn" => 90,
         "r" => "upgPink",
 ],
     "jpos_83" => [ 
+        "location" => "mainboard_2",
         "num" => 83,
         "conn" => "90,95",
         "r" => "upgPink",
 ],
     "jpos_87" => [ 
+        "location" => "mainboard_2",
         "num" => 87,
         "conn" => 95,
         "r" => "upgPink",
 ],
     "jpos_90" => [ 
+        "location" => "mainboard_2",
         "num" => 90,
         "conn" => "100,102,103",
         "r" => "jtile",
 ],
     "jpos_95" => [ 
+        "location" => "mainboard_2",
         "num" => 95,
         "conn" => "103,106,107",
         "r" => "jtile",
 ],
     "jpos_100" => [ 
+        "location" => "mainboard_3",
         "num" => 100,
         "r" => "infBlack,infBlack,(upgPink/cardInsp)",
 ],
     "jpos_102" => [ 
+        "location" => "mainboard_3",
         "num" => 102,
         "r" => "infAny,infAny",
 ],
     "jpos_103" => [ 
+        "location" => "mainboard_3",
         "num" => 103,
         "r" => "infYellow,infYellow,(upgPink/cardInsp)",
 ],
     "jpos_106" => [ 
+        "location" => "mainboard_3",
         "num" => 106,
         "r" => "infAny,infAny",
 ],
     "jpos_107" => [ 
+        "location" => "mainboard_3",
         "num" => 107,
         "r" => "infBlue,infBlue,(upgPink/cardInsp)",
+],
+// #Journal tiles
+    "jtile_1" => [ 
+        "num" => 1,
+        "r" => "upgGreen(free)",
+],
+    "jtile_2" => [ 
+        "num" => 2,
+        "r" => "infYellow,infYellow",
+],
+    "jtile_3" => [ 
+        "num" => 3,
+        "r" => "infBlue,infBlue",
+],
+    "jtile_4" => [ 
+        "num" => 4,
+        "r" => "cardFolk(free)",
+],
+    "jtile_5" => [ 
+        "num" => 5,
+        "r" => "food,coin",
+],
+    "jtile_6" => [ 
+        "num" => 6,
+        "r" => "coin,coin",
+],
+    "jtile_7" => [ 
+        "num" => 7,
+        "r" => "pickWorker",
+],
+    "jtile_8" => [ 
+        "num" => 8,
+        "r" => "food,food",
+],
+    "jtile_9" => [ 
+        "num" => 9,
+        "r" => "infCard,infCard",
+],
+    "jtile_10" => [ 
+        "num" => 10,
+        "r" => "infYellow,infBlue",
 ],
             /* --- gen php end journal_material --- */
         ];

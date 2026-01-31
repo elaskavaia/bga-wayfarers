@@ -436,3 +436,159 @@
     vertical-align: top;
   }
 }
+// Journal track positions (jpos) - positioned on ink blots
+.jpos {
+  position: absolute;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+
+  .worker_green {
+    position: absolute;
+    bottom: -40%;
+    left: 31%;
+    height: 54px;
+    filter: v.$dropShadow2;
+  }
+}
+
+.mainboard_1 {
+  // Start (inkwell)
+  .jpos_0 {
+    top: 38%;
+    left: 6%;
+  }
+  // Column 1: jtile, pickGreen
+  .jpos_10 {
+    top: 30%;
+    left: 30%;
+    height: 100px;
+  }
+  .jpos_15 {
+    top: 55%;
+    left: 30%;
+  }
+  // Column 2: cardInsp, newDie
+  .jpos_20 {
+    top: 23%;
+    left: 58%;
+  }
+  .jpos_23 {
+    top: 42%;
+    left: 58%;
+  }
+  .jpos_27 {
+    top: 62%;
+    left: 58%;
+  }
+  // Column 3: jtile, pickGreen
+  .jpos_32 {
+    top: 35%;
+    left: 85%;
+  }
+  .jpos_36 {
+    top: 53%;
+    left: 85%;
+  }
+}
+
+.mainboard_2 {
+  // Column 4: upgPink
+  .jpos_40 {
+    top: 23%;
+    left: 6%;
+  }
+  .jpos_43 {
+    top: 42%;
+    left: 6%;
+  }
+  .jpos_47 {
+    top: 62%;
+    left: 6%;
+  }
+  // Column 5: entry from board 1 (jtile, pickGreen)
+  .jpos_50 {
+    top: 30%;
+    left: 22%;
+    height: 100px;
+  }
+  .jpos_55 {
+    top: 55%;
+    left: 22%;
+  }
+  // Column 6: cardInsp, newDie
+  .jpos_60 {
+    top: 23%;
+    left: 40%;
+  }
+  .jpos_63 {
+    top: 42%;
+    left: 40%;
+  }
+  .jpos_67 {
+    top: 62%;
+    left: 40%;
+  }
+  // Column 7: jtile, pickGreen
+  .jpos_72 {
+    top: 35%;
+    left: 55%;
+  }
+  .jpos_76 {
+    top: 50%;
+    left: 55%;
+  }
+  // Column 8: upgPink
+  .jpos_80 {
+    top: 23%;
+    left: 71%;
+  }
+  .jpos_83 {
+    top: 42%;
+    left: 71%;
+  }
+  .jpos_87 {
+    top: 62%;
+    left: 71%;
+  }
+  // Column 9: exit to board 3 (jtile)
+  .jpos_90 {
+    top: 30%;
+    left: 89%;
+  }
+  .jpos_95 {
+    top: 55%;
+    left: 89%;
+  }
+}
+
+.mainboard_3 {
+  //Column 10
+  // Black guild dome (top)
+  .jpos_100 {
+    top: 20%;
+    left: 10%;
+  }
+  // Between black and yellow
+  .jpos_102 {
+    top: 33%;
+    left: 10%;
+    height: 40px;
+  }
+  // Yellow guild dome (middle)
+  .jpos_103 {
+    top: 43%;
+    left: 10%;
+  }
+  // Between yellow and blue
+  .jpos_106 {
+    top: 58%;
+    left: 10%;
+    height: 40px;
+  }
+  // Blue guild dome (bottom)
+  .jpos_107 {
+    top: 66%;
+    left: 10%;
+  }
+}

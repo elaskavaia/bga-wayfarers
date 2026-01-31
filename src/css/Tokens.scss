@@ -158,19 +158,7 @@
   // Position marker on mainboardall based on state (Journal Track position)
   .mainboardall & {
     position: absolute;
-    top: 50%;
     filter: v.$dropShadow2;
-
-    // Generate positions for states 0-109
-    @for $step from 0 through 109 {
-      $j: $step % 10;
-      $i: calc(($step - $j) / 10);
-
-      &[data-state="#{$step}"] {
-        left: calc($i * 7%);
-        top: calc($j * 6% + 20%);
-      }
-    }
   }
 }
 

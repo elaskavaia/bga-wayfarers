@@ -1460,6 +1460,139 @@ html[data-theme=dark] .deck .counter {
   vertical-align: top;
 }
 
+.jpos {
+  position: absolute;
+  z-index: 1;
+  width: 80px;
+  height: 80px;
+}
+.jpos .worker_green {
+  position: absolute;
+  bottom: -40%;
+  left: 31%;
+  height: 54px;
+  filter: drop-shadow(2px 2px 3px black);
+}
+
+.mainboard_1 .jpos_0 {
+  top: 38%;
+  left: 6%;
+}
+.mainboard_1 .jpos_10 {
+  top: 30%;
+  left: 30%;
+  height: 100px;
+}
+.mainboard_1 .jpos_15 {
+  top: 55%;
+  left: 30%;
+}
+.mainboard_1 .jpos_20 {
+  top: 23%;
+  left: 58%;
+}
+.mainboard_1 .jpos_23 {
+  top: 42%;
+  left: 58%;
+}
+.mainboard_1 .jpos_27 {
+  top: 62%;
+  left: 58%;
+}
+.mainboard_1 .jpos_32 {
+  top: 35%;
+  left: 85%;
+}
+.mainboard_1 .jpos_36 {
+  top: 53%;
+  left: 85%;
+}
+
+.mainboard_2 .jpos_40 {
+  top: 23%;
+  left: 6%;
+}
+.mainboard_2 .jpos_43 {
+  top: 42%;
+  left: 6%;
+}
+.mainboard_2 .jpos_47 {
+  top: 62%;
+  left: 6%;
+}
+.mainboard_2 .jpos_50 {
+  top: 30%;
+  left: 22%;
+  height: 100px;
+}
+.mainboard_2 .jpos_55 {
+  top: 55%;
+  left: 22%;
+}
+.mainboard_2 .jpos_60 {
+  top: 23%;
+  left: 40%;
+}
+.mainboard_2 .jpos_63 {
+  top: 42%;
+  left: 40%;
+}
+.mainboard_2 .jpos_67 {
+  top: 62%;
+  left: 40%;
+}
+.mainboard_2 .jpos_72 {
+  top: 35%;
+  left: 55%;
+}
+.mainboard_2 .jpos_76 {
+  top: 50%;
+  left: 55%;
+}
+.mainboard_2 .jpos_80 {
+  top: 23%;
+  left: 71%;
+}
+.mainboard_2 .jpos_83 {
+  top: 42%;
+  left: 71%;
+}
+.mainboard_2 .jpos_87 {
+  top: 62%;
+  left: 71%;
+}
+.mainboard_2 .jpos_90 {
+  top: 30%;
+  left: 89%;
+}
+.mainboard_2 .jpos_95 {
+  top: 55%;
+  left: 89%;
+}
+
+.mainboard_3 .jpos_100 {
+  top: 20%;
+  left: 10%;
+}
+.mainboard_3 .jpos_102 {
+  top: 33%;
+  left: 10%;
+  height: 40px;
+}
+.mainboard_3 .jpos_103 {
+  top: 43%;
+  left: 10%;
+}
+.mainboard_3 .jpos_106 {
+  top: 58%;
+  left: 10%;
+  height: 40px;
+}
+.mainboard_3 .jpos_107 {
+  top: 66%;
+  left: 10%;
+}
+
 .tracker {
   height: 32px;
   aspect-ratio: 1/1;
@@ -1594,448 +1727,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 .mainboardall .marker {
   position: absolute;
-  top: 50%;
   filter: drop-shadow(2px 2px 3px black);
-}
-.mainboardall .marker[data-state="0"] {
-  left: 0%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="1"] {
-  left: 0%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="2"] {
-  left: 0%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="3"] {
-  left: 0%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="4"] {
-  left: 0%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="5"] {
-  left: 0%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="6"] {
-  left: 0%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="7"] {
-  left: 0%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="8"] {
-  left: 0%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="9"] {
-  left: 0%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="10"] {
-  left: 7%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="11"] {
-  left: 7%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="12"] {
-  left: 7%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="13"] {
-  left: 7%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="14"] {
-  left: 7%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="15"] {
-  left: 7%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="16"] {
-  left: 7%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="17"] {
-  left: 7%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="18"] {
-  left: 7%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="19"] {
-  left: 7%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="20"] {
-  left: 14%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="21"] {
-  left: 14%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="22"] {
-  left: 14%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="23"] {
-  left: 14%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="24"] {
-  left: 14%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="25"] {
-  left: 14%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="26"] {
-  left: 14%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="27"] {
-  left: 14%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="28"] {
-  left: 14%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="29"] {
-  left: 14%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="30"] {
-  left: 21%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="31"] {
-  left: 21%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="32"] {
-  left: 21%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="33"] {
-  left: 21%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="34"] {
-  left: 21%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="35"] {
-  left: 21%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="36"] {
-  left: 21%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="37"] {
-  left: 21%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="38"] {
-  left: 21%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="39"] {
-  left: 21%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="40"] {
-  left: 28%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="41"] {
-  left: 28%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="42"] {
-  left: 28%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="43"] {
-  left: 28%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="44"] {
-  left: 28%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="45"] {
-  left: 28%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="46"] {
-  left: 28%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="47"] {
-  left: 28%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="48"] {
-  left: 28%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="49"] {
-  left: 28%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="50"] {
-  left: 35%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="51"] {
-  left: 35%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="52"] {
-  left: 35%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="53"] {
-  left: 35%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="54"] {
-  left: 35%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="55"] {
-  left: 35%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="56"] {
-  left: 35%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="57"] {
-  left: 35%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="58"] {
-  left: 35%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="59"] {
-  left: 35%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="60"] {
-  left: 42%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="61"] {
-  left: 42%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="62"] {
-  left: 42%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="63"] {
-  left: 42%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="64"] {
-  left: 42%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="65"] {
-  left: 42%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="66"] {
-  left: 42%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="67"] {
-  left: 42%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="68"] {
-  left: 42%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="69"] {
-  left: 42%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="70"] {
-  left: 49%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="71"] {
-  left: 49%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="72"] {
-  left: 49%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="73"] {
-  left: 49%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="74"] {
-  left: 49%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="75"] {
-  left: 49%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="76"] {
-  left: 49%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="77"] {
-  left: 49%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="78"] {
-  left: 49%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="79"] {
-  left: 49%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="80"] {
-  left: 56%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="81"] {
-  left: 56%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="82"] {
-  left: 56%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="83"] {
-  left: 56%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="84"] {
-  left: 56%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="85"] {
-  left: 56%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="86"] {
-  left: 56%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="87"] {
-  left: 56%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="88"] {
-  left: 56%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="89"] {
-  left: 56%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="90"] {
-  left: 63%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="91"] {
-  left: 63%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="92"] {
-  left: 63%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="93"] {
-  left: 63%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="94"] {
-  left: 63%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="95"] {
-  left: 63%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="96"] {
-  left: 63%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="97"] {
-  left: 63%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="98"] {
-  left: 63%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="99"] {
-  left: 63%;
-  top: 74%;
-}
-.mainboardall .marker[data-state="100"] {
-  left: 70%;
-  top: 20%;
-}
-.mainboardall .marker[data-state="101"] {
-  left: 70%;
-  top: 26%;
-}
-.mainboardall .marker[data-state="102"] {
-  left: 70%;
-  top: 32%;
-}
-.mainboardall .marker[data-state="103"] {
-  left: 70%;
-  top: 38%;
-}
-.mainboardall .marker[data-state="104"] {
-  left: 70%;
-  top: 44%;
-}
-.mainboardall .marker[data-state="105"] {
-  left: 70%;
-  top: 50%;
-}
-.mainboardall .marker[data-state="106"] {
-  left: 70%;
-  top: 56%;
-}
-.mainboardall .marker[data-state="107"] {
-  left: 70%;
-  top: 62%;
-}
-.mainboardall .marker[data-state="108"] {
-  left: 70%;
-  top: 68%;
-}
-.mainboardall .marker[data-state="109"] {
-  left: 70%;
-  top: 74%;
 }
 
 .food {

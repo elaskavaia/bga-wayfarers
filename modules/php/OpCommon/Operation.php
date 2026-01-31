@@ -669,7 +669,7 @@ abstract class Operation {
     }
 
     function undo() {
-        $this->game->multiPlayerUndo($this->getOwner());
+        $this->game->dbMultiUndo->undoRestorePoint();
     }
 
     function action_whatever() {

@@ -30,7 +30,7 @@ class Op_jtile extends Operation {
         $pos = $this->getPos();
         $tile = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("jtile", "jpos_$pos");
         $this->game->systemAssert("tile is null", $tile);
-        $r = "2food"; // TODO $this->game->getRulesFor($tile, "r");
+        $r = $this->game->getRulesFor($tile, "r");
         $this->game->systemAssert("Cannot find tile for position $pos - $tile $r", $r);
         $this->queue($r, $owner, [], $tile);
     }

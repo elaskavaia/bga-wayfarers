@@ -29,6 +29,7 @@ class Op_newDie extends Operation {
         $res = [];
         foreach ($dice as $key => $die) {
             $res[$key] = ["q" => Material::RET_OK];
+            break; // only one
         }
         return $res;
     }

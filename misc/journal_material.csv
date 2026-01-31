@@ -1,5 +1,6 @@
 num|conn|r|php
 #set id=jpos_{num}
+#set location=mainboard_1
 0|10,15
 10|20,2|jtile,pickGreen|"gw"=>1
 15|23,27|jtile,pickGreen
@@ -8,9 +9,11 @@ num|conn|r|php
 27|36,47|cardInsp,newDie
 32|40,43|jtile,pickGreen|"gw"=>2
 36|43,47|jtile,pickGreen
+#set location=mainboard_2
 40|50|upgPink
 43|50,55|upgPink
 47|55|upgPink
+
 50|60,63|jtile,pickGreen|"gw"=>3
 55|63,67|jtile,pickGreen
 60|80,72|cardInsp,newDie
@@ -23,8 +26,23 @@ num|conn|r|php
 87|95|upgPink
 90|100,102,103|jtile
 95|103,106,107|jtile
+#set location=mainboard_3
 100||infBlack,infBlack,(upgPink/cardInsp)
 102||infAny,infAny
 103||infYellow,infYellow,(upgPink/cardInsp)
 106||infAny,infAny
 107||infBlue,infBlue,(upgPink/cardInsp)
+
+#Journal tiles
+#set id=jtile_{num}
+#set location=
+1||upgGreen(free)
+2||infYellow,infYellow
+3||infBlue,infBlue
+4||cardFolk(free)
+5||food,coin
+6||coin,coin
+7||pickWorker
+8||food,food
+9||infCard,infCard
+10||infYellow,infBlue

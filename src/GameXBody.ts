@@ -32,11 +32,40 @@ class GameXBody extends GameMachine {
   <div id="mainboardall" class="mainboardall">
     <div id="mainboard_1">
          <div id="deck_folk" class="deck decl_folk"></div>
-          <div id="deck_land" class="deck deck_land"></div>
+         <div id="deck_land" class="deck deck_land"></div>
+        <div id="jpos_0" class="jpos jpos_0"></div>
+        <div id="jpos_10" class="jpos jpos_10"></div>
+        <div id="jpos_15" class="jpos jpos_15"></div>
+        <div id="jpos_20" class="jpos jpos_20"></div>
+        <div id="jpos_23" class="jpos jpos_23"></div>
+        <div id="jpos_27" class="jpos jpos_27"></div>
+        <div id="jpos_32" class="jpos jpos_32"></div>
+        <div id="jpos_36" class="jpos jpos_36"></div>
+
     </div>
     <div id="mainboard_2">
+            <div id="jpos_40" class="jpos jpos_40"></div>
+        <div id="jpos_43" class="jpos jpos_43"></div>
+        <div id="jpos_47" class="jpos jpos_47"></div>
+        <div id="jpos_50" class="jpos jpos_50"></div>
+        <div id="jpos_55" class="jpos jpos_55"></div>
+        <div id="jpos_60" class="jpos jpos_60"></div>
+        <div id="jpos_63" class="jpos jpos_63"></div>
+        <div id="jpos_67" class="jpos jpos_67"></div>
+        <div id="jpos_72" class="jpos jpos_72"></div>
+        <div id="jpos_76" class="jpos jpos_76"></div>
+        <div id="jpos_80" class="jpos jpos_80"></div>
+        <div id="jpos_83" class="jpos jpos_83"></div>
+        <div id="jpos_87" class="jpos jpos_87"></div>
+        <div id="jpos_90" class="jpos jpos_90"></div>
+        <div id="jpos_95" class="jpos jpos_95"></div>
     </div>
     <div id="mainboard_3">
+        <div id="jpos_100" class="jpos jpos_100"></div>
+        <div id="jpos_102" class="jpos jpos_102"></div>
+        <div id="jpos_103" class="jpos jpos_103"></div>
+        <div id="jpos_106" class="jpos jpos_106"></div>
+        <div id="jpos_107" class="jpos jpos_107"></div>
      <div id="deck_water" class="deck deck_water"></div>
      <div id="deck_space" class="deck decl_space"></div>
      <div id="deck_insp" class="deck deck_insp"></div>
@@ -362,10 +391,12 @@ class GameXBody extends GameMachine {
       }
     } else if (tokenId.startsWith("tableau")) {
       result.nop = true;
+      // } else if (tokenId.startsWith("jpos")) {
+      //   result.location = this.getRulesFor(tokenId, "location");
     } else if (tokenId.startsWith("mainboard_")) {
       result.location = `mainboardall`;
     } else if (tokenId.startsWith("marker")) {
-      result.location = `mainboardall`;
+      result.location = `jpos_${tokenInfo.state}`;
     } else if (tokenId.startsWith("hand")) {
       result.nop = true;
     } else if (tokenId.startsWith("deck") || tokenId.startsWith("discard")) {
@@ -412,6 +443,22 @@ class GameXBody extends GameMachine {
       }
     }
     return result;
+  }
+
+  createCustomButtonImageHtml(target: string, paramInfo: ParamInfo): string | undefined {
+    const op = this.opInfo.type;
+    switch (op) {
+      case "diceMod":
+        // special rendering
+        const from = (paramInfo as any).from;
+        const to = (paramInfo as any).to;
+        const clases = $(paramInfo.token_id).className;
+        const elem = `<div class='${clases}' data-state='${from}'></div>⤇<div class='${clases}' data-state='${to}'></div>`;
+
+        return elem;
+      default:
+        return undefined;
+    }
   }
 
   gameAnimationsActive() {

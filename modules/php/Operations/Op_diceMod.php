@@ -53,16 +53,44 @@ class Op_diceMod extends Operation {
             $valueMinus = $value - 1;
             $key = $die["key"];
             if ($value > 1 && $value < 6) {
-                $res["{$key}_up"] = ["q" => Material::RET_OK, "name" => "$value + 1 => $valuePlus"];
-                $res["{$key}_down"] = ["q" => Material::RET_OK, "name" => "$value - 1 => $valueMinus"];
+                $res["{$key}_up"] = [
+                    "q" => Material::RET_OK,
+
+                    "token_id" => $key,
+                    "from" => $value,
+                    "to" => $valuePlus,
+                ];
+                $res["{$key}_down"] = [
+                    "q" => Material::RET_OK,
+
+                    "token_id" => $key,
+                    "from" => $value,
+                    "to" => $valueMinus,
+                ];
             } elseif ($value == 1) {
-                $res["{$key}_up"] = ["q" => Material::RET_OK, "name" => "$value + 1 => $valuePlus"];
+                $res["{$key}_up"] = [
+                    "q" => Material::RET_OK,
+                    "token_id" => $key,
+
+                    "from" => $value,
+                    "to" => $valuePlus,
+                ];
             } elseif ($value == 6) {
-                $res["{$key}_down"] = ["q" => Material::RET_OK, "name" => "$value - 1 => $valueMinus"];
+                $res["{$key}_down"] = [
+                    "q" => Material::RET_OK,
+
+                    "from" => $value,
+                    "to" => $valueMinus,
+                    "token_id" => $key,
+                ];
             }
         }
 
         return $res;
+    }
+
+    public function getUiArgs() {
+        return ["imagebuttons" => true];
     }
 
     function canSkip() {

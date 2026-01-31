@@ -817,14 +817,6 @@ class Game extends Base {
         return false;
     }
 
-    function multiPlayerUndo($owner) {
-        if ($this->game->isMultiActive()) {
-            $this->dbMultiUndo->undoRestorePoint(0, true);
-        } else {
-            throw new BgaSystemException("Not implemented");
-        }
-    }
-
     function debug_op(string $type) {
         $color = $this->getCurrentPlayerColor();
         $this->machine->push($type, $color);
@@ -873,9 +865,8 @@ class Game extends Base {
     function debug_maxRes() {
         $color = $this->getCurrentPlayerColor();
 
-        foreach (Material::getAllNonPoopResources() as $res) {
-            $this->effect_incCount($color, $res, 2, "debug");
-        }
+        $this->machine->push("5food", $color);
+        $this->machine->push("5coin", $color);
 
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }

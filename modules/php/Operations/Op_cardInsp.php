@@ -50,7 +50,7 @@ class Op_cardInsp extends Op_cardBase {
 
                 // Check if there's at least one available position
                 if (count($availablePositions) == 0) {
-                    $res[$card]["q"] = Material::ERR_PREREQ;
+                    $res[$card]["q"] = Material::ERR_NO_PLACE;
                 }
             }
 
@@ -94,7 +94,9 @@ class Op_cardInsp extends Op_cardBase {
                 $availablePositions[$pos] = $cardKey;
             }
         }
-
+        if (!isset($occupiedByInsp[1])) {
+            $availablePositions[1] = "home";
+        }
         return $availablePositions;
     }
 

@@ -54,6 +54,8 @@ diceMod|Modify Dice by +/- 1
 dicePlus|Modify Dice by +1
 diceMinus|Modify Dice by -1
 newDie|Gain Die
+jtile|Journal Tile Bonus
+pickGreen|Pick Green Worker
 
 #set class=Op_gain
 food|Gain Provision

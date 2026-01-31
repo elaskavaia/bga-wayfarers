@@ -348,7 +348,7 @@ interface NotificationMessage {
 
 /** This is essentically dojo.place but without dojo */
 function placeHtml(html: string, parent: ElementOrId, how: InsertPosition = "beforeend") {
-  return $(parent).insertAdjacentHTML(how, html);
+  $(parent).insertAdjacentHTML(how, html);
 }
 function getIntPart(word, i) {
   return parseInt(getPart(word, i));
