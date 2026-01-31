@@ -111,13 +111,26 @@ class LaAnimations {
     clone.classList.add("phantom");
     clone.classList.add("phantom" + postfix);
     clone.style.transitionDuration = "0ms"; // disable animation during projection
-    if (elemRect.width > 1) {
-      clone.style.width = elemRect.width + "px";
-      clone.style.height = elemRect.height + "px";
-    }
 
     var fullmatrix = this.getFulltransformMatrix(elem.parentNode as Element, over.parentNode as Element);
 
+    // Calculate the scale factor of oversurface relative to viewport
+    // This handles cases where oversurface or its ancestors are scaled
+    const overElement = over as HTMLElement;
+    const overRect = over.getBoundingClientRect();
+    const scaleX = overElement.offsetWidth > 0 ? overRect.width / overElement.offsetWidth : 1;
+    const scaleY = overElement.offsetHeight > 0 ? overRect.height / overElement.offsetHeight : 1;
+
+    // Set dimensions adjusted for scale so clone appears same visual size as original
+    if (elemRect.width > 1) {
+      clone.style.width = elemRect.width / scaleX + "px";
+      clone.style.height = elemRect.height / scaleY + "px";
+    }
+
+    // Set initial position before appending so we measure from a known baseline
+    clone.style.position = "absolute";
+    clone.style.left = "0px";
+    clone.style.top = "0px";
     over.appendChild(clone);
     var cloneRect = clone.getBoundingClientRect();
 
@@ -129,16 +142,83 @@ class LaAnimations {
     const offsetX = centerX - cloneRect.width / 2 - cloneRect.x;
     const offsetY = centerY - cloneRect.height / 2 - cloneRect.y;
 
-    // Then remove the clone's parent position (since left/top is from tthe parent)
-    //console.log("cloneRect", cloneRect);
-
-    // @ts-ignore
-    clone.style.left = offsetX + "px";
-    clone.style.top = offsetY + "px";
+    // Then remove the clone's parent position (since left/top is from the parent)
+    // Divide by scale factor to convert from viewport pixels to CSS pixels
+    clone.style.left = offsetX / scaleX + "px";
+    clone.style.top = offsetY / scaleY + "px";
     clone.style.transform = fullmatrix;
     clone.style.transitionDuration = undefined;
 
     return clone;
+  }
+
+  cardFlip(mobileId: ElementOrId, newState: string, duration?: number, onEnd?: (node?: HTMLElement) => void) {
+    var mobileNode = $(mobileId) as HTMLElement;
+
+    if (!mobileNode) throw new Error(`Does not exists ${mobileId}`);
+
+    if (duration === undefined) duration = this.defaultAnimationDuration;
+    if (!duration || duration < 0) duration = 0;
+    const noanimation = duration <= 0 || !mobileNode.parentNode;
+    if (noanimation) {
+      mobileNode.dataset.state = newState;
+      setTimeout(() => {
+        if (onEnd) onEnd(mobileNode);
+      }, 0);
+      return;
+    }
+
+    const clone = this.projectOnto(mobileNode, "_temp");
+    clone.innerHTML = "";
+
+    mobileNode.dataset.state = newState;
+    mobileNode.offsetHeight; // recalc
+    const desti = this.projectOnto(mobileNode, "_temp2"); // invisible destination on top of new parent
+    desti.innerHTML = "";
+    mobileNode.style.opacity = "0"; // hide original
+    placeHtml(`<div id="card_temp"></div>`, "oversurface");
+    const group = $("card_temp");
+
+    group.style.left = clone.style.left;
+    group.style.top = clone.style.top;
+    group.style.transform = clone.style.transform;
+    group.style.width = clone.style.width;
+    group.style.height = clone.style.height;
+    group.style.position = "absolute";
+    group.style.transformStyle = "preserve-3d";
+    group.style.transitionProperty = "all";
+
+    group.appendChild(clone);
+    group.appendChild(desti);
+    delete clone.style.left;
+    delete clone.style.top;
+    delete desti.style.left;
+    delete desti.style.top;
+    desti.style.transform = "rotateY(180deg)";
+    desti.style.backfaceVisibility = "hidden";
+    clone.style.backfaceVisibility = "hidden";
+
+    try {
+      //setStyleAttributes(desti, mobileStyle);
+      group.style.transitionDuration = duration + "ms";
+
+      //group.style.visibility = "visible";
+      //group.style.opacity = "1";
+      // that will cause animation
+      //group.style.scale = "2.0";
+      group.style.animation = `flip ${duration}ms`;
+
+      setTimeout(() => {
+        mobileNode.style.removeProperty("opacity"); // restore visibility of original
+        group.remove();
+        if (onEnd) onEnd(mobileNode);
+      }, duration);
+    } catch (e) {
+      // if bad thing happen we have to clean up clones
+      console.error("ERR:C01:animation error", e);
+      group.remove();
+      if (onEnd) onEnd(mobileNode);
+    }
   }
 }
 

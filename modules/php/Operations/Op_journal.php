@@ -18,6 +18,8 @@ use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+use function Bga\Games\wayfarers\getPart;
+
 class Op_journal extends Operation {
     function getPossibleMoves() {
         $owner = $this->getOwner();
@@ -49,12 +51,15 @@ class Op_journal extends Operation {
 
         // Get user selected position (e.g., "jpos_15")
         $selected = $this->getCheckedArg();
-        $newState = (int) str_replace("jpos_", "", $selected);
+        $newState = (int) getPart($selected, 1);
 
         // Update marker state
         $this->game->tokens->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [
             "num" => $newState,
         ]);
+
+        $r = $this->game->getRulesFor($selected);
+        $this->queue($r, $owner, ["jpos" => $selected]);
 
         // Check if end game is triggered (terminal position with no connections)
         $conn = $this->game->getRulesFor("jpos_$newState", "conn", "");

@@ -17,22 +17,10 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
-class Op_reroll extends Operation {
+class Op_newDie extends Operation {
     function getAllDice(): array {
         $owner = $this->getOwner();
-        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
-
-        // Also get dice placed on cards in player's tableau
-        $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "tableau_$owner");
-        foreach ($cards as $card => $info) {
-            if (isset($info["children"])) {
-                foreach ($info["children"] as $childKey => $childInfo) {
-                    if (str_starts_with($childKey, "dice_")) {
-                        $dice[$childKey] = $childInfo;
-                    }
-                }
-            }
-        }
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice_{$owner}", "supply");
         return $dice;
     }
 
@@ -45,10 +33,6 @@ class Op_reroll extends Operation {
         return $res;
     }
 
-    public function getUiArgs() {
-        return ["buttons" => false];
-    }
-
     function resolve(): void {
         $dieKey = $this->getCheckedArg();
         $newValue = bga_rand(1, 6);
@@ -57,14 +41,22 @@ class Op_reroll extends Operation {
             $dieKey,
             "tableau_$owner",
             $newValue,
-            clienttranslate('${player_name} rerolls ${token_name} to ${new_state}')
+            clienttranslate('${player_name} gains a new die and rerolls to ${new_state}')
         );
+        $this->game->customUndoSavepoint($this->getPlayerId(), 1);
     }
     public function canSkip() {
+        if (count($this->getAllDice()) == 0) {
+            return true;
+        }
+        return false;
+    }
+
+    public function requireConfirmation() {
         return true;
     }
 
     function getPrompt() {
-        return clienttranslate("Select a die to reroll");
+        return clienttranslate("Confirm gain die and reroll, this cannot be undone");
     }
 }

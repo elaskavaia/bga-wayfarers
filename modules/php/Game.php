@@ -115,23 +115,23 @@ class Game extends Base {
             $this->tokens->db->setTokenState($token["key"], $i);
             $i++;
         }
+        $token_types = $this->material->get();
         // Shuffle the Journal Tiles and place one faceup on each empty space of the Journal Track.
         $this->tokens->db->shuffle("deck_jtile");
-        $i = 1;
-        foreach ($tokens as $token) {
-            $this->tokens->db->pickTokensForLocation(1, "deck_jtile", "jbonus_$i");
-            $i++;
+        foreach ($token_types as $key => $info) {
+            if (str_starts_with($key, "jpos_")) {
+                $r = $this->getRulesFor($key, "r", "");
+                if (str_contains($r, "jtile")) {
+                    $this->tokens->db->pickTokensForLocation(1, "deck_jtile", $key);
+                }
+                // Place 1 Green Worker on each indicated space along the Journal Track.
+                $r = $this->getRulesFor($key, "gw", "");
+                if ($r) {
+                    $this->tokens->db->moveToken("worker_green_$r", $key);
+                }
+            }
         }
 
-        // Place 1 Green Worker on each indicated space along the Journal Track.
-        $i = 1;
-        foreach ($tokens as $token) {
-            $k = $i + 10;
-            $this->tokens->db->moveToken("worker_green_$i", "jbonus_$k");
-            $i++;
-        }
-
-        $token_types = $this->material->get();
         foreach ($token_types as $key => $info) {
             // Only process upgrade tiles
             if (!getPart($key, 2, true)) {

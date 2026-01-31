@@ -231,16 +231,15 @@ html[data-theme=dark] .deck .counter {
 .tableau .pboard .card[data-home-pos] {
   bottom: 0%;
 }
-.tableau .pboard .card_home_1,
-.tableau .pboard .card[data-home-pos="1"] {
+.tableau .pboard .card_home_1 {
   left: 33%;
 }
 .tableau .pboard .card_home_2,
-.tableau .pboard .card[data-home-pos="2"] {
+.tableau .pboard .card[data-state="-1"] {
   left: 0%;
 }
 .tableau .pboard .card_home_3,
-.tableau .pboard .card[data-home-pos="3"] {
+.tableau .pboard .card[data-state="1"] {
   right: 0%;
 }
 .tableau .pboard .card_folk_1 {
@@ -1086,12 +1085,9 @@ html[data-theme=dark] .deck .counter {
 
 #mainarea {
   width: 100%;
-  padding-top: 20px;
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 10px;
-  padding: 10px;
   z-index: 0;
   position: relative;
 }

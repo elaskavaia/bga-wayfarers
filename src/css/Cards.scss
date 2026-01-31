@@ -200,16 +200,15 @@
     .card[data-home-pos] {
       bottom: 0%;
     }
-    .card_home_1,
-    .card[data-home-pos="1"] {
+    .card_home_1 {
       left: 33%;
     }
     .card_home_2,
-    .card[data-home-pos="2"] {
+    .card[data-state="-1"] {
       left: 0%;
     }
     .card_home_3,
-    .card[data-home-pos="3"] {
+    .card[data-state="1"] {
       right: 0%;
     }
     .card_folk_1 {

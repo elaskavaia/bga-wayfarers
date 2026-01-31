@@ -163,8 +163,10 @@ class GameXBody extends GameMachine {
     mainarea.classList.remove("layout_scale", "layout_scroll");
 
     // Reset any inline transform from previous scale mode
-    mainboardall.style.transform = "";
+    mainboardall.style.transform = "none";
+    mainboardall.style.width = "";
     mainboardall.style.height = "";
+    mainboardall.style.transformOrigin = "";
 
     // Add active layout class
     mainarea.classList.add(`layout_${this.boardLayout}`);
@@ -196,6 +198,8 @@ class GameXBody extends GameMachine {
     mainboardall.style.width = "";
     mainboardall.style.height = "";
     mainboardall.style.transformOrigin = "";
+    mainboardall.scrollLeft = 0;
+    mainarea.scrollLeft = 0;
 
     const naturalWidth = mainboardall.scrollWidth;
     const naturalHeight = mainboardall.scrollHeight;
@@ -331,7 +335,7 @@ class GameXBody extends GameMachine {
       } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
         const x = tokenInfo.state;
-        if (cardType == "home" || tokenId.startsWith("card_folk_1_")) {
+        if (cardType == "home" || x == 1 || x == -1) {
           result.location = `pboard_${color}`;
           return result;
         }

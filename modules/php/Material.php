@@ -366,6 +366,10 @@ class Material {
         "type" => "diceMinus",
         "name" => clienttranslate("Modify Dice by -1"),
 ],
+    "Op_newDie" => [ 
+        "type" => "newDie",
+        "name" => clienttranslate("Gain Die"),
+],
     "Op_food" => [ 
         "class" => "Op_gain",
         "type" => "food",
@@ -2759,106 +2763,137 @@ class Material {
 ],
     "jpos_10" => [ 
         "num" => 10,
-        "conn" => "20,23",
+        "conn" => "20,2",
+        "r" => "jtile,pickGreen",
+        "gw"=>1,
 ],
     "jpos_15" => [ 
         "num" => 15,
         "conn" => "23,27",
+        "r" => "jtile,pickGreen",
 ],
     "jpos_20" => [ 
         "num" => 20,
         "conn" => "40,32",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_23" => [ 
         "num" => 23,
         "conn" => "32,36",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_27" => [ 
         "num" => 27,
         "conn" => "36,47",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_32" => [ 
         "num" => 32,
         "conn" => "40,43",
+        "r" => "jtile,pickGreen",
+        "gw"=>2,
 ],
     "jpos_36" => [ 
         "num" => 36,
         "conn" => "43,47",
+        "r" => "jtile,pickGreen",
 ],
     "jpos_40" => [ 
         "num" => 40,
         "conn" => 50,
+        "r" => "upgPink",
 ],
     "jpos_43" => [ 
         "num" => 43,
         "conn" => "50,55",
+        "r" => "upgPink",
 ],
     "jpos_47" => [ 
         "num" => 47,
         "conn" => 55,
+        "r" => "upgPink",
 ],
     "jpos_50" => [ 
         "num" => 50,
         "conn" => "60,63",
+        "r" => "jtile,pickGreen",
+        "gw"=>3,
 ],
     "jpos_55" => [ 
         "num" => 55,
         "conn" => "63,67",
+        "r" => "jtile,pickGreen",
 ],
     "jpos_60" => [ 
         "num" => 60,
         "conn" => "80,72",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_63" => [ 
         "num" => 63,
         "conn" => "72,76",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_67" => [ 
         "num" => 67,
         "conn" => "76,87",
+        "r" => "cardInsp,newDie",
 ],
     "jpos_72" => [ 
         "num" => 72,
         "conn" => "80,83",
+        "r" => "jtile,pickGreen",
+        "gw"=>4,
 ],
     "jpos_76" => [ 
         "num" => 76,
         "conn" => "83,87",
+        "r" => "jtile,pickGreen",
 ],
     "jpos_80" => [ 
         "num" => 80,
         "conn" => 90,
+        "r" => "upgPink",
 ],
     "jpos_83" => [ 
         "num" => 83,
         "conn" => "90,95",
+        "r" => "upgPink",
 ],
     "jpos_87" => [ 
         "num" => 87,
         "conn" => 95,
+        "r" => "upgPink",
 ],
     "jpos_90" => [ 
         "num" => 90,
         "conn" => "100,102,103",
+        "r" => "jtile",
 ],
     "jpos_95" => [ 
         "num" => 95,
         "conn" => "103,106,107",
+        "r" => "jtile",
 ],
     "jpos_100" => [ 
         "num" => 100,
+        "r" => "infBlack,infBlack,(upgPink/cardInsp)",
 ],
     "jpos_102" => [ 
         "num" => 102,
+        "r" => "infAny,infAny",
 ],
     "jpos_103" => [ 
         "num" => 103,
+        "r" => "infYellow,infYellow,(upgPink/cardInsp)",
 ],
     "jpos_106" => [ 
         "num" => 106,
+        "r" => "infAny,infAny",
 ],
     "jpos_107" => [ 
         "num" => 107,
+        "r" => "infBlue,infBlue,(upgPink/cardInsp)",
 ],
             /* --- gen php end journal_material --- */
         ];

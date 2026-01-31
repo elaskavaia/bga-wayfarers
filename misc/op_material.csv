@@ -53,6 +53,7 @@ infMove|Move Influence
 diceMod|Modify Dice by +/- 1
 dicePlus|Modify Dice by +1
 diceMinus|Modify Dice by -1
+newDie|Gain Die
 
 #set class=Op_gain
 food|Gain Provision
