@@ -343,7 +343,7 @@ class Game extends Base {
         $res = [];
         foreach ($tagsarr as $tag) {
             if ($tag) {
-                $res[$tag] = 1; // XXX multi?
+                $res[$tag] = ($res[$tag] ?? 0) + 1;
             }
         }
         return $res;
@@ -375,6 +375,12 @@ class Game extends Base {
             if (isset($tags[$tagName])) {
                 $count += $tags[$tagName];
             }
+        }
+
+        // Capital star (pre-printed)
+        $tags = $this->getTagsSet("card_space_1");
+        if (isset($tags[$tagName])) {
+            $count += $tags[$tagName];
         }
 
         return $count;

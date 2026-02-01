@@ -30,7 +30,7 @@ class Game0Basics extends GameGui<any> {
   setup(gamedatas: any) {
     console.log("Starting game setup", gamedatas);
     const first_player_id = Object.keys(gamedatas.players)[0];
-    if (!this.isSpectator) this.player_color = gamedatas.players[this.player_id].color;
+    if (!this.bga.players.isCurrentPlayerSpectator()) this.player_color = gamedatas.players[this.player_id].color;
     else this.player_color = gamedatas.players[first_player_id].color;
   }
 
@@ -132,11 +132,31 @@ class Game0Basics extends GameGui<any> {
     }
   }
 
+  destroyDivOtherCopies(id: string) {
+    const panels = document.querySelectorAll("#" + id);
+    panels.forEach((p, i) => {
+      if (i < panels.length - 1) p.parentNode.removeChild(p);
+    });
+    return panels[0] ?? null;
+  }
+
+  setupLocalControls(divId: string) {
+    // undo adds more of these
+    this.destroyDivOtherCopies(divId);
+    if (this.bga.players.isCurrentPlayerSpectator()) {
+      const loc = document.querySelector("#right-side .spectator-mode");
+      if (loc) loc.insertAdjacentElement("beforeend", $(divId));
+    } else {
+      const loc = document.querySelector("#current_player_board");
+      if (loc) loc.insertAdjacentElement("beforeend", $(divId));
+    }
+  }
+
   addCancelButton(name?: string, handler?: any) {
     if (!name) name = _("Cancel");
     if (!handler) handler = () => this.onCancel();
     if ($("button_cancel")) $("button_cancel").remove();
-    this.addActionButton("button_cancel", name, handler, null, false, "red");
+    this.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
   }
 
   /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */
@@ -205,7 +225,7 @@ class Game0Basics extends GameGui<any> {
     }
 
     const res = {
-      isCurrentPlayerActive: gameui.isCurrentPlayerActive(),
+      isCurrentPlayerActive: gameui.bga.players.isCurrentPlayerActive(),
       animationsActive: gameui.bgaAnimationsActive(),
       replayMode: replayMode
     };

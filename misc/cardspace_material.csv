@@ -49,4 +49,4 @@ num|r|vpexp|tags|tor|tovp|nom
 # Home card
 #set create=0
 #set ext=
-1||min(tag_upg_green,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Home Sky
+1||min(tag_upg_green,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Capital Sky

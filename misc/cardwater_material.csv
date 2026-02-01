@@ -25,8 +25,8 @@ num|r|d|dr|tags|c1|c2|tor|todr
 52||ship,ship|infBlue,infBlack,food|Harbour|x_x_|yx__||Gain Blue influence, Black influence, and 1 Provision
 53||ship,ship|cardFolk(free)|Harbour|x___|_xx_||Acquire a free Townsfolk card
 54||ship|food,cardFolk|Harbour|_x_x|_xx_||Acquire a Townsfolk card and gain Provision
-55||ship,ship|4food|Harbour|_x_x|__xx||Gain 4 Provisions
-56||ship,ship|4coin|Harbour|x_x_|__xx||Gain 4 Silver
+55||ship,ship|4food|Harbour|x_x_|__xx||Gain 4 Provisions
+56||ship,ship|4coin|Harbour|_x_x|__xx||Gain 4 Silver
 
 57||ship|infCard,2coin|Harbour|_x_x|bxxx||Gain Influence on any card and gain 2 Silver
 58||ship|pickWorker,2food|Harbour|xx__|_x_x||Pick a Worker and gain 2 Provisions

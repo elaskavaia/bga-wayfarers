@@ -25,8 +25,8 @@ class GameXBody extends GameMachine {
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
-   <button id="layout_scale" class="layout_btn active">⤢</button>
-   <button id="layout_scroll" class="layout_btn">↔</button>
+   <button id="layout_scale" class="layout_button active">⤢</button>
+   <button id="layout_scroll" class="layout_button">↔</button>
  </div>
  <div id="mainarea">
   <div id="mainboardall" class="mainboardall">
@@ -101,6 +101,8 @@ class GameXBody extends GameMachine {
       this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
       this.addListenerWithGuard($("guild_yellow"), (e) => this.onToken(e));
       this.addListenerWithGuard($("guild_blue"), (e) => this.onToken(e));
+      this.addListenerWithGuard($("deck_land"), (e) => this.onToken(e));
+      this.addListenerWithGuard($("deck_water"), (e) => this.onToken(e));
 
       this.setupNotifications();
       this.setupScoreSheet();
@@ -111,7 +113,8 @@ class GameXBody extends GameMachine {
       // document.rootElement?.classList.add("bgaext_cust_back");
 
       var parent = document.querySelector(".debug_section"); // studio only
-      if (parent) this.addActionButton("button_rcss", "Reload CSS", () => this.reloadCss(), "topbar_content");
+      if (parent)
+        this.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
 
       this.setupLayoutControls();
     } catch (e) {
@@ -161,7 +164,9 @@ class GameXBody extends GameMachine {
     );
   }
   setupLayoutControls() {
-    // Load saved preferences from localStorage
+    super.setupLocalControls("board_layout_controls");
+    // Load saved preferences from localSto
+    // rage
     const savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
 
     this.boardLayout = savedLayout;
@@ -187,21 +192,17 @@ class GameXBody extends GameMachine {
     const mainboardall = $("mainboardall") as HTMLElement;
     const mainarea = $("mainarea") as HTMLElement;
 
-    // Remove all layout classes
-
-    mainarea.classList.remove("layout_scale", "layout_scroll");
-
     // Reset any inline transform from previous scale mode
     mainboardall.style.transform = "none";
     mainboardall.style.width = "";
     mainboardall.style.height = "";
     mainboardall.style.transformOrigin = "";
 
-    // Add active layout class
-    mainarea.classList.add(`layout_${this.boardLayout}`);
+    // Set data attribute instead of class
+    mainarea.dataset.boardLayout = this.boardLayout;
 
     // Update button active states
-    document.querySelectorAll(".layout_btn").forEach((btn) => btn.classList.remove("active"));
+    document.querySelectorAll(".layout_button").forEach((btn) => btn.classList.remove("active"));
     $(`layout_${this.boardLayout}`)?.classList.add("active");
 
     // Handle scale mode with dynamic calculation
@@ -485,9 +486,16 @@ class GameXBody extends GameMachine {
 
         tokenInfo.name = gname ? `${gname}` : `${tname} #${num}`;
         const origtt = (tokenInfo.tooltip ??= "");
-        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+
         switch (t) {
+          case "home":
+            tokenInfo.tooltip = origtt;
+            // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+            if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+            //tokenInfo.imageTypes = "home";
+            break;
           case "land":
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             if (tokenInfo.d) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
@@ -497,24 +505,22 @@ class GameXBody extends GameMachine {
             }
             break;
           case "water":
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
             break;
 
           case "space":
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
             break;
 
-          case "home":
-            // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
-            if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
-            break;
-
           case "folk":
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
             tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
@@ -531,6 +537,7 @@ class GameXBody extends GameMachine {
 
             break;
           case "insp":
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
             tokenInfo.tooltip += this.ttSection(
               undefined,

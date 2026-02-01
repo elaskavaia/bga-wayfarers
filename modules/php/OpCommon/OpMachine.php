@@ -452,6 +452,6 @@ class OpMachine {
 
     function action_undo(int $player_id, int $move_id = 0) {
         $this->game->undoRestorePoint();
-        return GameDispatch::class;
+        return GameDispatchForced::class;
     }
 }

@@ -97,9 +97,23 @@
   background-color: white;
   background-blend-mode: multiply;
   background-position-x: 100%;
-  &.dice_ff0000 {
+  &.dice_ff0000,
+  &.color_ff0000 {
     background-color: #ff0000;
   }
+  &.dice_ffcc02,
+  &.color_ffcc02 {
+    background-color: #ffcc02;
+  }
+  &.dice_6cd0f6,
+  &.color_6cd0f6 {
+    background-color: #6cd0f6;
+  }
+  &.dice_982fff,
+  &.color_982fff {
+    background-color: #982fff;
+  }
+
   &[data-state="1"],
   &.wicon_die_1 {
     background-position-x: 0%;
@@ -322,7 +336,7 @@
   background-size: auto 1200%;
 }
 .wicon_card_space {
-  background-position: 20% 28%;
+  background-position: 17% 28%;
   background-size: auto 1200%;
 }
 .wicon_folk {
@@ -399,7 +413,7 @@
   background-position: 58% 57%;
 }
 .wicon_journal {
-  background-position: 80% 57%;
+  background-position: 77% 57%;
 }
 .wicon_rest1 {
   background-position: 100% 57%;

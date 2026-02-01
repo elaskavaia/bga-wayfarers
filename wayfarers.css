@@ -286,14 +286,17 @@ html[data-theme=dark] .deck .counter {
   background-position-x: 100%;
 }
 
+.card_home_10 {
+  background-image: unset !important;
+}
+
 .card_folk_1 {
   background-image: unset !important;
 }
 
 .card_slot {
   background-image: unset;
-  aspect-ratio: unset;
-  width: 125.6544502618px;
+  aspect-ratio: 5/1;
   height: 31.25px;
 }
 
@@ -1101,6 +1104,31 @@ html[data-theme=dark] .deck .counter {
   width: 40%;
   height: 10%;
 }
+.guild .infsupply {
+  position: absolute;
+  width: 25%;
+  height: 100%;
+}
+.guild .infsupply.guild_blue_ff0000,
+.guild .infsupply.guild_yellow_ff0000,
+.guild .infsupply.guild_black_ff0000 {
+  left: 0%;
+}
+.guild .infsupply.guild_blue_ffcc02,
+.guild .infsupply.guild_yellow_ffcc02,
+.guild .infsupply.guild_black_ffcc02 {
+  left: 25%;
+}
+.guild .infsupply.guild_blue_6cd0f6,
+.guild .infsupply.guild_yellow_6cd0f6,
+.guild .infsupply.guild_black_6cd0f6 {
+  left: 50%;
+}
+.guild .infsupply.guild_blue_982fff,
+.guild .infsupply.guild_yellow_982fff,
+.guild .infsupply.guild_black_982fff {
+  left: 75%;
+}
 
 .guild_blue {
   top: 65%;
@@ -1132,6 +1160,17 @@ html[data-theme=dark] .deck .counter {
 #current_player_panel {
   overflow-x: auto;
   overflow-y: visible;
+  width: 100%;
+}
+
+#players_panels {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .pboard {
@@ -1221,13 +1260,6 @@ html[data-theme=dark] .deck .counter {
 .caravan_cell .upg.upg_blue {
   width: 200%;
   height: 100%;
-}
-
-.players_panels {
-  display: flex;
-  position: relative;
-  flex-wrap: wrap;
-  justify-content: space-around;
 }
 
 .mainboardall {
@@ -1425,7 +1457,7 @@ html[data-theme=dark] .deck .counter {
   color: #ccc;
   margin: 0 4px;
 }
-.board_layout_controls .layout_btn {
+.board_layout_controls .layout_button {
   width: 28px;
   height: 28px;
   border: 1px solid #ccc;
@@ -1438,28 +1470,28 @@ html[data-theme=dark] .deck .counter {
   justify-content: center;
   transition: all 0.2s;
 }
-.board_layout_controls .layout_btn:hover {
+.board_layout_controls .layout_button:hover {
   background: #e0e0e0;
   border-color: #999;
 }
-.board_layout_controls .layout_btn.active {
+.board_layout_controls .layout_button.active {
   background: #19bedb;
   border-color: #19bedb;
   color: white;
 }
 
-#mainarea.layout_scale {
+#mainarea[data-board-layout=scale] {
   overflow: hidden;
   justify-content: center;
   align-items: center;
 }
 
-#mainarea.layout_scroll {
+#mainarea[data-board-layout=scroll] {
   overflow-x: auto;
   overflow-y: visible;
   justify-content: safe center;
 }
-#mainarea.layout_scroll .mainboardall {
+#mainarea[data-board-layout=scroll] .mainboardall {
   min-width: max-content;
 }
 
@@ -1689,8 +1721,17 @@ html[data-theme=dark] .miniboard .counter {
   background-image: url(img/dice3d.png);
   mask-image: url(img/dice3d.png);
 }
-.dice.dice_ff0000 {
+.dice.dice_ff0000, .dice.color_ff0000 {
   background-color: #ff0000;
+}
+.dice.dice_ffcc02, .dice.color_ffcc02 {
+  background-color: #ffcc02;
+}
+.dice.dice_6cd0f6, .dice.color_6cd0f6 {
+  background-color: #6cd0f6;
+}
+.dice.dice_982fff, .dice.color_982fff {
+  background-color: #982fff;
 }
 .dice[data-state="1"], .dice.wicon_die_1 {
   background-position-x: 0%;
@@ -1929,7 +1970,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_card_space {
-  background-position: 20% 28%;
+  background-position: 17% 28%;
   background-size: auto 1200%;
 }
 
@@ -2021,7 +2062,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_journal {
-  background-position: 80% 57%;
+  background-position: 77% 57%;
 }
 
 .wicon_rest1 {
@@ -2257,6 +2298,9 @@ html[data-theme=dark] .miniboard .counter {
 }
 .tooltip-left .tooltipimage.card {
   height: 300px;
+}
+.tooltip-left .tooltipimage.card_slot {
+  height: 40px;
 }
 
 .tooltip-right {

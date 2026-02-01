@@ -55,7 +55,7 @@ var Game0Basics = /** @class */ (function (_super) {
     Game0Basics.prototype.setup = function (gamedatas) {
         console.log("Starting game setup", gamedatas);
         var first_player_id = Object.keys(gamedatas.players)[0];
-        if (!this.isSpectator)
+        if (!this.bga.players.isCurrentPlayerSpectator())
             this.player_color = gamedatas.players[this.player_id].color;
         else
             this.player_color = gamedatas.players[first_player_id].color;
@@ -154,6 +154,29 @@ var Game0Basics = /** @class */ (function (_super) {
             this.inherited(arguments);
         }
     };
+    Game0Basics.prototype.destroyDivOtherCopies = function (id) {
+        var _a;
+        var panels = document.querySelectorAll("#" + id);
+        panels.forEach(function (p, i) {
+            if (i < panels.length - 1)
+                p.parentNode.removeChild(p);
+        });
+        return (_a = panels[0]) !== null && _a !== void 0 ? _a : null;
+    };
+    Game0Basics.prototype.setupLocalControls = function (divId) {
+        // undo adds more of these
+        this.destroyDivOtherCopies(divId);
+        if (this.bga.players.isCurrentPlayerSpectator()) {
+            var loc = document.querySelector("#right-side .spectator-mode");
+            if (loc)
+                loc.insertAdjacentElement("beforeend", $(divId));
+        }
+        else {
+            var loc = document.querySelector("#current_player_board");
+            if (loc)
+                loc.insertAdjacentElement("beforeend", $(divId));
+        }
+    };
     Game0Basics.prototype.addCancelButton = function (name, handler) {
         var _this = this;
         if (!name)
@@ -162,7 +185,7 @@ var Game0Basics = /** @class */ (function (_super) {
             handler = function () { return _this.onCancel(); };
         if ($("button_cancel"))
             $("button_cancel").remove();
-        this.addActionButton("button_cancel", name, handler, null, false, "red");
+        this.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
     };
     /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */
     Game0Basics.prototype.showPopin = function (html, id, title, refresh) {
@@ -233,7 +256,7 @@ var Game0Basics = /** @class */ (function (_super) {
             replayMode = true;
         }
         var res = {
-            isCurrentPlayerActive: gameui.isCurrentPlayerActive(),
+            isCurrentPlayerActive: gameui.bga.players.isCurrentPlayerActive(),
             animationsActive: gameui.bgaAnimationsActive(),
             replayMode: replayMode
         };
@@ -421,7 +444,7 @@ var HelpMode = /** @class */ (function () {
         this._displayedTooltip = null;
         document.body.addEventListener("click", this.closeHelpHandler);
         this.game.statusBar.setTitle(_("HELP MODE Activated. Click on game elements to get tooltips"));
-        dojo.empty("generalactions");
+        $("generalactions").replaceChildren();
         this.game.addCancelButton(undefined, function () { return _this.deactivateHelpMode(); });
         document.querySelectorAll(".withtooltip").forEach(function (node) {
             node.addEventListener("click", _this.helpModeHandler, false);
@@ -1763,7 +1786,7 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
         _this.boardLayout = "scale";
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_btn active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_btn\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () { return _this.updateBoardScale(); };
         return _this;
     }
@@ -1783,6 +1806,8 @@ var GameXBody = /** @class */ (function (_super) {
             this.addListenerWithGuard($("guild_black"), function (e) { return _this.onToken(e); });
             this.addListenerWithGuard($("guild_yellow"), function (e) { return _this.onToken(e); });
             this.addListenerWithGuard($("guild_blue"), function (e) { return _this.onToken(e); });
+            this.addListenerWithGuard($("deck_land"), function (e) { return _this.onToken(e); });
+            this.addListenerWithGuard($("deck_water"), function (e) { return _this.onToken(e); });
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
@@ -1790,7 +1815,7 @@ var GameXBody = /** @class */ (function (_super) {
             // document.rootElement?.classList.add("bgaext_cust_back");
             var parent = document.querySelector(".debug_section"); // studio only
             if (parent)
-                this.addActionButton("button_rcss", "Reload CSS", function () { return _this.reloadCss(); }, "topbar_content");
+                this.statusBar.addActionButton("Reload CSS", function () { return _this.reloadCss(); }, { id: "button_rcss", destination: $("topbar_content") });
             this.setupLayoutControls();
         }
         catch (e) {
@@ -1821,7 +1846,9 @@ var GameXBody = /** @class */ (function (_super) {
     };
     GameXBody.prototype.setupLayoutControls = function () {
         var _this = this;
-        // Load saved preferences from localStorage
+        _super.prototype.setupLocalControls.call(this, "board_layout_controls");
+        // Load saved preferences from localSto
+        // rage
         var savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
         this.boardLayout = savedLayout;
         // Apply saved settings
@@ -1841,17 +1868,15 @@ var GameXBody = /** @class */ (function (_super) {
         var _a;
         var mainboardall = $("mainboardall");
         var mainarea = $("mainarea");
-        // Remove all layout classes
-        mainarea.classList.remove("layout_scale", "layout_scroll");
         // Reset any inline transform from previous scale mode
         mainboardall.style.transform = "none";
         mainboardall.style.width = "";
         mainboardall.style.height = "";
         mainboardall.style.transformOrigin = "";
-        // Add active layout class
-        mainarea.classList.add("layout_".concat(this.boardLayout));
+        // Set data attribute instead of class
+        mainarea.dataset.boardLayout = this.boardLayout;
         // Update button active states
-        document.querySelectorAll(".layout_btn").forEach(function (btn) { return btn.classList.remove("active"); });
+        document.querySelectorAll(".layout_button").forEach(function (btn) { return btn.classList.remove("active"); });
         (_a = $("layout_".concat(this.boardLayout))) === null || _a === void 0 ? void 0 : _a.classList.add("active");
         // Handle scale mode with dynamic calculation
         if (this.boardLayout === "scale") {
@@ -2148,9 +2173,16 @@ var GameXBody = /** @class */ (function (_super) {
                 var gname = this.getTr(tokenInfo.nom);
                 tokenInfo.name = gname ? "".concat(gname) : "".concat(tname, " #").concat(num);
                 var origtt = ((_b = tokenInfo.tooltip) !== null && _b !== void 0 ? _b : (tokenInfo.tooltip = ""));
-                tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                 switch (t) {
+                    case "home":
+                        tokenInfo.tooltip = origtt;
+                        // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+                        if (tokenInfo.dr)
+                            tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
+                        //tokenInfo.imageTypes = "home";
+                        break;
                     case "land":
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
@@ -2162,6 +2194,7 @@ var GameXBody = /** @class */ (function (_super) {
                         }
                         break;
                     case "water":
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
@@ -2169,18 +2202,15 @@ var GameXBody = /** @class */ (function (_super) {
                             tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
                         break;
                     case "space":
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
                         tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
                         break;
-                    case "home":
-                        // tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
-                        if (tokenInfo.dr)
-                            tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
-                        break;
                     case "folk":
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
                         tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, " / "));
@@ -2197,6 +2227,7 @@ var GameXBody = /** @class */ (function (_super) {
                         }
                         break;
                     case "insp":
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
                         tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));

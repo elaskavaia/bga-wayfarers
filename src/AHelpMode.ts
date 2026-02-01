@@ -20,7 +20,7 @@ class HelpMode {
     this._displayedTooltip = null;
     document.body.addEventListener("click", this.closeHelpHandler);
     this.game.statusBar.setTitle(_("HELP MODE Activated. Click on game elements to get tooltips"));
-    dojo.empty("generalactions");
+    $("generalactions").replaceChildren();
     this.game.addCancelButton(undefined, () => this.deactivateHelpMode());
 
     document.querySelectorAll(".withtooltip").forEach((node) => {

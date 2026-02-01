@@ -14,28 +14,25 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_newDie extends Operation {
-    function getAllDice(): array {
+    function getDie() {
         $owner = $this->getOwner();
-        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice_{$owner}", "supply");
-        return $dice;
+        $die = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("dice_{$owner}", "supply");
+        return $die;
     }
 
     function getPossibleMoves() {
-        $dice = $this->getAllDice();
-        $res = [];
-        foreach ($dice as $key => $die) {
-            $res[$key] = ["q" => Material::RET_OK];
-            break; // only one
+        if (!$this->getDie()) {
+            return ["err" => clienttranslate("No dice available in supply")];
         }
-        return $res;
+        return parent::getPossibleMoves();
     }
 
     function resolve(): void {
-        $dieKey = $this->getCheckedArg();
+        $dieKey = $this->getDie();
+        if (!$dieKey) return;
         $newValue = bga_rand(1, 6);
         $owner = $this->getOwner();
         $this->game->tokens->dbSetTokenLocation(
@@ -47,7 +44,7 @@ class Op_newDie extends Operation {
         $this->game->customUndoSavepoint($this->getPlayerId(), 1);
     }
     public function canSkip() {
-        if (count($this->getAllDice()) == 0) {
+        if (!$this->getDie()) {
             return true;
         }
         return false;

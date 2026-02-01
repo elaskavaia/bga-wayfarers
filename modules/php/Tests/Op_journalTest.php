@@ -56,7 +56,7 @@ final class Op_journalTest extends TestCase {
     }
 
     private function addPlayerUpgrade(string $type, string $owner = PCOLOR): void {
-        $tokenId = "upg_${type}_1";
+        $tokenId = "upg_{$type}_1";
         $this->game->tokens->db->moveToken($tokenId, "tableau_$owner");
     }
 

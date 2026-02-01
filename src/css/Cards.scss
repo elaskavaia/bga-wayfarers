@@ -255,13 +255,15 @@
 .card_home_3 {
   background-position-x: 100%;
 }
+.card_home_10 {
+  background-image: unset !important;
+}
 .card_folk_1 {
   background-image: unset !important;
 }
 .card_slot {
   background-image: unset;
-  aspect-ratio: unset;
-  width: v.$cardWidth;
+  aspect-ratio: 5 / 1;
   height: calc(v.$cardHeight / 6.4);
 }
 

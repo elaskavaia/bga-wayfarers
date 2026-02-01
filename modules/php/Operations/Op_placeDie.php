@@ -120,7 +120,7 @@ class Op_placeDie extends Op_acquireBase {
         $die = $this->getDie();
         // Check caravan column for dicePlus, diceMinus abilities (already in caravanAssets)
         if (($caravanAssets["dicePlus"] ?? 0) > 0 && $dieValue < 6) {
-            $dieValuePlus = $dieValue - 1;
+            $dieValuePlus = $dieValue + 1;
             $res["Op_dicePlus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValuePlus]"];
         }
         if (($caravanAssets["diceMinus"] ?? 0) > 0 && $dieValue > 1) {

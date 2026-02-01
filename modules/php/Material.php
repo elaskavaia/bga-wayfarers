@@ -1841,7 +1841,7 @@ class Material {
         "d" => "ship,ship",
         "dr" => "4food",
         "tags" => "Harbour",
-        "c1" => "_x_x",
+        "c1" => "x_x_",
         "c2" => "__xx",
         "todr" => clienttranslate("Gain 4 Provisions"),
 ],
@@ -1851,7 +1851,7 @@ class Material {
         "d" => "ship,ship",
         "dr" => "4coin",
         "tags" => "Harbour",
-        "c1" => "x_x_",
+        "c1" => "_x_x",
         "c2" => "__xx",
         "todr" => clienttranslate("Gain 4 Silver"),
 ],
@@ -2781,7 +2781,7 @@ class Material {
         "vpexp" => "min(tag_upg_green,tag_card_folk)",
         "tags" => "Stars",
         "tovp" => "1 VP per set of Basic upgrade and Townsfolk",
-        "nom" => clienttranslate("Home Sky"),
+        "nom" => clienttranslate("Capital Sky"),
 ],
             /* --- gen php end cardspace_material --- */
 
@@ -3278,7 +3278,7 @@ class Material {
     "jconn_55_63_0" => [ 
         "num" => 55,
         "conn" => 63,
-        "r" => "tag_Stars",
+        "r" => "tag_Comet",
         "gw" => 3,
 ],
     "jconn_55_67_0" => [ 

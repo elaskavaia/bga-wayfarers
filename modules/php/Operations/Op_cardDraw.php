@@ -93,7 +93,7 @@ class Op_cardDraw extends CountableOperation {
                     ],
                     $this->getPlayerId()
                 );
-                $this->game->tokens->dbSetTokensLocation($drawn, $handLocation, 0, ["_private" => true], $this->getPlayerId());
+                $this->game->tokens->dbSetTokensLocation($drawn, $handLocation, 0, "*", ["_private" => true], $this->getPlayerId());
                 // Continue to second phase
                 $this->withDataField("drawn", true);
                 $this->queue($this->getType(), $owner, $this->getData());

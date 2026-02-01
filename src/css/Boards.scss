@@ -32,6 +32,38 @@
   position: absolute;
   width: 40%;
   height: 10%;
+
+  // Player influence areas within each guild
+  .infsupply {
+    position: absolute;
+    width: 25%;
+    height: 100%;
+  }
+
+  // Position for each player color (4 players)
+  .infsupply.guild_blue_ff0000,
+  .infsupply.guild_yellow_ff0000,
+  .infsupply.guild_black_ff0000 {
+    left: 0%;
+  }
+
+  .infsupply.guild_blue_ffcc02,
+  .infsupply.guild_yellow_ffcc02,
+  .infsupply.guild_black_ffcc02 {
+    left: 25%;
+  }
+
+  .infsupply.guild_blue_6cd0f6,
+  .infsupply.guild_yellow_6cd0f6,
+  .infsupply.guild_black_6cd0f6 {
+    left: 50%;
+  }
+
+  .infsupply.guild_blue_982fff,
+  .infsupply.guild_yellow_982fff,
+  .infsupply.guild_black_982fff {
+    left: 75%;
+  }
 }
 .guild_blue {
   top: 65%;
@@ -60,6 +92,17 @@
 #current_player_panel {
   overflow-x: auto;
   overflow-y: visible;
+  width: 100%;
+}
+
+#players_panels {
+  overflow-x: auto;
+  overflow-y: visible;
+  width: 100%;
+  display: flex;
+  position: relative;
+  flex-wrap: wrap;
+  justify-content: space-around;
 }
 
 .pboard {
@@ -157,13 +200,6 @@
     width: 200%;
     height: 100%;
   }
-}
-
-.players_panels {
-  display: flex;
-  position: relative;
-  flex-wrap: wrap;
-  justify-content: space-around;
 }
 
 .mainboardall {
@@ -392,7 +428,7 @@
     margin: 0 4px;
   }
 
-  .layout_btn {
+  .layout_button {
     width: 28px;
     height: 28px;
     border: 1px solid #ccc;
@@ -419,14 +455,14 @@
 }
 
 // Layout mode: Scale to fit
-#mainarea.layout_scale {
+#mainarea[data-board-layout="scale"] {
   overflow: hidden;
   justify-content: center;
   align-items: center;
 }
 
 // Layout mode: Horizontal scroll
-#mainarea.layout_scroll {
+#mainarea[data-board-layout="scroll"] {
   overflow-x: auto;
   overflow-y: visible;
   // Center when content fits, align left when scrolling needed
