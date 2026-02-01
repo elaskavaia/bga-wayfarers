@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
@@ -90,6 +91,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
         $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", count($tokens) + 2);
     }
+
     function resolve(): void {
         $owner = $this->getOwner();
         $card = $this->getCard() ?: $this->getCheckedArg();
@@ -126,7 +128,7 @@ abstract class Op_cardBase extends Op_acquireBase {
     }
 
     public function getPrompt() {
-        return clienttranslate("Select a card to buy");
+        return clienttranslate("Select a Card to buy");
     }
 
     public function getUiArgs() {

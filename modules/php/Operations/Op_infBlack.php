@@ -18,4 +18,8 @@ class Op_infBlack extends Op_infBase {
     function getGuild(): string {
         return "guild_black";
     }
+
+    public function getIconicName() {
+        return "[wicon_inf_black]";
+    }
 }

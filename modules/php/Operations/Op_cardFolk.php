@@ -120,7 +120,7 @@ class Op_cardFolk extends Op_cardBase {
     public function getPrompt() {
         $card = $this->getCard();
         if ($card == null) {
-            return clienttranslate("Select a Townsfolk card to buy");
+            return clienttranslate("Select a Townsfolk Card to buy");
         }
         return clienttranslate("Select a card to tuck under");
     }

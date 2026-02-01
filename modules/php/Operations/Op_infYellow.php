@@ -18,4 +18,8 @@ class Op_infYellow extends Op_infBase {
     function getGuild(): string {
         return "guild_yellow";
     }
+
+    public function getIconicName() {
+        return "[wicon_inf_yellow]";
+    }
 }

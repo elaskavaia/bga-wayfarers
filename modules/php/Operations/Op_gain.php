@@ -47,7 +47,7 @@ class Op_gain extends CountableOperation {
         return parent::getExtraArgs() + ["token_div" => $tracker_id, "token_id" => $tracker_id];
     }
 
-    function getButtonName() {
+    function getIconicName() {
         $count = $this->getCount();
         if ($count == 1) {
             return '${token_div}';

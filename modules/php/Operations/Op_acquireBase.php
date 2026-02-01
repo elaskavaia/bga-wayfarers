@@ -56,11 +56,16 @@ abstract class Op_acquireBase extends Operation {
     function getCoinDiscount(): int {
         $dieValue = $this->getDieValue();
         if (!$dieValue) {
-            return 0;
+            $v = 0;
+        } else {
+            $owner = $this->getOwner();
+            $caravanAssets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
+            $v = $caravanAssets["coinDis"] ?? 0;
         }
-        $owner = $this->getOwner();
-        $caravanAssets = $this->game->getCaravanAssetsForDie($dieValue, $owner);
-        return $caravanAssets["coinDis"] ?? 0;
+        if ($this->getParam() == "dis") {
+            $v += 1;
+        }
+        return $v;
     }
 
     /**

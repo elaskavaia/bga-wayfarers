@@ -624,16 +624,17 @@ class Game1Tokens extends Game0Basics {
 
   getTokenPresentaton(type: string, tokenKey: string, args: any = {}): string {
     if (type.includes("_div")) return this.createTokenImage(tokenKey);
+    if (tokenKey.includes("wicon")) return this.createTokenImage(tokenKey);
     return this.getTokenName(tokenKey); // just a name for now
   }
   // override to generate dynamic tooltips and such
   updateTokenDisplayInfo(tokenDisplayInfo: TokenDisplayInfo) {}
 
-  createTokenImage(tokenId: string) {
+  createTokenImage(tokenId: string, state: number = 0) {
     const div = document.createElement("div");
     div.id = tokenId + "_tt_" + this.globlog++;
-    this.updateToken(div, { key: tokenId, location: "log", state: 0 });
-    div.title = this.getTokenName(tokenId);
+    this.updateToken(div, { key: tokenId, location: "log", state });
+    div.title = this.getTokenName(tokenId, false) ?? "";
     return div.outerHTML;
   }
 
@@ -649,9 +650,19 @@ class Game1Tokens extends Game0Basics {
     return false;
   }
   bgaFormatText(log: string, args: any) {
-    if (log && args) {
-      try {
-        var keys = ["token_name", "token2_name", "token_divs", "token_names", "place_name", "token_div", "token2_div", "token3_div"];
+    try {
+      if (log && args) {
+        var keys = [
+          "token_name",
+          "token2_name",
+          "token_divs",
+          "token_names",
+          "place_name",
+          "token_div",
+          "token2_div",
+          "token3_div",
+          "token_icon"
+        ];
         for (var i in keys) {
           const key = keys[i];
           // console.log("checking " + key + " for " + log);
@@ -676,11 +687,10 @@ class Game1Tokens extends Game0Basics {
           var res = this.getTokenPresentaton(key, arg_value, args);
           if (res) args[key] = res;
         }
-      } catch (e) {
-        console.error(log, args, "Exception thrown", e.stack);
       }
+    } catch (e) {
+      console.error(log, args, "Exception thrown", e.stack);
     }
-
     return { log, args };
   }
 

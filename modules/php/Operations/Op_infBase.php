@@ -45,17 +45,6 @@ abstract class Op_infBase extends Operation {
         }
         return $movable;
 
-        // Check other guilds
-        // foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
-        //     if ($guild === $targetGuild) {
-        //         continue;
-        //     }
-        //     $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
-        //     foreach ($tokens as $tokenId => $info) {
-        //         $movable[$tokenId] = ["q" => Material::RET_OK, "from" => $guild];
-        //     }
-        // }
-
         return $movable;
     }
 

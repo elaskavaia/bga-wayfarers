@@ -1,15 +1,15 @@
 @charset "UTF-8";
 @keyframes active-pulse {
   0% {
-    transform: scale(1);
+    scale: 1;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7);
   }
   70% {
-    transform: scale(1.5);
+    scale: 1.2;
     box-shadow: 0 0 0 10px rgba(0, 0, 0, 0);
   }
   100% {
-    transform: scale(1);
+    scale: 1;
     box-shadow: 0 0 0 0 rgba(0, 0, 0, 0);
   }
 }
@@ -205,11 +205,11 @@ html[data-theme=dark] .deck .counter {
 }
 .tableau .card_water,
 .tableau .card_land {
-  z-index: 1;
+  z-index: 2;
   bottom: 8.5%;
 }
 .tableau .card_space {
-  z-index: 0;
+  z-index: 1;
   top: 8.5%;
 }
 .tableau .card_insp {
@@ -1135,11 +1135,19 @@ html[data-theme=dark] .deck .counter {
 }
 
 .pboard {
-  background-image: url(img/PlayerBoard-01-s.png);
   height: 100%;
-  background-size: cover;
   aspect-ratio: 798/1024;
   position: relative;
+}
+
+.pboard::before {
+  content: " ";
+  background-image: url(img/PlayerBoard-01-s.png);
+  background-size: auto 100%;
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
 }
 
 .breakroom {
@@ -1148,6 +1156,7 @@ html[data-theme=dark] .deck .counter {
   right: 0%;
   width: 33%;
   height: 24%;
+  z-index: 2;
 }
 .breakroom > * {
   display: inline-block;
@@ -1164,6 +1173,7 @@ html[data-theme=dark] .deck .counter {
   right: 0%;
   width: 26%;
   height: 24%;
+  z-index: 2;
 }
 .infsupply > * {
   position: absolute;
@@ -1241,6 +1251,9 @@ html[data-theme=dark] .deck .counter {
 .mainboard_1 {
   background-image: url(img/MainBoard1.jpg);
 }
+.mainboard_1[data-state="1"] {
+  background-image: url(img/MainBoard4.jpg);
+}
 .mainboard_1 .upg_pink {
   position: absolute;
 }
@@ -1288,6 +1301,9 @@ html[data-theme=dark] .deck .counter {
 .mainboard_2 {
   background-image: url(img/MainBoard2.jpg);
   aspect-ratio: 1212/1024;
+}
+.mainboard_2[data-state="1"] {
+  background-image: url(img/MainBoard5.jpg);
 }
 .mainboard_2 .upg {
   position: absolute;
@@ -1381,6 +1397,9 @@ html[data-theme=dark] .deck .counter {
 .mainboard_3 {
   background-image: url(img/MainBoard3.jpg);
   margin-right: 200px;
+}
+.mainboard_3[data-state="1"] {
+  background-image: url(img/MainBoard6.jpg);
 }
 
 #mainarea_wrap {
@@ -1546,7 +1565,7 @@ html[data-theme=dark] .deck .counter {
   left: 55%;
 }
 .mainboard_2 .jpos_76 {
-  top: 50%;
+  top: 55%;
   left: 55%;
 }
 .mainboard_2 .jpos_80 {
@@ -1649,8 +1668,10 @@ html[data-theme=dark] .miniboard .counter {
   height: 24px;
   line-height: 24px;
 }
-#page-title .wooden {
-  filter: drop-shadow(2px 2px 3px black);
+
+.wicon.dice {
+  background-image: url(img/dice.png);
+  background-size: 600% 100%;
 }
 
 .dice {
@@ -1664,22 +1685,26 @@ html[data-theme=dark] .miniboard .counter {
   background-blend-mode: multiply;
   background-position-x: 100%;
 }
+.tableau .dice, .mainarea .dice {
+  background-image: url(img/dice3d.png);
+  mask-image: url(img/dice3d.png);
+}
 .dice.dice_ff0000 {
   background-color: #ff0000;
 }
-.dice[data-state="1"], .dice.die_1 {
+.dice[data-state="1"], .dice.wicon_die_1 {
   background-position-x: 0%;
 }
-.dice[data-state="2"], .dice.die_2 {
+.dice[data-state="2"], .dice.wicon_die_2 {
   background-position-x: 20%;
 }
-.dice[data-state="3"], .dice.die_3 {
+.dice[data-state="3"], .dice.wicon_die_3 {
   background-position-x: 40%;
 }
-.dice[data-state="4"], .dice.die_4 {
+.dice[data-state="4"], .dice.wicon_die_4 {
   background-position-x: 60%;
 }
-.dice[data-state="5"], .dice.die_5 {
+.dice[data-state="5"], .dice.wicon_die_5 {
   background-position-x: 80%;
 }
 
@@ -1768,8 +1793,8 @@ html[data-theme=dark] .miniboard .counter {
 .wicon {
   background-image: url(img/tokens.png);
   background-size: auto 1200%;
-  width: 32px;
   height: 32px;
+  aspect-ratio: 1;
 }
 .log .wicon, #page-title .wicon {
   display: inline-block;
@@ -1839,43 +1864,63 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_upg_green {
-  background-position: 0% 28%;
+  background-position: 0% 14%;
 }
 
 .wicon_upg_black {
-  background-position: 10% 28%;
+  background-position: 10% 14%;
 }
 
 .wicon_upg_yellow {
-  background-position: 19% 28%;
+  background-position: 19% 14%;
 }
 
 .wicon_upg_blue {
-  background-position: 30% 28%;
+  background-position: 30% 14%;
 }
 
 .wicon_upg_pink {
-  background-position: 40% 28%;
+  background-position: 40% 14%;
 }
 
 .wicon_upg_any {
-  background-position: 50% 28%;
+  background-position: 50% 14%;
 }
 
 .wicon_upg_green_free {
-  background-position: 60% 28%;
+  background-position: 60% 14%;
 }
 
 .wicon_upg_black_free {
-  background-position: 70% 28%;
+  background-position: 70% 14%;
 }
 
 .wicon_upg_yellow_free {
-  background-position: 80% 28%;
+  background-position: 80% 14%;
 }
 
 .wicon_upg_blue_free {
-  background-position: 90% 28%;
+  background-position: 90% 14%;
+}
+
+.wicon_water {
+  background-position: 0% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_land {
+  background-position: 10% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_space {
+  background-position: 20% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_folk {
+  background-position: 30% 28%;
+  background-size: auto 1200%;
 }
 
 .wicon_camel {
@@ -1884,7 +1929,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_ship {
-  background-position: 77% 28%;
+  background-position: 80% 28%;
   background-size: auto 1000%;
 }
 
@@ -1900,46 +1945,76 @@ html[data-theme=dark] .miniboard .counter {
 
 .wicon_inf_blue {
   background-position: 0% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_black {
-  background-position: 8% 42%;
+  background-position: 10% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_yellow {
-  background-position: 16% 42%;
+  background-position: 20% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_any {
-  background-position: 24% 42%;
+  background-position: 30% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_move {
-  background-position: 40% 42%;
+  background-position: 39% 42%;
 }
 
 .wicon_inf_blue_pay {
-  background-position: 48% 42%;
+  background-position: 49% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_black_pay {
   background-position: 58% 42%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_yellow_pay {
-  background-position: 56% 42%;
+  background-position: 67.4% 42%;
+  background-size: auto 1000%;
+}
+
+.wicon_pick_worker {
+  background-position: 24% 57%;
+  background-size: auto 1000%;
 }
 
 .wicon_reroll {
-  background-position: 50% 60%;
+  background-position: 50% 57%;
+}
+
+.wicon_dice_mod {
+  background-position: 58% 57%;
 }
 
 .wicon_journal {
-  background-position: 80% 60%;
+  background-position: 80% 57%;
 }
 
 .wicon_rest1 {
-  background-position: 100% 60%;
+  background-position: 100% 57%;
+}
+
+.wicon_rest {
+  background-position: 100% 57%;
+}
+
+.wicon_coin {
+  background-position: 77% 42%;
+  background-size: auto 1000%;
+}
+
+.wicon_food {
+  background-position: 84% 42%;
+  background-size: auto 1000%;
 }
 
 .upg {
@@ -2054,6 +2129,54 @@ html[data-theme=dark] .miniboard .counter {
 }
 .upg.upg_green_34 {
   background-position: 75% 100%;
+}
+
+.jtile {
+  height: 48px;
+  aspect-ratio: 1/1;
+  background-image: url(img/journalTiles.jpg);
+  background-size: auto 100%;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.6901960784);
+}
+
+.jtile_1 {
+  background-position: 0% 0;
+}
+
+.jtile_2 {
+  background-position: 11.1111111111% 0;
+}
+
+.jtile_3 {
+  background-position: 22.2222222222% 0;
+}
+
+.jtile_4 {
+  background-position: 33.3333333333% 0;
+}
+
+.jtile_5 {
+  background-position: 44.4444444444% 0;
+}
+
+.jtile_6 {
+  background-position: 55.5555555556% 0;
+}
+
+.jtile_7 {
+  background-position: 66.6666666667% 0;
+}
+
+.jtile_8 {
+  background-position: 77.7777777778% 0;
+}
+
+.jtile_9 {
+  background-position: 88.8888888889% 0;
+}
+
+.jtile_10 {
+  background-position: 100% 0;
 }
 
 /* tooltips */
@@ -2196,6 +2319,11 @@ a.bgabutton_white {
   color: darkgrey;
 }
 
+.bgabutton_gray {
+  border: 1px solid rgba(6, 6, 6, 0.368627451);
+  box-shadow: 0 1px 0 #000;
+}
+
 .bgabutton_targetcolor {
   background-color: rgba(33, 150, 243, 0.7803921569);
 }
@@ -2219,19 +2347,17 @@ a.bgabutton_white {
 
 .active_slot {
   cursor: pointer;
+  outline: 2px dashed #19bedb;
+  outline-offset: -3px;
 }
 .active_slot.gg_selected, .active_slot.gg_selected_alt {
   outline: 4px dashed #3f51b5;
 }
 
-.active_slot {
-  box-shadow: 0 0 6px 4px #19bedb;
-  animation: pulse-box-shadow 2s;
-  animation-iteration-count: 10;
-}
-
-.active_slot.worker {
+.active_slot.worker,
+.active_slot.dice {
   box-shadow: unset;
+  outline: unset;
   filter: drop-shadow(0px 0px 6px #19bedb);
   animation: pulse-drop-shadow 2s;
   animation-iteration-count: 10;

@@ -1,11 +1,9 @@
 Server
 
 - Split tag scoring
-- Caravan discount assets
 - Caravan different boards per player
 - bonus did not ask to move inf
-- Journal
-- Journal bonus tiles
+- Journal prereq
 
 Client
 

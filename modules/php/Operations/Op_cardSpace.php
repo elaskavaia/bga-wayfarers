@@ -14,6 +14,8 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\GameFramework\NotificationMessage;
+
 class Op_cardSpace extends Op_cardBase {
     public function getPossibleMoves() {
         // Check if there's an available position
@@ -75,7 +77,10 @@ class Op_cardSpace extends Op_cardBase {
         $c = max(0, $this->getCost($card) - $this->getCoinDiscount());
         return "{$c}n_coin";
     }
-    public function getCost(string $card): int {
+    public function getCost(?string $card): int {
+        if (!$card) {
+            return 5;
+        }
         return $this->getCostPos($this->game->tokens->db->getTokenState($card, 0));
     }
     function getCostPos($space): int {
@@ -93,5 +98,13 @@ class Op_cardSpace extends Op_cardBase {
         $pos = $this->getNextAvailablePosition();
         $this->game->systemAssert("Cannot find position for space card", $pos);
         $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", $pos, clienttranslate('${player_name} acquires ${token_name}'));
+    }
+
+    public function getPrompt() {
+        $dis = $this->getCoinDiscount();
+        if ($dis > 0) {
+            return new NotificationMessage(clienttranslate('Select a Space Card to buy with Silver discount of ${dis}'), ["dis" => $dis]);
+        }
+        return clienttranslate("Select a Space Card to buy");
     }
 }

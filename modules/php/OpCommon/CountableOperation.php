@@ -43,7 +43,7 @@ abstract class CountableOperation extends Operation {
         return $res;
     }
 
-    function getButtonName() {
+    function getIconicName() {
         if ($this->getCount() == 1) {
             return '${name}';
         }

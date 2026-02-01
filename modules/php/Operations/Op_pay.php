@@ -41,7 +41,15 @@ class Op_pay extends CountableOperation {
         if ($current < $this->getCount()) {
             return ["q" => Material::ERR_COST];
         }
-        return [$this->getResType()];
+        return parent::getPossibleMoves();
+    }
+
+    public function auto(): bool {
+        if ($this->getCount() == 0) {
+            $this->game->effect_incCount($this->getOwner(), $this->getResType(), 0, $this->getReason());
+            return true;
+        }
+        return parent::auto();
     }
 
     function resolve(): void {
@@ -51,23 +59,21 @@ class Op_pay extends CountableOperation {
         return;
     }
 
-    public function getExtraArgs() {
-        return parent::getExtraArgs() + ["token_div" => $this->game->tokens->getTrackerId($this->getOwner(), $this->getResType())];
-    }
-
-    function getButtonName() {
+    function getIconicName() {
         $count = $this->getCount();
+        $type = $this->getResType();
         if ($count == 1) {
-            return '${token_div}';
+            return "[wicon_$type]";
         } elseif ($count == 2) {
-            return '${token_div} ${token_div}';
+            return "[wicon_$type][wicon_$type]";
         } elseif ($count == 3) {
-            return '${token_div} ${token_div} ${token_div}';
+            return "[wicon_$type][wicon_$type][wicon_$type]";
         }
-        return clienttranslate('${count} ${token_div}');
+        return clienttranslate('${count} x ' . "[wicon_$type]");
     }
 
     public function getPrompt() {
-        return clienttranslate('Pay ${count} ${token_div}');
+        $type = $this->getResType();
+        return clienttranslate('Pay ${count} ' . "[wicon_$type]");
     }
 }

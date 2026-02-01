@@ -36,4 +36,8 @@ class Op_upgBlue extends Op_upgBase {
     function isDoubleSided(): bool {
         return true;
     }
+
+    public function getIconicName() {
+        return "[wicon_upg_blue]";
+    }
 }

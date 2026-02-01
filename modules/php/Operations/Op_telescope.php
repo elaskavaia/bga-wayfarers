@@ -40,4 +40,8 @@ class Op_telescope extends Operation {
     public function getPrompt() {
         return clienttranslate('Use Telescope asset');
     }
+
+    public function getIconicName() {
+        return "[wicon_telescope]";
+    }
 }

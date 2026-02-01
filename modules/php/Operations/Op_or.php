@@ -96,7 +96,7 @@ class Op_or extends ComplexOperation {
 
             $args = $sub->getExtraArgs();
             $res["choice_$i"] = [
-                "name" => $sub->getButtonName(),
+                "name" => $sub->getIconicName(),
                 "args" => $args,
                 "err" => $err,
                 "r" => $sub->getTypeFullExpr(),

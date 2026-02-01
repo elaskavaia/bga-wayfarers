@@ -258,6 +258,10 @@ class Material {
         "type" => "spendInfYellow",
         "name" => clienttranslate("Spend Yellow Influence to Modify Dice"),
 ],
+    "Op_spendInfBlack" => [ 
+        "type" => "spendInfBlack",
+        "name" => clienttranslate("Spend Black Influence for Extra Journal"),
+],
     "Op_cardSpace" => [ 
         "type" => "cardSpace",
         "name" => clienttranslate("Acquire Space Card"),
@@ -560,6 +564,10 @@ class Material {
         "type" => "card card_insp",
         "location" => "deck_insp",
 ],
+    "card_home" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Home"),
+],
 // #boards
     "mainboard_1" => [ 
         "create" => 1,
@@ -584,43 +592,6 @@ class Material {
         "count" => 1,
         "type" => "stage",
         "location" => "limbo",
-],
-// #ui elements
-    "die_1" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_1",
-        "name" => clienttranslate("Die 1"),
-        "count" => 1,
-],
-    "die_2" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_2",
-        "name" => clienttranslate("Die 2"),
-        "count" => 2,
-],
-    "die_3" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_3",
-        "name" => clienttranslate("Die 3"),
-        "count" => 3,
-],
-    "die_4" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_4",
-        "name" => clienttranslate("Die 4"),
-        "count" => 4,
-],
-    "die_5" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_5",
-        "name" => clienttranslate("Die 5"),
-        "count" => 5,
-],
-    "die_6" => [ 
-        "create" => 0,
-        "type" => "dice wooden token die_6",
-        "name" => clienttranslate("Die 6"),
-        "count" => 6,
 ],
 // #names of the upgrades
     "upg_green" => [ 
@@ -661,60 +632,238 @@ class Material {
         "name" => clienttranslate("VP total"),
 ],
 // #tags
-    "tag_Water" => [ 
-        "name" => clienttranslate("Water"),
-],
     "tag_Harbour" => [ 
         "name" => clienttranslate("Harbour"),
+        "count" => "wicon_harbour",
 ],
     "tag_Sea" => [ 
         "name" => clienttranslate("Open Water"),
-],
-    "tag_Land" => [ 
-        "name" => clienttranslate("Land"),
+        "count" => "wicon_sea",
 ],
     "tag_City" => [ 
         "name" => clienttranslate("City"),
+        "count" => "wicon_city",
 ],
     "tag_Vista" => [ 
         "name" => clienttranslate("Vista"),
-],
-    "tag_Space" => [ 
-        "name" => clienttranslate("Space"),
+        "count" => "wicon_vista",
 ],
     "tag_Observatory" => [ 
         "name" => clienttranslate("Observatory"),
+        "count" => "wicon_observatory",
 ],
     "tag_Book" => [ 
         "name" => clienttranslate("Book"),
+        "count" => "wicon_book",
 ],
     "tag_Comet" => [ 
         "name" => clienttranslate("Comet"),
+        "count" => "wicon_comet",
 ],
     "tag_Stars" => [ 
         "name" => clienttranslate("Stars"),
+        "count" => "wicon_stars",
 ],
     "tag_Planet" => [ 
         "name" => clienttranslate("Planet"),
+        "count" => "wicon_planet",
 ],
     "tag_Sun" => [ 
         "name" => clienttranslate("Sun"),
+        "count" => "wicon_sun",
 ],
     "tag_Moon" => [ 
         "name" => clienttranslate("Moon"),
+        "count" => "wicon_moon",
 ],
     "tag_Library" => [ 
         "name" => clienttranslate("Library"),
+        "count" => "wicon_book",
 ],
-    "tag_CardFolk" => [ 
+    "tag_card_space" => [ 
+        "name" => clienttranslate("Space Card"),
+        "count" => "wicon_card_space",
+],
+    "tag_card_water" => [ 
+        "name" => clienttranslate("Water Card"),
+        "count" => "wicon_card_water",
+],
+    "tag_card_land" => [ 
+        "name" => clienttranslate("Land Card"),
+        "count" => "wicon_card_land",
+],
+    "tag_card_folk" => [ 
         "name" => clienttranslate("Townsfolk Card"),
+        "count" => "wicon_card_folk",
 ],
-    "tag_UpgradeAny" => [ 
+    "tag_card_insp" => [ 
+        "name" => clienttranslate("Inspiration Card"),
+        "count" => "wicon_card_insp",
+],
+    "tag_upg_green" => [ 
+        "name" => clienttranslate("Basic Upgrade"),
+        "count" => "wicon_upg_green",
+],
+    "tag_upg_black" => [ 
+        "name" => clienttranslate("Space Upgrade"),
+        "count" => "wicon_upg_black",
+],
+    "tag_upg_yellow" => [ 
+        "name" => clienttranslate("Land Upgrade"),
+        "count" => "wicon_upg_yellow",
+],
+    "tag_upg_blue" => [ 
+        "name" => clienttranslate("Water Upgrade"),
+        "count" => "wicon_upg_blue",
+],
+    "tag_upg_any" => [ 
         "name" => clienttranslate("Any Upgrade"),
+        "count" => "wicon_upg_any",
 ],
 // #reasons
     "caravanBonus" => [ 
         "name" => clienttranslate("Caravan Placement Bonus"),
+],
+// #ui elements
+    "wicon_die_1" => [ 
+        "type" => "dice wicon wicon_die_1",
+        "name" => clienttranslate("Die 1"),
+        "count" => 1,
+],
+    "wicon_die_2" => [ 
+        "type" => "dice wicon wicon_die_2",
+        "name" => clienttranslate("Die 2"),
+        "count" => 2,
+],
+    "wicon_die_3" => [ 
+        "type" => "dice wicon wicon_die_3",
+        "name" => clienttranslate("Die 3"),
+        "count" => 3,
+],
+    "wicon_die_4" => [ 
+        "type" => "dice wicon wicon_die_4",
+        "name" => clienttranslate("Die 4"),
+        "count" => 4,
+],
+    "wicon_die_5" => [ 
+        "type" => "dice wicon wicon_die_5",
+        "name" => clienttranslate("Die 5"),
+        "count" => 5,
+],
+    "wicon_die_6" => [ 
+        "type" => "dice wicon wicon_die_6",
+        "name" => clienttranslate("Die 6"),
+        "count" => 6,
+],
+// #icons
+// # Destination/Location icons
+    "wicon_city" => [ 
+],
+    "wicon_harbour" => [ 
+],
+    "wicon_book" => [ 
+],
+    "wicon_observatory" => [ 
+],
+    "wicon_vista" => [ 
+],
+    "wicon_sea" => [ 
+],
+    "wicon_water" => [ 
+],
+    "wicon_land" => [ 
+],
+    "wicon_comet" => [ 
+],
+    "wicon_comet_up" => [ 
+],
+    "wicon_stars" => [ 
+],
+    "wicon_planet" => [ 
+],
+    "wicon_moon" => [ 
+],
+    "wicon_sun" => [ 
+],
+    "wicon_space" => [ 
+],
+    "wicon_folk" => [ 
+],
+    "wicon_vp" => [ 
+],
+// # Upgrade icons
+    "wicon_upg_green" => [ 
+],
+    "wicon_upg_black" => [ 
+],
+    "wicon_upg_yellow" => [ 
+],
+    "wicon_upg_blue" => [ 
+],
+    "wicon_upg_pink" => [ 
+],
+    "wicon_upg_any" => [ 
+],
+    "wicon_upg_green_free" => [ 
+],
+    "wicon_upg_black_free" => [ 
+],
+    "wicon_upg_yellow_free" => [ 
+],
+    "wicon_upg_blue_free" => [ 
+],
+// # Cards and assets
+    "wicon_card_space" => [ 
+],
+    "wicon_card_water" => [ 
+],
+    "wicon_card_land" => [ 
+],
+    "wicon_card_folk" => [ 
+],
+    "wicon_card_insp" => [ 
+],
+    "wicon_camel" => [ 
+],
+    "wicon_ship" => [ 
+],
+    "wicon_pigeon" => [ 
+],
+    "wicon_telescope" => [ 
+],
+// # Influence icons
+    "wicon_inf_blue" => [ 
+],
+    "wicon_inf_black" => [ 
+],
+    "wicon_inf_yellow" => [ 
+],
+    "wicon_inf_any" => [ 
+],
+    "wicon_inf_move" => [ 
+],
+    "wicon_inf_blue_pay" => [ 
+],
+    "wicon_inf_black_pay" => [ 
+],
+    "wicon_inf_yellow_pay" => [ 
+],
+// # Dice and action icons
+    "wicon_pick_worker" => [ 
+],
+    "wicon_reroll" => [ 
+],
+    "wicon_dice_mod" => [ 
+],
+    "wicon_journal" => [ 
+],
+    "wicon_rest1" => [ 
+],
+    "wicon_rest" => [ 
+],
+    "wicon_coin" => [ 
+],
+    "wicon_food" => [ 
 ],
             /* --- gen php end token_material --- */
 
@@ -1140,7 +1289,7 @@ class Material {
         "rest" => 1,
         "num" => 151,
         "cost" => 0,
-        "dr" => "pickWorker/infMove",
+        "dr" => "pickWorker/infCard",
         "tags" => "Sea",
         "nom" => clienttranslate("Warrior"),
         "tooltip" => clienttranslate("Pick a Worker or Move Influence"),
@@ -1437,7 +1586,7 @@ class Material {
         "r" => "2coin",
         "dr" => "diceMod,infMove",
         "tags" => "Vista",
-        "trig" => "CardFolk",
+        "trig" => "card_folk",
         "tor" => clienttranslate("Gain 2 Silver"),
         "todr" => clienttranslate("Modify dice by +/- 1 and move Influence"),
 ],
@@ -1447,7 +1596,7 @@ class Material {
         "r" => "infCard",
         "dr" => "infCard",
         "tags" => "Vista",
-        "trig" => "CardFolk",
+        "trig" => "card_folk",
         "tor" => clienttranslate("Gain Influence on any card"),
         "todr" => clienttranslate("Gain Influence on any card"),
 ],
@@ -1498,7 +1647,7 @@ class Material {
         "r" => "coin",
         "dr" => "food",
         "tags" => "Vista",
-        "trig" => "UpgradeAny",
+        "trig" => "upg_any",
         "tor" => clienttranslate("Gain 1 Silver"),
         "todr" => clienttranslate("Gain 1 Provision"),
 ],
@@ -2433,7 +2582,7 @@ class Material {
         "create" => 1,
         "num" => 96,
         "r" => "cardInsp",
-        "vpexp" => "card_insp",
+        "vpexp" => "tag_card_insp",
         "tags" => "Stars",
         "tor" => "Acquire Inspiration Card",
         "tovp" => "1 VP per Inspiration card",
@@ -2509,7 +2658,7 @@ class Material {
         "create" => 1,
         "num" => 104,
         "r" => "cardFolk(free)",
-        "vpexp" => "min(card_folk,card_space,card_land,card_water)",
+        "vpexp" => "min(tag_card_folk,tag_card_space,tag_card_land,tag_card_water)",
         "tags" => "Stars",
         "tor" => "Acquire Townsfolk card (free)",
         "tovp" => "1 VP per set of Townsfolk, Space, Land, and Water cards",
@@ -2529,7 +2678,7 @@ class Material {
         "create" => 1,
         "num" => 106,
         "r" => "infBlack",
-        "vpexp" => "1+upg_black",
+        "vpexp" => "1+tag_upg_black",
         "tags" => "Stars",
         "tor" => "Place an Influence in Black Guild",
         "tovp" => "1 VP + 1 VP per Space upgrade tile",
@@ -2539,7 +2688,7 @@ class Material {
         "create" => 1,
         "num" => 107,
         "r" => "infBlue",
-        "vpexp" => "1+upg_blue",
+        "vpexp" => "1+tag_upg_blue",
         "tags" => "Stars",
         "tor" => "Place an Influence in Blue Guild",
         "tovp" => "1 VP + 1 VP per Water upgrade tile",
@@ -2549,7 +2698,7 @@ class Material {
         "create" => 1,
         "num" => 108,
         "r" => "cardFolk(free)",
-        "vpexp" => "1+upg_green",
+        "vpexp" => "1+tag_upg_green",
         "tags" => "Stars",
         "tor" => "Acquire Townsfolk card (free)",
         "tovp" => "1 VP + 1 VP per Basic upgrade tile",
@@ -2559,7 +2708,7 @@ class Material {
         "create" => 1,
         "num" => 109,
         "r" => "infYellow",
-        "vpexp" => "1+upg_yellow",
+        "vpexp" => "1+tag_upg_yellow",
         "tags" => "Stars",
         "tor" => "Place an Influence in Yellow Guild",
         "tovp" => "1 VP + 1 VP per Land upgrade tile",
@@ -2617,7 +2766,7 @@ class Material {
     "card_space_1" => [ 
         "create" => 0,
         "num" => 1,
-        "vpexp" => "min(upg_green,card_folk)",
+        "vpexp" => "min(tag_upg_green,tag_card_folk)",
         "tags" => "Stars",
         "tovp" => "1 VP per set of Basic upgrade and Townsfolk",
         "nom" => clienttranslate("Home Sky"),
@@ -2653,7 +2802,7 @@ class Material {
     "card_insp_4" => [ 
         "create" => 1,
         "num" => 4,
-        "collect" => "card_folk",
+        "collect" => "tag_card_folk",
         "goal" => 6,
         "tooltip" => clienttranslate("Have at least 6 Townsfolk cards, including starting card"),
         "nom" => "Town Square",
@@ -2693,7 +2842,7 @@ class Material {
     "card_insp_9" => [ 
         "create" => 1,
         "num" => 9,
-        "collect" => "min(upg_green,upg_black)",
+        "collect" => "min(tag_upg_green,tag_upg_black)",
         "goal" => 2,
         "tooltip" => clienttranslate("Have at least two Basic upgrades and two Space upgrades"),
         "nom" => "Dual Study",
@@ -2701,7 +2850,7 @@ class Material {
     "card_insp_10" => [ 
         "create" => 1,
         "num" => 10,
-        "collect" => "upg_blue",
+        "collect" => "tag_upg_blue",
         "goal" => 3,
         "tooltip" => clienttranslate("Have at least 3 Water upgrades"),
         "nom" => "Sea Mastery",
@@ -2709,7 +2858,7 @@ class Material {
     "card_insp_11" => [ 
         "create" => 1,
         "num" => 11,
-        "collect" => "upg_yellow",
+        "collect" => "tag_upg_yellow",
         "goal" => 3,
         "tooltip" => clienttranslate("Have at least 3 Land upgrades"),
         "nom" => "Land Mastery",
@@ -2757,7 +2906,7 @@ class Material {
     "card_insp_17" => [ 
         "create" => 1,
         "num" => 17,
-        "collect" => "card_land",
+        "collect" => "tag_card_land",
         "goal" => 8,
         "tooltip" => clienttranslate("Have at least 8 Land cards, including starting card"),
         "nom" => "New Horizons",
@@ -2765,7 +2914,7 @@ class Material {
     "card_insp_18" => [ 
         "create" => 1,
         "num" => 18,
-        "collect" => "card_water",
+        "collect" => "tag_card_water",
         "goal" => 8,
         "tooltip" => clienttranslate("Have at least 8 Water cards, including starting card"),
         "nom" => "Odyssey",
@@ -2773,6 +2922,7 @@ class Material {
             /* --- gen php end cardinsp_material --- */
 
             /* --- gen php begin journal_material --- */
+// #Journal nodes/positions
     "jpos_0" => [ 
         "location" => "mainboard_1",
         "num" => 0,
@@ -2781,9 +2931,9 @@ class Material {
     "jpos_10" => [ 
         "location" => "mainboard_1",
         "num" => 10,
-        "conn" => "20,2",
+        "conn" => "20,23",
         "r" => "jtile,pickGreen",
-        "gw"=>1,
+        "gw" => 1,
 ],
     "jpos_15" => [ 
         "location" => "mainboard_1",
@@ -2814,7 +2964,7 @@ class Material {
         "num" => 32,
         "conn" => "40,43",
         "r" => "jtile,pickGreen",
-        "gw"=>2,
+        "gw" => 2,
 ],
     "jpos_36" => [ 
         "location" => "mainboard_1",
@@ -2845,7 +2995,7 @@ class Material {
         "num" => 50,
         "conn" => "60,63",
         "r" => "jtile,pickGreen",
-        "gw"=>3,
+        "gw" => 3,
 ],
     "jpos_55" => [ 
         "location" => "mainboard_2",
@@ -2876,7 +3026,7 @@ class Material {
         "num" => 72,
         "conn" => "80,83",
         "r" => "jtile,pickGreen",
-        "gw"=>4,
+        "gw" => 4,
 ],
     "jpos_76" => [ 
         "location" => "mainboard_2",
@@ -2979,6 +3129,263 @@ class Material {
     "jtile_10" => [ 
         "num" => 10,
         "r" => "infYellow,infBlue",
+],
+// #Connection requirements side A
+    "jconn_0_10_0" => [ 
+        "num" => 0,
+        "conn" => 10,
+],
+    "jconn_0_15_0" => [ 
+        "num" => 0,
+        "conn" => 15,
+],
+    "jconn_10_20_0" => [ 
+        "num" => 10,
+        "conn" => 20,
+        "r" => "tag_City",
+        "gw" => 2,
+],
+    "jconn_10_23_0" => [ 
+        "num" => 10,
+        "conn" => 23,
+        "r" => "tag_Vista",
+        "gw" => 1,
+],
+    "jconn_15_23_0" => [ 
+        "num" => 15,
+        "conn" => 23,
+        "r" => "tag_Sea",
+        "gw" => 1,
+],
+    "jconn_15_27_0" => [ 
+        "num" => 15,
+        "conn" => 27,
+        "r" => "tag_Harbour",
+        "gw" => 2,
+],
+    "jconn_20_40_0" => [ 
+        "num" => 20,
+        "conn" => 40,
+        "r" => "tag_upg_black",
+        "gw" => 1,
+],
+    "jconn_20_32_0" => [ 
+        "num" => 20,
+        "conn" => 32,
+        "r" => "tag_Observatory",
+        "gw" => 2,
+],
+    "jconn_23_32_0" => [ 
+        "num" => 23,
+        "conn" => 32,
+        "r" => "tag_Stars",
+        "gw" => 2,
+],
+    "jconn_23_36_0" => [ 
+        "num" => 23,
+        "conn" => 36,
+        "r" => "tag_card_folk",
+        "gw" => 2,
+],
+    "jconn_27_36_0" => [ 
+        "num" => 27,
+        "conn" => 36,
+        "r" => "tag_Book",
+        "gw" => 2,
+],
+    "jconn_27_47_0" => [ 
+        "num" => 27,
+        "conn" => 47,
+        "r" => "tag_Planet",
+        "gw" => 1,
+],
+    "jconn_32_40_0" => [ 
+        "num" => 32,
+        "conn" => 40,
+        "r" => "tag_upg_green",
+        "gw" => 1,
+],
+    "jconn_32_43_0" => [ 
+        "num" => 32,
+        "conn" => 43,
+        "r" => "tag_Book",
+        "gw" => 2,
+],
+    "jconn_36_43_0" => [ 
+        "num" => 36,
+        "conn" => 43,
+        "r" => "tag_Stars",
+        "gw" => 2,
+],
+    "jconn_36_47_0" => [ 
+        "num" => 36,
+        "conn" => 47,
+        "r" => "tag_Observatory",
+        "gw" => 2,
+],
+    "jconn_40_50_0" => [ 
+        "num" => 40,
+        "conn" => 50,
+        "r" => "Op_n_infBlack",
+],
+    "jconn_43_50_0" => [ 
+        "num" => 43,
+        "conn" => 50,
+        "r" => "tag_Planet",
+        "gw" => 1,
+],
+    "jconn_43_55_0" => [ 
+        "num" => 43,
+        "conn" => 55,
+        "r" => "tag_upg_yellow",
+        "gw" => 2,
+],
+    "jconn_47_55_0" => [ 
+        "num" => 47,
+        "conn" => 55,
+        "r" => "Op_n_infBlack",
+],
+    "jconn_50_60_0" => [ 
+        "num" => 50,
+        "conn" => 60,
+        "r" => "tag_Harbour",
+        "gw" => 3,
+],
+    "jconn_50_63_0" => [ 
+        "num" => 50,
+        "conn" => 63,
+        "r" => "tag_upg_blue",
+        "gw" => 2,
+],
+    "jconn_55_63_0" => [ 
+        "num" => 55,
+        "conn" => 63,
+        "r" => "tag_Stars",
+        "gw" => 3,
+],
+    "jconn_55_67_0" => [ 
+        "num" => 55,
+        "conn" => 67,
+        "r" => "tag_City",
+        "gw" => 3,
+],
+    "jconn_60_80_0" => [ 
+        "num" => 60,
+        "conn" => 80,
+        "r" => "tag_Comet",
+        "gw" => 6,
+],
+    "jconn_60_72_0" => [ 
+        "num" => 60,
+        "conn" => 72,
+        "r" => "tag_card_folk",
+        "gw" => 4,
+],
+    "jconn_63_72_0" => [ 
+        "num" => 63,
+        "conn" => 72,
+        "r" => "tag_City",
+        "gw" => 4,
+],
+    "jconn_63_76_0" => [ 
+        "num" => 63,
+        "conn" => 76,
+        "r" => "tag_Harbour",
+        "gw" => 4,
+],
+    "jconn_67_76_0" => [ 
+        "num" => 67,
+        "conn" => 76,
+        "r" => "tag_card_folk",
+        "gw" => 4,
+],
+    "jconn_67_87_0" => [ 
+        "num" => 67,
+        "conn" => 87,
+        "r" => "tag_Stars",
+        "gw" => 4,
+],
+    "jconn_72_80_0" => [ 
+        "num" => 72,
+        "conn" => 80,
+        "r" => "tag_Book",
+        "gw" => 3,
+],
+    "jconn_72_83_0" => [ 
+        "num" => 72,
+        "conn" => 83,
+        "r" => "tag_Comet",
+        "gw" => 6,
+],
+    "jconn_76_83_0" => [ 
+        "num" => 76,
+        "conn" => 83,
+        "r" => "tag_Stars",
+        "gw" => 4,
+],
+    "jconn_76_87_0" => [ 
+        "num" => 76,
+        "conn" => 87,
+        "r" => "tag_Sea",
+        "gw" => 3,
+],
+    "jconn_80_90_0" => [ 
+        "num" => 80,
+        "conn" => 90,
+        "r" => "tag_upg_any",
+        "gw" => 7,
+],
+    "jconn_83_90_0" => [ 
+        "num" => 83,
+        "conn" => 90,
+        "r" => "tag_Vista",
+        "gw" => 3,
+],
+    "jconn_83_95_0" => [ 
+        "num" => 83,
+        "conn" => 95,
+        "r" => "tag_Observatory",
+        "gw" => 3,
+],
+    "jconn_87_95_0" => [ 
+        "num" => 87,
+        "conn" => 95,
+        "r" => "tag_upg_any",
+        "gw" => 7,
+],
+    "jconn_90_100_0" => [ 
+        "num" => 90,
+        "conn" => 100,
+        "r" => "tag_Observatory",
+        "gw" => 4,
+],
+    "jconn_90_102_0" => [ 
+        "num" => 90,
+        "conn" => 102,
+        "r" => "Op_n_infBlack",
+],
+    "jconn_90_103_0" => [ 
+        "num" => 90,
+        "conn" => 103,
+        "r" => "tag_Sea",
+        "gw" => 4,
+],
+    "jconn_95_103_0" => [ 
+        "num" => 95,
+        "conn" => 103,
+        "r" => "tag_Book",
+        "gw" => 4,
+],
+    "jconn_95_106_0" => [ 
+        "num" => 95,
+        "conn" => 106,
+        "r" => "Op_n_infBlack",
+],
+    "jconn_95_107_0" => [ 
+        "num" => 95,
+        "conn" => 107,
+        "r" => "tag_Vista",
+        "gw" => 4,
 ],
             /* --- gen php end journal_material --- */
         ];

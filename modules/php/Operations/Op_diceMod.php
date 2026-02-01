@@ -22,16 +22,6 @@ class Op_diceMod extends Operation {
         $owner = $this->getOwner();
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
 
-        // Also get dice placed on cards in player's tableau
-        $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "tableau_$owner");
-        foreach ($cards as $card => $info) {
-            foreach ($info["children"] as $childKey => $childInfo) {
-                if (str_starts_with($childKey, "dice_")) {
-                    $dice[$childKey] = $childInfo;
-                }
-            }
-        }
-
         // Group by value to avoid duplicates
         $res = [];
         foreach ($dice as $key => $die) {
@@ -111,5 +101,9 @@ class Op_diceMod extends Operation {
 
     function getPrompt() {
         return clienttranslate("Select a die to modify by +1 or -1");
+    }
+
+    public function getIconicName() {
+        return "[wicon_dice_mod]";
     }
 }

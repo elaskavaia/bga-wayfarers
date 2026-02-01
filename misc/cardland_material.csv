@@ -35,12 +35,12 @@ num|r|d|dr|tags|trig|tor|todr
 28|2coin||pickWorker|Vista|Planet/Sun/Moon|Gain 2 Silver|Pick a Worker
 29|reroll||coin|Vista|City|Refresh a die|Gain 1 Silver
 30|reroll||infYellow/infMove|Vista|City|Refresh a die|Gain Yellow influence or move Influence
-31|2coin||diceMod,infMove|Vista|CardFolk|Gain 2 Silver|Modify dice by +/- 1 and move Influence
-32|infCard||infCard|Vista|CardFolk|Gain Influence on any card|Gain Influence on any card
+31|2coin||diceMod,infMove|Vista|card_folk|Gain 2 Silver|Modify dice by +/- 1 and move Influence
+32|infCard||infCard|Vista|card_folk|Gain Influence on any card|Gain Influence on any card
 33|coin||coin|Vista|Harbour|Gain 1 Silver|Gain 1 Silver
 34|infYellow||infYellow/infMove|Vista|Harbour|Gain Yellow influence|Gain Yellow influence or move Influence
 35|reroll||journal|Vista|Observatory/Book|Refresh a die|Gain Journal
 36|reroll||food/coin|Vista|Observatory/Book|Refresh a die|Gain 1 Provision or 1 Silver
 # Row 7: City (38)
-37|coin||food|Vista|UpgradeAny|Gain 1 Silver|Gain 1 Provision
+37|coin||food|Vista|upg_any|Gain 1 Silver|Gain 1 Provision
 38||camel,pigeon|2n_food:cardLand,journal|City Book|||Pay 2 Provisions to acquire a Land card, then gain Journal

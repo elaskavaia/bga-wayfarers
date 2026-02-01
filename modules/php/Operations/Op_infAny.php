@@ -112,4 +112,8 @@ class Op_infAny extends Op_infBase {
 
         return parent::getPrompt();
     }
+
+    public function getIconicName() {
+        return "[wicon_inf_any]";
+    }
 }

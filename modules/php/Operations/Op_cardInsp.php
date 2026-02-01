@@ -95,7 +95,7 @@ class Op_cardInsp extends Op_cardBase {
             }
         }
         if (!isset($occupiedByInsp[1])) {
-            $availablePositions[1] = "home";
+            $availablePositions[1] = "card_home";
         }
         return $availablePositions;
     }
@@ -126,6 +126,8 @@ class Op_cardInsp extends Op_cardBase {
                 clienttranslate('${player_name} discards ${token_name}')
             );
 
+            // Refill the mainarea spot
+            $this->queue("drawTab", $owner, ["card" => $cardSelected]);
             return;
         }
         // Second step: place the card
@@ -137,6 +139,9 @@ class Op_cardInsp extends Op_cardBase {
         $spaceCard = $this->getCheckedArg();
         // Get the state of the target space card to place inspiration card at same state
         $targetState = (int) $this->game->tokens->db->getTokenState($spaceCard);
+        if (str_starts_with($spaceCard, "card_home")) {
+            $targetState = 1;
+        }
         $this->game->tokens->dbSetTokenLocation(
             $card,
             "tableau_$owner",

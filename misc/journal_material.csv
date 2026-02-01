@@ -1,25 +1,26 @@
-num|conn|r|php
+num|conn|r|gw
+#Journal nodes/positions
 #set id=jpos_{num}
 #set location=mainboard_1
 0|10,15
-10|20,2|jtile,pickGreen|"gw"=>1
+10|20,23|jtile,pickGreen|1
 15|23,27|jtile,pickGreen
 20|40,32|cardInsp,newDie
 23|32,36|cardInsp,newDie
 27|36,47|cardInsp,newDie
-32|40,43|jtile,pickGreen|"gw"=>2
+32|40,43|jtile,pickGreen|2
 36|43,47|jtile,pickGreen
 #set location=mainboard_2
 40|50|upgPink
 43|50,55|upgPink
 47|55|upgPink
 
-50|60,63|jtile,pickGreen|"gw"=>3
+50|60,63|jtile,pickGreen|3
 55|63,67|jtile,pickGreen
 60|80,72|cardInsp,newDie
 63|72,76|cardInsp,newDie
 67|76,87|cardInsp,newDie
-72|80,83|jtile,pickGreen|"gw"=>4
+72|80,83|jtile,pickGreen|4
 76|83,87|jtile,pickGreen
 80|90|upgPink
 83|90,95|upgPink
@@ -46,3 +47,51 @@ num|conn|r|php
 8||food,food
 9||infCard,infCard
 10||infYellow,infBlue
+
+#Connection requirements side A
+#set id=jconn_{num}_{conn}_0
+#set location=
+0|10|
+0|15|
+10|20|tag_City|2
+10|23|tag_Vista|1
+15|23|tag_Sea|1
+15|27|tag_Harbour|2
+20|40|tag_upg_black|1
+20|32|tag_Observatory|2
+23|32|tag_Stars|2
+23|36|tag_card_folk|2
+27|36|tag_Book|2
+27|47|tag_Planet|1
+32|40|tag_upg_green|1
+32|43|tag_Book|2
+36|43|tag_Stars|2
+36|47|tag_Observatory|2
+40|50|Op_n_infBlack
+43|50|tag_Planet|1
+43|55|tag_upg_yellow|2
+47|55|Op_n_infBlack
+50|60|tag_Harbour|3
+50|63|tag_upg_blue|2
+55|63|tag_Stars|3
+55|67|tag_City|3
+60|80|tag_Comet|6
+60|72|tag_card_folk|4
+63|72|tag_City|4
+63|76|tag_Harbour|4
+67|76|tag_card_folk|4
+67|87|tag_Stars|4
+72|80|tag_Book|3
+72|83|tag_Comet|6
+76|83|tag_Stars|4
+76|87|tag_Sea|3
+80|90|tag_upg_any|7
+83|90|tag_Vista|3
+83|95|tag_Observatory|3
+87|95|tag_upg_any|7
+90|100|tag_Observatory|4
+90|102|Op_n_infBlack
+90|103|tag_Sea|4
+95|103|tag_Book|4
+95|106|Op_n_infBlack
+95|107|tag_Vista|4

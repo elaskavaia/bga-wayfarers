@@ -21,7 +21,7 @@ class Op_infMove extends Operation {
     /**
      * Get all player's influence that can be moved (on guilds or cards)
      */
-    function getPlayerInfluenceToMove(): array {
+    function getGuildFrom(): array {
         $owner = $this->getOwner();
         $influence = [];
 
@@ -29,14 +29,9 @@ class Op_infMove extends Operation {
         foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
             foreach ($tokens as $tokenId => $info) {
-                $influence[$tokenId] = ["q" => Material::RET_OK, "from" => $guild];
+                $influence[$guild] = ["q" => Material::RET_OK, "from" => $guild, "token_id" => $tokenId];
+                break; // Only need first token from each guild
             }
-        }
-
-        // Check cards
-        $cardsWithInfluence = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", "card_%", true);
-        foreach ($cardsWithInfluence as $tokenId => $info) {
-            $influence[$tokenId] = ["q" => Material::RET_OK, "from" => $info["location"]];
         }
 
         return $influence;
@@ -46,7 +41,6 @@ class Op_infMove extends Operation {
      * Get possible destinations (guilds and available cards)
      */
     function getPossibleDestinations(string $sourceLocation): array {
-        $owner = $this->getOwner();
         $res = [];
 
         // Add guilds (except source if it's a guild)
@@ -56,43 +50,25 @@ class Op_infMove extends Operation {
             }
         }
 
-        // Add cards that don't have player's influence yet
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "mainarea");
-        $cardsWithMyInfluence = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", "card_%", true);
-        $occupiedCards = [];
-        foreach ($cardsWithMyInfluence as $info) {
-            $occupiedCards[$info["location"]] = true;
-        }
-
-        foreach ($cards as $cardId => $info) {
-            // Can move to card if it doesn't have my influence (unless moving from that same card)
-            if (!isset($occupiedCards[$cardId]) || $cardId === $sourceLocation) {
-                if ($cardId !== $sourceLocation) {
-                    $res[$cardId] = ["q" => Material::RET_OK];
-                }
-            }
-        }
-
         return $res;
     }
 
     function getPossibleMoves() {
-        $selectedInfluence = $this->getDataField("influence", null);
+        $selectedGuild = $this->getDataField("guild", null);
 
-        if ($selectedInfluence === null) {
+        if ($selectedGuild === null) {
             // Step 1: Select influence to move
-            $influence = $this->getPlayerInfluenceToMove();
+            $influence = $this->getGuildFrom();
 
             if (count($influence) == 0) {
                 return ["q" => Material::ERR_NONE_LEFT];
             }
 
-            return $influence;
-        } else {
-            // Step 2: Select destination
-            $sourceLocation = $this->getDataField("from", "");
-            return $this->getPossibleDestinations($sourceLocation);
+            return $influence + ["prompt" => clienttranslate("Select Guild to move from")];
         }
+        // Step 2: Select destination
+
+        return $this->getPossibleDestinations($selectedGuild);
     }
 
     function canSkip() {
@@ -101,19 +77,18 @@ class Op_infMove extends Operation {
 
     function resolve(): void {
         $owner = $this->getOwner();
-        $selectedInfluence = $this->getDataField("influence", null);
+        $selectedGuild = $this->getDataField("guild", null);
 
-        if ($selectedInfluence === null) {
-            // Step 1: Store selected influence and its source, queue step 2
-            $influenceKey = $this->getCheckedArg();
-            $allInfluence = $this->getPlayerInfluenceToMove();
-            $from = $allInfluence[$influenceKey]["from"] ?? "";
-            $this->queue($this->getType(), $owner, ["influence" => $influenceKey, "from" => $from]);
+        if ($selectedGuild === null) {
+            // Step 1: Store selected guild, queue step 2
+            $selectedGuild = $this->getCheckedArg();
+            $this->queue($this->getType(), $owner, ["guild" => $selectedGuild]);
             return;
         }
 
         // Step 2: Move influence to destination
         $to = $this->getCheckedArg();
+        $selectedInfluence = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("influence_{$owner}", $selectedGuild);
 
         $this->game->tokens->dbSetTokenLocation(
             $selectedInfluence,
@@ -124,10 +99,14 @@ class Op_infMove extends Operation {
     }
 
     function getPrompt() {
-        $selectedInfluence = $this->getDataField("influence", null);
-        if ($selectedInfluence === null) {
-            return clienttranslate("Select influence to move");
+        $selectedGuild = $this->getDataField("guild", null);
+        if ($selectedGuild === null) {
+            return clienttranslate("Select Guild to move from");
         }
-        return clienttranslate("Select destination for influence");
+        return clienttranslate("Select destination Guild");
+    }
+
+    public function getIconicName() {
+        return "[wicon_inf_move]";
     }
 }

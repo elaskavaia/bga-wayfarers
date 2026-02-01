@@ -56,30 +56,19 @@ abstract class Op_n_infBase extends CountableOperation {
             if ($i >= $count) {
                 break;
             }
-            $this->game->tokens->dbSetTokenLocation(
-                $tokenId,
-                "tableau_$owner",
-                0,
-                clienttranslate('${player_name} returns ${token_name} from ${place_name}')
-            );
+            $this->game->tokens->dbSetTokenLocation($tokenId, "tableau_$owner", 0, clienttranslate('${player_name} spends ${token_name}'));
             $i++;
         }
     }
 
-    public function getExtraArgs() {
-        $infcolor = getPart($this->getGuild(), 1);
-        return parent::getExtraArgs() + ["token_div" => "wicon_inf_{$infcolor}_pay"];
-    }
-
-    function getButtonName() {
+    function getIconicName() {
         $count = $this->getCount();
+        $infcolor = getPart($this->getGuild(), 1);
         if ($count == 1) {
-            return '${token_div}';
+            return "[wicon_inf_{$infcolor}_pay]";
         } elseif ($count == 2) {
-            return '${token_div} ${token_div}';
-        } elseif ($count == 3) {
-            return '${token_div} ${token_div} ${token_div}';
+            return "[wicon_inf_{$infcolor}_pay][wicon_inf_{$infcolor}_pay]";
         }
-        return clienttranslate('${count} ${token_div}');
+        return "{$count}x [wicon_inf_{$infcolor}_pay]";
     }
 }

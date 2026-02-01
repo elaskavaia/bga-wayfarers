@@ -46,4 +46,4 @@ num|cost|dr|tags|nom|da|tooltip
 146|1|infBlue/infMove|Sea|Translator||Place an Influence in Blue Guild or Move Influence
 147|1|infYellow/infMove|Sea|Translator||Place an Influence in Yellow Guild or Move Influence
 148|2|infBlack/infMove|Sea|Translator||Place an Influence in Black Guild or Move Influence
-151|0|pickWorker/infMove|Sea|Warrior||Pick a Worker or Move Influence
+151|0|pickWorker/infCard|Sea|Warrior||Pick a Worker or Move Influence

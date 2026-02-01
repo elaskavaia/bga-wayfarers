@@ -41,6 +41,7 @@ card_space|Space|36|card card_space|0|deck_space
 card_land|Land|36|card card_land|0|deck_land
 card_water|Water|36|card card_water|0|deck_water
 card_insp|Inspiration|16|card card_insp|0|deck_insp
+card_home|Home
 
 #boards
 mainboard_1||1|mainboard_x left|1|mainboardall|
@@ -51,16 +52,6 @@ game_stage||1|stage|1|limbo|
 
 #set create=0
 #set location=
-
-#ui elements
-#set type=dice wooden token {id}
-#set name=Die {count} 
-die_1||1
-die_2||2
-die_3||3
-die_4||4
-die_5||5
-die_6||6
 
 #set type=
 #set name=
@@ -82,26 +73,111 @@ game_vp_guilds|VP from Guild Majorities
 game_vp_total|VP total
 
 #tags
-tag_Water|Water
-tag_Harbour|Harbour
-tag_Sea|Open Water
-tag_Land|Land
-tag_City|City
-tag_Vista|Vista
-tag_Space|Space
-tag_Observatory|Observatory
-tag_Book|Book
-tag_Comet|Comet
-tag_Stars|Stars
-tag_Planet|Planet
-tag_Sun|Sun
-tag_Moon|Moon
-tag_Library|Library
-tag_CardFolk|Townsfolk Card
-tag_UpgradeAny|Any Upgrade
+#set type=
+#set name=
+
+tag_Harbour|Harbour|wicon_harbour
+tag_Sea|Open Water|wicon_sea
+tag_City|City|wicon_city
+tag_Vista|Vista|wicon_vista
+tag_Observatory|Observatory|wicon_observatory
+tag_Book|Book|wicon_book
+tag_Comet|Comet|wicon_comet
+tag_Stars|Stars|wicon_stars
+tag_Planet|Planet|wicon_planet
+tag_Sun|Sun|wicon_sun
+tag_Moon|Moon|wicon_moon
+tag_Library|Library|wicon_book
+tag_card_space|Space Card|wicon_card_space
+tag_card_water|Water Card|wicon_card_water
+tag_card_land|Land Card|wicon_card_land
+tag_card_folk|Townsfolk Card|wicon_card_folk
+tag_card_insp|Inspiration Card|wicon_card_insp
+tag_upg_green|Basic Upgrade|wicon_upg_green
+tag_upg_black|Space Upgrade|wicon_upg_black
+tag_upg_yellow|Land Upgrade|wicon_upg_yellow
+tag_upg_blue|Water Upgrade|wicon_upg_blue
+tag_upg_any|Any Upgrade|wicon_upg_any
 
 #reasons
 caravanBonus|Caravan Placement Bonus
+
+
+#ui elements
+#set type=dice wicon {id}
+#set name=Die {count} 
+wicon_die_1||1
+wicon_die_2||2
+wicon_die_3||3
+wicon_die_4||4
+wicon_die_5||5
+wicon_die_6||6
+
+#icons
+#set type=
+#set name=
+
+# Destination/Location icons
+wicon_city
+wicon_harbour
+wicon_book
+wicon_observatory
+wicon_vista
+wicon_sea
+wicon_water
+wicon_land
+wicon_comet
+wicon_comet_up
+wicon_stars
+wicon_planet
+wicon_moon
+wicon_sun
+wicon_space
+wicon_folk
+wicon_vp
+
+# Upgrade icons
+wicon_upg_green
+wicon_upg_black
+wicon_upg_yellow
+wicon_upg_blue
+wicon_upg_pink
+wicon_upg_any
+wicon_upg_green_free
+wicon_upg_black_free
+wicon_upg_yellow_free
+wicon_upg_blue_free
+
+# Cards and assets
+wicon_card_space
+wicon_card_water
+wicon_card_land
+wicon_card_folk
+wicon_card_insp
+wicon_camel
+wicon_ship
+wicon_pigeon
+wicon_telescope
+
+# Influence icons
+wicon_inf_blue
+wicon_inf_black
+wicon_inf_yellow
+wicon_inf_any
+wicon_inf_move
+wicon_inf_blue_pay
+wicon_inf_black_pay
+wicon_inf_yellow_pay
+
+# Dice and action icons
+wicon_pick_worker
+wicon_reroll
+wicon_dice_mod
+wicon_journal
+wicon_rest1
+wicon_rest
+wicon_coin
+wicon_food
 
 
 

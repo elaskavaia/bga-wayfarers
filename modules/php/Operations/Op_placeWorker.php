@@ -63,29 +63,28 @@ class Op_placeWorker extends Operation {
         if ($selectedWorker === null) {
             // Step 1: Select a worker from supply
             $workers = $this->getWorkersInSupply();
-            $res = [];
+            $res = ["prompt" => clienttranslate("Select a worker to place")];
             foreach ($workers as $key => $worker) {
                 $res[$key] = ["q" => Material::RET_OK];
             }
             return $res;
-        } else {
-            // Step 2: Select a card to place the worker on
-            $slots = $this->getWorkerSlots();
-            $res = [];
-            $wcolor = getPart($selectedWorker, 1);
-            foreach ($slots as $key => $slot) {
-                if (str_starts_with($key, "card_insp")) {
-                    $res[$key] = ["q" => Material::RET_OK];
-                } elseif ($wcolor == "yellow" && str_starts_with($key, "card_land")) {
-                    $res[$key] = ["q" => Material::RET_OK];
-                } elseif ($wcolor == "blue" && str_starts_with($key, "card_water")) {
-                    $res[$key] = ["q" => Material::RET_OK];
-                } elseif ($wcolor == "green" && str_starts_with($key, "card_folk")) {
-                    $res[$key] = ["q" => Material::RET_OK];
-                }
-            }
-            return $res;
         }
+        // Step 2: Select a card to place the worker on
+        $slots = $this->getWorkerSlots();
+        $res = [];
+        $wcolor = getPart($selectedWorker, 1);
+        foreach ($slots as $key => $slot) {
+            if (str_starts_with($key, "card_insp")) {
+                $res[$key] = ["q" => Material::RET_OK];
+            } elseif ($wcolor == "yellow" && str_starts_with($key, "card_land")) {
+                $res[$key] = ["q" => Material::RET_OK];
+            } elseif ($wcolor == "blue" && str_starts_with($key, "card_water")) {
+                $res[$key] = ["q" => Material::RET_OK];
+            } elseif ($wcolor == "green" && !str_starts_with($key, "card_space")) {
+                $res[$key] = ["q" => Material::RET_OK];
+            }
+        }
+        return $res;
     }
 
     public function getUiArgs() {
@@ -124,10 +123,6 @@ class Op_placeWorker extends Operation {
     }
 
     public function getPrompt() {
-        $selectedWorker = $this->getSelectedWorker();
-        if ($selectedWorker === null) {
-            return clienttranslate("Select a worker to place");
-        }
-        return clienttranslate("Select a card to place the worker on");
+        return clienttranslate("Select where to place the worker to perform a board action");
     }
 }

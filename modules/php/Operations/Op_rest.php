@@ -118,4 +118,8 @@ class Op_rest extends Operation {
     public function requireConfirmation() {
         return true;
     }
+
+    public function getIconicName() {
+        return "[wicon_rest]";
+    }
 }

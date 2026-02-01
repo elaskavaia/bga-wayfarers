@@ -68,4 +68,7 @@ class Op_spendInfBlue extends Operation {
     public function getPrompt() {
         return clienttranslate("Spend blue influence to gain a ship for this die placement (once per turn)");
     }
+    public function getIconicName() {
+        return "[wicon_inf_blue_pay]: [wicon_ship]";
+    }
 }

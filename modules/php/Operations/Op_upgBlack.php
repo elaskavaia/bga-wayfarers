@@ -34,4 +34,8 @@ class Op_upgBlack extends Op_upgBase {
     function getTileHeight(): int {
         return 2;
     }
+
+    public function getIconicName() {
+        return "[wicon_upg_black]";
+    }
 }

@@ -67,4 +67,8 @@ class Op_reroll extends Operation {
     function getPrompt() {
         return clienttranslate("Select a die to reroll");
     }
+
+    public function getIconicName() {
+        return "[wicon_reroll]";
+    }
 }

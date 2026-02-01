@@ -210,7 +210,23 @@ abstract class Operation {
         }
         return GameDispatch::class;
     }
+    function instanciateOperation($type, $owner = null, $data = null, $reason = null) {
+        if ($owner === null) {
+            $owner = $this->getOwner();
+        }
 
+        if ($reason === null) {
+            $reason = $this->getOpId();
+        }
+
+        if ($reason) {
+            if ($data === null) {
+                $data = [];
+            }
+            $data["reason"] = $reason;
+        }
+        return $this->game->machine->instanciateOperation($type, $owner, $data);
+    }
     function queue($type, $owner = null, $data = null, $reason = null) {
         $this->game->systemAssert("empty op pushed", $type);
         if ($owner === null) {
@@ -412,9 +428,10 @@ abstract class Operation {
         return clienttranslate("Skip");
     }
 
-    function getButtonName() {
+    function getIconicName() {
         return $this->getOpName();
     }
+
     function getOpName() {
         return $this->game->getTokenName($this->getOpId(), $this->getType());
     }

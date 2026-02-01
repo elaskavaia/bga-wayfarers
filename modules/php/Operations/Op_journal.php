@@ -34,14 +34,41 @@ class Op_journal extends Operation {
 
         $positions = explode(",", (string) $conn);
         foreach ($positions as $pos) {
-            $pos = trim($pos);
-            $res["jpos_$pos"] = ["q" => Material::RET_OK, "name" => $pos];
+            $pos = (int) trim($pos);
+            $connector = $this->getConnectorId($currentState, $pos);
+            $err = "";
+            $achived = $this->game->isJourneyGoalAchieved($connector, $owner, $err);
+            $name = $pos;
+            if ($err) {
+                $name = $err;
+            }
+            $res["jpos_$pos"] = [
+                "q" => $achived ? Material::RET_OK : Material::ERR_PREREQ,
+                "name" => $name,
+                "token_id" => $connector,
+            ];
         }
         return $res;
     }
 
+    function getConnectorId(int $currentState, int $newState) {
+        $connector = "jconn_{$currentState}_{$newState}_0"; // TODO check side of the board instead of 0
+        return $connector;
+    }
+
     public function getPrompt() {
         return clienttranslate("Select a journal position to move to");
+    }
+
+    public function canSkip() {
+        if ($this->noValidTargets()) {
+            return true;
+        }
+        return false;
+    }
+
+    public function requireConfirmation() {
+        return true;
     }
 
     /** User does the action */
@@ -51,8 +78,13 @@ class Op_journal extends Operation {
 
         // Get user selected position (e.g., "jpos_15")
         $selected = $this->getCheckedArg();
+        $currentState = (int) $this->game->tokens->db->getTokenState($markerId);
         $newState = (int) getPart($selected, 1);
-
+        $connector = $this->getConnectorId($currentState, $newState);
+        $r = $this->game->getRulesFor($connector, "r", "");
+        if (str_starts_with($r, "Op_")) {
+            $this->queue(substr($r, 3), $owner);
+        }
         // Update marker state
         $this->game->tokens->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [
             "num" => $newState,
@@ -60,6 +92,12 @@ class Op_journal extends Operation {
 
         $r = $this->game->getRulesFor($selected);
         $this->queue($r, $owner, ["jpos" => $selected]);
+
+        /** @var Op_spendInfBlack */
+        $op = $this->instanciateOperation("spendInfBlack");
+        if (!$op->isBlackInfluenceSpentThisTurn()) {
+            $this->queue("spendInfBlack");
+        }
 
         // Check if end game is triggered (terminal position with no connections)
         $conn = $this->game->getRulesFor("jpos_$newState", "conn", "");
@@ -88,5 +126,9 @@ class Op_journal extends Operation {
                 clienttranslate('${player_name} triggers end of game! All players get one more turn.')
             );
         }
+    }
+
+    public function getIconicName() {
+        return "[wicon_journal]";
     }
 }

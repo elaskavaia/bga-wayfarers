@@ -613,7 +613,7 @@ final class GameTest extends TestCase {
         $this->game();
 
         $cardKey = "card_insp_test_8";
-        $this->game->material->setRulesFor($cardKey, ["collect" => "card_folk", "goal" => 3]);
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_card_folk", "goal" => 3]);
 
         // Add 2 folk cards (plus 1 pre-printed = 3 total)
         $this->game->tokens->db->moveToken("card_folk_1_1", "tableau_" . PCOLOR);
@@ -630,7 +630,7 @@ final class GameTest extends TestCase {
         $this->game();
 
         $cardKey = "card_insp_test_9";
-        $this->game->material->setRulesFor($cardKey, ["collect" => "upg_green", "goal" => 2]);
+        $this->game->material->setRulesFor($cardKey, ["collect" => "tag_upg_green", "goal" => 2]);
 
         // Add 2 green upgrade tiles
         $this->game->tokens->db->moveToken("upg_green_1_1", "tableau_" . PCOLOR);

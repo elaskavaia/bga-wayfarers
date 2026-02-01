@@ -85,6 +85,11 @@ a.bgabutton_white {
   color: darkgrey;
 }
 
+.bgabutton_gray {
+  border: 1px solid #0606065e;
+  box-shadow: 0 1px 0 #000;
+}
+
 .bgabutton_targetcolor {
   background-color: #2196f3c7;
 }
@@ -114,8 +119,8 @@ a.bgabutton_white {
   cursor: pointer;
   //box-shadow: 0px 0px 4px 2px v.$activeColor !important;
 
-  // outline: 4px dashed v.$activeColor;
-  // outline-offset: -5px;
+  outline: 2px dashed v.$activeColor;
+  outline-offset: -3px;
 
   &.gg_selected,
   &.gg_selected_alt {
@@ -123,14 +128,16 @@ a.bgabutton_white {
   }
 }
 
-.active_slot {
-  box-shadow: 0 0 6px 4px v.$activeColor;
-  animation: pulse-box-shadow 2s;
-  animation-iteration-count: 10;
-}
+// .active_slot {
+//   box-shadow: 0 0 6px 4px v.$activeColor;
+//   animation: pulse-box-shadow 2s;
+//   animation-iteration-count: 10;
+// }
 
-.active_slot.worker {
+.active_slot.worker,
+.active_slot.dice {
   box-shadow: unset;
+  outline: unset;
   filter: drop-shadow(0px 0px 6px v.$activeColor);
   animation: pulse-drop-shadow 2s;
   animation-iteration-count: 10;

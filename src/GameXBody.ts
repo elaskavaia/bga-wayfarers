@@ -672,6 +672,18 @@ class GameXBody extends GameMachine {
         log = res.log;
         args = res.args;
       }
+
+      // Process square bracket syntax [tokenId]
+      if (log && log.includes("[")) {
+        log = log.replace(/\[([^\]]+)\]/g, (match, tokenId) => {
+          try {
+            return this.getTokenPresentaton(tokenId, tokenId, args) ?? match;
+          } catch (e) {
+            console.error(`Failed to get token presentation for [${tokenId}]`, e);
+            return match; // Return original if error
+          }
+        });
+      }
     } catch (e) {
       console.error(log, args, "Exception thrown", e.stack);
     }

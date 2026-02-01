@@ -33,4 +33,8 @@ class Op_upgGreen extends Op_upgBase {
     function getTileHeight(): int {
         return 1;
     }
+
+    public function getIconicName() {
+        return "[wicon_upg_green]";
+    }
 }

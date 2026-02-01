@@ -66,4 +66,8 @@ class Op_pickWorker extends Operation {
     function getPrompt() {
         return clienttranslate("Select a worker to pick");
     }
+
+    public function getIconicName() {
+        return "[wicon_pick_worker]";
+    }
 }

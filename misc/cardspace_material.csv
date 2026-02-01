@@ -24,7 +24,7 @@ num|r|vpexp|tags|tor|tovp|nom
 93||tag_City|Stars||1 VP per City tag|City Light
 94||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
 95||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
-96|cardInsp|card_insp|Stars|Acquire Inspiration Card|1 VP per Inspiration card|Muse's Light
+96|cardInsp|tag_card_insp|Stars|Acquire Inspiration Card|1 VP per Inspiration card|Muse's Light
 97|infBlack,infMove|1+(inf_black/2)|Stars|Place an Influence in Black Guild, then move any influence|1 VP + 1 VP per 2 influence on Black Guild|Shadow Guide
 98|infBlue,infMove|1+(inf_blue/2)|Stars|Place an Influence in Blue Guild, then move any influence|1 VP + 1 VP per 2 influence on Blue Guild|Tide Navigator
 99|infYellow,infMove|1+(inf_yellow/2)|Stars|Place an Influence in Yellow Guild, then move any influence|1 VP + 1 VP per 2 influence on Yellow Guild|Path Finder
@@ -32,12 +32,12 @@ num|r|vpexp|tags|tor|tovp|nom
 101|food|1+tag_Observatory|Stars|Gain Provision|1 VP + 1 VP per Observatory tag|Observer's Eye
 102||tag_Sea|Stars||1 VP per Open Water tag|Ocean Star
 103||tag_Sea|Stars||1 VP per Open Water tag|Ocean Star
-104|cardFolk(free)|min(card_folk,card_space,card_land,card_water)|Stars|Acquire Townsfolk card (free)|1 VP per set of Townsfolk, Space, Land, and Water cards|Collector's Star
+104|cardFolk(free)|min(tag_card_folk,tag_card_space,tag_card_land,tag_card_water)|Stars|Acquire Townsfolk card (free)|1 VP per set of Townsfolk, Space, Land, and Water cards|Collector's Star
 105|infCard|tag_Stars|Stars|Place Influence on a Card|1 VP per Stars tag|Constellation
-106|infBlack|1+upg_black|Stars|Place an Influence in Black Guild|1 VP + 1 VP per Space upgrade tile|Night Compass
-107|infBlue|1+upg_blue|Stars|Place an Influence in Blue Guild|1 VP + 1 VP per Water upgrade tile|Sea Compass
-108|cardFolk(free)|1+upg_green|Stars|Acquire Townsfolk card (free)|1 VP + 1 VP per Basic upgrade tile|Land Guide
-109|infYellow|1+upg_yellow|Stars|Place an Influence in Yellow Guild|1 VP + 1 VP per Land upgrade tile|Earth Compass
+106|infBlack|1+tag_upg_black|Stars|Place an Influence in Black Guild|1 VP + 1 VP per Space upgrade tile|Night Compass
+107|infBlue|1+tag_upg_blue|Stars|Place an Influence in Blue Guild|1 VP + 1 VP per Water upgrade tile|Sea Compass
+108|cardFolk(free)|1+tag_upg_green|Stars|Acquire Townsfolk card (free)|1 VP + 1 VP per Basic upgrade tile|Land Guide
+109|infYellow|1+tag_upg_yellow|Stars|Place an Influence in Yellow Guild|1 VP + 1 VP per Land upgrade tile|Earth Compass
 110||tag_Vista|Stars||1 VP per Vista tag|Vista Gleam
 111||tag_Vista|Stars||1 VP per Vista tag|Vista Gleam
 #Moon and Sun
@@ -49,4 +49,4 @@ num|r|vpexp|tags|tor|tovp|nom
 # Home card
 #set create=0
 #set ext=
-1||min(upg_green,card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Home Sky
+1||min(tag_upg_green,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Home Sky

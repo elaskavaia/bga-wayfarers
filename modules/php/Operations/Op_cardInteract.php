@@ -55,8 +55,8 @@ class Op_cardInteract extends Operation {
 
     public function isOwnInfluence(string $infKey) {
         // Only return opponent's influence, not player's own
-        $infOwner = getPart($infKey, 2);
-        if ($infOwner === $this->getOwner()) {
+        $infOwner = getPart($infKey, 1);
+        if ($infOwner == $this->getOwner()) {
             return true;
         }
         return false;

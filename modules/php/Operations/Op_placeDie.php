@@ -117,23 +117,26 @@ class Op_placeDie extends Op_acquireBase {
             }
         }
 
+        $die = $this->getDie();
         // Check caravan column for dicePlus, diceMinus abilities (already in caravanAssets)
         if (($caravanAssets["dicePlus"] ?? 0) > 0 && $dieValue < 6) {
-            $res["Op_dicePlus"] = ["q" => Material::RET_OK];
+            $dieValuePlus = $dieValue - 1;
+            $res["Op_dicePlus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValuePlus]"];
         }
         if (($caravanAssets["diceMinus"] ?? 0) > 0 && $dieValue > 1) {
-            $res["Op_diceMinus"] = ["q" => Material::RET_OK];
+            $dieValueM1 = $dieValue - 1;
+            $res["Op_diceMinus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValueM1]"];
         }
 
         // Add influence spending options
         $ops = ["spendInfBlue", "spendInfYellow"];
         foreach ($ops as $opId) {
             $op = $this->game->machine->instanciateOperation($opId, $owner);
+            $res[$op->getOpId()] = ["q" => Material::RET_OK, "name" => $op->getIconicName(), "color" => "secondary"];
             $void = $op->noValidTargets();
             if ($void) {
-                $res[$op->getOpId()] = ["q" => Material::ERR_NOT_APPLICABLE, "err" => $op->getError()];
-            } else {
-                $res[$op->getOpId()] = ["q" => Material::RET_OK];
+                $res[$op->getOpId()]["q"] = Material::ERR_NOT_APPLICABLE;
+                $res[$op->getOpId()]["err"] = $op->getError();
             }
         }
 
@@ -193,13 +196,13 @@ class Op_placeDie extends Op_acquireBase {
 
     public function getExtraArgs() {
         $dieValue = $this->getDieValue();
-        return parent::getExtraArgs() + ["token_div" => "die_$dieValue"];
+        return parent::getExtraArgs() + ["token_div" => "wicon_die_$dieValue"];
     }
     public function getPrompt() {
         $dieValue = $this->getDieValue();
         if ($dieValue == 0) {
             return clienttranslate("Select a die");
         }
-        return clienttranslate('Select where to place the die ${token_div}');
+        return clienttranslate('Select where to place the die ${token_div} or');
     }
 }

@@ -20,6 +20,6 @@ class Op_n_infYellow extends Op_n_infBase {
     }
 
     public function getPrompt() {
-        return clienttranslate('Pay ${count} Yellow Influence');
+        return clienttranslate('Spend ${count} Yellow Influence');
     }
 }

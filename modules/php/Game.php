@@ -357,12 +357,14 @@ class Game extends Base {
     function countPlayerTags(string $tagName, string $owner): int {
         $count = 0;
 
-        // Count from cards in tableau
-        $cards = $this->tokens->getTokensOfTypeInLocation("card", "tableau_$owner");
-        foreach ($cards as $cardKey => $cardInfo) {
-            $tags = $this->getTagsSet($cardKey);
-            if (isset($tags[$tagName])) {
-                $count += $tags[$tagName];
+        $cardTypes = ["card_land", "card_water", "card_space"];
+        foreach ($cardTypes as $cardType) {
+            $cards = $this->tokens->getTokensOfTypeInLocation($cardType, "tableau_$owner");
+            foreach ($cards as $cardKey => $cardInfo) {
+                $tags = $this->getTagsSet($cardKey);
+                if (isset($tags[$tagName])) {
+                    $count += $tags[$tagName];
+                }
             }
         }
 
@@ -388,10 +390,10 @@ class Game extends Base {
 
         // Add implicit tags based on token type
         if (str_starts_with($playedItem, "card_folk")) {
-            $tags["CardFolk"] = 1;
+            $tags["card_folk"] = 1;
         }
         if (str_starts_with($playedItem, "upg_")) {
-            $tags["UpgradeAny"] = 1;
+            $tags["upg_any"] = 1;
         }
 
         $results = [];
@@ -467,6 +469,32 @@ class Game extends Base {
         // Single requirement
         $count = $this->evaluateExpression($collect, $owner);
         return $count >= $required;
+    }
+
+    function isJourneyGoalAchieved(string $connector, string $owner, string &$err): bool {
+        $collect = $this->getRulesFor($connector, "r", "");
+
+        if (!$collect) {
+            return true; // No requirement - free connection
+        }
+
+        // Operations are costs (e.g., Op_n_infBlack) - check if player has the resource
+        if (str_starts_with($collect, "Op_")) {
+            if ($collect === "Op_n_infBlack") {
+                return $this->countGuildInfluence("guild_black", $owner) > 0;
+            }
+            return false;
+        }
+
+        $required = (int) $this->getRulesFor($connector, "gw", 1);
+
+        // Single requirement
+        $count = $this->evaluateExpression($collect, $owner);
+        if ($count >= $required) {
+            return true;
+        }
+        $err = "$collect => $count < $required";
+        return false;
     }
 
     function countVpForSpaceCard(string $card, string $owner) {
@@ -702,6 +730,32 @@ class Game extends Base {
         if (str_starts_with($x, "tracker_")) {
             return $this->tokens->getTrackerValue($owner, getPart($x, 1));
         }
+
+        // Handle tag_upg_ (upgrade tiles) - MUST come before generic tag_ check
+        if (str_starts_with($x, "tag_upg_")) {
+            $type = getPart($x, 2);
+            if ($type === "any") {
+                $tokens = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
+            } else {
+                $tokens = $this->tokens->getTokensOfTypeInLocation("upg_$type", "tableau_$owner");
+            }
+            return count($tokens);
+        }
+
+        // Handle tag_card_ (card counts) - MUST come before generic tag_ check
+        if (str_starts_with($x, "tag_card_")) {
+            // i.e. tag_card_land
+            $ttype = getPart($x, 2);
+            $tokens = $this->tokens->getTokensOfTypeInLocation("card_$ttype", "tableau_$owner");
+
+            $plus = 0;
+            if ($ttype === "folk" || $ttype == "land" || $ttype == "water" || $ttype == "star") {
+                $plus = 1; // player starts with 1 of other pre-printed cards
+            }
+            return count($tokens) + $plus;
+        }
+
+        // Handle generic tag_ (actual game tags like City, Vista, etc.)
         if (str_starts_with($x, "tag_")) {
             return $this->countPlayerTags(getPart($x, 1), $owner);
         }
@@ -725,23 +779,6 @@ class Game extends Base {
                 }
             }
             return 1;
-        }
-
-        // Handle upg_ (upgrade tiles)
-        if (str_starts_with($x, "upg_")) {
-            $tokens = $this->tokens->getTokensOfTypeInLocation("$x", "tableau_$owner");
-            return count($tokens);
-        }
-
-        // Handle card_ (card counts)
-        if (str_starts_with($x, "card_")) {
-            $tokens = $this->tokens->getTokensOfTypeInLocation($x, "tableau_$owner");
-            $ttype = getPart($x, 1);
-            $plus = 0;
-            if ($ttype === "folk" || $ttype == "land" || $ttype == "water" || $ttype == "star") {
-                $plus = 1; // player starts with 1 of other pre-printed cards
-            }
-            return count($tokens) + $plus;
         }
 
         return parent::evaluateTerm($x, $owner, $context, $options);

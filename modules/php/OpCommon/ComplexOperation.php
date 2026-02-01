@@ -60,7 +60,7 @@ abstract class ComplexOperation extends CountableOperation {
         $res = [];
         foreach ($this->delegates as $sub) {
             $res[$sub->getId()] = [
-                "name" => $sub->getButtonName(),
+                "name" => $sub->getIconicName(),
             ];
         }
         return $res;
@@ -83,7 +83,7 @@ abstract class ComplexOperation extends CountableOperation {
         }
         foreach ($this->delegates as $i => $sub) {
             $pars[] = "p$i";
-            $args["p$i"] = ["log" => $sub->getButtonName(), "args" => $sub->getExtraArgs()];
+            $args["p$i"] = ["log" => $sub->getIconicName(), "args" => $sub->getExtraArgs()];
         }
         $log = implode(
             $join,

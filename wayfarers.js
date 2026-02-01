@@ -276,17 +276,21 @@ var Game0Basics = /** @class */ (function (_super) {
     };
     Game0Basics.prototype.getTr = function (name, args) {
         if (args === void 0) { args = {}; }
-        if (name === undefined)
-            return null;
+        if (!name)
+            return "";
         if (name.log !== undefined) {
             var notif = name;
-            var log = this.format_string_recursive(notif.log, notif.args);
-            return this.clienttranslate_string(log);
+            var log = this.format_string_recursive(this.clienttranslate_string(notif.log), notif.args);
+            return log;
         }
-        else {
-            var log = this.format_string_recursive(name, args);
-            return this.clienttranslate_string(log);
+        if (typeof name !== "string")
+            return name.toString();
+        //if (name.includes("$"))
+        {
+            var log = this.format_string_recursive(this.clienttranslate_string(name), args);
+            return log;
         }
+        //return this.clienttranslate_string(name);
     };
     Game0Basics.prototype.reloadCss = function () {
         var links = document.getElementsByTagName("link");
@@ -1071,15 +1075,19 @@ var Game1Tokens = /** @class */ (function (_super) {
         if (args === void 0) { args = {}; }
         if (type.includes("_div"))
             return this.createTokenImage(tokenKey);
+        if (tokenKey.includes("wicon"))
+            return this.createTokenImage(tokenKey);
         return this.getTokenName(tokenKey); // just a name for now
     };
     // override to generate dynamic tooltips and such
     Game1Tokens.prototype.updateTokenDisplayInfo = function (tokenDisplayInfo) { };
-    Game1Tokens.prototype.createTokenImage = function (tokenId) {
+    Game1Tokens.prototype.createTokenImage = function (tokenId, state) {
+        var _a;
+        if (state === void 0) { state = 0; }
         var div = document.createElement("div");
         div.id = tokenId + "_tt_" + this.globlog++;
-        this.updateToken(div, { key: tokenId, location: "log", state: 0 });
-        div.title = this.getTokenName(tokenId);
+        this.updateToken(div, { key: tokenId, location: "log", state: state });
+        div.title = (_a = this.getTokenName(tokenId, false)) !== null && _a !== void 0 ? _a : "";
         return div.outerHTML;
     };
     Game1Tokens.prototype.isMarkedForTranslation = function (key, args) {
@@ -1095,9 +1103,19 @@ var Game1Tokens = /** @class */ (function (_super) {
         return false;
     };
     Game1Tokens.prototype.bgaFormatText = function (log, args) {
-        if (log && args) {
-            try {
-                var keys = ["token_name", "token2_name", "token_divs", "token_names", "place_name", "token_div", "token2_div", "token3_div"];
+        try {
+            if (log && args) {
+                var keys = [
+                    "token_name",
+                    "token2_name",
+                    "token_divs",
+                    "token_names",
+                    "place_name",
+                    "token_div",
+                    "token2_div",
+                    "token3_div",
+                    "token_icon"
+                ];
                 for (var i in keys) {
                     var key = keys[i];
                     // console.log("checking " + key + " for " + log);
@@ -1126,9 +1144,9 @@ var Game1Tokens = /** @class */ (function (_super) {
                         args[key] = res;
                 }
             }
-            catch (e) {
-                console.error(log, args, "Exception thrown", e.stack);
-            }
+        }
+        catch (e) {
+            console.error(log, args, "Exception thrown", e.stack);
         }
         return { log: log, args: args };
     };
@@ -2315,6 +2333,7 @@ var GameXBody = /** @class */ (function (_super) {
     };
     /** @Override */
     GameXBody.prototype.bgaFormatText = function (log, args) {
+        var _this = this;
         try {
             if (log && args && !args.processed && log.includes("$")) {
                 args.processed = true;
@@ -2333,6 +2352,19 @@ var GameXBody = /** @class */ (function (_super) {
                 var res = _super.prototype.bgaFormatText.call(this, log, args);
                 log = res.log;
                 args = res.args;
+            }
+            // Process square bracket syntax [tokenId]
+            if (log && log.includes("[")) {
+                log = log.replace(/\[([^\]]+)\]/g, function (match, tokenId) {
+                    var _a;
+                    try {
+                        return (_a = _this.getTokenPresentaton(tokenId, tokenId, args)) !== null && _a !== void 0 ? _a : match;
+                    }
+                    catch (e) {
+                        console.error("Failed to get token presentation for [".concat(tokenId, "]"), e);
+                        return match; // Return original if error
+                    }
+                });
             }
         }
         catch (e) {

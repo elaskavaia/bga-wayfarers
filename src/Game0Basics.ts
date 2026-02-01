@@ -246,16 +246,22 @@ class Game0Basics extends GameGui<any> {
   }
 
   getTr(name: string | NotificationMessage, args: any = {}) {
-    if (name === undefined) return null;
+    if (!name) return "";
 
     if ((name as any).log !== undefined) {
       const notif = name as NotificationMessage;
-      const log = this.format_string_recursive(notif.log, notif.args);
-      return this.clienttranslate_string(log);
-    } else {
-      const log = this.format_string_recursive(name as string, args);
-      return this.clienttranslate_string(log);
+      const log = this.format_string_recursive(this.clienttranslate_string(notif.log), notif.args);
+      return log;
     }
+    if (typeof name !== "string") return name.toString();
+
+    //if (name.includes("$"))
+    {
+      const log = this.format_string_recursive(this.clienttranslate_string(name) as string, args);
+      return log;
+    }
+
+    //return this.clienttranslate_string(name);
   }
   reloadCss() {
     var links = document.getElementsByTagName("link");

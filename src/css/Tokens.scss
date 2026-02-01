@@ -72,15 +72,24 @@
     height: 24px;
     line-height: 24px;
   }
-  #page-title & {
-    filter: v.$dropShadow2;
-  }
+  // #page-title & {
+  //   filter: v.$dropShadow2;
+  // }
 }
-
-.dice {
+.wicon.dice {
   background-image: url(img/dice.png);
   background-size: 600% 100%;
-  //mask-image: url(img/dice.png);
+}
+.dice {
+  background-image: url(img/dice.png);
+
+  .tableau &,
+  .mainarea & {
+    background-image: url(img/dice3d.png);
+    mask-image: url(img/dice3d.png);
+  }
+  background-size: 600% 100%;
+
   mask-size: 600% 100%;
   height: 32px;
   border-radius: 20%;
@@ -92,23 +101,23 @@
     background-color: #ff0000;
   }
   &[data-state="1"],
-  &.die_1 {
+  &.wicon_die_1 {
     background-position-x: 0%;
   }
   &[data-state="2"],
-  &.die_2 {
+  &.wicon_die_2 {
     background-position-x: 20%;
   }
   &[data-state="3"],
-  &.die_3 {
+  &.wicon_die_3 {
     background-position-x: 40%;
   }
   &[data-state="4"],
-  &.die_4 {
+  &.wicon_die_4 {
     background-position-x: 60%;
   }
   &[data-state="5"],
-  &.die_5 {
+  &.wicon_die_5 {
     background-position-x: 80%;
   }
 }
@@ -197,8 +206,8 @@
 .wicon {
   background-image: url(img/tokens.png);
   background-size: auto 1200%;
-  width: 32px;
   height: 32px;
+  aspect-ratio: 1;
 
   .log &,
   #page-title & {
@@ -260,44 +269,80 @@
 
 // Row 2: upgrades
 .wicon_upg_green {
-  background-position: 0% 28%;
+  background-position: 0% 14%;
 }
 .wicon_upg_black {
-  background-position: 10% 28%;
+  background-position: 10% 14%;
 }
 .wicon_upg_yellow {
-  background-position: 19% 28%;
+  background-position: 19% 14%;
 }
 .wicon_upg_blue {
-  background-position: 30% 28%;
+  background-position: 30% 14%;
 }
 .wicon_upg_pink {
-  background-position: 40% 28%;
+  background-position: 40% 14%;
 }
 .wicon_upg_any {
-  background-position: 50% 28%;
+  background-position: 50% 14%;
 }
 .wicon_upg_green_free {
-  background-position: 60% 28%;
+  background-position: 60% 14%;
 }
 .wicon_upg_black_free {
-  background-position: 70% 28%;
+  background-position: 70% 14%;
 }
 .wicon_upg_yellow_free {
-  background-position: 80% 28%;
+  background-position: 80% 14%;
 }
 .wicon_upg_blue_free {
-  background-position: 90% 28%;
+  background-position: 90% 14%;
 }
 
 // Row 3: cards and assets
 
+.wicon_water {
+  background-position: 0% 28%;
+  background-size: auto 1200%;
+}
+.wicon_card_water {
+  background-position: 0% 28%;
+  background-size: auto 1200%;
+}
+.wicon_land {
+  background-position: 10% 28%;
+  background-size: auto 1200%;
+}
+.wicon_card_land {
+  background-position: 10% 28%;
+  background-size: auto 1200%;
+}
+.wicon_space {
+  background-position: 20% 28%;
+  background-size: auto 1200%;
+}
+.wicon_card_space {
+  background-position: 20% 28%;
+  background-size: auto 1200%;
+}
+.wicon_folk {
+  background-position: 30% 28%;
+  background-size: auto 1200%;
+}
+.wicon_card_folk {
+  background-position: 30% 28%;
+  background-size: auto 1200%;
+}
+.wicon_card_insp {
+  background-position: 20% 28%;
+  background-size: auto 1200%;
+}
 .wicon_camel {
   background-position: 69% 28%;
   background-size: auto 1000%;
 }
 .wicon_ship {
-  background-position: 77% 28%;
+  background-position: 80% 28%;
   background-size: auto 1000%;
 }
 .wicon_pigeon {
@@ -312,41 +357,64 @@
 // Row 4: influence
 .wicon_inf_blue {
   background-position: 0% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_black {
-  background-position: 8% 42%;
+  background-position: 10% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_yellow {
-  background-position: 16% 42%;
+  background-position: 20% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_any {
-  background-position: 24% 42%;
+  background-position: 30% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_move {
-  background-position: 40% 42%;
+  background-position: 39% 42%;
 }
 .wicon_inf_blue_pay {
-  background-position: 48% 42%;
+  background-position: 49% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_black_pay {
   background-position: 58% 42%;
+  background-size: auto 1000%;
 }
 .wicon_inf_yellow_pay {
-  background-position: 56% 42%;
+  background-position: 67.4% 42%;
+  background-size: auto 1000%;
 }
 
 // Row 5: Meeples and dice
-
+.wicon_pick_worker {
+  background-position: 24% 57%;
+  background-size: auto 1000%;
+}
 .wicon_reroll {
-  background-position: 50% 60%;
+  background-position: 50% 57%;
+}
+.wicon_dice_mod {
+  background-position: 58% 57%;
 }
 .wicon_journal {
-  background-position: 80% 60%;
+  background-position: 80% 57%;
 }
 .wicon_rest1 {
-  background-position: 100% 60%;
+  background-position: 100% 57%;
 }
-
+.wicon_rest {
+  background-position: 100% 57%;
+}
+.wicon_coin {
+  background-position: 77% 42%;
+  background-size: auto 1000%;
+}
+.wicon_food {
+  background-position: 84% 42%;
+  background-size: auto 1000%;
+}
 // Upgrade tiles
 .upg {
   // Default: upgTiles2.jpg (Blue and Yellow tiles)
@@ -487,5 +555,24 @@
   }
   &.upg_green_34 {
     background-position: 75% 100%;
+  }
+}
+
+.jtile {
+  height: 48px;
+  aspect-ratio: 1/1;
+  background-image: url(img/journalTiles.jpg);
+  background-size: auto 100%;
+  box-shadow: v.$boxShadowBlack;
+}
+
+@for $i from 1 through 10 {
+  $num: $i - 1;
+  $cols: 10;
+  $rows: 1;
+
+  $col: $num % $cols;
+  .jtile_#{$i} {
+    background-position: calc($col * 100% / ($cols - 1)) 0;
   }
 }
