@@ -357,7 +357,7 @@ class Game extends Base {
     function countPlayerTags(string $tagName, string $owner): int {
         $count = 0;
 
-        $cardTypes = ["card_land", "card_water", "card_space"];
+        $cardTypes = ["card_land", "card_water", "card_space", "card_home"];
         foreach ($cardTypes as $cardType) {
             $cards = $this->tokens->getTokensOfTypeInLocation($cardType, "tableau_$owner");
             foreach ($cards as $cardKey => $cardInfo) {
@@ -469,32 +469,6 @@ class Game extends Base {
         // Single requirement
         $count = $this->evaluateExpression($collect, $owner);
         return $count >= $required;
-    }
-
-    function isJourneyGoalAchieved(string $connector, string $owner, string &$err): bool {
-        $collect = $this->getRulesFor($connector, "r", "");
-
-        if (!$collect) {
-            return true; // No requirement - free connection
-        }
-
-        // Operations are costs (e.g., Op_n_infBlack) - check if player has the resource
-        if (str_starts_with($collect, "Op_")) {
-            if ($collect === "Op_n_infBlack") {
-                return $this->countGuildInfluence("guild_black", $owner) > 0;
-            }
-            return false;
-        }
-
-        $required = (int) $this->getRulesFor($connector, "gw", 1);
-
-        // Single requirement
-        $count = $this->evaluateExpression($collect, $owner);
-        if ($count >= $required) {
-            return true;
-        }
-        $err = "$collect => $count < $required";
-        return false;
     }
 
     function countVpForSpaceCard(string $card, string $owner) {
@@ -622,18 +596,18 @@ class Game extends Base {
         foreach ($players as $player_id => $player) {
             $color = $this->getPlayerColorById((int) $player_id);
 
-            // 1. Primary Land and Water Tags (City, Vista, Harbour, Water)
-            $primaryTags = ["City", "Vista", "Harbour", "Water"];
+            // 1. Primary Land and Water Tags (City, Vista, Harbour, Open Water)
+            $primaryTags = ["City", "Vista", "Harbour", "Sea"];
             $tagCounts = [];
-
+            $vp_tags = 0;
             foreach ($primaryTags as $tag) {
                 $count = $this->countPlayerTags($tag, $color);
                 $tagCounts[$tag] = $count;
                 $vp = $this->getTagVP($count);
-                if ($vp > 0) {
-                    $this->effect_incVp($color, $vp, "game_vp_tags");
-                }
+                $this->effect_incVp($color, $vp, "", "game_vp_tag_$tag");
+                $vp_tags += $vp;
             }
+            $this->playerStats->inc("game_vp_tags", $vp_tags, $player_id);
 
             // Sets bonus: 5 VP for each set of 4 unique primary tags
             $sets = min($tagCounts);
@@ -727,6 +701,9 @@ class Game extends Base {
     }
 
     function evaluateTerm($x, $owner, $context = null, ?array $options = null) {
+        if ($x === "true") {
+            return 1;
+        }
         if (str_starts_with($x, "tracker_")) {
             return $this->tokens->getTrackerValue($owner, getPart($x, 1));
         }
@@ -935,5 +912,11 @@ class Game extends Base {
     function debugLog($info, $args = []) {
         $this->notify->all("log", "", ["log" => $info, "args" => $args]);
         //$this->warn($info . ": " . toJson($args));
+    }
+
+    function debug_eval(string $x) {
+        $color = $this->getCurrentPlayerColor();
+        $v = $this->evaluateExpression($x, $color);
+        $this->notify->all("log", "result: $v");
     }
 }

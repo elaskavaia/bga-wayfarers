@@ -45,6 +45,10 @@ class Op_spendInfBlack extends Operation {
         if ($this->isBlackInfluenceSpentThisTurn()) {
             return ["err" => clienttranslate("This can only be done once per turn")];
         }
+        $op = $this->instanciateOperation("journal");
+        if ($op->noValidTargets()) {
+            return ["err" => clienttranslate("No valid targets for Journal")];
+        }
         return parent::getPossibleMoves();
     }
 

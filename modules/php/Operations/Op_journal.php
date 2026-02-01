@@ -36,15 +36,41 @@ class Op_journal extends Operation {
         foreach ($positions as $pos) {
             $pos = (int) trim($pos);
             $connector = $this->getConnectorId($currentState, $pos);
-            $err = "";
-            $achived = $this->game->isJourneyGoalAchieved($connector, $owner, $err);
             $name = $pos;
-            if ($err) {
-                $name = $err;
+
+            $achived = false;
+            $prereq = $this->game->getRulesFor($connector, "r", "");
+
+            if (!$prereq) {
+                $achived = false;
+            } elseif (str_starts_with($prereq, "Op_")) {
+                // Operations are costs (e.g., Op_n_infBlack) - check if player has the resource
+                if ($prereq === "Op_n_infBlack") {
+                    $achived = $this->game->countGuildInfluence("guild_black", $owner) > 0;
+                    $name = "[wicon_inf_black_pay]";
+                } else {
+                    $this->game->systemAssert("unsupported operation $prereq");
+                }
+            } else {
+                $required = (int) $this->game->getRulesFor($connector, "gw", 1);
+                $count = $this->game->evaluateExpression($prereq, $owner);
+
+                if ($count >= $required) {
+                    $achived = true;
+                }
+                $givenName = $this->game->getRulesFor($connector, "name", "");
+                if ($givenName) {
+                    $name = $givenName;
+                } else {
+                    $icon = $this->game->getRulesFor($prereq, "type", "?");
+                    $name = "$required [$icon]"; // extact icon from prereq tag
+                }
             }
+
             $res["jpos_$pos"] = [
                 "q" => $achived ? Material::RET_OK : Material::ERR_PREREQ,
                 "name" => $name,
+                "r" => $prereq,
                 "token_id" => $connector,
             ];
         }
@@ -57,7 +83,7 @@ class Op_journal extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate("Select a journal position to move to");
+        return clienttranslate("Select a journal position to move to via connection");
     }
 
     public function canSkip() {
@@ -71,7 +97,6 @@ class Op_journal extends Operation {
         return true;
     }
 
-    /** User does the action */
     function resolve(): void {
         $owner = $this->getOwner();
         $markerId = "marker_$owner";
@@ -90,6 +115,7 @@ class Op_journal extends Operation {
             "num" => $newState,
         ]);
 
+        // Position Bonus
         $r = $this->game->getRulesFor($selected);
         $this->queue($r, $owner, ["jpos" => $selected]);
 

@@ -1152,7 +1152,7 @@ html[data-theme=dark] .deck .counter {
 
 .breakroom {
   position: absolute;
-  top: 21%;
+  top: 20%;
   right: 0%;
   width: 33%;
   height: 24%;
@@ -1161,7 +1161,7 @@ html[data-theme=dark] .deck .counter {
 .breakroom > * {
   display: inline-block;
   vertical-align: top;
-  margin-right: 5px;
+  margin-right: 3px;
 }
 
 .infsupply {
@@ -1169,8 +1169,8 @@ html[data-theme=dark] .deck .counter {
 }
 .pboard .infsupply {
   position: absolute;
-  top: 42%;
-  right: 0%;
+  top: 44%;
+  right: -18%;
   width: 26%;
   height: 24%;
   z-index: 2;
@@ -1829,7 +1829,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_sea {
-  background-position: 32.5% 1%;
+  background-position: 32.5% 2%;
   background-size: auto 1200%;
 }
 
@@ -1908,7 +1908,17 @@ html[data-theme=dark] .miniboard .counter {
   background-size: auto 1200%;
 }
 
+.wicon_card_water {
+  background-position: 0% 28%;
+  background-size: auto 1200%;
+}
+
 .wicon_land {
+  background-position: 10% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_card_land {
   background-position: 10% 28%;
   background-size: auto 1200%;
 }
@@ -1918,8 +1928,23 @@ html[data-theme=dark] .miniboard .counter {
   background-size: auto 1200%;
 }
 
+.wicon_card_space {
+  background-position: 20% 28%;
+  background-size: auto 1200%;
+}
+
 .wicon_folk {
   background-position: 30% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_card_folk {
+  background-position: 30% 28%;
+  background-size: auto 1200%;
+}
+
+.wicon_card_insp {
+  background-position: 20% 28%;
   background-size: auto 1200%;
 }
 
@@ -2421,9 +2446,9 @@ a.bgabutton_white {
 }
 
 .score-sheet {
-  background-image: url(img/stonex.jpg);
+  background-image: url(img/bg.jpg);
   background-size: cover;
-  font-family: "Caesar Dressing";
+  font-family: "official";
   font-size: large;
 }
 .score-sheet table,

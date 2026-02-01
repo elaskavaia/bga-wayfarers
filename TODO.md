@@ -1,9 +1,7 @@
 Server
 
-- Split tag scoring
 - Caravan different boards per player
 - bonus did not ask to move inf
-- Journal prereq
 
 Client
 

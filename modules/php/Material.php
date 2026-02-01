@@ -611,7 +611,7 @@ class Material {
 ],
 // #names of the stats
     "game_vp_tags" => [ 
-        "name" => clienttranslate("VP from Primary Tags (City, Vista, Harbour, Water)"),
+        "name" => clienttranslate("VP from Primary Tags (City, Vista, Harbour, Open Water)"),
 ],
     "game_vp_sets" => [ 
         "name" => clienttranslate("VP from Tag Sets"),
@@ -631,94 +631,106 @@ class Material {
     "game_vp_total" => [ 
         "name" => clienttranslate("VP total"),
 ],
+    "game_vp_tag_Vista" => [ 
+        "name" => clienttranslate("Vista Tags"),
+],
+    "game_vp_tag_Harbour" => [ 
+        "name" => clienttranslate("Harbour Tags"),
+],
+    "game_vp_tag_City" => [ 
+        "name" => clienttranslate("City Tags"),
+],
+    "game_vp_tag_Sea" => [ 
+        "name" => clienttranslate("Open Water Tags"),
+],
 // #tags
     "tag_Harbour" => [ 
+        "type" => "wicon_harbour",
         "name" => clienttranslate("Harbour"),
-        "count" => "wicon_harbour",
 ],
     "tag_Sea" => [ 
+        "type" => "wicon_sea",
         "name" => clienttranslate("Open Water"),
-        "count" => "wicon_sea",
 ],
     "tag_City" => [ 
+        "type" => "wicon_city",
         "name" => clienttranslate("City"),
-        "count" => "wicon_city",
 ],
     "tag_Vista" => [ 
+        "type" => "wicon_vista",
         "name" => clienttranslate("Vista"),
-        "count" => "wicon_vista",
 ],
     "tag_Observatory" => [ 
+        "type" => "wicon_observatory",
         "name" => clienttranslate("Observatory"),
-        "count" => "wicon_observatory",
 ],
     "tag_Book" => [ 
+        "type" => "wicon_book",
         "name" => clienttranslate("Book"),
-        "count" => "wicon_book",
 ],
     "tag_Comet" => [ 
+        "type" => "wicon_comet",
         "name" => clienttranslate("Comet"),
-        "count" => "wicon_comet",
 ],
     "tag_Stars" => [ 
+        "type" => "wicon_stars",
         "name" => clienttranslate("Stars"),
-        "count" => "wicon_stars",
 ],
     "tag_Planet" => [ 
+        "type" => "wicon_planet",
         "name" => clienttranslate("Planet"),
-        "count" => "wicon_planet",
 ],
     "tag_Sun" => [ 
+        "type" => "wicon_sun",
         "name" => clienttranslate("Sun"),
-        "count" => "wicon_sun",
 ],
     "tag_Moon" => [ 
+        "type" => "wicon_moon",
         "name" => clienttranslate("Moon"),
-        "count" => "wicon_moon",
 ],
     "tag_Library" => [ 
+        "type" => "wicon_book",
         "name" => clienttranslate("Library"),
-        "count" => "wicon_book",
 ],
     "tag_card_space" => [ 
+        "type" => "wicon_card_space",
         "name" => clienttranslate("Space Card"),
-        "count" => "wicon_card_space",
 ],
     "tag_card_water" => [ 
+        "type" => "wicon_card_water",
         "name" => clienttranslate("Water Card"),
-        "count" => "wicon_card_water",
 ],
     "tag_card_land" => [ 
+        "type" => "wicon_card_land",
         "name" => clienttranslate("Land Card"),
-        "count" => "wicon_card_land",
 ],
     "tag_card_folk" => [ 
+        "type" => "wicon_card_folk",
         "name" => clienttranslate("Townsfolk Card"),
-        "count" => "wicon_card_folk",
 ],
     "tag_card_insp" => [ 
+        "type" => "wicon_card_insp",
         "name" => clienttranslate("Inspiration Card"),
-        "count" => "wicon_card_insp",
 ],
     "tag_upg_green" => [ 
+        "type" => "wicon_upg_green",
         "name" => clienttranslate("Basic Upgrade"),
-        "count" => "wicon_upg_green",
 ],
     "tag_upg_black" => [ 
+        "type" => "wicon_upg_black",
         "name" => clienttranslate("Space Upgrade"),
-        "count" => "wicon_upg_black",
 ],
     "tag_upg_yellow" => [ 
+        "type" => "wicon_upg_yellow",
         "name" => clienttranslate("Land Upgrade"),
-        "count" => "wicon_upg_yellow",
 ],
     "tag_upg_blue" => [ 
+        "type" => "wicon_upg_blue",
         "name" => clienttranslate("Water Upgrade"),
-        "count" => "wicon_upg_blue",
 ],
     "tag_upg_any" => [ 
+        "type" => "wicon_upg_any",
         "name" => clienttranslate("Any Upgrade"),
-        "count" => "wicon_upg_any",
 ],
 // #reasons
     "caravanBonus" => [ 
@@ -3132,12 +3144,18 @@ class Material {
 ],
 // #Connection requirements side A
     "jconn_0_10_0" => [ 
+        "name" => clienttranslate("North"),
         "num" => 0,
         "conn" => 10,
+        "r" => "true",
+        "gw" => 1,
 ],
     "jconn_0_15_0" => [ 
+        "name" => clienttranslate("South"),
         "num" => 0,
         "conn" => 15,
+        "r" => "true",
+        "gw" => 1,
 ],
     "jconn_10_20_0" => [ 
         "num" => 10,

@@ -63,10 +63,6 @@ class Op_infCard extends Op_infBase {
     }
 
     function canSkip() {
-        $influence = $this->getInfluenceInPlayerSupply();
-        if (count($influence) > 0) {
-            return false;
-        }
         return true;
     }
 

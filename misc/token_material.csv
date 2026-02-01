@@ -64,7 +64,7 @@ upg_yellow|Land Upgrade Tile
 upg_black|Space Upgrade Tile
 upg_pink|Special Upgrade Tile
 #names of the stats
-game_vp_tags|VP from Primary Tags (City, Vista, Harbour, Water)
+game_vp_tags|VP from Primary Tags (City, Vista, Harbour, Open Water)
 game_vp_sets|VP from Tag Sets
 game_vp_space|VP from Space Cards
 game_vp_inspiration|VP from Inspiration Cards
@@ -72,32 +72,37 @@ game_vp_caravan|VP from Caravan Upgrade Tiles
 game_vp_guilds|VP from Guild Majorities
 game_vp_total|VP total
 
+game_vp_tag_Vista|Vista Tags
+game_vp_tag_Harbour|Harbour Tags
+game_vp_tag_City|City Tags
+game_vp_tag_Sea|Open Water Tags
+
 #tags
 #set type=
 #set name=
 
-tag_Harbour|Harbour|wicon_harbour
-tag_Sea|Open Water|wicon_sea
-tag_City|City|wicon_city
-tag_Vista|Vista|wicon_vista
-tag_Observatory|Observatory|wicon_observatory
-tag_Book|Book|wicon_book
-tag_Comet|Comet|wicon_comet
-tag_Stars|Stars|wicon_stars
-tag_Planet|Planet|wicon_planet
-tag_Sun|Sun|wicon_sun
-tag_Moon|Moon|wicon_moon
-tag_Library|Library|wicon_book
-tag_card_space|Space Card|wicon_card_space
-tag_card_water|Water Card|wicon_card_water
-tag_card_land|Land Card|wicon_card_land
-tag_card_folk|Townsfolk Card|wicon_card_folk
-tag_card_insp|Inspiration Card|wicon_card_insp
-tag_upg_green|Basic Upgrade|wicon_upg_green
-tag_upg_black|Space Upgrade|wicon_upg_black
-tag_upg_yellow|Land Upgrade|wicon_upg_yellow
-tag_upg_blue|Water Upgrade|wicon_upg_blue
-tag_upg_any|Any Upgrade|wicon_upg_any
+tag_Harbour|Harbour||wicon_harbour
+tag_Sea|Open Water||wicon_sea
+tag_City|City||wicon_city
+tag_Vista|Vista||wicon_vista
+tag_Observatory|Observatory||wicon_observatory
+tag_Book|Book||wicon_book
+tag_Comet|Comet||wicon_comet
+tag_Stars|Stars||wicon_stars
+tag_Planet|Planet||wicon_planet
+tag_Sun|Sun||wicon_sun
+tag_Moon|Moon||wicon_moon
+tag_Library|Library||wicon_book
+tag_card_space|Space Card||wicon_card_space
+tag_card_water|Water Card||wicon_card_water
+tag_card_land|Land Card||wicon_card_land
+tag_card_folk|Townsfolk Card||wicon_card_folk
+tag_card_insp|Inspiration Card||wicon_card_insp
+tag_upg_green|Basic Upgrade||wicon_upg_green
+tag_upg_black|Space Upgrade||wicon_upg_black
+tag_upg_yellow|Land Upgrade||wicon_upg_yellow
+tag_upg_blue|Water Upgrade||wicon_upg_blue
+tag_upg_any|Any Upgrade||wicon_upg_any
 
 #reasons
 caravanBonus|Caravan Placement Bonus

@@ -80,7 +80,7 @@
 
 .breakroom {
   position: absolute;
-  top: 21%;
+  top: 20%;
   right: 0%;
   width: 33%;
   height: 24%;
@@ -88,14 +88,14 @@
   & > * {
     display: inline-block;
     vertical-align: top;
-    margin-right: 5px;
+    margin-right: 3px;
   }
 }
 .infsupply {
   .pboard & {
     position: absolute;
-    top: 42%;
-    right: 0%;
+    top: 44%;
+    right: -18%;
     width: 26%;
     height: 24%;
     z-index: 2;

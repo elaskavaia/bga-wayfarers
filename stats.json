@@ -2,7 +2,7 @@
   "player": {
     "game_vp_tags": {
       "id": 11,
-      "name": "VP from Primary Tags (City, Vista, Harbour, Water)",
+      "name": "VP from Primary Tags",
       "type": "int"
     },
     "game_vp_sets": {
