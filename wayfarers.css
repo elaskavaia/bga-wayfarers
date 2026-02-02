@@ -2067,7 +2067,9 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_rest1 {
-  background-position: 100% 57%;
+  background-position: 100% 58%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/2;
 }
 
 .wicon_rest {
