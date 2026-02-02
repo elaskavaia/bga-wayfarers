@@ -120,7 +120,13 @@ class Op_turn extends Operation {
             $res[$workerKey] = ["q" => Material::RET_OK];
         }
 
-        $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest")];
+        /** @var Op_rest */
+        $oprest = $this->instanciateOperation("rest");
+        if ($oprest->isGoodRest()) {
+            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_rest1]"];
+        } else {
+            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_warning]"];
+        }
 
         return $res;
     }
@@ -140,6 +146,7 @@ class Op_turn extends Operation {
         } elseif (str_starts_with($selected, "dice_")) {
             $this->queue("placeDie", $owner, ["die" => $selected]);
         }
+        $this->queue("turnconf");
         $this->queueNextTurnOrEnd();
     }
 

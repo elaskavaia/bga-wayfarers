@@ -63,7 +63,10 @@ class Op_infCard extends Op_infBase {
     }
 
     function canSkip() {
-        return true;
+        if ($this->noValidTargets()) {
+            return true;
+        }
+        return false;
     }
 
     function resolve(): void {

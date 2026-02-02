@@ -211,7 +211,7 @@ a.bgabutton_white {
 }
 
 .score-sheet {
-  background-image: url(img/bg.jpg);
+  background-image: url(img/starbg.jpg);
   background-size: cover;
   font-family: "official";
   font-size: large;
@@ -225,6 +225,9 @@ a.bgabutton_white {
   }
   .bga-score-sheet_player-name {
     color: var(--player-color);
+  }
+  table tr:first-child {
+    background-color: #cba014;
   }
 }
 // html {

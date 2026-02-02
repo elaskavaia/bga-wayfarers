@@ -252,6 +252,10 @@ class Game extends Base {
         return $num >= 5;
     }
 
+    function getUserPreference(int $player_id, int $code): int {
+        return (int) $this->userPreferences->get($player_id, $code);
+    }
+
     //////////////////////////////////////////////////////////////////////////////
     //////////// Utility functions
     ////////////

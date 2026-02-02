@@ -84,7 +84,8 @@
   background-image: url(img/dice.png);
 
   .tableau &,
-  .mainarea & {
+  .mainarea &,
+  .oversurface & {
     background-image: url(img/dice3d.png);
     mask-image: url(img/dice3d.png);
   }
@@ -428,6 +429,10 @@
 .wicon_food {
   background-position: 84% 42%;
   background-size: auto 1000%;
+}
+.wicon_warning {
+  background-position: 100% 0%;
+  background-size: auto 2000%;
 }
 // Upgrade tiles
 .upg {

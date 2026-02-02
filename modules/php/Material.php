@@ -14,6 +14,8 @@ class Material {
     const ERR_NOT_APPLICABLE = 6;
     const ERR_NO_PLACE = 7;
 
+    const MA_PREF_CONFIRM_TURN = 101;
+
     private array $token_types;
     private bool $adjusted = false;
     public function __construct() {

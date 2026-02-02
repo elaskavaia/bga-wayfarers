@@ -104,6 +104,7 @@ html[data-theme=dark] .deck .counter {
 }
 .mainarea .card_land {
   top: 99%;
+  left: 44%;
 }
 .mainarea .card_land[data-state="4"] {
   left: 36%;
@@ -1717,7 +1718,7 @@ html[data-theme=dark] .miniboard .counter {
   background-blend-mode: multiply;
   background-position-x: 100%;
 }
-.tableau .dice, .mainarea .dice {
+.tableau .dice, .mainarea .dice, .oversurface .dice {
   background-image: url(img/dice3d.png);
   mask-image: url(img/dice3d.png);
 }
@@ -2081,6 +2082,11 @@ html[data-theme=dark] .miniboard .counter {
 .wicon_food {
   background-position: 84% 42%;
   background-size: auto 1000%;
+}
+
+.wicon_warning {
+  background-position: 100% 0%;
+  background-size: auto 2000%;
 }
 
 .upg {
@@ -2490,7 +2496,7 @@ a.bgabutton_white {
 }
 
 .score-sheet {
-  background-image: url(img/bg.jpg);
+  background-image: url(img/starbg.jpg);
   background-size: cover;
   font-family: "official";
   font-size: large;
@@ -2505,6 +2511,9 @@ a.bgabutton_white {
 }
 .score-sheet .bga-score-sheet_player-name {
   color: var(--player-color);
+}
+.score-sheet table tr:first-child {
+  background-color: #cba014;
 }
 
 #test_stuff > * {

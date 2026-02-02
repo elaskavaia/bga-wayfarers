@@ -67,27 +67,7 @@ class Op_rest extends Operation {
         $placedDice = $this->getPlacedDice();
         $diceInSupply = $this->getDiceInPlayerSupply();
 
-        // Count dice in supply before rest to determine if resting abilities activate
-        $supplyCount = count($diceInSupply);
-        $activateRestingAbilities = $supplyCount <= 1;
-
-        // Move all placed dice back to player's tableau and roll them
-        foreach ($placedDice as $dieKey => $dieInfo) {
-            // Roll the die (random value 1-6)
-            $newValue = bga_rand(1, 6);
-            $this->game->tokens->dbSetTokenLocation(
-                $dieKey,
-                "tableau_$owner",
-                $newValue,
-                clienttranslate('${player_name} rolls ${token_name} to ${new_state}')
-            );
-        }
-
-        // Also reroll dice that were already in supply (optional per rules) XXX ask player
-        foreach ($diceInSupply as $dieKey => $dieInfo) {
-            $newValue = bga_rand(1, 6);
-            $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} rolls ${token_name} to ${new_state}'));
-        }
+        $activateRestingAbilities = $this->isGoodRest();
 
         // Notify about rest action
         $this->game->notifyMessage(clienttranslate('${player_name} rests'));
@@ -103,19 +83,47 @@ class Op_rest extends Operation {
                 $this->queue($dr);
             }
         }
-    }
 
-    public function getPrompt() {
-        $diceInSupply = $this->getDiceInPlayerSupply();
+        // Move all placed dice back to player's tableau and roll them
+        foreach ($placedDice as $dieKey => $dieInfo) {
+            // Roll the die (random value 1-6)
+            $newValue = bga_rand(1, 6);
+            $this->game->tokens->dbSetTokenLocation(
+                $dieKey,
+                "tableau_$owner",
+                $newValue,
+                clienttranslate('${player_name} rolls ${token_name} to ${new_state}')
+            );
+        }
 
-        if (count($diceInSupply) <= 1) {
-            return clienttranslate("Confirm Rest");
-        } else {
-            return clienttranslate("Confirm Rest (no rest abilities will activate)");
+        // Also reroll dice that were already in supply (optional per rules) TODO ask player
+        foreach ($diceInSupply as $dieKey => $dieInfo) {
+            $newValue = bga_rand(1, 6);
+            $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} rolls ${token_name} to ${new_state}'));
         }
     }
 
+    public function getPrompt() {
+        if ($this->isGoodRest()) {
+            return clienttranslate("Confirm Rest");
+        } else {
+            return clienttranslate("Confirm Rest (no rest abilities will activate!)");
+        }
+    }
+
+    public function isGoodRest() {
+        $diceInSupply = $this->getDiceInPlayerSupply();
+
+        if (count($diceInSupply) <= 1) {
+            return true;
+        }
+        return false;
+    }
+
     public function requireConfirmation() {
+        if ($this->isGoodRest()) {
+            return false;
+        }
         return true;
     }
 
