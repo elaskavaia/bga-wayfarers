@@ -988,7 +988,7 @@ var Game1Tokens = /** @class */ (function (_super) {
             message = "";
         var divImg = "";
         var containerType = "tooltipcontainer ";
-        if (imgTypes) {
+        if (imgTypes && !imgTypes.includes("_nottimage")) {
             divImg = "<div class='tooltipimage ".concat(imgTypes, "'></div>");
             var itypes = imgTypes.split(" ");
             for (var i = 0; i < itypes.length; i++) {
@@ -1358,12 +1358,18 @@ var GameMachine = /** @class */ (function (_super) {
             }
             if (!altNode)
                 continue;
-            this.updateTooltip(target, altNode);
             altNode.dataset.targetId = target;
             altNode.dataset.targetOpType = opInfo.type;
             if (!active) {
                 altNode.title = this.getTr((_b = paramInfo.err) !== null && _b !== void 0 ? _b : _("Operation cannot be performed now"), paramInfo);
                 altNode.classList.add(this.classButtonDisabled);
+            }
+            else {
+                var title = paramInfo.tooltip;
+                if (title)
+                    altNode.title = this.getTr(title, paramInfo);
+                else
+                    this.updateTooltip(target, altNode);
             }
             if (paramInfo.max !== undefined) {
                 altNode.dataset.max = String(paramInfo.max);
@@ -1787,7 +1793,24 @@ var GameXBody = /** @class */ (function (_super) {
         _this.inSetup = true;
         _this.boardLayout = "scale";
         _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
-        _this.boundUpdateBoardScale = function () { return _this.updateBoardScale(); };
+        _this.boundUpdateBoardScale = function () {
+            _this.updateBoardScale($("mainboardall"));
+            // main player
+            document.querySelectorAll("#current_player_panel .tableau").forEach(function (node) {
+                _this.updateBoardScale(node);
+            });
+            // other players take max
+            var min = 1;
+            document.querySelectorAll("#players_panels .tableau").forEach(function (node) {
+                _this.updateBoardScale(node);
+                var scale = parseFloat(node.dataset.scale);
+                if (scale < min)
+                    min = scale;
+            });
+            document.querySelectorAll("#players_panels .tableau").forEach(function (node) {
+                _this.applyScale(node, min);
+            });
+        };
         return _this;
     }
     GameXBody.prototype.setup = function (gamedatas) {
@@ -1811,7 +1834,6 @@ var GameXBody = /** @class */ (function (_super) {
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
-            document.querySelectorAll(".caravan_cell").forEach(function (node) { return _this.addListenerWithGuard(node, function (e) { return _this.onToken(e); }); });
             // document.rootElement?.classList.add("bgaext_cust_back");
             var parent = document.querySelector(".debug_section"); // studio only
             if (parent)
@@ -1825,6 +1847,8 @@ var GameXBody = /** @class */ (function (_super) {
         this.inSetup = false;
     };
     GameXBody.prototype.setupPlayer = function (playerInfo) {
+        var _this = this;
+        var _a, _b;
         console.log("player info " + playerInfo.id, playerInfo);
         var pcolor = playerInfo.color;
         var pp = "player_panel_content_".concat(pcolor);
@@ -1839,10 +1863,23 @@ var GameXBody = /** @class */ (function (_super) {
         for (var y = 0; y < 3; y++) {
             for (var x = 0; x < 6; x++) {
                 var pos = x + y * 6 + 1; // pos_1 to pos_18
-                caravanCells += "<div id='caravan_".concat(pos, "_").concat(pcolor, "' class='caravan_cell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
+                caravanCells += "<div id='ccell_".concat(pos, "_").concat(pcolor, "' class='ccell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
             }
         }
         placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
+        var boardNum = parseInt((_b = (_a = this.gamedatas.tokens["pboard_".concat(pcolor)]) === null || _a === void 0 ? void 0 : _a.state) !== null && _b !== void 0 ? _b : "1");
+        $("caravan_".concat(pcolor))
+            .querySelectorAll(".ccell")
+            .forEach(function (node) {
+            _this.addListenerWithGuard(node, function (e) { return _this.onToken(e); });
+            var num = Number(getPart(node.id, 1)) - 1;
+            var r = _this.getRulesFor("pbonus_".concat(boardNum, "_").concat(num), "r", "");
+            node.dataset.r = r;
+            if (r) {
+                var title = _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r);
+                placeHtml("<div class='wicon_".concat(r, " wicon' title='").concat(title, "'></div>"), node);
+            }
+        });
     };
     GameXBody.prototype.setupLayoutControls = function () {
         var _this = this;
@@ -1866,21 +1903,13 @@ var GameXBody = /** @class */ (function (_super) {
     };
     GameXBody.prototype.applyBoardLayout = function () {
         var _a;
-        var mainboardall = $("mainboardall");
-        var mainarea = $("mainarea");
-        // Reset any inline transform from previous scale mode
-        mainboardall.style.transform = "none";
-        mainboardall.style.width = "";
-        mainboardall.style.height = "";
-        mainboardall.style.transformOrigin = "";
-        // Set data attribute instead of class
-        mainarea.dataset.boardLayout = this.boardLayout;
+        $("ebd-body").dataset.boardLayout = this.boardLayout;
+        this.boundUpdateBoardScale();
         // Update button active states
         document.querySelectorAll(".layout_button").forEach(function (btn) { return btn.classList.remove("active"); });
         (_a = $("layout_".concat(this.boardLayout))) === null || _a === void 0 ? void 0 : _a.classList.add("active");
         // Handle scale mode with dynamic calculation
         if (this.boardLayout === "scale") {
-            this.updateBoardScale();
             // Add resize listener for scale mode
             window.addEventListener("resize", this.boundUpdateBoardScale);
         }
@@ -1888,29 +1917,36 @@ var GameXBody = /** @class */ (function (_super) {
             window.removeEventListener("resize", this.boundUpdateBoardScale);
         }
     };
-    GameXBody.prototype.updateBoardScale = function () {
-        if (this.boardLayout !== "scale")
-            return;
-        var mainboardall = $("mainboardall");
-        var mainarea = $("mainarea");
-        // Temporarily reset transform to measure
-        mainboardall.style.transform = "none";
-        mainboardall.style.width = "";
-        mainboardall.style.height = "";
-        mainboardall.style.transformOrigin = "";
-        mainboardall.scrollLeft = 0;
-        mainarea.scrollLeft = 0;
-        var naturalWidth = mainboardall.scrollWidth;
-        var naturalHeight = mainboardall.scrollHeight;
-        var availableWidth = mainarea.clientWidth - 20; // 20px for padding
+    GameXBody.prototype.updateBoardScale = function (scalecontrol) {
+        var set = this.boardLayout === "scale";
+        var parent = scalecontrol.parentElement;
+        // Reset all inline style
+        scalecontrol.style.transform = "none";
+        scalecontrol.style.width = "";
+        scalecontrol.style.height = "";
+        scalecontrol.style.transformOrigin = "";
+        scalecontrol.scrollLeft = 0;
+        scalecontrol.dataset.scale = "1";
+        parent.scrollLeft = 0;
+        if (!set)
+            return; // just unset
+        var naturalWidth = scalecontrol.scrollWidth;
+        var availableWidth = parent.clientWidth;
         var scale = 1;
         if (naturalWidth > availableWidth) {
             scale = availableWidth / naturalWidth;
         }
-        mainboardall.style.transform = "scale(".concat(scale, ")");
-        mainboardall.style.transformOrigin = "top center";
+        this.applyScale(scalecontrol, scale);
+    };
+    GameXBody.prototype.applyScale = function (scalecontrol, scale) {
+        if (Math.abs(scale - 1) < 0.01)
+            return;
+        var naturalHeight = scalecontrol.scrollHeight;
+        scalecontrol.dataset.scale = String(scale);
+        scalecontrol.style.transform = "scale(".concat(scale, ")");
+        scalecontrol.style.transformOrigin = "top center";
         // Set container height to scaled height so content below doesn't overlap
-        mainboardall.style.height = "".concat(naturalHeight * scale, "px");
+        scalecontrol.style.height = "".concat(naturalHeight * scale, "px");
     };
     GameXBody.prototype.updateBanner = function () { };
     GameXBody.prototype.setupScoreSheet = function () {
@@ -2052,6 +2088,10 @@ var GameXBody = /** @class */ (function (_super) {
                     // if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
                     // else
                     placeHtml("<div id='".concat(result.location, "' class='column' data-state='").concat(x, "' style='order: ").concat(x, ";'></div>"), "pboard_".concat(color), "afterend");
+                    if (this.gameAnimationsActive()) {
+                        this.boundUpdateBoardScale();
+                        $(result.location).scrollIntoView({ behavior: "smooth", block: "center" });
+                    }
                 }
             }
             else if (location.startsWith("discard")) {
@@ -2119,7 +2159,7 @@ var GameXBody = /** @class */ (function (_super) {
                 // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
                 var color = getPart(location, 1);
                 var pos = Number(tokenInfo.state);
-                result.location = "caravan_".concat(pos, "_").concat(color);
+                result.location = "ccell_".concat(pos, "_").concat(color);
             }
             else if (location.startsWith("mainarea")) {
                 var cardType = getPart(tokenId, 1);
@@ -2154,7 +2194,7 @@ var GameXBody = /** @class */ (function (_super) {
         return gameui.bgaAnimationsActive() && !this.inSetup;
     };
     GameXBody.prototype.updateTokenDisplayInfo = function (tokenInfo) {
-        var _a, _b, _c;
+        var _a, _b, _c, _d;
         // override to generate dynamic tooltips and such
         var mainType = tokenInfo.mainType;
         var token = $(tokenInfo.tokenId);
@@ -2183,6 +2223,7 @@ var GameXBody = /** @class */ (function (_super) {
                         break;
                     case "land":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
@@ -2195,6 +2236,7 @@ var GameXBody = /** @class */ (function (_super) {
                         break;
                     case "water":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
@@ -2203,6 +2245,7 @@ var GameXBody = /** @class */ (function (_super) {
                         break;
                     case "space":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
@@ -2211,23 +2254,28 @@ var GameXBody = /** @class */ (function (_super) {
                         break;
                     case "folk":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
                         tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, " / "));
                         if (tokenInfo.rest) {
                             tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
+                            tokenInfo.tooltip += this.ttSection(undefined, _("Rest bonus is activated when Rest is taken with one or less die"));
                         }
                         else {
                             if (tokenInfo.dr) {
                                 tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
+                                tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
                             }
                         }
                         if (tokenInfo.da) {
-                            tokenInfo.tooltip += this.ttSection(_("Provided Assets"), this.getOpListTr(tokenInfo.da));
+                            tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.da));
+                            tokenInfo.tooltip += this.ttSection(undefined, _("Assets are activated when die is placed above"));
                         }
                         break;
                     case "insp":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
                         tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
@@ -2241,18 +2289,30 @@ var GameXBody = /** @class */ (function (_super) {
                 if (!num)
                     return;
                 var color = getPart(tokenId, 1);
-                var name_2 = this.getTokenName("upg_".concat(color));
-                tokenInfo.name = this.getTr(_("${name} #${num}"), {
-                    name: name_2,
-                    num: num
-                });
+                var tname = this.getTokenName("upg_".concat(color));
                 tokenInfo.tooltip = "";
+                tokenInfo.tooltip += this.ttSection(_("Type"), tname);
+                tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                 if (tokenInfo.tags)
                     tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
+                if (tokenInfo.r)
+                    tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.r) + " " + this.getOpListTr(tokenInfo.r2));
                 if (tokenInfo.vp)
                     tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
                 return;
             }
+            case "dice": {
+                var num = (_d = getPart(tokenId, 2)) !== null && _d !== void 0 ? _d : "";
+                if (!num)
+                    return;
+                var color = getPart(tokenId, 1);
+                tokenInfo.name = this.getTr("${color} Player's Die", { color: this.getColorName(color) });
+                tokenInfo.imageTypes += " _nottimage";
+                return;
+            }
+            case "pboard":
+                tokenInfo.showtooltip = false;
+                break;
         }
     };
     GameXBody.prototype.ttSection = function (prefix, text) {
@@ -2278,16 +2338,22 @@ var GameXBody = /** @class */ (function (_super) {
         return trTags.join(sep);
     };
     GameXBody.prototype.getOpListTr = function (tags, sep) {
-        var _a;
         if (sep === void 0) { sep = ", "; }
         // get translated ops
+        if (!tags)
+            return "";
         var tagList = tags.split(/[, \/]/);
         var trTags = [];
         for (var _i = 0, tagList_2 = tagList; _i < tagList_2.length; _i++) {
             var tag = tagList_2[_i];
             if (!tag)
                 continue;
-            trTags.push((_a = this.getTr(this.getRulesFor("Op_".concat(tag), "name"))) !== null && _a !== void 0 ? _a : tag);
+            var opName = this.getRulesFor("Op_".concat(tag), "name", null);
+            if (!opName)
+                opName = this.getRulesFor(tag, "name", null);
+            if (!opName)
+                opName = tag;
+            trTags.push(this.getTr(opName));
         }
         return trTags.join(sep);
     };
@@ -2386,13 +2452,13 @@ var GameXBody = /** @class */ (function (_super) {
             }
             // Process square bracket syntax [tokenId]
             if (log && log.includes("[")) {
-                log = log.replace(/\[([^\]]+)\]/g, function (match, tokenId) {
+                log = log.replace(/\[([^\]]+)\]/g, function (match, keyExpr) {
                     var _a;
                     try {
-                        return (_a = _this.getTokenPresentaton(tokenId, tokenId, args)) !== null && _a !== void 0 ? _a : match;
+                        return (_a = _this.getTokenPresentaton(keyExpr, keyExpr, args)) !== null && _a !== void 0 ? _a : match;
                     }
                     catch (e) {
-                        console.error("Failed to get token presentation for [".concat(tokenId, "]"), e);
+                        console.error("Failed to get token presentation for [".concat(keyExpr, "]"), e);
                         return match; // Return original if error
                     }
                 });

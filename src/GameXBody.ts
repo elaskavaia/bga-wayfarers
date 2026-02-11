@@ -108,8 +108,6 @@ class GameXBody extends GameMachine {
       this.setupScoreSheet();
       this.updateBanner();
 
-      document.querySelectorAll(".caravan_cell").forEach((node: HTMLElement) => this.addListenerWithGuard(node, (e) => this.onToken(e)));
-
       // document.rootElement?.classList.add("bgaext_cust_back");
 
       var parent = document.querySelector(".debug_section"); // studio only
@@ -144,7 +142,7 @@ class GameXBody extends GameMachine {
     for (let y = 0; y < 3; y++) {
       for (let x = 0; x < 6; x++) {
         const pos = x + y * 6 + 1; // pos_1 to pos_18
-        caravanCells += `<div id='caravan_${pos}_${pcolor}' class='caravan_cell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
+        caravanCells += `<div id='ccell_${pos}_${pcolor}' class='ccell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
       }
     }
 
@@ -162,6 +160,20 @@ class GameXBody extends GameMachine {
       </div>`,
       parent
     );
+
+    const boardNum = parseInt(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? "1");
+    $(`caravan_${pcolor}`)
+      .querySelectorAll(".ccell")
+      .forEach((node: HTMLElement) => {
+        this.addListenerWithGuard(node, (e) => this.onToken(e));
+        const num = Number(getPart(node.id, 1)) - 1;
+        const r = this.getRulesFor(`pbonus_${boardNum}_${num}`, "r", "");
+        node.dataset.r = r;
+        if (r) {
+          const title = _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r);
+          placeHtml(`<div class='wicon_${r} wicon' title='${title}'></div>`, node);
+        }
+      });
   }
   setupLayoutControls() {
     super.setupLocalControls("board_layout_controls");
@@ -189,17 +201,8 @@ class GameXBody extends GameMachine {
   }
 
   applyBoardLayout() {
-    const mainboardall = $("mainboardall") as HTMLElement;
-    const mainarea = $("mainarea") as HTMLElement;
-
-    // Reset any inline transform from previous scale mode
-    mainboardall.style.transform = "none";
-    mainboardall.style.width = "";
-    mainboardall.style.height = "";
-    mainboardall.style.transformOrigin = "";
-
-    // Set data attribute instead of class
-    mainarea.dataset.boardLayout = this.boardLayout;
+    $("ebd-body").dataset.boardLayout = this.boardLayout;
+    this.boundUpdateBoardScale();
 
     // Update button active states
     document.querySelectorAll(".layout_button").forEach((btn) => btn.classList.remove("active"));
@@ -207,7 +210,6 @@ class GameXBody extends GameMachine {
 
     // Handle scale mode with dynamic calculation
     if (this.boardLayout === "scale") {
-      this.updateBoardScale();
       // Add resize listener for scale mode
       window.addEventListener("resize", this.boundUpdateBoardScale);
     } else {
@@ -215,35 +217,58 @@ class GameXBody extends GameMachine {
     }
   }
 
-  private boundUpdateBoardScale = () => this.updateBoardScale();
+  private boundUpdateBoardScale = () => {
+    this.updateBoardScale($("mainboardall"));
+    // main player
+    document.querySelectorAll("#current_player_panel .tableau").forEach((node: HTMLElement) => {
+      this.updateBoardScale(node);
+    });
+    // other players take max
+    let min = 1;
+    document.querySelectorAll("#players_panels .tableau").forEach((node: HTMLElement) => {
+      this.updateBoardScale(node);
+      const scale = parseFloat(node.dataset.scale);
+      if (scale < min) min = scale;
+    });
+    document.querySelectorAll("#players_panels .tableau").forEach((node: HTMLElement) => {
+      this.applyScale(node, min);
+    });
+  };
 
-  updateBoardScale() {
-    if (this.boardLayout !== "scale") return;
+  updateBoardScale(scalecontrol: HTMLElement) {
+    const set = this.boardLayout === "scale";
+    const parent = scalecontrol.parentElement;
 
-    const mainboardall = $("mainboardall") as HTMLElement;
-    const mainarea = $("mainarea") as HTMLElement;
+    // Reset all inline style
+    scalecontrol.style.transform = "none";
+    scalecontrol.style.width = "";
+    scalecontrol.style.height = "";
+    scalecontrol.style.transformOrigin = "";
+    scalecontrol.scrollLeft = 0;
+    scalecontrol.dataset.scale = "1";
+    parent.scrollLeft = 0;
 
-    // Temporarily reset transform to measure
-    mainboardall.style.transform = "none";
-    mainboardall.style.width = "";
-    mainboardall.style.height = "";
-    mainboardall.style.transformOrigin = "";
-    mainboardall.scrollLeft = 0;
-    mainarea.scrollLeft = 0;
+    if (!set) return; // just unset
 
-    const naturalWidth = mainboardall.scrollWidth;
-    const naturalHeight = mainboardall.scrollHeight;
-    const availableWidth = mainarea.clientWidth - 20; // 20px for padding
+    const naturalWidth = scalecontrol.scrollWidth;
+    const availableWidth = parent.clientWidth;
 
     let scale = 1;
     if (naturalWidth > availableWidth) {
       scale = availableWidth / naturalWidth;
     }
 
-    mainboardall.style.transform = `scale(${scale})`;
-    mainboardall.style.transformOrigin = "top center";
+    this.applyScale(scalecontrol, scale);
+  }
+
+  applyScale(scalecontrol: HTMLElement, scale: number) {
+    if (Math.abs(scale - 1) < 0.01) return;
+    const naturalHeight = scalecontrol.scrollHeight;
+    scalecontrol.dataset.scale = String(scale);
+    scalecontrol.style.transform = `scale(${scale})`;
+    scalecontrol.style.transformOrigin = "top center";
     // Set container height to scaled height so content below doesn't overlap
-    mainboardall.style.height = `${naturalHeight * scale}px`;
+    scalecontrol.style.height = `${naturalHeight * scale}px`;
   }
 
   updateBanner() {}
@@ -378,6 +403,10 @@ class GameXBody extends GameMachine {
             `pboard_${color}`,
             "afterend"
           );
+          if (this.gameAnimationsActive()) {
+            this.boundUpdateBoardScale();
+            $(result.location).scrollIntoView({ behavior: "smooth", block: "center" });
+          }
         }
       } else if (location.startsWith("discard")) {
         result.onEnd = (node) => this.hideCard(node);
@@ -429,7 +458,7 @@ class GameXBody extends GameMachine {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
         const color = getPart(location, 1);
         const pos = Number(tokenInfo.state);
-        result.location = `caravan_${pos}_${color}`;
+        result.location = `ccell_${pos}_${color}`;
       } else if (location.startsWith("mainarea")) {
         const cardType = getPart(tokenId, 1);
         result.onClick = (x) => this.onToken(x);
@@ -496,6 +525,7 @@ class GameXBody extends GameMachine {
             break;
           case "land":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             if (tokenInfo.d) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
@@ -506,6 +536,7 @@ class GameXBody extends GameMachine {
             break;
           case "water":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
@@ -513,6 +544,7 @@ class GameXBody extends GameMachine {
 
           case "space":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
@@ -521,23 +553,28 @@ class GameXBody extends GameMachine {
 
           case "folk":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
             tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
             if (tokenInfo.rest) {
               tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
+              tokenInfo.tooltip += this.ttSection(undefined, _("Rest bonus is activated when Rest is taken with one or less die"));
             } else {
               if (tokenInfo.dr) {
                 tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
+                tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
               }
             }
             if (tokenInfo.da) {
-              tokenInfo.tooltip += this.ttSection(_("Provided Assets"), this.getOpListTr(tokenInfo.da));
+              tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.da));
+              tokenInfo.tooltip += this.ttSection(undefined, _("Assets are activated when die is placed above"));
             }
 
             break;
           case "insp":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
             tokenInfo.tooltip += this.ttSection(
               undefined,
@@ -559,16 +596,29 @@ class GameXBody extends GameMachine {
         const num = getPart(tokenId, 2) ?? "";
         if (!num) return;
         const color = getPart(tokenId, 1);
-        const name = this.getTokenName(`upg_${color}`);
-        tokenInfo.name = this.getTr(_("${name} #${num}"), {
-          name,
-          num
-        });
+        const tname = this.getTokenName(`upg_${color}`);
         tokenInfo.tooltip = "";
+        tokenInfo.tooltip += this.ttSection(_("Type"), tname);
+        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
         if (tokenInfo.tags) tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
+        if (tokenInfo.r)
+          tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.r) + " " + this.getOpListTr(tokenInfo.r2));
         if (tokenInfo.vp) tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
+
         return;
       }
+
+      case "dice": {
+        const num = getPart(tokenId, 2) ?? "";
+        if (!num) return;
+        const color = getPart(tokenId, 1);
+        tokenInfo.name = this.getTr("${color} Player's Die", { color: this.getColorName(color) });
+        tokenInfo.imageTypes += " _nottimage";
+        return;
+      }
+      case "pboard":
+        tokenInfo.showtooltip = false;
+        break;
     }
   }
 
@@ -591,11 +641,15 @@ class GameXBody extends GameMachine {
 
   getOpListTr(tags: string, sep: string = ", ") {
     // get translated ops
+    if (!tags) return "";
     const tagList = tags.split(/[, \/]/);
     const trTags: string[] = [];
     for (const tag of tagList) {
       if (!tag) continue;
-      trTags.push(this.getTr(this.getRulesFor(`Op_${tag}`, "name")) ?? tag);
+      let opName = this.getRulesFor(`Op_${tag}`, "name", null);
+      if (!opName) opName = this.getRulesFor(tag, "name", null);
+      if (!opName) opName = tag;
+      trTags.push(this.getTr(opName));
     }
     return trTags.join(sep);
   }
@@ -682,11 +736,11 @@ class GameXBody extends GameMachine {
 
       // Process square bracket syntax [tokenId]
       if (log && log.includes("[")) {
-        log = log.replace(/\[([^\]]+)\]/g, (match, tokenId) => {
+        log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
           try {
-            return this.getTokenPresentaton(tokenId, tokenId, args) ?? match;
+            return this.getTokenPresentaton(keyExpr, keyExpr, args) ?? match;
           } catch (e) {
-            console.error(`Failed to get token presentation for [${tokenId}]`, e);
+            console.error(`Failed to get token presentation for [${keyExpr}]`, e);
             return match; // Return original if error
           }
         });

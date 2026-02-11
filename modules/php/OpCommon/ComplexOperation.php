@@ -59,7 +59,7 @@ abstract class ComplexOperation extends CountableOperation {
         }
         $res = [];
         foreach ($this->delegates as $sub) {
-            $res[$sub->getId()] = [
+            $res[$sub->getOpId()] = [
                 "name" => $sub->getIconicName(),
             ];
         }
@@ -79,7 +79,7 @@ abstract class ComplexOperation extends CountableOperation {
         $args = [];
         $pars = [];
         if (count($this->delegates) == 0) {
-            return $this->game->getRulesFor("Op_" . $this->getType(), "name", "?");
+            return $this->game->getRulesFor($this->getOpId(), "name", "?");
         }
         foreach ($this->delegates as $i => $sub) {
             $pars[] = "p$i";

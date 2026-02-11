@@ -48,6 +48,7 @@ mainboard_1||1|mainboard_x left|1|mainboardall|
 mainboard_2||1|mainboard_x middle|1|mainboardall|
 mainboard_3||1|mainboard_x right|1|mainboardall|
 game_stage||1|stage|1|limbo|
+pboard|Player Board|1|pboard|4|tableau_{COLOR}
 
 
 #set create=0
@@ -104,8 +105,10 @@ tag_upg_yellow|Land Upgrade||wicon_upg_yellow
 tag_upg_blue|Water Upgrade||wicon_upg_blue
 tag_upg_any|Any Upgrade||wicon_upg_any
 
-#reasons
+#reasons and assets
 caravanBonus|Caravan Placement Bonus
+coinDis|Silver Discount
+foodDis|Provision Discount
 
 
 #ui elements

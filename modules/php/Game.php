@@ -156,13 +156,16 @@ class Game extends Base {
         // Return any unused Player Boards, Dice, Influence tokens, Player Markers, and Workers to the box.
 
         $i = 1;
-        $startingPlayer = $this->getActivePlayerId();
+        $startingPlayer = (int) $this->getActivePlayerId();
         $p = $this->getPlayerIdsInOrder($startingPlayer);
+        $pboards = [1, 2, 3, 4];
+        shuffle($pboards);
 
         foreach ($p as $player_id) {
             $color = $this->getPlayerColorById($player_id);
             // 1 Player Board (randomly assigned).
-            // XXX
+            $boardnum = array_shift($pboards);
+            $this->setupPlayerBord($player_id, $boardnum);
             // 1 Player Marker in their chosen color (place it on the far-left end of the Journal Track).
             $this->tokens->db->moveToken("marker_$color", "mainarea", 0);
             // 1 Yellow Worker and 1 Blue Worker.
@@ -175,9 +178,9 @@ class Game extends Base {
                 $this->effect_incCount($color, "coin", 4, "setup");
             }
             $this->effect_incCount($color, "food", 2, "setup");
-            $this->tokens->db->moveToken("influence_{$color}_1", "guild_blue");
+            $this->tokens->dbSetTokenLocation("influence_{$color}_1", "guild_blue", 0, "*", [], $player_id);
             if ($i > 1) {
-                $this->tokens->db->moveToken("influence_{$color}_2", "guild_yellow");
+                $this->tokens->dbSetTokenLocation("influence_{$color}_2", "guild_yellow", 0, "*", [], $player_id);
             }
             // 5 Dice in their chosen color (roll 3 and place them next to their Player Board; keep 2 in reserve near the Minarets on the Main Board).
             // 15 Influence tokens in their chosen color.
@@ -192,6 +195,12 @@ class Game extends Base {
 
         $this->machine->queue("turn", $this->getPlayerColorById($startingPlayer));
         return GameDispatch::class;
+    }
+
+    function setupPlayerBord(int $player_id, int $boardnum) {
+        $color = $this->getPlayerColorById($player_id);
+        $this->tokens->db->setTokenState("tableau_$color", $boardnum);
+        $this->tokens->db->setTokenState("pboard_$color", $boardnum);
     }
 
     function switchActivePlayer(int $playerId, bool $moreTime = true) {

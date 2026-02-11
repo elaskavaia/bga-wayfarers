@@ -142,7 +142,7 @@ abstract class Op_upgBase extends Op_acquireBase {
                 if ($canPlace) {
                     // Encode position as single integer: x + y * CARAVAN_WIDTH + 1
                     $pos = $x + $y * self::CARAVAN_WIDTH + 1;
-                    $validPositions["caravan_{$pos}_{$owner}"] = [
+                    $validPositions["ccell_{$pos}_{$owner}"] = [
                         "q" => Material::RET_OK,
                     ];
                 }
@@ -247,7 +247,7 @@ abstract class Op_upgBase extends Op_acquireBase {
         // Step 2: Position selected, place tile in caravan
         $position = $this->getCheckedArg();
 
-        // Extract position from "caravan_X_owner" format
+        // Extract position from "ccell_X_owner" format
         $posValue = (int) getPart($position, 1);
 
         // Place tile in tableau with position encoded in state
@@ -267,37 +267,29 @@ abstract class Op_upgBase extends Op_acquireBase {
         // Check if any Vista cards are triggered by this upgrade tile
         $this->queueVistaTriggers($selectedTile);
 
-        $bonus = $this->getBonus($posValue);
-        if ($bonus) {
-            $this->queue($bonus, $owner, [], "caravanBonus");
+        // Collect bonuses from all cells covered by this tile
+        $dimensions = $this->getTileDimensions($selectedTile);
+        $pos = $posValue - 1;
+        $x = $pos % self::CARAVAN_WIDTH;
+        $y = (int) floor($pos / self::CARAVAN_WIDTH);
+
+        for ($dy = 0; $dy < $dimensions["h"]; $dy++) {
+            for ($dx = 0; $dx < $dimensions["w"]; $dx++) {
+                $cellPos = ($x + $dx) + ($y + $dy) * self::CARAVAN_WIDTH + 1;
+                $bonus = $this->getBonus($cellPos);
+                if ($bonus) {
+                    $this->queue($bonus, $owner, [], "caravanBonus");
+                }
+            }
         }
     }
 
     public function getBonus(int $posValue) {
         $i = $posValue - 1;
-        $bonuses = [
-            0,
-            0,
-            "coin",
-            "food",
-            0,
-            0,
-            // row2
-            0,
-            "infMove",
-            0,
-            0,
-            "food",
-            0,
-            // row 3
-            "food",
-            0,
-            "infCard",
-            "reroll",
-            0,
-            "coin",
-        ];
-        return $bonuses[$i] ?: "";
+        $owner = $this->getOwner();
+        $boardNum = $this->game->tokens->db->getTokenState("pboard_$owner", 1);
+        $bonus = $this->game->material->getRulesFor("pbonus_{$boardNum}_{$i}", "r", "");
+        return $bonus ?: "";
     }
 
     public function getPrompt() {

@@ -89,10 +89,34 @@
   height: calc(v.$cardHeight * 2.4);
   gap: 1px;
 }
+
+.tableau::after {
+  content: attr(data-player-name);
+  position: absolute;
+  width: 100px;
+  height: 32px;
+  top: 274px;
+  left: 30px;
+  color: var(--player-color);
+  z-index: 10;
+  text-shadow: v.$textShadowBlack;
+  font-family: var(--accent-game-font);
+  font-size: large;
+}
+
 #current_player_panel {
+  display: flex;
+  flex-wrap: wrap;
   overflow-x: auto;
   overflow-y: visible;
   width: 100%;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+#ebd-body[data-board-layout="scale"] #current_player_panel {
+  overflow: hidden;
 }
 
 #players_panels {
@@ -105,6 +129,12 @@
   justify-content: space-around;
 }
 
+#ebd-body[data-board-layout="scale"] #players_panels {
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
 .pboard {
   height: 100%;
 
@@ -113,7 +143,7 @@
 }
 .pboard::before {
   content: " ";
-  background-image: url(img/PlayerBoard-01-s.png);
+  background-image: url(img/PlayerBoard-nb.png);
   background-size: auto 100%;
   width: 100%;
   height: 100%;
@@ -168,8 +198,8 @@
   grid-template-rows: repeat(3, 1fr);
   z-index: 2;
 }
-
-.caravan_cell {
+// Caraval cell
+.ccell {
   position: relative;
 
   // Highlight on hover for placement
@@ -455,14 +485,14 @@
 }
 
 // Layout mode: Scale to fit
-#mainarea[data-board-layout="scale"] {
+#ebd-body[data-board-layout="scale"] #mainarea {
   overflow: hidden;
   justify-content: center;
   align-items: center;
 }
 
 // Layout mode: Horizontal scroll
-#mainarea[data-board-layout="scroll"] {
+#ebd-body[data-board-layout="scroll"] #mainarea {
   overflow-x: auto;
   overflow-y: visible;
   // Center when content fits, align left when scrolling needed
@@ -471,13 +501,6 @@
   .mainboardall {
     min-width: max-content;
   }
-}
-
-// Rotation (clockwise 90 degrees)
-.mainboardall.rotated {
-  // Transform origin at top-left so we can position predictably
-  transform-origin: top left;
-  // Rotation is handled via JavaScript which sets appropriate margins
 }
 
 // Combined: scale + rotated - JavaScript handles the combined transform

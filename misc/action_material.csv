@@ -6,13 +6,13 @@ ctype|num|r|name
 land|1|cardFolk,diceMod|Recruit
 land|2|2coin,infYellow|Yellow Influence
 land|3|upgYellow|Yellow Upgrade
-land|4|3food:cardDraw(land)|Explore
+land|4|3n_food:3cardDraw(land)|Explore
 
 # Water card worker actions (positions 1-4)
 water|1|reroll,diceMod,diceMod|Organize
 water|2|2food,infBlue|Blue Influece
 water|3|upgBlue|Blue Upgrade
-water|4|3food:cardDraw(water)|Voyage
+water|4|3n_food:3cardDraw(water)|Voyage
 
 # Folk card worker actions (positions 1-4)
 folk|1|cardSpace(dis)|Stargaze

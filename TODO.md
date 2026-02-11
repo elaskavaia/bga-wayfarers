@@ -1,9 +1,13 @@
 Server
 
 - Caravan different boards per player
-- bonus did not ask to move inf
+- Bonus did not ask to move inf
+- Mainboard variants
 
 Client
 
 - Game end trigger banner
-- Styling of scoring page
+- Deck tooltips
+- Board action tooltips (also dup hot slots?)
+- Miniboards
+- Visual UI for insp under home space

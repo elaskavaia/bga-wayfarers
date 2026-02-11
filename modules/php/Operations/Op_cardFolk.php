@@ -124,4 +124,8 @@ class Op_cardFolk extends Op_cardBase {
         }
         return clienttranslate("Select a card to tuck under");
     }
+
+    public function getIconicName() {
+        return "[wicon_card_folk]";
+    }
 }

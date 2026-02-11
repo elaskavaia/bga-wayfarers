@@ -99,12 +99,15 @@ class Op_turn extends Operation {
         $diceByValue = [];
         foreach ($player_dice as $dieKey => $dieInfo) {
             $dieValue = (int) $dieInfo["state"];
+            if (array_key_exists($dieValue, $diceByValue)) {
+                $res[$dieKey] = [
+                    "q" => Material::ERR_NOT_APPLICABLE,
+                    "err" => clienttranslate("Duplicate die value"),
+                ];
+            } else {
+                $res[$dieKey] = ["q" => Material::RET_OK, "color" => "primary"];
+            }
             $diceByValue[$dieValue] = $dieKey;
-        }
-
-        // Add one option per unique die value
-        foreach ($diceByValue as $dieValue => $diceKey) {
-            $res[$diceKey] = ["q" => Material::RET_OK];
         }
 
         // Add worker options - group by color (blue, yellow, green)
@@ -117,15 +120,15 @@ class Op_turn extends Operation {
 
         // Add one option per unique worker color
         foreach ($workersByColor as $workerKey) {
-            $res[$workerKey] = ["q" => Material::RET_OK];
+            $res[$workerKey] = ["q" => Material::RET_OK, "color" => "secondary"];
         }
 
         /** @var Op_rest */
         $oprest = $this->instanciateOperation("rest");
         if ($oprest->isGoodRest()) {
-            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_rest1]"];
+            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_rest1]", "color" => "secondary"];
         } else {
-            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_warning]"];
+            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest"), "color" => "alert"];
         }
 
         return $res;

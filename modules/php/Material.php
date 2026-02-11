@@ -240,6 +240,10 @@ class Material {
         "type" => "turn",
         "name" => clienttranslate("Turn"),
 ],
+    "Op_turnconf" => [ 
+        "type" => "turnconf",
+        "name" => clienttranslate("Confirm Turn"),
+],
     "Op_rest" => [ 
         "type" => "rest",
         "name" => clienttranslate("Rest"),
@@ -595,6 +599,13 @@ class Material {
         "type" => "stage",
         "location" => "limbo",
 ],
+    "pboard" => [ 
+        "create" => 4,
+        "name" => clienttranslate("Player Board"),
+        "count" => 1,
+        "type" => "pboard",
+        "location" => "tableau_{COLOR}",
+],
 // #names of the upgrades
     "upg_green" => [ 
         "name" => clienttranslate("Basic Upgrade Tile"),
@@ -734,9 +745,15 @@ class Material {
         "type" => "wicon_upg_any",
         "name" => clienttranslate("Any Upgrade"),
 ],
-// #reasons
+// #reasons and assets
     "caravanBonus" => [ 
         "name" => clienttranslate("Caravan Placement Bonus"),
+],
+    "coinDis" => [ 
+        "name" => clienttranslate("Silver Discount"),
+],
+    "foodDis" => [ 
+        "name" => clienttranslate("Provision Discount"),
 ],
 // #ui elements
     "wicon_die_1" => [ 
@@ -2050,6 +2067,7 @@ class Material {
         "t" => "yellow",
         "r" => "dicePlus",
         "r2" => "camel",
+        "name" => clienttranslate("Land Upgrade Camel Plus"),
 ],
     "upg_yellow_2" => [ 
         "type" => "upg upg_yellow",
@@ -2059,6 +2077,7 @@ class Material {
         "t" => "yellow",
         "r" => "camel",
         "r2" => "diceMinus",
+        "name" => clienttranslate("Land Upgrade Camel Minus"),
 ],
     "upg_yellow_3" => [ 
         "type" => "upg upg_yellow",
@@ -2068,6 +2087,7 @@ class Material {
         "t" => "yellow",
         "r" => "pigeon",
         "r2" => "dicePlus",
+        "name" => clienttranslate("Land Upgrade Pigeon Plus"),
 ],
     "upg_yellow_4" => [ 
         "type" => "upg upg_yellow",
@@ -2077,6 +2097,7 @@ class Material {
         "t" => "yellow",
         "r" => "diceMinus",
         "r2" => "pigeon",
+        "name" => clienttranslate("Land Upgrade Pigeon Minus"),
 ],
     "upg_yellow_5" => [ 
         "type" => "upg upg_yellow",
@@ -2086,6 +2107,7 @@ class Material {
         "t" => "yellow",
         "r2" => "coinDis",
         "vp" => 1,
+        "name" => clienttranslate("Land Upgrade Discount Right"),
 ],
     "upg_yellow_6" => [ 
         "type" => "upg upg_yellow",
@@ -2095,6 +2117,7 @@ class Material {
         "t" => "yellow",
         "r" => "coinDis",
         "vp" => 1,
+        "name" => clienttranslate("Land Upgrade Discount Left"),
 ],
     "upg_blue_7" => [ 
         "type" => "upg upg_blue",
@@ -2104,6 +2127,7 @@ class Material {
         "t" => "blue",
         "r" => "dicePlus",
         "r2" => "ship",
+        "name" => clienttranslate("Water Upgrade Ship Plus"),
 ],
     "upg_blue_8" => [ 
         "type" => "upg upg_blue",
@@ -2113,6 +2137,7 @@ class Material {
         "t" => "blue",
         "r" => "ship",
         "r2" => "diceMinus",
+        "name" => clienttranslate("Water Upgrade Ship Minus"),
 ],
     "upg_blue_9" => [ 
         "type" => "upg upg_blue",
@@ -2122,6 +2147,7 @@ class Material {
         "t" => "blue",
         "r" => "ship",
         "r2" => "pigeon",
+        "name" => clienttranslate("Water Upgrade Ship Pigeon"),
 ],
     "upg_blue_10" => [ 
         "type" => "upg upg_blue",
@@ -2131,6 +2157,7 @@ class Material {
         "t" => "blue",
         "r" => "pigeon",
         "r2" => "ship",
+        "name" => clienttranslate("Water Upgrade Pigeon Ship"),
 ],
     "upg_blue_11" => [ 
         "type" => "upg upg_blue",
@@ -2140,6 +2167,7 @@ class Material {
         "t" => "blue",
         "r" => "coinDis",
         "r2" => "dicePlus",
+        "name" => clienttranslate("Water Upgrade Discount Plus"),
 ],
     "upg_blue_12" => [ 
         "type" => "upg upg_blue",
@@ -2149,6 +2177,7 @@ class Material {
         "t" => "blue",
         "r" => "diceMinus",
         "r2" => "coinDis",
+        "name" => clienttranslate("Water Upgrade Minus Discount"),
 ],
     "upg_black_20" => [ 
         "type" => "upg upg_black",
@@ -2157,6 +2186,7 @@ class Material {
         "num" => 20,
         "t" => "black",
         "r" => "ship,pigeon,camel",
+        "name" => clienttranslate("Space Upgrade Trio"),
 ],
     "upg_black_21" => [ 
         "type" => "upg upg_black",
@@ -2166,6 +2196,7 @@ class Material {
         "t" => "black",
         "r" => "diceMod",
         "vp" => 3,
+        "name" => clienttranslate("Space Upgrade Dice Mod"),
 ],
     "upg_black_22" => [ 
         "type" => "upg upg_black",
@@ -2174,6 +2205,7 @@ class Material {
         "num" => 22,
         "t" => "black",
         "r" => "telescope,foodDis",
+        "name" => clienttranslate("Space Upgrade Telescope"),
 ],
     "upg_green_31" => [ 
         "type" => "upg upg_green",
@@ -2183,6 +2215,7 @@ class Material {
         "t" => "green",
         "r" => "camel",
         "vp" => 1,
+        "name" => clienttranslate("Basic Upgrade Camel"),
 ],
     "upg_green_32" => [ 
         "type" => "upg upg_green",
@@ -2192,6 +2225,7 @@ class Material {
         "t" => "green",
         "r" => "ship",
         "vp" => 1,
+        "name" => clienttranslate("Basic Upgrade Ship"),
 ],
     "upg_green_33" => [ 
         "type" => "upg upg_green",
@@ -2201,6 +2235,7 @@ class Material {
         "t" => "green",
         "r" => "telescope",
         "vp" => 1,
+        "name" => clienttranslate("Basic Upgrade Telescope"),
 ],
     "upg_green_34" => [ 
         "type" => "upg upg_green",
@@ -2210,6 +2245,7 @@ class Material {
         "t" => "green",
         "r" => "pigeon",
         "vp" => 1,
+        "name" => clienttranslate("Basic Upgrade Pigeon"),
 ],
     "upg_pink_40" => [ 
         "type" => "upg upg_pink",
@@ -2219,6 +2255,7 @@ class Material {
         "t" => "pink",
         "tags" => "Vista",
         "vp" => 1,
+        "name" => clienttranslate("Special Upgrade Vista"),
 ],
     "upg_pink_41" => [ 
         "type" => "upg upg_pink",
@@ -2228,6 +2265,7 @@ class Material {
         "t" => "pink",
         "tags" => "City",
         "vp" => 1,
+        "name" => clienttranslate("Special Upgrade City"),
 ],
     "upg_pink_42" => [ 
         "type" => "upg upg_pink",
@@ -2237,6 +2275,7 @@ class Material {
         "t" => "pink",
         "tags" => "Sea",
         "vp" => 1,
+        "name" => clienttranslate("Special Upgrade Sea"),
 ],
     "upg_pink_43" => [ 
         "type" => "upg upg_pink",
@@ -2246,6 +2285,7 @@ class Material {
         "t" => "pink",
         "tags" => "Harbour",
         "vp" => 1,
+        "name" => clienttranslate("Special Upgrade Harbour"),
 ],
     "upg_pink_44" => [ 
         "type" => "upg upg_pink",
@@ -2255,6 +2295,7 @@ class Material {
         "t" => "pink",
         "tags" => "Observatory",
         "vp" => 5,
+        "name" => clienttranslate("Special Upgrade Observatory"),
 ],
     "upg_pink_45" => [ 
         "type" => "upg upg_pink",
@@ -2264,6 +2305,7 @@ class Material {
         "t" => "pink",
         "tags" => "Book",
         "vp" => 5,
+        "name" => clienttranslate("Special Upgrade Book"),
 ],
     "upg_pink_46" => [ 
         "type" => "upg upg_pink",
@@ -2273,6 +2315,7 @@ class Material {
         "t" => "pink",
         "tags" => "Planet",
         "vp" => 3,
+        "name" => clienttranslate("Special Upgrade Planet"),
 ],
     "upg_pink_47" => [ 
         "type" => "upg upg_pink",
@@ -2282,6 +2325,7 @@ class Material {
         "t" => "pink",
         "tags" => "Stars",
         "vp" => 5,
+        "name" => clienttranslate("Special Upgrade Stars"),
 ],
     "upg_pink_48" => [ 
         "type" => "upg upg_pink",
@@ -2291,6 +2335,7 @@ class Material {
         "t" => "pink",
         "tags" => "Comet Comet",
         "vp" => 4,
+        "name" => clienttranslate("Special Upgrade Double Comet"),
 ],
     "upg_pink_49" => [ 
         "type" => "upg upg_pink",
@@ -2300,6 +2345,7 @@ class Material {
         "t" => "pink",
         "tags" => "Comet",
         "vp" => 5,
+        "name" => clienttranslate("Special Upgrade Comet"),
 ],
             /* --- gen php end upg_material --- */
             /* --- gen php begin action_material --- */
@@ -2329,7 +2375,7 @@ class Material {
         "type" => "action",
         "ctype" => "land",
         "num" => 4,
-        "r" => "3food:cardDraw(land)",
+        "r" => "3n_food:3cardDraw(land)",
         "name" => clienttranslate("Explore"),
 ],
 // # Water card worker actions (positions 1-4)
@@ -2358,7 +2404,7 @@ class Material {
         "type" => "action",
         "ctype" => "water",
         "num" => 4,
-        "r" => "3food:cardDraw(water)",
+        "r" => "3n_food:3cardDraw(water)",
         "name" => clienttranslate("Voyage"),
 ],
 // # Folk card worker actions (positions 1-4)
@@ -3406,6 +3452,327 @@ class Material {
         "conn" => 107,
         "r" => "tag_Vista",
         "gw" => 4,
+],
+// #Player board randomized Bonuses
+    "pbonus_1_0" => [ 
+        "num" => 1,
+        "conn" => 0,
+],
+    "pbonus_1_1" => [ 
+        "num" => 1,
+        "conn" => 1,
+],
+    "pbonus_1_2" => [ 
+        "num" => 1,
+        "conn" => 2,
+        "r" => "coin",
+],
+    "pbonus_1_3" => [ 
+        "num" => 1,
+        "conn" => 3,
+        "r" => "food",
+],
+    "pbonus_1_4" => [ 
+        "num" => 1,
+        "conn" => 4,
+],
+    "pbonus_1_5" => [ 
+        "num" => 1,
+        "conn" => 5,
+],
+    "pbonus_1_6" => [ 
+        "num" => 1,
+        "conn" => 6,
+],
+    "pbonus_1_7" => [ 
+        "num" => 1,
+        "conn" => 7,
+        "r" => "infMove",
+],
+    "pbonus_1_8" => [ 
+        "num" => 1,
+        "conn" => 8,
+],
+    "pbonus_1_9" => [ 
+        "num" => 1,
+        "conn" => 9,
+],
+    "pbonus_1_10" => [ 
+        "num" => 1,
+        "conn" => 10,
+        "r" => "food",
+],
+    "pbonus_1_11" => [ 
+        "num" => 1,
+        "conn" => 11,
+],
+    "pbonus_1_12" => [ 
+        "num" => 1,
+        "conn" => 12,
+        "r" => "food",
+],
+    "pbonus_1_13" => [ 
+        "num" => 1,
+        "conn" => 13,
+],
+    "pbonus_1_14" => [ 
+        "num" => 1,
+        "conn" => 14,
+        "r" => "infCard",
+],
+    "pbonus_1_15" => [ 
+        "num" => 1,
+        "conn" => 15,
+        "r" => "reroll",
+],
+    "pbonus_1_16" => [ 
+        "num" => 1,
+        "conn" => 16,
+],
+    "pbonus_1_17" => [ 
+        "num" => 1,
+        "conn" => 17,
+        "r" => "coin",
+],
+    "pbonus_2_0" => [ 
+        "num" => 2,
+        "conn" => 0,
+],
+    "pbonus_2_1" => [ 
+        "num" => 2,
+        "conn" => 1,
+],
+    "pbonus_2_2" => [ 
+        "num" => 2,
+        "conn" => 2,
+        "r" => "food",
+],
+    "pbonus_2_3" => [ 
+        "num" => 2,
+        "conn" => 3,
+],
+    "pbonus_2_4" => [ 
+        "num" => 2,
+        "conn" => 4,
+        "r" => "infMove",
+],
+    "pbonus_2_5" => [ 
+        "num" => 2,
+        "conn" => 5,
+],
+    "pbonus_2_6" => [ 
+        "num" => 2,
+        "conn" => 6,
+        "r" => "coin",
+],
+    "pbonus_2_7" => [ 
+        "num" => 2,
+        "conn" => 7,
+],
+    "pbonus_2_8" => [ 
+        "num" => 2,
+        "conn" => 8,
+        "r" => "infCard",
+],
+    "pbonus_2_9" => [ 
+        "num" => 2,
+        "conn" => 9,
+],
+    "pbonus_2_10" => [ 
+        "num" => 2,
+        "conn" => 10,
+        "r" => "food",
+],
+    "pbonus_2_11" => [ 
+        "num" => 2,
+        "conn" => 11,
+],
+    "pbonus_2_12" => [ 
+        "num" => 2,
+        "conn" => 12,
+],
+    "pbonus_2_13" => [ 
+        "num" => 2,
+        "conn" => 13,
+        "r" => "food",
+],
+    "pbonus_2_14" => [ 
+        "num" => 2,
+        "conn" => 14,
+],
+    "pbonus_2_15" => [ 
+        "num" => 2,
+        "conn" => 15,
+        "r" => "coin",
+],
+    "pbonus_2_16" => [ 
+        "num" => 2,
+        "conn" => 16,
+],
+    "pbonus_2_17" => [ 
+        "num" => 2,
+        "conn" => 17,
+        "r" => "reroll",
+],
+    "pbonus_3_0" => [ 
+        "num" => 3,
+        "conn" => 0,
+],
+    "pbonus_3_1" => [ 
+        "num" => 3,
+        "conn" => 1,
+        "r" => "reroll",
+],
+    "pbonus_3_2" => [ 
+        "num" => 3,
+        "conn" => 2,
+],
+    "pbonus_3_3" => [ 
+        "num" => 3,
+        "conn" => 3,
+        "r" => "infCard",
+],
+    "pbonus_3_4" => [ 
+        "num" => 3,
+        "conn" => 4,
+        "r" => "food",
+],
+    "pbonus_3_5" => [ 
+        "num" => 3,
+        "conn" => 5,
+],
+    "pbonus_3_6" => [ 
+        "num" => 3,
+        "conn" => 6,
+],
+    "pbonus_3_7" => [ 
+        "num" => 3,
+        "conn" => 7,
+],
+    "pbonus_3_8" => [ 
+        "num" => 3,
+        "conn" => 8,
+        "r" => "food",
+],
+    "pbonus_3_9" => [ 
+        "num" => 3,
+        "conn" => 9,
+],
+    "pbonus_3_10" => [ 
+        "num" => 3,
+        "conn" => 10,
+],
+    "pbonus_3_11" => [ 
+        "num" => 3,
+        "conn" => 11,
+],
+    "pbonus_3_12" => [ 
+        "num" => 3,
+        "conn" => 12,
+        "r" => "infMove",
+],
+    "pbonus_3_13" => [ 
+        "num" => 3,
+        "conn" => 13,
+        "r" => "coin",
+],
+    "pbonus_3_14" => [ 
+        "num" => 3,
+        "conn" => 14,
+],
+    "pbonus_3_15" => [ 
+        "num" => 3,
+        "conn" => 15,
+        "r" => "coin",
+],
+    "pbonus_3_16" => [ 
+        "num" => 3,
+        "conn" => 16,
+],
+    "pbonus_3_17" => [ 
+        "num" => 3,
+        "conn" => 17,
+        "r" => "food",
+],
+    "pbonus_4_0" => [ 
+        "num" => 4,
+        "conn" => 0,
+],
+    "pbonus_4_1" => [ 
+        "num" => 4,
+        "conn" => 1,
+        "r" => "coin",
+],
+    "pbonus_4_2" => [ 
+        "num" => 4,
+        "conn" => 2,
+],
+    "pbonus_4_3" => [ 
+        "num" => 4,
+        "conn" => 3,
+        "r" => "reroll",
+],
+    "pbonus_4_4" => [ 
+        "num" => 4,
+        "conn" => 4,
+        "r" => "food",
+],
+    "pbonus_4_5" => [ 
+        "num" => 4,
+        "conn" => 5,
+],
+    "pbonus_4_6" => [ 
+        "num" => 4,
+        "conn" => 6,
+        "r" => "food",
+],
+    "pbonus_4_7" => [ 
+        "num" => 4,
+        "conn" => 7,
+],
+    "pbonus_4_8" => [ 
+        "num" => 4,
+        "conn" => 8,
+],
+    "pbonus_4_9" => [ 
+        "num" => 4,
+        "conn" => 9,
+],
+    "pbonus_4_10" => [ 
+        "num" => 4,
+        "conn" => 10,
+],
+    "pbonus_4_11" => [ 
+        "num" => 4,
+        "conn" => 11,
+        "r" => "infCard",
+],
+    "pbonus_4_12" => [ 
+        "num" => 4,
+        "conn" => 12,
+],
+    "pbonus_4_13" => [ 
+        "num" => 4,
+        "conn" => 13,
+        "r" => "infMove",
+],
+    "pbonus_4_14" => [ 
+        "num" => 4,
+        "conn" => 14,
+        "r" => "food",
+],
+    "pbonus_4_15" => [ 
+        "num" => 4,
+        "conn" => 15,
+],
+    "pbonus_4_16" => [ 
+        "num" => 4,
+        "conn" => 16,
+        "r" => "coin",
+],
+    "pbonus_4_17" => [ 
+        "num" => 4,
+        "conn" => 17,
 ],
             /* --- gen php end journal_material --- */
         ];

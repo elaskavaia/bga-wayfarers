@@ -270,7 +270,7 @@ html[data-theme=dark] .deck .counter {
 }
 
 .card_home {
-  background-image: url(img/PlayerBoard-01-s.png);
+  background-image: url(img/PlayerBoard-nb.png);
   background-size: 300% auto;
   background-position-y: 86%;
 }
@@ -1158,10 +1158,33 @@ html[data-theme=dark] .deck .counter {
   gap: 1px;
 }
 
+.tableau::after {
+  content: attr(data-player-name);
+  position: absolute;
+  width: 100px;
+  height: 32px;
+  top: 274px;
+  left: 30px;
+  color: var(--player-color);
+  z-index: 10;
+  text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
+  font-family: var(--accent-game-font);
+  font-size: large;
+}
+
 #current_player_panel {
+  display: flex;
+  flex-wrap: wrap;
   overflow-x: auto;
   overflow-y: visible;
   width: 100%;
+  position: relative;
+  justify-content: center;
+  align-items: center;
+}
+
+#ebd-body[data-board-layout=scale] #current_player_panel {
+  overflow: hidden;
 }
 
 #players_panels {
@@ -1174,6 +1197,12 @@ html[data-theme=dark] .deck .counter {
   justify-content: space-around;
 }
 
+#ebd-body[data-board-layout=scale] #players_panels {
+  overflow: hidden;
+  justify-content: center;
+  align-items: center;
+}
+
 .pboard {
   height: 100%;
   aspect-ratio: 798/1024;
@@ -1182,7 +1211,7 @@ html[data-theme=dark] .deck .counter {
 
 .pboard::before {
   content: " ";
-  background-image: url(img/PlayerBoard-01-s.png);
+  background-image: url(img/PlayerBoard-nb.png);
   background-size: auto 100%;
   width: 100%;
   height: 100%;
@@ -1236,29 +1265,29 @@ html[data-theme=dark] .deck .counter {
   z-index: 2;
 }
 
-.caravan_cell {
+.ccell {
   position: relative;
 }
-.caravan_cell:hover {
+.ccell:hover {
   background-color: rgba(0, 0, 255, 0.404);
 }
-.caravan_cell.active {
+.ccell.active {
   background-color: rgba(25, 190, 219, 0.3);
   cursor: pointer;
 }
-.caravan_cell .upg {
+.ccell .upg {
   position: absolute;
   top: 0;
   left: 0;
   z-index: 1;
 }
-.caravan_cell .upg.upg_green,
-.caravan_cell .upg.upg_pink {
+.ccell .upg.upg_green,
+.ccell .upg.upg_pink {
   width: 100%;
   height: 100%;
 }
-.caravan_cell .upg.upg_yellow,
-.caravan_cell .upg.upg_blue {
+.ccell .upg.upg_yellow,
+.ccell .upg.upg_blue {
   width: 200%;
   height: 100%;
 }
@@ -1481,23 +1510,19 @@ html[data-theme=dark] .deck .counter {
   color: white;
 }
 
-#mainarea[data-board-layout=scale] {
+#ebd-body[data-board-layout=scale] #mainarea {
   overflow: hidden;
   justify-content: center;
   align-items: center;
 }
 
-#mainarea[data-board-layout=scroll] {
+#ebd-body[data-board-layout=scroll] #mainarea {
   overflow-x: auto;
   overflow-y: visible;
   justify-content: safe center;
 }
-#mainarea[data-board-layout=scroll] .mainboardall {
+#ebd-body[data-board-layout=scroll] #mainarea .mainboardall {
   min-width: max-content;
-}
-
-.mainboardall.rotated {
-  transform-origin: top left;
 }
 
 #supply {
@@ -1705,49 +1730,102 @@ html[data-theme=dark] .miniboard .counter {
 .wicon.dice {
   background-image: url(img/dice.png);
   background-size: 600% 100%;
+  box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.6901960784);
+  border-radius: 20%;
 }
 
-.dice {
+.dice::before {
+  content: " ";
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
   background-image: url(img/dice.png);
+  border-radius: 20%;
   background-size: 600% 100%;
   mask-size: 600% 100%;
-  height: 32px;
-  border-radius: 20%;
-  aspect-ratio: 1/1;
   background-color: white;
   background-blend-mode: multiply;
   background-position-x: 100%;
 }
-.tableau .dice, .mainarea .dice, .oversurface .dice {
+.tableau .dice::before, .mainarea .dice::before, .oversurface .dice::before {
   background-image: url(img/dice3d.png);
   mask-image: url(img/dice3d.png);
+  border-radius: unset;
 }
-.dice.dice_ff0000, .dice.color_ff0000 {
+
+.dice_ff0000::before {
   background-color: #ff0000;
 }
-.dice.dice_ffcc02, .dice.color_ffcc02 {
+
+.dice_ffcc02::before {
   background-color: #ffcc02;
 }
-.dice.dice_6cd0f6, .dice.color_6cd0f6 {
+
+.dice_6cd0f6::before {
   background-color: #6cd0f6;
 }
-.dice.dice_982fff, .dice.color_982fff {
+
+.dice_982fff::before {
   background-color: #982fff;
 }
-.dice[data-state="1"], .dice.wicon_die_1 {
+
+.dice[data-state="1"]::before {
   background-position-x: 0%;
 }
-.dice[data-state="2"], .dice.wicon_die_2 {
+
+.wicon_die_1::before {
+  background-position-x: 0%;
+}
+
+.dice[data-state="2"]::before {
   background-position-x: 20%;
 }
-.dice[data-state="3"], .dice.wicon_die_3 {
+
+.wicon_die_2::before {
+  background-position-x: 20%;
+}
+
+.dice[data-state="3"]::before {
   background-position-x: 40%;
 }
-.dice[data-state="4"], .dice.wicon_die_4 {
+
+.wicon_die_3::before {
+  background-position-x: 40%;
+}
+
+.dice[data-state="4"]::before {
   background-position-x: 60%;
 }
-.dice[data-state="5"], .dice.wicon_die_5 {
+
+.wicon_die_4::before {
+  background-position-x: 60%;
+}
+
+.dice[data-state="5"]::before {
   background-position-x: 80%;
+}
+
+.wicon_die_5::before {
+  background-position-x: 80%;
+}
+
+.dice[data-state="6"]::before {
+  background-position-x: 100%;
+}
+
+.wicon_die_6::before {
+  background-position-x: 100%;
+}
+
+.dice {
+  height: 32px;
+  border-radius: 20%;
+  aspect-ratio: 1/1;
+  position: relative;
+  background-image: unset;
+  background-color: unset;
 }
 
 .influence {
@@ -1811,8 +1889,8 @@ html[data-theme=dark] .miniboard .counter {
 
 .worker {
   background-position: 0% 57%;
-  background-size: auto 800%;
-  height: 39px;
+  background-size: auto 900%;
+  height: 48px;
   aspect-ratio: 2/3;
 }
 
@@ -1843,6 +1921,12 @@ html[data-theme=dark] .miniboard .counter {
   vertical-align: middle;
   height: 24px;
   line-height: 24px;
+}
+.ccell > .wicon {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  height: 26px;
 }
 
 .wicon_city {
@@ -1922,7 +2006,8 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_upg_pink {
-  background-position: 40% 14%;
+  background-position: 38% 14%;
+  background-size: auto 1100%;
 }
 
 .wicon_upg_any {
@@ -1981,7 +2066,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_card_folk {
-  background-position: 30% 28%;
+  background-position: 37% 28%;
   background-size: auto 1200%;
 }
 
@@ -2030,8 +2115,14 @@ html[data-theme=dark] .miniboard .counter {
   background-size: auto 1000%;
 }
 
-.wicon_inf_move {
+.wicon_inf_move,
+.wicon_infMove {
   background-position: 39% 42%;
+}
+
+.wicon_infCard {
+  background-position: 29% 27%;
+  background-size: auto 1000%;
 }
 
 .wicon_inf_blue_pay {
@@ -2055,7 +2146,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_reroll {
-  background-position: 50% 57%;
+  background-position: 48% 57%;
 }
 
 .wicon_dice_mod {
@@ -2082,7 +2173,7 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .wicon_food {
-  background-position: 84% 42%;
+  background-position: 84.2% 42%;
   background-size: auto 1000%;
 }
 
@@ -2284,7 +2375,7 @@ html[data-theme=dark] .miniboard .counter {
   position: relative;
   font-weight: bold;
   padding: 0.1em;
-  font-family: "official";
+  font-family: var(--accent-game-font);
   font-size: x-large;
 }
 .tooltipcontainer .tooltip-body {
@@ -2329,9 +2420,18 @@ html[data-theme=dark] .miniboard .counter {
  *
  */
 @font-face {
-  font-family: "official";
+  font-family: "Official";
   src: url("img/ConcursoItalian.otf");
 }
+:root {
+  --accent-game-font: Roboto, Arial, sans-serif;
+  --accent-game-font: "Official";
+}
+
+.pref_font_game:root {
+  --accent-game-font: "Official";
+}
+
 #gameaction_status_wrap {
   display: block !important;
 }
@@ -2387,15 +2487,6 @@ html[data-theme=dark] .miniboard .counter {
   justify-content: center;
 }
 
-.bgabutton_orange {
-  background-color: #b17300;
-}
-
-a.bgabutton_white {
-  background-color: white;
-  color: darkgrey;
-}
-
 .bgabutton_gray {
   border: 1px solid rgba(6, 6, 6, 0.368627451);
   box-shadow: 0 1px 0 #000;
@@ -2405,15 +2496,15 @@ a.bgabutton_white {
   background-color: rgba(33, 150, 243, 0.7803921569);
 }
 
-.bgabutton_purple {
-  background-color: rgb(43, 15, 76);
-}
-
 .bgabutton.disabled {
   pointer-events: unset;
 }
 
 .bgabutton.disabled:active {
+  pointer-events: unset;
+}
+
+button.bgabutton > * {
   pointer-events: unset;
 }
 
@@ -2500,7 +2591,7 @@ a.bgabutton_white {
 .score-sheet {
   background-image: url(img/starbg.jpg);
   background-size: cover;
-  font-family: "official";
+  font-family: var(--accent-game-font);
   font-size: large;
 }
 .score-sheet table,

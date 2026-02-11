@@ -120,12 +120,15 @@ class GameMachine extends Game1Tokens {
 
       if (!altNode) continue;
 
-      this.updateTooltip(target, altNode);
       altNode.dataset.targetId = target;
       altNode.dataset.targetOpType = opInfo.type;
       if (!active) {
         altNode.title = this.getTr(paramInfo.err ?? _("Operation cannot be performed now"), paramInfo);
         altNode.classList.add(this.classButtonDisabled);
+      } else {
+        const title = paramInfo.tooltip;
+        if (title) altNode.title = this.getTr(title, paramInfo);
+        else this.updateTooltip(target, altNode);
       }
 
       if (paramInfo.max !== undefined) {
@@ -221,7 +224,6 @@ class GameMachine extends Game1Tokens {
     clone.addEventListener("click", (event: Event) => this.onToken(event));
     clone.classList.remove(this.classActiveSlot);
     clone.classList.add(this.classActiveSlotHidden);
-
     return clone;
   }
 

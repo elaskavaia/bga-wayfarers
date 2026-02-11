@@ -102,6 +102,7 @@ class Op_or extends ComplexOperation {
                 "r" => $sub->getTypeFullExpr(),
                 "q" => $q,
                 "max" => $max,
+                "tooltip" => $sub->getOpName(),
             ];
             if ($sub instanceof Op_pay) {
                 $res["choice_$i"]["token_id"] = $args["token_id"] ?? null;

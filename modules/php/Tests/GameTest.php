@@ -77,7 +77,7 @@ class GameUT extends Game {
         }
     }
 
-    function getUserPreference(int $player_id, int $code) {
+    function getUserPreference(int $player_id, int $code): int {
         return 0;
     }
     function getAutomaColor() {

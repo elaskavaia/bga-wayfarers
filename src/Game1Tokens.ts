@@ -499,7 +499,7 @@ class Game1Tokens extends Game0Basics {
     if (!message) message = "";
     var divImg = "";
     var containerType = "tooltipcontainer ";
-    if (imgTypes) {
+    if (imgTypes && !imgTypes.includes("_nottimage")) {
       divImg = `<div class='tooltipimage ${imgTypes}'></div>`;
       var itypes = imgTypes.split(" ");
       for (var i = 0; i < itypes.length; i++) {

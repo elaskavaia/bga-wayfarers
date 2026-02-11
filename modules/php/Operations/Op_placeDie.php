@@ -119,11 +119,11 @@ class Op_placeDie extends Op_acquireBase {
 
         $die = $this->getDie();
         // Check caravan column for dicePlus, diceMinus abilities (already in caravanAssets)
-        if (($caravanAssets["dicePlus"] ?? 0) > 0 && $dieValue < 6) {
+        if ((($caravanAssets["dicePlus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue < 6) {
             $dieValuePlus = $dieValue + 1;
             $res["Op_dicePlus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValuePlus]"];
         }
-        if (($caravanAssets["diceMinus"] ?? 0) > 0 && $dieValue > 1) {
+        if ((($caravanAssets["diceMinus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue > 1) {
             $dieValueM1 = $dieValue - 1;
             $res["Op_diceMinus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValueM1]"];
         }
@@ -140,12 +140,16 @@ class Op_placeDie extends Op_acquireBase {
             }
         }
 
-        $res["change"] = ["q" => Material::RET_OK, "name" => clienttranslate("Change Die")];
+        $res["change"] = ["q" => Material::RET_OK, "name" => clienttranslate("Switch Die")];
 
         return $res;
     }
 
     public function getUiArgs() {
+        $selectedDie = $this->getDie();
+        if (!$selectedDie) {
+            return ["imagebuttons" => true];
+        }
         return ["buttons" => false];
     }
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\OpCommon;
 
+use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
 use Bga\Games\wayfarers\OpCommon\Operation;
@@ -451,7 +452,11 @@ class OpMachine {
     }
 
     function action_undo(int $player_id, int $move_id = 0) {
-        $this->game->undoRestorePoint();
+        try {
+            $this->game->undoRestorePoint();
+        } catch (Exception $e) {
+            throw new UserException(_("Cannot undo: Internal Error"));
+        }
         return GameDispatchForced::class;
     }
 }

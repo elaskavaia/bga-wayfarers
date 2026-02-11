@@ -1,45 +1,45 @@
-num|t|r|r2|tags|vp
+num|t|r|r2|tags|vp|name
 #set id=upg_{t}_{num}
 #set type=upg upg_yellow
 #set w=2
 #set h=1
-1|yellow|dicePlus|camel|
-2|yellow|camel|diceMinus|
-3|yellow|pigeon|dicePlus|
-4|yellow|diceMinus|pigeon|
-5|yellow||coinDis||1
-6|yellow|coinDis|||1
+1|yellow|dicePlus|camel|||Land Upgrade Camel Plus
+2|yellow|camel|diceMinus|||Land Upgrade Camel Minus
+3|yellow|pigeon|dicePlus|||Land Upgrade Pigeon Plus
+4|yellow|diceMinus|pigeon|||Land Upgrade Pigeon Minus
+5|yellow||coinDis||1|Land Upgrade Discount Right
+6|yellow|coinDis|||1|Land Upgrade Discount Left
 #set type=upg upg_blue
-7|blue|dicePlus|ship
-8|blue|ship|diceMinus
-9|blue|ship|pigeon
-10|blue|pigeon|ship
-11|blue|coinDis|dicePlus
-12|blue|diceMinus|coinDis
+7|blue|dicePlus|ship|||Water Upgrade Ship Plus
+8|blue|ship|diceMinus|||Water Upgrade Ship Minus
+9|blue|ship|pigeon|||Water Upgrade Ship Pigeon
+10|blue|pigeon|ship|||Water Upgrade Pigeon Ship
+11|blue|coinDis|dicePlus|||Water Upgrade Discount Plus
+12|blue|diceMinus|coinDis|||Water Upgrade Minus Discount
 #set w=1
 #set h=2
 #set type=upg upg_black
-20|black|ship,pigeon,camel
-21|black|diceMod|||3
-22|black|telescope,foodDis
+20|black|ship,pigeon,camel||||Space Upgrade Trio
+21|black|diceMod|||3|Space Upgrade Dice Mod
+22|black|telescope,foodDis||||Space Upgrade Telescope
 #set w=1
 #set h=1
 #set type=upg upg_green
-31|green|camel|||1
-32|green|ship|||1
-33|green|telescope|||1
-34|green|pigeon|||1
+31|green|camel|||1|Basic Upgrade Camel
+32|green|ship|||1|Basic Upgrade Ship
+33|green|telescope|||1|Basic Upgrade Telescope
+34|green|pigeon|||1|Basic Upgrade Pigeon
 #set type=upg upg_pink
-40|pink|||Vista|1
-41|pink|||City|1
-42|pink|||Sea|1
-43|pink|||Harbour|1
-44|pink|||Observatory|5
-45|pink|||Book|5
-46|pink|||Planet|3
-47|pink|||Stars|5
-48|pink|||Comet Comet|4
-49|pink|||Comet|5
+40|pink|||Vista|1|Special Upgrade Vista
+41|pink|||City|1|Special Upgrade City
+42|pink|||Sea|1|Special Upgrade Sea
+43|pink|||Harbour|1|Special Upgrade Harbour
+44|pink|||Observatory|5|Special Upgrade Observatory
+45|pink|||Book|5|Special Upgrade Book
+46|pink|||Planet|3|Special Upgrade Planet
+47|pink|||Stars|5|Special Upgrade Stars
+48|pink|||Comet Comet|4|Special Upgrade Double Comet
+49|pink|||Comet|5|Special Upgrade Comet
 
 
 
