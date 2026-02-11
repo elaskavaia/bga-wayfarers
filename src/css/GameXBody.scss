@@ -135,14 +135,14 @@ button.bgabutton > * {
 //   animation-iteration-count: 10;
 // }
 
-.active_slot.worker,
-.active_slot.dice {
-  box-shadow: unset;
-  outline: unset;
-  filter: drop-shadow(0px 0px 6px v.$activeColor);
-  animation: pulse-drop-shadow 2s;
-  animation-iteration-count: 10;
-}
+// .active_slot.worker,
+// .active_slot.dice {
+//   box-shadow: unset;
+//   outline: unset;
+//   filter: drop-shadow(0px 0px 6px v.$activeColor);
+//   animation: pulse-drop-shadow 2s;
+//   animation-iteration-count: 10;
+// }
 
 .gg_selected_alt {
   &.segment {

@@ -177,12 +177,18 @@
     position: absolute;
   }
 
+  & > *:not(:last-child) {
+    visibility: hidden; /* or visibility: hidden; depending on desired layout effect */
+  }
+
   counter-reset: item-counter; /* Initialize the counter on the parent */
 
   .influence::before {
     counter-increment: item-counter; /* Increment for each child */
     content: counter(item-counter); /* Display the current count */
     position: absolute;
+    top: 5px;
+    right: 95%;
   }
 }
 

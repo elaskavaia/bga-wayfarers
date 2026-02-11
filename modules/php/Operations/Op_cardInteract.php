@@ -54,7 +54,7 @@ class Op_cardInteract extends Operation {
     }
 
     public function isOwnInfluence(string $infKey) {
-        // Only return opponent's influence, not player's own
+        // Only return opponent's influence, not player's own, influence_ff0000_10
         $infOwner = getPart($infKey, 1);
         if ($infOwner == $this->getOwner()) {
             return true;
@@ -73,18 +73,16 @@ class Op_cardInteract extends Operation {
 
         // Check if player can afford food
         $foodCount = $this->game->tokens->db->getTokenState("tracker_food_$owner");
+        $res["tracker_food_$owner"] = ["q" => Material::ERR_COST, "name" => "[wicon_food]"];
         if ($foodCount >= 1) {
-            $res["tracker_food_$owner"] = ["q" => 0];
-        } else {
-            $res["tracker_food_$owner"] = ["q" => Material::ERR_COST];
+            $res["tracker_food_$owner"]["q"] = Material::RET_OK;
         }
 
         // Check if player can afford coin
         $coinCount = $this->game->tokens->db->getTokenState("tracker_coin_$owner");
+        $res["tracker_coin_$owner"] = ["q" => Material::ERR_COST, "name" => "[wicon_coin]"];
         if ($coinCount >= 1) {
-            $res["tracker_coin_$owner"] = ["q" => 0];
-        } else {
-            $res["tracker_coin_$owner"] = ["q" => Material::ERR_COST];
+            $res["tracker_coin_$owner"]["q"] = Material::RET_OK;
         }
 
         return $res;
@@ -96,7 +94,7 @@ class Op_cardInteract extends Operation {
         $inf = $this->getInfluenceOnCard();
 
         if ($inf) {
-            $opp = getPart($inf, 2);
+            $opp = getPart($inf, 1);
             if (!$this->isOwnInfluence($inf)) {
                 $choice = $this->getCheckedArg();
                 $resourceType = getPart($choice, 1);
@@ -131,6 +129,6 @@ class Op_cardInteract extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate("Pay the opponent to interact with a card");
+        return clienttranslate('${You} must pay the opponent to interact with a card, choose one');
     }
 }
