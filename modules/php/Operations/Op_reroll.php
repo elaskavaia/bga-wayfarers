@@ -17,6 +17,8 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
+use function Bga\Games\wayfarers\getPart;
+
 class Op_reroll extends Operation {
     function getAllDice(): array {
         $owner = $this->getOwner();
@@ -37,6 +39,11 @@ class Op_reroll extends Operation {
     }
 
     function getPossibleMoves() {
+        $dieKey = $this->getDie();
+        if ($dieKey) {
+            return ["confirm"];
+        }
+
         $dice = $this->getAllDice();
         $res = [];
         foreach ($dice as $key => $die) {
@@ -50,7 +57,12 @@ class Op_reroll extends Operation {
     }
 
     function resolve(): void {
-        $dieKey = $this->getCheckedArg();
+        // Use die from data if set, otherwise get from user selection
+        $dieKey = $this->getDie();
+        if (!$dieKey) {
+            $dieKey = $this->getCheckedArg();
+        }
+
         $newValue = bga_rand(1, 6);
         $owner = $this->getOwner();
         $this->game->tokens->dbSetTokenLocation(
@@ -64,8 +76,28 @@ class Op_reroll extends Operation {
         return true;
     }
 
+    function getDie() {
+        return $this->getDataField("die", null);
+    }
+
+    function getDieValue(): int {
+        if (!$this->getDie()) {
+            return 0;
+        }
+        return (int) $this->game->tokens->db->getTokenState($this->getDie());
+    }
+
     function getPrompt() {
+        $dieKey = $this->getDataField("die");
+        if ($dieKey) {
+            return clienttranslate('Confirm to reroll ${token_div} or skip to keep as is');
+        }
         return clienttranslate("Select a die to reroll");
+    }
+
+    public function getExtraArgs() {
+        $dieValue = $this->getDieValue();
+        return parent::getExtraArgs() + ["token_div" => "wicon_die_$dieValue"];
     }
 
     public function getIconicName() {

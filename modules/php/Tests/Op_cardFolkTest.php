@@ -229,4 +229,36 @@ final class Op_cardFolkTest extends TestCase {
         // Should have prereq error since all matching tableau cards are occupied
         $this->assertEquals(Material::ERR_COST, $moves["card_folk_114"]["q"]);
     }
+
+    private function createFreeOp(?string $card = null): Op_cardFolk {
+        $data = $card !== null ? ["card" => $card] : null;
+        /** @var Op_cardFolk */
+        $op = $this->game->machine->instanciateOperation("cardFolk(free)", PCOLOR, $data);
+        return $op;
+    }
+
+    public function testFreeIsFree(): void {
+        $op = $this->createFreeOp();
+        $this->assertTrue($op->isFree());
+    }
+
+    public function testFreeMovesAffordableWithNoCoins(): void {
+        // Setup: tableau card and folk card, but player has no coins
+        $this->setupTableauCard("card_space_1", "Vista");
+        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 3);
+
+        $op = $this->createFreeOp();
+        $moves = $op->getPossibleMoves();
+
+        $this->assertArrayHasKey("card_folk_114", $moves);
+        // Should be OK even with no coins since it's free
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_114"]["q"]);
+        $this->assertEquals("", $moves["card_folk_114"]["pay"]);
+    }
+
+    public function testFreePreservesParamOnRequeue(): void {
+        $op = $this->createFreeOp();
+        // getTypeFullExpr should include the (free) parameter
+        $this->assertEquals("cardFolk(free)", $op->getTypeFullExpr());
+    }
 }

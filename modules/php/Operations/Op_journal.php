@@ -117,7 +117,7 @@ class Op_journal extends Operation {
 
         // Position Bonus
         $r = $this->game->getRulesFor($selected);
-        $this->queue($r, $owner, ["jpos" => $selected]);
+        $this->queue($r, $owner, ["jpos" => $selected], $selected);
 
         /** @var Op_spendInfBlack */
         $op = $this->instanciateOperation("spendInfBlack");

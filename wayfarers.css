@@ -1153,7 +1153,6 @@ html[data-theme=dark] .deck .counter {
   justify-content: safe center;
   align-items: flex-start;
   margin-top: 5px;
-  padding-top: 32px;
   height: 480px;
   gap: 1px;
 }
@@ -1895,11 +1894,11 @@ html[data-theme=dark] .miniboard .counter {
 }
 
 .worker_yellow {
-  background-position: 92% 100%;
+  background-position: 84% 100%;
 }
 
 .worker_green {
-  background-position: 84% 100%;
+  background-position: 92% 100%;
 }
 
 .tableau .worker {
@@ -2299,6 +2298,11 @@ html[data-theme=dark] .miniboard .counter {
   background-size: auto 100%;
   box-shadow: 1px 1px 3px 1px rgba(0, 0, 0, 0.6901960784);
 }
+.jpos .jtile {
+  top: 10px;
+  left: 10px;
+  position: absolute;
+}
 
 .jtile_1 {
   background-position: 0% 0;
@@ -2390,12 +2394,18 @@ html[data-theme=dark] .miniboard .counter {
 
 .tooltip-left {
   padding: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
 }
 .tooltip-left .tooltipimage.card {
   height: 300px;
 }
 .tooltip-left .tooltipimage.card_slot {
   height: 40px;
+}
+.tooltip-left .tooltipimage + .tooltipimage {
+  margin-top: 0.3em;
 }
 
 .tooltip-right {

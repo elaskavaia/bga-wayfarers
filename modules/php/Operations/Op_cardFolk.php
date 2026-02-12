@@ -44,7 +44,7 @@ class Op_cardFolk extends Op_cardBase {
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
 
             foreach ($tokens as $card => $tokenInfo) {
-                $pay = $this->getPaymentOperation($card);
+                $pay = $this->isFree() ? "" : $this->getPaymentOperation($card);
                 $can = $this->canAfford($pay);
                 $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $pay];
 
@@ -97,7 +97,7 @@ class Op_cardFolk extends Op_cardBase {
         $cardSelected = $this->getCard();
         $owner = $this->getOwner();
         if ($cardSelected == null) {
-            $this->queue($this->getType(), $owner, ["card" => $this->getCheckedArg()]);
+            $this->queue($this->getTypeFullExpr(), $owner, ["card" => $this->getCheckedArg()]);
             return;
         }
 

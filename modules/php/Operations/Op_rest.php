@@ -96,10 +96,9 @@ class Op_rest extends Operation {
             );
         }
 
-        // Also reroll dice that were already in supply (optional per rules) TODO ask player
+        // Also reroll dice that were already in supply (optional per rules)
         foreach ($diceInSupply as $dieKey => $dieInfo) {
-            $newValue = bga_rand(1, 6);
-            $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} rolls ${token_name} to ${new_state}'));
+            $this->queue("reroll", $owner, ["die" => $dieKey]);
         }
     }
 

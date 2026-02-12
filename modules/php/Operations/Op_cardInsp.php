@@ -106,7 +106,7 @@ class Op_cardInsp extends Op_cardBase {
 
         if ($cardSelected == null) {
             // First step: user selected a card, queue second step
-            $this->queue($this->getType(), $owner, ["card" => $this->getCheckedArg()]);
+            $this->queue($this->getTypeFullExpr(), $owner, ["card" => $this->getCheckedArg()]);
             return;
         }
 

@@ -5,9 +5,12 @@ description: Build and prepare for BGA deployment
 
 Prepare the Wayfarers game for BGA deployment:
 
-1. Run the full build process: `npm run build`
-2. Check for any build errors in TypeScript, SCSS, or material generation
-3. Show git status to see which files have changed
-4. Check for spelling mistakes and issues in changed code
+#. Run the full build process: `npm run build`
+#. Check for any build errors in TypeScript, SCSS, or material generation
+#. Run tests: `npm run tests`
+#. Check and fix failed tests
+#. Show git status to see which files have changed
+#. Check for spelling mistakes and issues in changed code
+#. Check to see if new php tests should be added
 
 Do not create a git commit unless explicitly asked.

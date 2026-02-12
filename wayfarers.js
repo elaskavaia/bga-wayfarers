@@ -967,7 +967,7 @@ var Game1Tokens = /** @class */ (function (_super) {
         return this.getTooltipHtmlForTokenInfo(tokenInfo);
     };
     Game1Tokens.prototype.getTooltipHtmlForTokenInfo = function (tokenInfo) {
-        return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes);
+        return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes, tokenInfo.reverseImageTypes);
     };
     Game1Tokens.prototype.getTokenName = function (tokenId, force) {
         if (force === void 0) { force = true; }
@@ -981,7 +981,7 @@ var Game1Tokens = /** @class */ (function (_super) {
             return "? " + tokenId;
         }
     };
-    Game1Tokens.prototype.getTooltipHtml = function (name, message, imgTypes) {
+    Game1Tokens.prototype.getTooltipHtml = function (name, message, imgTypes, reverseImgTypes) {
         if (name == null || message == "-")
             return "";
         if (!message)
@@ -989,7 +989,14 @@ var Game1Tokens = /** @class */ (function (_super) {
         var divImg = "";
         var containerType = "tooltipcontainer ";
         if (imgTypes && !imgTypes.includes("_nottimage")) {
-            divImg = "<div class='tooltipimage ".concat(imgTypes, "'></div>");
+            // Check if this is a dual-image tooltip (upgrade tiles with front and reverse)
+            if (imgTypes.includes("_dual_image") && reverseImgTypes) {
+                var frontImgTypes = imgTypes.replace("_dual_image", "").trim();
+                divImg = "\n          <div class='tooltipimage ".concat(frontImgTypes, "'></div>\n          <div class='tooltipimage ").concat(reverseImgTypes, "'></div>\n        ");
+            }
+            else {
+                divImg = "<div class='tooltipimage ".concat(imgTypes, "'></div>");
+            }
             var itypes = imgTypes.split(" ");
             for (var i = 0; i < itypes.length; i++) {
                 containerType += itypes[i] + "_tooltipcontainer ";
@@ -1305,7 +1312,7 @@ var GameMachine = /** @class */ (function (_super) {
     }
     GameMachine.prototype.onEnteringState_PlayerTurn = function (opInfo) {
         var _this = this;
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e, _f;
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo === null || opInfo === void 0 ? void 0 : opInfo.description)
                 this.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
@@ -1341,9 +1348,12 @@ var GameMachine = /** @class */ (function (_super) {
             var q = paramInfo.q;
             var active = q == 0;
             // simple case we select element (dom node) which is target of operation
-            if (div && active) {
-                div.classList.add(this.classActiveSlot);
-                div.dataset.targetOpType = opInfo.type;
+            if (div && active && paramInfo.noactive !== true) {
+                var doNotShowActive = (_c = (_b = paramInfo.noactive) !== null && _b !== void 0 ? _b : opInfo.ui.noactive) !== null && _c !== void 0 ? _c : false;
+                if (doNotShowActive == false) {
+                    div.classList.add(this.classActiveSlot);
+                    div.dataset.targetOpType = opInfo.type;
+                }
             }
             // we also can have one addition way of selection (possibly)
             var altNode = void 0;
@@ -1361,7 +1371,7 @@ var GameMachine = /** @class */ (function (_super) {
             altNode.dataset.targetId = target;
             altNode.dataset.targetOpType = opInfo.type;
             if (!active) {
-                altNode.title = this.getTr((_b = paramInfo.err) !== null && _b !== void 0 ? _b : _("Operation cannot be performed now"), paramInfo);
+                altNode.title = this.getTr((_d = paramInfo.err) !== null && _d !== void 0 ? _d : _("Operation cannot be performed now"), paramInfo);
                 altNode.classList.add(this.classButtonDisabled);
             }
             else {
@@ -1385,8 +1395,8 @@ var GameMachine = /** @class */ (function (_super) {
             var paramInfo = opInfo.info[target];
             if (paramInfo.sec) {
                 // skip, whatever TODO: anytime
-                var color = (_c = paramInfo.color) !== null && _c !== void 0 ? _c : "secondary";
-                var call_1 = (_d = paramInfo.call) !== null && _d !== void 0 ? _d : target;
+                var color = (_e = paramInfo.color) !== null && _e !== void 0 ? _e : "secondary";
+                var call_1 = (_f = paramInfo.call) !== null && _f !== void 0 ? _f : target;
                 var button = this_1.statusBar.addActionButton(this_1.getTargetButtonName(target, paramInfo), function () {
                     return _this.bga.actions.performAction("action_".concat(call_1), {
                         data: JSON.stringify({ target: target })
@@ -1401,8 +1411,8 @@ var GameMachine = /** @class */ (function (_super) {
         };
         var this_1 = this;
         // secondary buttons
-        for (var _e = 0, sortedTargets_2 = sortedTargets; _e < sortedTargets_2.length; _e++) {
-            var target = sortedTargets_2[_e];
+        for (var _g = 0, sortedTargets_2 = sortedTargets; _g < sortedTargets_2.length; _g++) {
+            var target = sortedTargets_2[_g];
             _loop_1(target);
         }
         if (multiselect) {
@@ -2295,8 +2305,23 @@ var GameXBody = /** @class */ (function (_super) {
                 tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                 if (tokenInfo.tags)
                     tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
-                if (tokenInfo.r)
-                    tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.r) + " " + this.getOpListTr(tokenInfo.r2));
+                // r and r2 are left and right side of the same tile face
+                if (tokenInfo.r || tokenInfo.r2) {
+                    var assets = [this.getOpListTr(tokenInfo.r), this.getOpListTr(tokenInfo.r2)].filter(Boolean).join(" | ");
+                    tokenInfo.tooltip += this.ttSection(_("Assets"), assets);
+                }
+                // Odd/even pairs are front/back of same physical tile
+                var numInt = parseInt(num);
+                var reverseNum = numInt % 2 === 1 ? numInt + 1 : numInt - 1;
+                var reverseTokenId = "upg_".concat(color, "_").concat(reverseNum);
+                var reverseInfo = this.getTokenDisplayInfo(reverseTokenId, true);
+                if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
+                    var revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].filter(Boolean).join(" | ");
+                    if (revAssets)
+                        tokenInfo.tooltip += this.ttSection(_("Assets (Reverse Side)"), revAssets);
+                    tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
+                    tokenInfo.imageTypes += " _dual_image";
+                }
                 if (tokenInfo.vp)
                     tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
                 return;
@@ -2305,8 +2330,7 @@ var GameXBody = /** @class */ (function (_super) {
                 var num = (_d = getPart(tokenId, 2)) !== null && _d !== void 0 ? _d : "";
                 if (!num)
                     return;
-                var color = getPart(tokenId, 1);
-                tokenInfo.name = this.getTr("${color} Player's Die", { color: this.getColorName(color) });
+                // const color = getPart(tokenId, 1);
                 tokenInfo.imageTypes += " _nottimage";
                 return;
             }

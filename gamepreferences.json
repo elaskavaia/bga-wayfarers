@@ -8,7 +8,7 @@
         "name": "Confirm"
       },
       "0": {
-        "name": "No",
+        "name": "Do not Confirm",
         "description": "If you do not confirm your turn you cannot undo, as next player will get the turn"
       }
     },

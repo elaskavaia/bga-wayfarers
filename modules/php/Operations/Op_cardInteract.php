@@ -131,4 +131,8 @@ class Op_cardInteract extends Operation {
     public function getPrompt() {
         return clienttranslate('${You} must pay the opponent to interact with a card, choose one');
     }
+
+    public function getUiArgs() {
+        return ["imagebuttons" => true, "noactive" => true];
+    }
 }

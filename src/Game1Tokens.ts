@@ -481,7 +481,7 @@ class Game1Tokens extends Game0Basics {
   }
 
   getTooltipHtmlForTokenInfo(tokenInfo: TokenDisplayInfo) {
-    return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes);
+    return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes, tokenInfo.reverseImageTypes);
   }
 
   getTokenName(tokenId: string, force: boolean = true): string {
@@ -494,13 +494,22 @@ class Game1Tokens extends Game0Basics {
     }
   }
 
-  getTooltipHtml(name: string | NotificationMessage, message: string | NotificationMessage, imgTypes?: string) {
+  getTooltipHtml(name: string | NotificationMessage, message: string | NotificationMessage, imgTypes?: string, reverseImgTypes?: string) {
     if (name == null || message == "-") return "";
     if (!message) message = "";
     var divImg = "";
     var containerType = "tooltipcontainer ";
     if (imgTypes && !imgTypes.includes("_nottimage")) {
-      divImg = `<div class='tooltipimage ${imgTypes}'></div>`;
+      // Check if this is a dual-image tooltip (upgrade tiles with front and reverse)
+      if (imgTypes.includes("_dual_image") && reverseImgTypes) {
+        const frontImgTypes = imgTypes.replace("_dual_image", "").trim();
+        divImg = `
+          <div class='tooltipimage ${frontImgTypes}'></div>
+          <div class='tooltipimage ${reverseImgTypes}'></div>
+        `;
+      } else {
+        divImg = `<div class='tooltipimage ${imgTypes}'></div>`;
+      }
       var itypes = imgTypes.split(" ");
       for (var i = 0; i < itypes.length; i++) {
         containerType += itypes[i] + "_tooltipcontainer ";

@@ -7,20 +7,20 @@ num|t|r|r2|tags|vp|name
 2|yellow|camel|diceMinus|||Land Upgrade Camel Minus
 3|yellow|pigeon|dicePlus|||Land Upgrade Pigeon Plus
 4|yellow|diceMinus|pigeon|||Land Upgrade Pigeon Minus
-5|yellow||coinDis||1|Land Upgrade Discount Right
-6|yellow|coinDis|||1|Land Upgrade Discount Left
+5|yellow|vp|coinDis||1|Land Upgrade Discount Right
+6|yellow|coinDis|vp||1|Land Upgrade Discount Left
 #set type=upg upg_blue
 7|blue|dicePlus|ship|||Water Upgrade Ship Plus
 8|blue|ship|diceMinus|||Water Upgrade Ship Minus
 9|blue|ship|pigeon|||Water Upgrade Ship Pigeon
 10|blue|pigeon|ship|||Water Upgrade Pigeon Ship
 11|blue|coinDis|dicePlus|||Water Upgrade Discount Plus
-12|blue|diceMinus|coinDis|||Water Upgrade Minus Discount
+12|blue|diceMinus|coinDis|||Water Upgrade Discount Minus
 #set w=1
 #set h=2
 #set type=upg upg_black
 20|black|ship,pigeon,camel||||Space Upgrade Trio
-21|black|diceMod|||3|Space Upgrade Dice Mod
+21|black|diceMod,vp|||3|Space Upgrade Dice Mod
 22|black|telescope,foodDis||||Space Upgrade Telescope
 #set w=1
 #set h=1

@@ -53,12 +53,21 @@
 
 .tooltip-left {
   padding: 0.5em;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5em;
+
   .tooltipimage.card {
     height: 300px;
   }
 
   .tooltipimage.card_slot {
     height: 40px;
+  }
+
+  // For dual images (upgrade tiles showing front and reverse)
+  .tooltipimage + .tooltipimage {
+    margin-top: 0.3em;
   }
 }
 

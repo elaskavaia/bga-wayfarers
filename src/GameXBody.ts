@@ -601,8 +601,25 @@ class GameXBody extends GameMachine {
         tokenInfo.tooltip += this.ttSection(_("Type"), tname);
         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
         if (tokenInfo.tags) tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
-        if (tokenInfo.r)
-          tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.r) + " " + this.getOpListTr(tokenInfo.r2));
+
+        // r and r2 are left and right side of the same tile face
+        if (tokenInfo.r || tokenInfo.r2) {
+          const assets = [this.getOpListTr(tokenInfo.r), this.getOpListTr(tokenInfo.r2)].filter(Boolean).join(" | ");
+          tokenInfo.tooltip += this.ttSection(_("Assets"), assets);
+        }
+
+        // Odd/even pairs are front/back of same physical tile
+        const numInt = parseInt(num);
+        const reverseNum = numInt % 2 === 1 ? numInt + 1 : numInt - 1;
+        const reverseTokenId = `upg_${color}_${reverseNum}`;
+        const reverseInfo = this.getTokenDisplayInfo(reverseTokenId, true);
+        if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
+          const revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].filter(Boolean).join(" | ");
+          if (revAssets) tokenInfo.tooltip += this.ttSection(_("Assets (Reverse Side)"), revAssets);
+          tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
+          tokenInfo.imageTypes += " _dual_image";
+        }
+
         if (tokenInfo.vp) tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
 
         return;
@@ -611,8 +628,7 @@ class GameXBody extends GameMachine {
       case "dice": {
         const num = getPart(tokenId, 2) ?? "";
         if (!num) return;
-        const color = getPart(tokenId, 1);
-        tokenInfo.name = this.getTr("${color} Player's Die", { color: this.getColorName(color) });
+        // const color = getPart(tokenId, 1);
         tokenInfo.imageTypes += " _nottimage";
         return;
       }

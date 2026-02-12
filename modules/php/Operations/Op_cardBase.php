@@ -107,9 +107,11 @@ abstract class Op_cardBase extends Op_acquireBase {
             return;
         }
         // Handle payment
-        $payop = $this->getPaymentOperation($card);
-        if ($payop) {
-            $this->queue($payop);
+        if (!$this->isFree()) {
+            $payop = $this->getPaymentOperation($card);
+            if ($payop) {
+                $this->queue($payop);
+            }
         }
         // Handle influence interaction if there's influence on the card
         $this->queue("cardInteract", $owner, ["card" => $card]);

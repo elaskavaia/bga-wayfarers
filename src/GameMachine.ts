@@ -9,7 +9,15 @@
  *
  */
 
-interface ParamInfo {
+interface UiOptions {
+  buttons?: boolean;
+  replicate?: boolean;
+  imagebuttons?: boolean;
+  noactive?: boolean;
+  undo?: boolean;
+  color?: string; // buton color fallback
+}
+interface ParamInfo extends UiOptions {
   q: number; // error code
   max?: number; // max count for this param
 
@@ -52,13 +60,7 @@ interface OpInfo {
 
   count?: number;
   mcount?: number;
-  ui: {
-    buttons?: boolean;
-    replicate?: boolean;
-    imagebuttons?: boolean;
-    undo?: boolean;
-    color?: string; // buton color fallback
-  };
+  ui?: UiOptions;
 }
 
 /**  Generic processing related to Operation Machine */
@@ -99,9 +101,12 @@ class GameMachine extends Game1Tokens {
       const active = q == 0;
 
       // simple case we select element (dom node) which is target of operation
-      if (div && active) {
-        div.classList.add(this.classActiveSlot);
-        div.dataset.targetOpType = opInfo.type;
+      if (div && active && paramInfo.noactive !== true) {
+        const doNotShowActive = paramInfo.noactive ?? opInfo.ui.noactive ?? false;
+        if (doNotShowActive == false) {
+          div.classList.add(this.classActiveSlot);
+          div.dataset.targetOpType = opInfo.type;
+        }
       }
 
       // we also can have one addition way of selection (possibly)

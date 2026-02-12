@@ -755,6 +755,9 @@ class Material {
     "foodDis" => [ 
         "name" => clienttranslate("Provision Discount"),
 ],
+    "vp" => [ 
+        "name" => clienttranslate("VP"),
+],
 // #ui elements
     "wicon_die_1" => [ 
         "type" => "dice wicon wicon_die_1",
@@ -2105,6 +2108,7 @@ class Material {
         "h" => 1,
         "num" => 5,
         "t" => "yellow",
+        "r" => "vp",
         "r2" => "coinDis",
         "vp" => 1,
         "name" => clienttranslate("Land Upgrade Discount Right"),
@@ -2116,6 +2120,7 @@ class Material {
         "num" => 6,
         "t" => "yellow",
         "r" => "coinDis",
+        "r2" => "vp",
         "vp" => 1,
         "name" => clienttranslate("Land Upgrade Discount Left"),
 ],
@@ -2177,7 +2182,7 @@ class Material {
         "t" => "blue",
         "r" => "diceMinus",
         "r2" => "coinDis",
-        "name" => clienttranslate("Water Upgrade Minus Discount"),
+        "name" => clienttranslate("Water Upgrade Discount Minus"),
 ],
     "upg_black_20" => [ 
         "type" => "upg upg_black",
@@ -2194,7 +2199,7 @@ class Material {
         "h" => 2,
         "num" => 21,
         "t" => "black",
-        "r" => "diceMod",
+        "r" => "diceMod,vp",
         "vp" => 3,
         "name" => clienttranslate("Space Upgrade Dice Mod"),
 ],
