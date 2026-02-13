@@ -61,7 +61,7 @@ class Op_turn extends Operation {
 
         // Continue with the next turn
         $nextPlayerId = $this->game->getPlayerAfter($this->getPlayerId());
-        $this->queue("turn", $this->game->getPlayerColorById($nextPlayerId));
+        $this->queue("turn", $this->game->game_getPlayerColorById($nextPlayerId));
     }
 
     /**

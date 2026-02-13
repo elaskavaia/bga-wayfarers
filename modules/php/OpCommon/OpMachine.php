@@ -41,7 +41,7 @@ class OpMachine {
         if ($player_id === 0) {
             $owner = null;
         } else {
-            $owner = $this->game->getPlayerColorById($player_id);
+            $owner = $this->game->game_getPlayerColorById($player_id);
         }
         return $this->createTopOperationFromDbForOwner($owner);
     }
@@ -262,7 +262,7 @@ class OpMachine {
         $players = $this->game->loadPlayersBasicInfos();
         foreach ($players as $player_id => $player_info) {
             $pstate = $this->game->getPrivateStateId($player_id);
-            $color = $this->game->getPlayerColorById($player_id);
+            $color = $this->game->game_getPlayerColorById($player_id);
             $results[$color]["instate"] = $pstate;
             $results[$color]["hit"] = false;
             $results[$color]["changestate"] = $pstate;
@@ -284,7 +284,7 @@ class OpMachine {
 
             // reset hit state
             foreach ($players as $player_id => $player_info) {
-                $color = $this->game->getPlayerColorById($player_id);
+                $color = $this->game->game_getPlayerColorById($player_id);
                 $results[$color]["hit"] = false;
             }
             $results[OpMachine::GAME_MULTI_COLOR]["hit"] = false;

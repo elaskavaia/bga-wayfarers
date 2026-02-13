@@ -105,7 +105,7 @@ class GameUT extends Game {
     }
 
     public function getCurrentPlayerColor(): string {
-        return $this->getPlayerColorById($this->curid);
+        return $this->game_getPlayerColorById($this->curid);
     }
 
     function _getColors() {

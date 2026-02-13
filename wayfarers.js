@@ -216,7 +216,7 @@ var Game0Basics = /** @class */ (function (_super) {
         var _a, _b;
         return (_b = (_a = this.gamedatas.players[playerId]) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : _("Not a Player");
     };
-    Game0Basics.prototype.getPlayerIdByColor = function (color) {
+    Game0Basics.prototype.game_getPlayerIdByColor = function (color) {
         for (var playerId in this.gamedatas.players) {
             var playerInfo = this.gamedatas.players[playerId];
             if (color == playerInfo.color) {

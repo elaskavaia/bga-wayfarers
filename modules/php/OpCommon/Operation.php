@@ -98,7 +98,7 @@ abstract class Operation {
     }
     final function getPlayerId() {
         if ($this->player_id == 0) {
-            $this->player_id = $this->game->getPlayerIdByColor($this->getOwner());
+            $this->player_id = $this->game->game_getPlayerIdByColor($this->getOwner());
         }
 
         return $this->player_id;

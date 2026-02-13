@@ -518,6 +518,20 @@ class Material {
         "create" => 4,
         "location" => "limbo",
 ],
+    "tracker_comet" => [ 
+        "name" => clienttranslate("AI Comet Track"),
+        "count" => 0,
+        "type" => "tracker comet",
+        "create" => 4,
+        "location" => "tableau_{COLOR}",
+],
+    "tracker_res" => [ 
+        "name" => clienttranslate("AI Resource Track"),
+        "count" => 0,
+        "type" => "tracker res",
+        "create" => 4,
+        "location" => "tableau_{COLOR}",
+],
 // #journal tiles
     "jtile" => [ 
         "name" => clienttranslate("Journal Tile"),
@@ -569,6 +583,13 @@ class Material {
         "count" => 16,
         "type" => "card card_insp",
         "location" => "deck_insp",
+],
+    "card_scheme" => [ 
+        "create" => 0,
+        "name" => clienttranslate("Scheme"),
+        "count" => 6,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
 ],
     "card_home" => [ 
         "create" => 0,
@@ -3780,6 +3801,91 @@ class Material {
         "conn" => 17,
 ],
             /* --- gen php end journal_material --- */
+
+            /* --- gen php begin scheme_material --- */
+// # 6 Scheme Cards for Solo AI
+// # color: blue or red
+// # silver: silver value (0-2) - how far AI moves on Resource Track
+// # r1: first action AI attempts (primary)
+// # r2: second/fallback action if first is impossible
+// # r2 is also used on rest: AI acquires based on this
+// # upgpri: special (pink) upgrade tile priority
+// # comet: 1 if card has comet icon (checked on rest), 0 otherwise
+// # Blue cards
+    "card_scheme_1" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 1,
+        "color" => "blue",
+        "silver" => 2,
+        "r1" => "ai_placeWorker(green)",
+        "r2" => "ac_focusAction",
+        "upgpri" => 1,
+        "comet" => 1,
+],
+    "card_scheme_2" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 2,
+        "color" => "blue",
+        "silver" => 0,
+        "r1" => "ai_placeWorker(green/blue)",
+        "r2" => "infBlue,infYellow,infBlack",
+        "upgpri" => 3,
+        "comet" => 1,
+],
+    "card_scheme_3" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 3,
+        "color" => "blue",
+        "silver" => 0,
+        "r1" => "ai_placeWorker(green/yellow)",
+        "r2" => "ai_upgAny",
+        "upgpri" => 5,
+        "comet" => 0,
+],
+// # Red cards
+    "card_scheme_4" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 4,
+        "color" => "red",
+        "silver" => 1,
+        "r1" => "2n_infBlue:ai_cardWater",
+        "r2" => "infBlue,ai_upgAny",
+        "upgpri" => 6,
+        "comet" => 1,
+],
+    "card_scheme_5" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 5,
+        "color" => "red",
+        "silver" => 2,
+        "r1" => "2n_infBlack:ai_cardSpace",
+        "r2" => "infBlack,ai_cardFolk",
+        "upgpri" => 8,
+        "comet" => 1,
+],
+    "card_scheme_6" => [ 
+        "create" => 1,
+        "type" => "card card_scheme",
+        "location" => "deck_scheme",
+        "num" => 6,
+        "color" => "red",
+        "silver" => 1,
+        "r1" => "2n_infYellow:ai_cardYellow",
+        "r2" => "infYellow,infYellow,ai_infCard",
+        "upgpri" => 10,
+        "comet" => 0,
+],
+            /* --- gen php end scheme_material --- */
         ];
     }
 

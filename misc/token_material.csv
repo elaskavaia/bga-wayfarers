@@ -25,6 +25,9 @@ used_inf_blue||1|flag|4|limbo|
 used_inf_yellow||1|flag|4|limbo|
 used_inf_back||1|flag|4|limbo|
 
+tracker_comet|AI Comet Track|0|tracker comet|4|tableau_{COLOR}
+tracker_res|AI Resource Track|0|tracker res|4|tableau_{COLOR}
+
 
 
 #journal tiles
@@ -41,6 +44,7 @@ card_space|Space|36|card card_space|0|deck_space
 card_land|Land|36|card card_land|0|deck_land
 card_water|Water|36|card card_water|0|deck_water
 card_insp|Inspiration|16|card card_insp|0|deck_insp
+card_scheme|Scheme|6|card card_scheme|0|deck_scheme
 card_home|Home
 
 #boards

@@ -61,7 +61,7 @@ class Base extends Table {
                 $args["player_id"] = $this->getMostlyActivePlayerId();
             }
             if (isset($args["player_id"]) && !isset($args["player_name"]) && str_contains($message, '${player_name}')) {
-                $args["player_name"] = $this->getPlayerNameById((int) $args["player_id"]);
+                $args["player_name"] = $this->game_getPlayerNameById((int) $args["player_id"]);
             }
             if (str_contains($message, '${you}')) {
                 $args["you"] = "You"; // translated on client side, this is for replay after
@@ -70,6 +70,14 @@ class Base extends Table {
         });
     }
 
+    function getAvailColors($players) {
+        $gameinfos = self::getGameinfos();
+        $default_colors = $gameinfos["player_colors"];
+        if (count($players) == 1) {
+            unset($default_colors[count($default_colors) - 1]); // last one will be reserved to automa
+        }
+        return $default_colors;
+    }
     /*
         setupNewGame:
         
@@ -81,8 +89,9 @@ class Base extends Table {
         // Set the colors of the players with HTML color code
         // The default below is red/green/blue/orange/brown
         // The number of colors defined here must correspond to the maximum number of players allowed for the gams
-        $gameinfos = self::getGameinfos();
-        $default_colors = $gameinfos["player_colors"];
+
+        $default_colors = $this->getAvailColors($players);
+        shuffle($default_colors);
 
         // Create players
         // Note: if you added some extra field on "player" table in the database (dbmodel.sql), you can initialize it there.
@@ -103,7 +112,8 @@ class Base extends Table {
         }
         $sql .= implode(",", $values);
         $this->DbQuery($sql);
-        self::reattributeColorsBasedOnPreferences($players, $gameinfos["player_colors"]);
+        $default_colors = $this->getAvailColors($players);
+        self::reattributeColorsBasedOnPreferences($players, $default_colors);
         self::reloadPlayersBasicInfos();
 
         /************ Start the game initialization *****/
@@ -293,8 +303,23 @@ class Base extends Table {
         if ($id === null || $id <= 0) {
             return "000000";
         }
-        return $this->getPlayerColorById((int) $id);
+        return $this->game_getPlayerColorById((int) $id);
     }
+
+    function game_getPlayerColorById(int $p): string {
+        if ($p == self::PLAYER_AUTOMA) {
+            return "982fff";
+        }
+        return parent::getPlayerColorById($p);
+    }
+
+    function game_getPlayerNameById(int $p): string {
+        if ($p == self::PLAYER_AUTOMA) {
+            return "Aida";
+        }
+        return $this->getPlayerNameById($p);
+    }
+
     public function isMultiActive() {
         return $this->gamestate->isMultiactiveState();
     }
@@ -334,13 +359,13 @@ class Base extends Table {
         $table = $this->getNextPlayerTable();
         return $table[0];
     }
-    function getNextReadyPlayer($player_id) {
+    function getNextReadyPlayerId($player_id): int {
         //$this->systemAssertTrue("invalid player id", $this->isRealPlayer($player_id));
         if ($this->isSolo()) {
             if ($this->isRealPlayer($player_id)) {
-                return Game::PLAYER_AUTOMA;
+                return self::PLAYER_AUTOMA;
             }
-            if ($player_id == Game::PLAYER_AUTOMA) {
+            if ($player_id == self::PLAYER_AUTOMA) {
                 return $this->getFirstPlayer();
             }
             return 0;
@@ -379,7 +404,16 @@ class Base extends Table {
     }
 
     function loadPlayersBasicInfosWithBots($bots = true) {
-        return parent::loadPlayersBasicInfos();
+        $infos = parent::loadPlayersBasicInfos();
+        if ($bots && $this->isSolo()) {
+            $infos[self::PLAYER_AUTOMA]["player_id"] = self::PLAYER_AUTOMA;
+            $infos[self::PLAYER_AUTOMA]["player_no"] = 2;
+            $infos[self::PLAYER_AUTOMA]["player_color"] = "982fff";
+            $infos[self::PLAYER_AUTOMA]["player_name"] = "Aida";
+            $infos[self::PLAYER_AUTOMA]["player_ai"] = 1;
+            $infos[self::PLAYER_AUTOMA]["player_score"] = 0;
+        }
+        return $infos;
     }
     public function getPlayerColors() {
         $players_basic = $this->loadPlayersBasicInfosWithBots();
@@ -394,7 +428,7 @@ class Base extends Table {
      *
      * @return integer player id based on hex $color, player is not in the list return 0
      */
-    function getPlayerIdByColor(?string $color): int {
+    function game_getPlayerIdByColor(?string $color): int {
         if ($color === null) {
             return 0;
         }
@@ -428,11 +462,7 @@ class Base extends Table {
             return;
         }
 
-        if ($message instanceof NotificationMessage) {
-            throw new BgaUserException($message->message, args: $message->args);
-        }
-
-        throw new BgaUserException($message);
+        throw new UserException($message);
     }
 
     /**
@@ -453,14 +483,7 @@ class Base extends Table {
         if ($logonly) {
             $this->error($logonly);
         }
-        throw new BgaUserException("Internal Error. That should not have happened. Reload page and Retry" . " " . $log);
-    }
-
-    /**
-     * This to make it public
-     */
-    public function _($text): string {
-        return parent::_($text);
+        throw new UserException("Internal Error. That should not have happened. Reload page and Retry" . " " . $log);
     }
 
     function dumpError($log) {
@@ -525,7 +548,7 @@ class Base extends Table {
             }
         }
         if ($message) {
-            $player_name = $this->getPlayerNameById((int) $player_id);
+            $player_name = $this->game_getPlayerNameById((int) $player_id);
             $args["player_name"] = $player_name;
         }
         if (isset($args["_notifType"])) {
@@ -710,7 +733,7 @@ class Base extends Table {
 
     function bgaDoUndoSavePoint() {
         $tables = $this->getObjectListFromDB("SHOW TABLES", true);
-        $this->setGameStateValue("undo_moves_player", $this->getActivePlayerId());
+        $this->setGameStateValue("undo_moves_player", (int) $this->getActivePlayerId());
         $prefix = "zz_savepoint_";
         foreach ($tables as $table) {
             if (str_starts_with($table, $prefix)) {
