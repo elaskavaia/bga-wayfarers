@@ -20,6 +20,9 @@ use function Bga\Games\wayfarers\getPart;
 
 class Op_drawTab extends Operation {
     public function requireConfirmation() {
+        if ($this->isAutomaPlayer()) {
+            return false;
+        }
         return true;
     }
 

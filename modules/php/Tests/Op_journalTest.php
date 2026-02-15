@@ -294,7 +294,7 @@ final class Op_journalTest extends TestCase {
         $op->triggerEndGame();
 
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
-        $this->assertEquals(2, $gameStage); // First player triggers end game
+        $this->assertEquals(PCOLOR_NO, $gameStage); // First player triggers end game
     }
 
     public function testTriggerEndGameOnlyTriggersOnce(): void {
@@ -309,7 +309,7 @@ final class Op_journalTest extends TestCase {
         $gameStage2 = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
 
         $this->assertEquals($gameStage1, $gameStage2);
-        $this->assertEquals(2, $gameStage2);
+        $this->assertEquals(PCOLOR_NO, $gameStage2);
     }
 
     public function testGetIconicName(): void {

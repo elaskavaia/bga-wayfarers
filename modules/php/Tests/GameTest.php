@@ -21,7 +21,9 @@ use function Bga\Games\wayfarers\startsWith;
 //       "player_colors" => ["ff0000", "ffcc02", "6cd0f6", "982fff"],
 define("PCOLOR", "6cd0f6");
 define("BCOLOR", "982fff");
-define("ACOLOR", "982fff");
+define("CCOLOR", "ff0000");
+define("ACOLOR", "ffffff"); // automa
+define("PCOLOR_NO", 10);
 
 class FakeNotify extends Notify {
     public function all(string $notifName, string|NotificationMessage $message = "", array $args = []): void {
@@ -64,14 +66,17 @@ class GameUT extends Game {
 
     function setPlayersNumber(int $num) {
         switch ($num) {
+            case 1:
+                $this->_colors = [PCOLOR];
+                break;
             case 2:
                 $this->_colors = [PCOLOR, BCOLOR];
                 break;
             case 3:
-                $this->_colors = [PCOLOR, BCOLOR, ACOLOR];
+                $this->_colors = [PCOLOR, BCOLOR, CCOLOR];
                 break;
             case 4:
-                $this->_colors = [PCOLOR, BCOLOR, ACOLOR, "ef58a2"];
+                $this->_colors = [PCOLOR, BCOLOR, CCOLOR, "ef58a2"];
                 break;
             default:
                 throw new UserException("Invalid number of players");
@@ -80,9 +85,6 @@ class GameUT extends Game {
 
     function getUserPreference(int $player_id, int $code): int {
         return 0;
-    }
-    function getAutomaColor() {
-        return ACOLOR;
     }
 
     function init(int $x = 0) {

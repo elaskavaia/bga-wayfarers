@@ -44,32 +44,32 @@
   - [x] Resolve first action on scheme card; fallback to second action if first is impossible
 - [x] Integrate automa turn into game flow via `getNextReadyPlayer()` (already returns PLAYER_AUTOMA after human turn)
 - [x] Add game state or dispatch logic to route automa turns to `Op_ai_turn` instead of normal `Op_turn`
+- [ ] Bugs to fix in Op_ai_turn:
+  - [ ] Action resolution commented out (WIP) — AI actions don't execute yet
 
 ### Phase 3: AI Prioritization System
 
-- [ ] Implement resource track color priority: track position dictates color (Black, Blue, Yellow, Green)
-  - [ ] Color determines priority for: influencing cards, acquiring upgrade tiles, placing/retrieving workers
+- [x] Implement resource track color priority: track position dictates color (Black, Blue, Yellow, Green)
+  - [x] Color determines priority for: influencing cards, acquiring upgrade tiles, placing/retrieving workers
   - [ ] If priority color yields no benefit, move to next color clockwise
 - [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
-  - [ ] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
+  - [x] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
   - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around
 - [x] Implement inspiration card priority based on resource track row position (top/middle/bottom)
 
 ### Phase 4: AI Actions (Scheme Card Resolution)
 
-- [ ] AI card acquisition:
-  - [ ] Acquire Land Card (use sum value for position priority)
-  - [ ] Acquire Water Card (use sum value for position priority)
-  - [ ] Acquire Space Card (use sum value for position priority)
-  - [ ] Acquire Townsfolk Card (use sum value for position priority)
-  - [ ] AI ignores all costs except scheme card requirements
-  - [ ] AI ignores all icons on acquired cards (no comets, no influence, no free upgrades)
-  - [ ] AI still collects cards for end-game scoring
+- [x] AI card acquisition (Op_ai_cardBase.php):
+  - [x] Acquire Land/Water/Space/Townsfolk Card (use sum value for position priority)
+  - [x] AI ignores all costs except scheme card requirements
+  - [x] AI ignores all icons on acquired cards (no comets, no influence, no free upgrades)
+  - [x] AI still collects cards for end-game scoring
 - [ ] AI upgrade tile acquisition:
   - [ ] Use resource track color priority to determine tile color
   - [ ] Use sum value for positional selection within that color
   - [ ] Place tiles in specific Caravan order (per AI board rules)
-  - [ ] AI gains VP from upgrade tiles but ignores other tile icons
+  - [ ] AI gains VP from upgrade tiles at end of game but ignores other tile icons
+  - [ ] Use scheme card's special upgrade priority indicator for Special pink upgrades
 - [ ] AI worker placement:
   - [ ] Green Workers go on Townsfolk Cards
   - [ ] Yellow Workers go on Land Cards
@@ -83,8 +83,6 @@
 - [ ] AI influence on cards:
   - [ ] Use resource track color priority for card type selection
   - [ ] Use sum value for positional selection
-- [ ] AI special upgrade tile acquisition:
-  - [ ] Use scheme card's special upgrade priority indicator
 
 ### Phase 5: AI Resting
 

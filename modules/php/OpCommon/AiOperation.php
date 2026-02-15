@@ -25,7 +25,8 @@ abstract class AiOperation extends CountableOperation {
     //   - [ ] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
     //   - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around
     public function getPositionPriority(): int {
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_ffffff", null, "token_state");
+        $owner = $this->getOwner();
+        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner", null, "token_state");
         $recentCards = array_slice($cards, -2);
         $sumValue = 0;
         foreach ($recentCards as $cardKey => $cardInfo) {
@@ -38,7 +39,8 @@ abstract class AiOperation extends CountableOperation {
     }
 
     function getRecentCard() {
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_ffffff", null, "token_state");
+        $owner = $this->getOwner();
+        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner", null, "token_state");
         return array_key_last($cards);
     }
 
@@ -56,7 +58,7 @@ abstract class AiOperation extends CountableOperation {
             case "space":
                 return 3;
             case "water":
-                return 3;
+                return 2;
             case "land":
                 return 2;
             case "folk":

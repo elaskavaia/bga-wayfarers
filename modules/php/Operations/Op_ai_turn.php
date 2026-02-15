@@ -32,8 +32,7 @@ class Op_ai_turn extends Op_turn {
             $this->aiRevealScheme($owner);
         }
 
-        $this->queue("turnconf", $this->game->getActivePlayerColor());
-        //$this->queueNextTurnOrEnd();
+        $this->queueNextTurnOrEnd();
         return true;
     }
 

@@ -706,4 +706,8 @@ abstract class Operation {
         }
         return $state;
     }
+
+    function isAutomaPlayer() {
+        return $this->getPlayerId() == Game::PLAYER_AUTOMA;
+    }
 }

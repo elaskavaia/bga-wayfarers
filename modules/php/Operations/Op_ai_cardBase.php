@@ -44,7 +44,8 @@ class Op_ai_cardBase extends AiOperation {
         $this->game->systemAssert("Missing card on main display $prio", $card);
         $vp = $this->getCardTypeVP($type);
         // arrange cards based on VP staring at -2 for townsfolk
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", -1 - $vp);
+        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", -1 - $vp, "*", [], $this->getPlayerId());
+        $this->queue("drawTab", $owner, ["card" => $card]);
         return true;
     }
 }
