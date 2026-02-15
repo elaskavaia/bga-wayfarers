@@ -24,6 +24,7 @@ use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Common\PGameTokens;
 use Bga\Games\wayfarers\Db\DbMultiUndo;
 use Bga\Games\wayfarers\Db\DbTokens;
+use Bga\Games\wayfarers\OpCommon\AiOperation;
 use Bga\Games\wayfarers\OpCommon\ComplexOperation;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
 use Bga\Games\wayfarers\States\GameDispatch;
@@ -227,15 +228,22 @@ class Game extends Base {
         // Create AI comet track marker (position 0, values 0-10)
         $this->tokens->db->createToken("tracker_comet_$color", "tableau_$color", 0);
 
+        $this->tokens->db->createToken("tracker_vp_$color", "miniboard_$color", 0);
+
         // Shuffle scheme cards
         $this->tokens->db->shuffle("deck_scheme");
+    }
 
-        // No dice for AI
-        // for ($j = 1; $j <= 5; $j++) {
-        //     $this->tokens->db->moveToken("dice_{$color}_$j", "supply");
-        // }
-        // $cards = $this->tokens->getTokensOfTypeInLocation("card", "tableau_$color");
-        // $this->tokens->db->moveTokens(array_keys($cards), "limbo", 0);
+    public function getDefaultStatValue(string $key, string $type): ?int {
+        if (startsWith($key, "game_vp_ai")) {
+            return $this->isSolo() ? 0 : null;
+        }
+        if (startsWith($key, "game_")) {
+            return 0;
+        } elseif ($key === "turns_number") {
+            return 0;
+        }
+        return null;
     }
 
     function setupPlayerBord(int $player_id, int $boardnum) {
@@ -357,6 +365,20 @@ class Game extends Base {
             }
         }
 
+        if ($player_id == self::PLAYER_AUTOMA) {
+            // automa cannot use same scoring mechanism, use custom tracker
+            $trackerId = $this->tokens->getTrackerId($owner, "vp");
+            $this->tokens->dbResourceInc($trackerId, $inc, $message, ["reason" => $stat, "token_name" => $target], self::PLAYER_AUTOMA);
+            if ($stat) {
+                if (!str_starts_with($stat, "game_vp_ai_")) {
+                    $stat = str_replace("game_vp_", "game_vp_ai_", $stat);
+                }
+                $this->tableStats->inc($stat, $inc, $player_id);
+            }
+
+            return;
+        }
+
         $this->playerScore->inc(
             $player_id,
             $inc,
@@ -401,7 +423,7 @@ class Game extends Base {
     }
 
     function getTagsSet(string $card) {
-        $tags = $this->getRulesFor($card, "tags");
+        $tags = $this->getRulesFor($card, "tags", "");
         $tagsarr = explode(" ", $tags);
         $res = [];
         foreach ($tagsarr as $tag) {
@@ -703,7 +725,7 @@ class Game extends Base {
                         // Found tucked inspiration card, check if goal is achieved
                         if ($this->isInspirationGoalAchieved($inspKey, $color)) {
                             // Goal achieved - score space card VP again
-                            $this->effect_incVp($color, $vp, "game_vp_inspiration", $inspKey);
+                            $this->effect_incVp($color, $vp, "game_vp_insp", $inspKey);
                         } else {
                             $this->notifyMessage(
                                 clienttranslate('${player_name} did not achieve the goal for tucked inspiration card ${token_name}'),
@@ -731,6 +753,38 @@ class Game extends Base {
             }
         }
 
+        if ($this->isSolo()) {
+            $color = $this->getAutomaColor();
+
+            // The AI scores VP for the following: 1VP per acquired Townsfolk
+            // Card; 2VP per acquired Water/Land Card; 3VP per acquired Space
+            // Card; 4VP per acquired Inspiration Card;
+            $cardTypes = ["folk", "land", "water", "space", "insp"];
+            foreach ($cardTypes as $type) {
+                $cards = $this->tokens->getTokensOfTypeInLocation("card_$type", "tableau_$color");
+                $c = count($cards);
+                $vpc = AiOperation::getCardTypeVP($type);
+                $vp = $vpc * $c;
+                $stat = "game_vp_ai_$type";
+                if ($type == "land" || $type == "water") {
+                    $stat = "game_vp_ai_cards";
+                }
+                $this->effect_incVp($color, $vp, $stat);
+            }
+            //VP from acquired Upgrade Tiles;
+            $tiles = $this->tokens->getTokensOfTypeInLocation("upg", "tableau_$color");
+            foreach ($tiles as $tileKey => $tileInfo) {
+                $vp = (int) $this->getRulesFor($tileKey, "vp", 0);
+                if ($vp > 0) {
+                    $this->effect_incVp($color, $vp, "game_vp_ai_caravan");
+                }
+            }
+            //VP from Guild Majorities.
+            foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
+                $guildInfluence[$guild][$color] = $this->countGuildInfluence($guild, $color);
+            }
+        }
+
         // 4. Guild Majorities - 3 VP to player with most influence in each guild
         foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
             $maxInfluence = 0;
@@ -745,9 +799,17 @@ class Game extends Base {
                 }
             }
 
+            $this->notifyMessage(clienttranslate('Scoring majority for ${token_name}, max influence ${max}'), [
+                "token_name" => $guild,
+                "max" => $maxInfluence,
+            ]);
+
             // Only award VP if there's a single winner (no ties)
             if (count($winners) == 1 && $maxInfluence > 0) {
                 $this->effect_incVp($winners[0], 3, "game_vp_guilds");
+            } else {
+                // add notify message that vp is no awarded because of tie
+                $this->notifyMessage(clienttranslate('No VP awarded for ${token_name} due to tie'), ["token_name" => $guild]);
             }
         }
 
@@ -764,6 +826,14 @@ class Game extends Base {
             $score = $this->playerScore->get($player_id);
             $this->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $score], $player_id);
             $this->playerStats->set("game_vp_total", $score, $player_id);
+        }
+
+        if ($this->isSolo()) {
+            // notify with total of automa scope
+            $score = $this->tokens->getTrackerValue($this->getAutomaColor(), "vp");
+            $player_id = self::PLAYER_AUTOMA;
+            $this->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $score], $player_id);
+            // TODO: if Automa wins negate the score of player
         }
 
         $this->notify->all("endScores", "", ["endScores" => $this->getEndScores(), "final" => true]);
@@ -833,13 +903,31 @@ class Game extends Base {
     function getEndScores(): array {
         $endScores = [];
         $players = $this->loadPlayersBasicInfos();
-        $vp_stats = ["game_vp_tags", "game_vp_sets", "game_vp_space", "game_vp_inspiration", "game_vp_caravan", "game_vp_guilds"];
+        $vp_stats = ["game_vp_tags", "game_vp_sets", "game_vp_space", "game_vp_insp", "game_vp_caravan", "game_vp_guilds"];
 
         foreach ($players as $player_id => $player) {
             foreach ($vp_stats as $stat) {
                 $endScores[$player_id][$stat] = $this->playerStats->get($stat, $player_id);
             }
             $endScores[$player_id]["total"] = $this->playerStats->get("game_vp_total", $player_id);
+        }
+
+        if ($this->isSolo()) {
+            $color = $this->getAutomaColor();
+            $player_id = self::PLAYER_AUTOMA;
+
+            $vp_stats_ai = [
+                "game_vp_ai_folk" => "game_vp_sets",
+                "game_vp_ai_cards" => "game_vp_tags", // TODO: sort out mapping later
+                "game_vp_ai_space" => "game_vp_space",
+                "game_vp_ai_insp" => "game_vp_insp",
+                "game_vp_ai_caravan" => "game_vp_caravan",
+                "game_vp_ai_guilds" => "game_vp_guilds",
+            ];
+            foreach ($vp_stats_ai as $stat => $mapstat) {
+                $endScores[$player_id][$mapstat] = $this->tableStats->get($stat, $player_id);
+            }
+            $endScores[$player_id]["total"] = $this->tokens->getTrackerValue($color, "vp");
         }
 
         return $endScores;

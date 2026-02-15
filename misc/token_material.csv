@@ -27,6 +27,7 @@ used_inf_black||1|flag|4|limbo|
 
 tracker_comet|AI Comet Track|0|tracker tracker_comet|4|tableau_{COLOR}
 tracker_res|AI Resource Track|0|tracker tracker_res|4|tableau_{COLOR}
+tracker_vp|AI VP|0|tracker tracker_vp|4|miniboard_{COLOR}
 
 
 
@@ -72,15 +73,21 @@ upg_pink|Special Upgrade Tile
 game_vp_tags|VP from Primary Tags (City, Vista, Harbour, Open Water)
 game_vp_sets|VP from Tag Sets
 game_vp_space|VP from Space Cards
-game_vp_inspiration|VP from Inspiration Cards
+game_vp_insp|VP from Inspiration Cards
 game_vp_caravan|VP from Caravan Upgrade Tiles
 game_vp_guilds|VP from Guild Majorities
 game_vp_total|VP total
-
 game_vp_tag_Vista|Vista Tags
 game_vp_tag_Harbour|Harbour Tags
 game_vp_tag_City|City Tags
 game_vp_tag_Sea|Open Water Tags
+game_vp_ai_folk|AI VP from Townsfolk Cards
+game_vp_ai_cards|AI VP from Land and Water Cards
+game_vp_ai_space|AI VP from Space Cards
+game_vp_ai_insp|AI VP from Inspiration Cards
+game_vp_ai_caravan|AI VP from Caravan Upgrade Tiles
+game_vp_ai_guilds|AI VP from Guild Majorities
+game_vp_ai_total|AI VP total
 
 #tags
 #set type=

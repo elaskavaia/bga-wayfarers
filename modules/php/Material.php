@@ -685,7 +685,7 @@ class Material {
     "game_vp_space" => [ 
         "name" => clienttranslate("VP from Space Cards"),
 ],
-    "game_vp_inspiration" => [ 
+    "game_vp_insp" => [ 
         "name" => clienttranslate("VP from Inspiration Cards"),
 ],
     "game_vp_caravan" => [ 
@@ -708,6 +708,27 @@ class Material {
 ],
     "game_vp_tag_Sea" => [ 
         "name" => clienttranslate("Open Water Tags"),
+],
+    "game_vp_ai_folk" => [ 
+        "name" => clienttranslate("AI VP from Townsfolk Cards"),
+],
+    "game_vp_ai_cards" => [ 
+        "name" => clienttranslate("AI VP from Land and Water Cards"),
+],
+    "game_vp_ai_space" => [ 
+        "name" => clienttranslate("AI VP from Space Cards"),
+],
+    "game_vp_ai_insp" => [ 
+        "name" => clienttranslate("AI VP from Inspiration Cards"),
+],
+    "game_vp_ai_caravan" => [ 
+        "name" => clienttranslate("AI VP from Caravan Upgrade Tiles"),
+],
+    "game_vp_ai_guilds" => [ 
+        "name" => clienttranslate("AI VP from Guild Majorities"),
+],
+    "game_vp_ai_total" => [ 
+        "name" => clienttranslate("AI VP total"),
 ],
 // #tags
     "tag_Harbour" => [ 

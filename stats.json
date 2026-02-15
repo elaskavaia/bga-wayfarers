@@ -15,7 +15,7 @@
       "name": "VP from Space Cards",
       "type": "int"
     },
-    "game_vp_inspiration": {
+    "game_vp_insp": {
       "id": 14,
       "name": "VP from Inspiration Cards",
       "type": "int"
@@ -33,6 +33,43 @@
     "game_vp_total": {
       "id": 29,
       "name": "VP total",
+      "type": "int"
+    }
+  },
+  "table": {
+    "game_vp_ai_folk": {
+      "id": 11,
+      "name": "AI VP from Townsfolk Cards",
+      "type": "int"
+    },
+    "game_vp_ai_cards": {
+      "id": 12,
+      "name": "AI VP from Land and Water Cards",
+      "type": "int"
+    },
+    "game_vp_ai_space": {
+      "id": 13,
+      "name": "AI VP from Space Cards",
+      "type": "int"
+    },
+    "game_vp_ai_insp": {
+      "id": 14,
+      "name": "AI VP from Inspiration Cards",
+      "type": "int"
+    },
+    "game_vp_ai_caravan": {
+      "id": 15,
+      "name": "AI VP from Caravan Upgrade Tiles",
+      "type": "int"
+    },
+    "game_vp_ai_guilds": {
+      "id": 16,
+      "name": "AI VP from Guild Majorities",
+      "type": "int"
+    },
+    "game_vp_ai_total": {
+      "id": 29,
+      "name": "AI VP total",
       "type": "int"
     }
   }

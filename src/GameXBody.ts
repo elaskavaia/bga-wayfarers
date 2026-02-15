@@ -343,8 +343,8 @@ class GameXBody extends GameMachine {
       { property: "game_vp_tags", label: _("VP from Primary Tags") },
       { property: "game_vp_sets", label: _("VP from Tag Sets") },
       { property: "game_vp_space", label: _("VP from Space Cards") },
-      { property: "game_vp_inspiration", label: _("VP from Inspiration Cards") },
-      { property: "game_vp_caravan", label: _("VP from Caravan") },
+      { property: "game_vp_insp", label: _("VP from Inspiration Cards") },
+      { property: "game_vp_caravan", label: _("VP from Upgrades") },
       { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
       { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
     ];
@@ -355,7 +355,7 @@ class GameXBody extends GameMachine {
       entryLabelWidth: 180,
       entryLabelHeight: 20,
       classes: "score-sheet",
-      players: this.gamedatas.players,
+      players: this.gamedatas.playerswithbots,
       entries,
       scores: this.gamedatas.endScores,
       onScoreDisplayed: (property, playerId, score) => {

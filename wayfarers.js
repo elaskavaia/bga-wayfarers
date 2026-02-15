@@ -1942,8 +1942,7 @@ var GameXBody = /** @class */ (function (_super) {
     GameXBody.prototype.setupLayoutControls = function () {
         var _this = this;
         _super.prototype.setupLocalControls.call(this, "board_layout_controls");
-        // Load saved preferences from localSto
-        // rage
+        // Load saved preferences from localStorage
         var savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
         this.boardLayout = savedLayout;
         // Apply saved settings
@@ -2013,8 +2012,8 @@ var GameXBody = /** @class */ (function (_super) {
             { property: "game_vp_tags", label: _("VP from Primary Tags") },
             { property: "game_vp_sets", label: _("VP from Tag Sets") },
             { property: "game_vp_space", label: _("VP from Space Cards") },
-            { property: "game_vp_inspiration", label: _("VP from Inspiration Cards") },
-            { property: "game_vp_caravan", label: _("VP from Caravan") },
+            { property: "game_vp_insp", label: _("VP from Inspiration Cards") },
+            { property: "game_vp_caravan", label: _("VP from Upgrades") },
             { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
             { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
         ];
@@ -2025,7 +2024,7 @@ var GameXBody = /** @class */ (function (_super) {
             entryLabelWidth: 180,
             entryLabelHeight: 20,
             classes: "score-sheet",
-            players: this.gamedatas.players,
+            players: this.gamedatas.playerswithbots,
             entries: entries,
             scores: this.gamedatas.endScores,
             onScoreDisplayed: function (property, playerId, score) {
