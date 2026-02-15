@@ -21,6 +21,8 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\OpCommon;
 
 use Bga\GameFramework\NotificationMessage;
+use Bga\GameFramework\SystemException;
+use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\States\GameDispatch;
 use Bga\Games\wayfarers\States\PlayerTurn;
@@ -28,8 +30,6 @@ use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
 use Bga\Games\wayfarers\OpCommon\OpParser;
 use Bga\Games\wayfarers\States\MultiPlayerTurnPrivate;
-use BgaSystemException;
-use BgaUserException;
 use Exception;
 
 use function Bga\Games\wayfarers\array_get;
@@ -89,7 +89,7 @@ abstract class Operation {
         if (is_string($data)) {
             $data = json_decode($data, true, 20, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING);
         } elseif (is_numeric($data)) {
-            throw new BgaSystemException("Unsupported data format number");
+            throw new SystemException("Unsupported data format number");
         }
         return $data;
     }
@@ -249,7 +249,7 @@ abstract class Operation {
     }
     protected function getCheckedArg(bool $checkMaxCount = false, bool $checkMinCount = false) {
         if ($this->userArgs === null) {
-            throw new BgaSystemException("No user args set");
+            throw new SystemException("No user args set");
         }
         $arg = $this->_getCheckedArg();
         $ttype = $this->getArgType();
@@ -534,7 +534,7 @@ abstract class Operation {
     }
 
     function notifyMessage($message = "", $args = []) {
-        $this->game->notify->all("message", $message, $args);
+        $this->game->notify->all("message", $message, ["player_id" => $this->getPlayerId()] + $args);
     }
     // overridable stuff
     function getArgType() {
@@ -659,7 +659,7 @@ abstract class Operation {
 
     function action_resolve(mixed $data) {
         if (!is_array($data)) {
-            throw new BgaSystemException("data encoding issues");
+            throw new SystemException("data encoding issues");
         }
 
         $this->userArgs = $data;
@@ -682,7 +682,7 @@ abstract class Operation {
     /** Called on operation to skip this one */
     function skip() {
         if (!$this->canSkip()) {
-            throw new BgaUserException(clienttranslate("Cannot skip this action"));
+            throw new UserException(clienttranslate("Cannot skip this action"));
         }
     }
 

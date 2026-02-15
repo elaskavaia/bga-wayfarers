@@ -37,9 +37,19 @@ class Op_ai_cardBase extends AiOperation {
         if ($type == "insp") {
             // inspiration card position check resource marker
             $prio = $this->getResourceMarkerRules("c");
+            $this->notifyMessage(
+                clienttranslate('${player_name} acquires card at position ${priority} based on inspiration priority of resource track'),
+                [
+                    "priority" => $prio,
+                ]
+            );
         } else {
             $prio = $this->getPositionPriority();
+            $this->notifyMessage(clienttranslate('${player_name} acquires card at position ${priority} based on silver values'), [
+                "priority" => $prio,
+            ]);
         }
+
         $card = $moves[$prio - 1] ?? "";
         $this->game->systemAssert("Missing card on main display $prio", $card);
         $vp = $this->getCardTypeVP($type);

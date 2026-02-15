@@ -906,8 +906,8 @@ class Game extends Base {
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
 
-    function debug_ai_turn() {
-        $this->machine->push("ai_turn", "ffffff");
+    function debug_ai_op(string $type) {
+        $this->machine->push($type, "ffffff");
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
 
