@@ -5,6 +5,7 @@ namespace Bga\Games\wayfarers\Tests;
 
 use Bga\GameFramework\NotificationMessage;
 use Bga\GameFramework\Notify;
+use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\Common\PGameTokens;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\Operation;
@@ -17,10 +18,10 @@ use PHPUnit\Framework\TestCase;
 use function Bga\Games\wayfarers\array_get;
 use function Bga\Games\wayfarers\startsWith;
 
-//    'player_colors' => ["ef58a2", "a0d28c", "6cd0f6", "ffcc02"],
-define("PCOLOR", "a0d28c");
-define("BCOLOR", "6cd0f6");
-define("ACOLOR", "ffcc02");
+//       "player_colors" => ["ff0000", "ffcc02", "6cd0f6", "982fff"],
+define("PCOLOR", "6cd0f6");
+define("BCOLOR", "982fff");
+define("ACOLOR", "982fff");
 
 class FakeNotify extends Notify {
     public function all(string $notifName, string|NotificationMessage $message = "", array $args = []): void {
@@ -73,7 +74,7 @@ class GameUT extends Game {
                 $this->_colors = [PCOLOR, BCOLOR, ACOLOR, "ef58a2"];
                 break;
             default:
-                throw new BgaVisibleSystemException("Invalid number of players");
+                throw new UserException("Invalid number of players");
         }
     }
 
@@ -105,7 +106,7 @@ class GameUT extends Game {
     }
 
     public function getCurrentPlayerColor(): string {
-        return $this->game_getPlayerColorById($this->curid);
+        return $this->custom_getPlayerColorById($this->curid);
     }
 
     function _getColors() {

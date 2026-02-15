@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
@@ -69,7 +68,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         $res = [];
         $cardType = $this->getCardType();
 
-        $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_$cardType", "mainarea");
+        $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_$cardType", "mainarea", null, "token_state");
 
         foreach ($tokens as $card => $info) {
             $payop = $this->getPaymentOperation($card);

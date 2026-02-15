@@ -23,10 +23,10 @@ influence|Influence|15|influence wooden|3|tableau_{COLOR}
 dice|Player die|5|dice wooden|3|tableau_{COLOR}
 used_inf_blue||1|flag|4|limbo|
 used_inf_yellow||1|flag|4|limbo|
-used_inf_back||1|flag|4|limbo|
+used_inf_black||1|flag|4|limbo|
 
-tracker_comet|AI Comet Track|0|tracker comet|4|tableau_{COLOR}
-tracker_res|AI Resource Track|0|tracker res|4|tableau_{COLOR}
+tracker_comet|AI Comet Track|0|tracker tracker_comet|4|tableau_{COLOR}
+tracker_res|AI Resource Track|0|tracker tracker_res|4|tableau_{COLOR}
 
 
 

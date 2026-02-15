@@ -73,3 +73,11 @@ n_infBlue|Pay Blue Influence
 n_infYellow|Pay Yellow Influence
 n_infBlack|Pay Black Influence
 finalScoring|Final Scoring
+
+#ai ops
+ai_turn|AI Turn
+#set class=Op_ai_cardBase
+ai_cardLand|AI Acquire Land Card
+ai_cardWater|AI Acquire Water Card
+ai_cardSpace|AI Acquire Space Card
+ai_cardFolk|AI Acquire Townsfolk Card

@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\GameFramework\SystemException;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
@@ -25,6 +26,10 @@ use function Bga\Games\wayfarers\getPart;
  */
 class Op_turn extends Operation {
     public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_turn", $this->game->getAutomaColor());
+            return true;
+        }
         $this->game->switchActivePlayer($this->getPlayerId(), true);
         $this->game->customUndoSavepoint($this->getPlayerId(), 1);
 
@@ -48,7 +53,7 @@ class Op_turn extends Operation {
         // If end game was triggered (game_stage = 1-4)
         if ($gameStage >= 1 && $gameStage <= 4) {
             $triggeringPlayerNo = $gameStage;
-            $currentPlayerNo = $this->game->getPlayerNoById($this->getPlayerId());
+            $currentPlayerNo = $this->game->custom_getPlayerNoById($this->getPlayerId());
 
             // If the current player is the one who triggered end game,
             // that means everyone has had their final turn - end the game
@@ -60,8 +65,9 @@ class Op_turn extends Operation {
         }
 
         // Continue with the next turn
-        $nextPlayerId = $this->game->getPlayerAfter($this->getPlayerId());
-        $this->queue("turn", $this->game->game_getPlayerColorById($nextPlayerId));
+        $nextPlayerId = $this->game->getNextReadyPlayerId($this->getPlayerId());
+        $this->game->systemAssert("loop", $nextPlayerId != $this->getPlayerId());
+        $this->queue("turn", $this->game->custom_getPlayerColorById($nextPlayerId));
     }
 
     /**

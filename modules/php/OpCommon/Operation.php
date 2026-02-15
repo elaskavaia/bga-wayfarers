@@ -98,7 +98,7 @@ abstract class Operation {
     }
     final function getPlayerId() {
         if ($this->player_id == 0) {
-            $this->player_id = $this->game->game_getPlayerIdByColor($this->getOwner());
+            $this->player_id = $this->game->custom_getPlayerIdByColor($this->getOwner());
         }
 
         return $this->player_id;
@@ -211,6 +211,7 @@ abstract class Operation {
         return GameDispatch::class;
     }
     function instanciateOperation($type, $owner = null, $data = null, $reason = null) {
+        // TODO: get rid of reason parameter
         if ($owner === null) {
             $owner = $this->getOwner();
         }

@@ -87,6 +87,8 @@
   background-image: url(img/dice.png);
   // border-radius: 10%;
   background-size: 400% auto;
+  background-position-y: 100%;
+  background-position-x: 100%;
 }
 .wicon.dice {
   background-image: unset;
@@ -138,7 +140,8 @@
   aspect-ratio: 1/1;
   background-position-y: 68%;
 }
-.influence.color_982fff {
+.influence.color_982fff,
+.influence.color_ffffff {
   background-position-x: 67.5%;
 }
 .influence.color_6cd0f6 {
@@ -151,7 +154,9 @@
   background-position-x: 59.5%;
 }
 
-.marker {
+.marker,
+.tracker_comet,
+.tracker_res {
   background-image: url(img/tokens.png);
   background-size: auto 1100%;
   width: 32px;
@@ -159,6 +164,9 @@
   aspect-ratio: 1 / 1;
   background-position-y: 69%;
   z-index: 2;
+  &.color_ffffff {
+    background-position-x: 84.6%;
+  }
   &.color_982fff {
     background-position-x: 84.6%;
   }

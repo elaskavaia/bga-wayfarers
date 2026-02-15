@@ -288,11 +288,13 @@ final class Op_journalTest extends TestCase {
     }
 
     public function testTriggerEndGameSetsPlayerNumber(): void {
+        $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
+        $this->assertEquals(0, $gameStage);
         $op = $this->createOp();
         $op->triggerEndGame();
 
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
-        $this->assertEquals(1, $gameStage); // First player triggers end game
+        $this->assertEquals(2, $gameStage); // First player triggers end game
     }
 
     public function testTriggerEndGameOnlyTriggersOnce(): void {
@@ -307,7 +309,7 @@ final class Op_journalTest extends TestCase {
         $gameStage2 = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
 
         $this->assertEquals($gameStage1, $gameStage2);
-        $this->assertEquals(1, $gameStage2);
+        $this->assertEquals(2, $gameStage2);
     }
 
     public function testGetIconicName(): void {

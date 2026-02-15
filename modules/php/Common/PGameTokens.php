@@ -260,7 +260,7 @@ class PGameTokens {
                 }
                 if ($content_type == "private" && $this->game->isRealPlayer($player_id)) {
                     // content allow only if location of same color
-                    $color = $this->game->game_getPlayerColorById($player_id);
+                    $color = $this->game->custom_getPlayerColorById($player_id);
                     return endsWith($location, $color);
                 }
                 return false;
@@ -524,7 +524,7 @@ class PGameTokens {
             $card_id = $card_id["token_key"];
         }
         $args["token_name"] = $card_id;
-        return $this->game->notifyMessage($message, $args, $this->game->game_getPlayerIdByColor($player_color));
+        return $this->game->notifyMessage($message, $args, $this->game->custom_getPlayerIdByColor($player_color));
     }
 
     function getTokensOfTypeInLocation($type, $location = null, $state = null, $order_by = null) {

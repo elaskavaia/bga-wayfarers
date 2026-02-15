@@ -187,7 +187,7 @@ class Game0Basics extends GameGui<any> {
     return this.gamedatas.players[playerId]?.name ?? _("Not a Player");
   }
 
-  game_getPlayerIdByColor(color: string): number | undefined {
+  custom_getPlayerIdByColor(color: string): number | undefined {
     for (var playerId in this.gamedatas.players) {
       var playerInfo = this.gamedatas.players[playerId];
       if (color == playerInfo.color) {

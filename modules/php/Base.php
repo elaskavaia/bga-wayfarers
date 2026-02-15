@@ -61,7 +61,7 @@ class Base extends Table {
                 $args["player_id"] = $this->getMostlyActivePlayerId();
             }
             if (isset($args["player_id"]) && !isset($args["player_name"]) && str_contains($message, '${player_name}')) {
-                $args["player_name"] = $this->game_getPlayerNameById((int) $args["player_id"]);
+                $args["player_name"] = $this->custom_getPlayerNameById((int) $args["player_id"]);
             }
             if (str_contains($message, '${you}')) {
                 $args["you"] = "You"; // translated on client side, this is for replay after
@@ -171,25 +171,6 @@ class Base extends Table {
         return null;
     }
 
-    /**
-     * Changes values of multiactivity in db, does not sent notifications.
-     * To send notifications after use updateMultiactiveOrNextState
-     * @param number $player_id, player id <=0 or null - means ALL
-     * @param number $value - 1 multiactive, 0 non multiactive
-     */
-    function dbSetPlayerMultiactive($player_id = -1, $value = 1) {
-        if (!$value) {
-            $value = 0;
-        } else {
-            $value = 1;
-        }
-        $sql = "UPDATE player SET player_is_multiactive = '$value' WHERE player_zombie = 0 and player_eliminated = 0";
-        if ($player_id > 0) {
-            $sql .= " AND player_id = $player_id";
-        }
-        $this->DbQuery($sql);
-    }
-
     public function debug_dumpStats() {
         $all_stats = $this->getStatTypes();
         $player_stats = $all_stats["player"];
@@ -237,7 +218,7 @@ class Base extends Table {
         // Get information about players
         // Note: this is needed because basic does not have the score
 
-        $players = $this->loadPlayersBasicInfosWithBots();
+        $players = $this->loadPlayersBasicInfos();
 
         foreach ($players as $player_id => $player) {
             foreach ($player as $pkey => $value) {
@@ -303,21 +284,32 @@ class Base extends Table {
         if ($id === null || $id <= 0) {
             return "000000";
         }
-        return $this->game_getPlayerColorById((int) $id);
+        return $this->custom_getPlayerColorById((int) $id);
     }
 
-    function game_getPlayerColorById(int $p): string {
+    function getAutomaColor() {
+        return "ffffff"; // different color for php but in UI it will be purple 982fff
+    }
+
+    function custom_getPlayerColorById(int $p): string {
         if ($p == self::PLAYER_AUTOMA) {
-            return "982fff";
+            return $this->getAutomaColor();
         }
         return parent::getPlayerColorById($p);
     }
 
-    function game_getPlayerNameById(int $p): string {
+    function custom_getPlayerNameById(int $p): string {
         if ($p == self::PLAYER_AUTOMA) {
             return "Aida";
         }
         return $this->getPlayerNameById($p);
+    }
+
+    function custom_getPlayerNoById(int $p): int {
+        if ($p == self::PLAYER_AUTOMA) {
+            return 2;
+        }
+        return (int) $this->getPlayerNoById($p);
     }
 
     public function isMultiActive() {
@@ -360,26 +352,16 @@ class Base extends Table {
         return $table[0];
     }
     function getNextReadyPlayerId($player_id): int {
-        //$this->systemAssertTrue("invalid player id", $this->isRealPlayer($player_id));
         if ($this->isSolo()) {
-            if ($this->isRealPlayer($player_id)) {
-                return self::PLAYER_AUTOMA;
-            }
             if ($player_id == self::PLAYER_AUTOMA) {
                 return $this->getFirstPlayer();
-            }
-            return 0;
-        }
-
-        $num = $this->getPlayersNumber();
-        while ($num-- >= 0) {
-            $player_id = $this->getPlayerAfter($player_id);
-            if ($this->isPlayerAlive($player_id)) {
-                return $player_id;
+            } else {
+                return self::PLAYER_AUTOMA;
             }
         }
-        // run out of attempts
-        return 0;
+        $this->systemAssert("invalid player id $player_id", $this->isRealPlayer($player_id));
+        $player_id = $this->getPlayerAfter($player_id);
+        return $player_id;
     }
 
     /**
@@ -387,7 +369,7 @@ class Base extends Table {
      * @return array of player ids
      */
     function getPlayerIds() {
-        $players = $this->loadPlayersBasicInfosWithBots();
+        $players = $this->loadPlayersBasicInfos();
         return array_keys($players);
     }
 
@@ -408,7 +390,7 @@ class Base extends Table {
         if ($bots && $this->isSolo()) {
             $infos[self::PLAYER_AUTOMA]["player_id"] = self::PLAYER_AUTOMA;
             $infos[self::PLAYER_AUTOMA]["player_no"] = 2;
-            $infos[self::PLAYER_AUTOMA]["player_color"] = "982fff";
+            $infos[self::PLAYER_AUTOMA]["player_color"] = $this->getAutomaColor();
             $infos[self::PLAYER_AUTOMA]["player_name"] = "Aida";
             $infos[self::PLAYER_AUTOMA]["player_ai"] = 1;
             $infos[self::PLAYER_AUTOMA]["player_score"] = 0;
@@ -416,7 +398,7 @@ class Base extends Table {
         return $infos;
     }
     public function getPlayerColors() {
-        $players_basic = $this->loadPlayersBasicInfosWithBots();
+        $players_basic = $this->loadPlayersBasicInfos();
         $colors = [];
         foreach ($players_basic as $player_id => $player_info) {
             $colors[] = $player_info["player_color"];
@@ -428,7 +410,7 @@ class Base extends Table {
      *
      * @return integer player id based on hex $color, player is not in the list return 0
      */
-    function game_getPlayerIdByColor(?string $color): int {
+    function custom_getPlayerIdByColor(?string $color): int {
         if ($color === null) {
             return 0;
         }
@@ -548,7 +530,7 @@ class Base extends Table {
             }
         }
         if ($message) {
-            $player_name = $this->game_getPlayerNameById((int) $player_id);
+            $player_name = $this->custom_getPlayerNameById((int) $player_id);
             $args["player_name"] = $player_name;
         }
         if (isset($args["_notifType"])) {

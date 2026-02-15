@@ -162,7 +162,7 @@ class Game extends Base {
         shuffle($pboards);
 
         foreach ($p as $player_id) {
-            $color = $this->game_getPlayerColorById($player_id);
+            $color = $this->custom_getPlayerColorById($player_id);
             // 1 Player Board (randomly assigned).
             $boardnum = array_shift($pboards);
             $this->setupPlayerBord($player_id, $boardnum);
@@ -195,38 +195,51 @@ class Game extends Base {
 
         // Solo mode: set up AI opponent
         if ($this->isSolo()) {
-            $aiColor = $this->game_getPlayerColorById(self::PLAYER_AUTOMA);
-
-            // Assign AI a player board (flipped to AI side, indicated by negative state)
-            $boardnum = array_shift($pboards);
-            $this->tokens->db->setTokenState("pboard_$aiColor", -$boardnum);
-
-            // Place AI marker on starting space of Journal Track
-            $this->tokens->db->moveToken("marker_$aiColor", "mainarea", 0);
-
-            // Give AI 1 Yellow Worker and 1 Blue Worker
-            $this->tokens->db->moveToken("worker_blue_{$i}", "tableau_$aiColor", 0);
-            $this->tokens->db->moveToken("worker_yellow_{$i}", "tableau_$aiColor", 0);
-
-            // AI starts with 1 Influence in Yellow Guild and 1 in Blue Guild (no provisions/silver)
-            $this->tokens->dbSetTokenLocation("influence_{$aiColor}_1", "guild_blue", 0, "*", [], self::PLAYER_AUTOMA);
-            $this->tokens->dbSetTokenLocation("influence_{$aiColor}_2", "guild_yellow", 0, "*", [], self::PLAYER_AUTOMA);
-
-            // Create AI resource track marker (position 0 = top-left, values 0-7)
-            $this->tokens->db->createToken("tracker_res_$aiColor", "tableau_$aiColor", 0);
-            // Create AI comet track marker (position 0, values 0-10)
-            $this->tokens->db->createToken("tracker_comet_$aiColor", "tableau_$aiColor", 0);
-
-            // Shuffle scheme cards
-            $this->tokens->db->shuffle("deck_scheme");
+            $this->setupSolo();
         }
 
-        $this->machine->queue("turn", $this->game_getPlayerColorById($startingPlayer));
+        $this->machine->queue("turn", $this->custom_getPlayerColorById($startingPlayer));
         return GameDispatch::class;
     }
 
+    function setupSolo() {
+        $i = 2; // solo AI is always 2nd
+        $color = $this->getAutomaColor();
+
+        // Assign AI a player board
+        $boardnum = bga_rand(1, 4);
+        $this->tokens->db->createToken("pboard_$color", "tableau_$color", -$boardnum);
+
+        // Place AI marker on starting space of Journal Track
+        $this->tokens->db->createToken("marker_{$color}", "mainarea", 0);
+
+        // Give AI 1 Yellow Worker and 1 Blue Worker
+        $this->tokens->db->moveToken("worker_blue_{$i}", "tableau_$color", 0);
+        $this->tokens->db->moveToken("worker_yellow_{$i}", "tableau_$color", 0);
+
+        // AI starts with 1 Influence in Yellow Guild and 1 in Blue Guild (no provisions/silver)
+        $this->tokens->db->createTokensPack("influence_{$color}_{INDEX}", "tableau_$color", 45, 1);
+        $this->tokens->dbSetTokenLocation("influence_{$color}_1", "guild_blue", 0, "*", [], self::PLAYER_AUTOMA);
+        $this->tokens->dbSetTokenLocation("influence_{$color}_2", "guild_yellow", 0, "*", [], self::PLAYER_AUTOMA);
+
+        // Create AI resource track marker (position 0 = top-left, values 0-7)
+        $this->tokens->db->createToken("tracker_res_$color", "tableau_$color", 0);
+        // Create AI comet track marker (position 0, values 0-10)
+        $this->tokens->db->createToken("tracker_comet_$color", "tableau_$color", 0);
+
+        // Shuffle scheme cards
+        $this->tokens->db->shuffle("deck_scheme");
+
+        // No dice for AI
+        // for ($j = 1; $j <= 5; $j++) {
+        //     $this->tokens->db->moveToken("dice_{$color}_$j", "supply");
+        // }
+        // $cards = $this->tokens->getTokensOfTypeInLocation("card", "tableau_$color");
+        // $this->tokens->db->moveTokens(array_keys($cards), "limbo", 0);
+    }
+
     function setupPlayerBord(int $player_id, int $boardnum) {
-        $color = $this->game_getPlayerColorById($player_id);
+        $color = $this->custom_getPlayerColorById($player_id);
         $this->tokens->db->setTokenState("tableau_$color", $boardnum);
         $this->tokens->db->setTokenState("pboard_$color", $boardnum);
     }
@@ -266,6 +279,15 @@ class Game extends Base {
         $isGameEnded = $this->isEndOfGame();
         $result["gameEnded"] = $isGameEnded;
         $result["endScores"] = $isGameEnded ? $this->getEndScores() : null;
+
+        $players = $this->loadPlayersBasicInfosWithBots();
+
+        foreach ($players as $player_id => $player) {
+            foreach ($player as $pkey => $value) {
+                $key = str_replace("player_", "", $pkey);
+                $result["playerswithbots"][$player_id][$key] = $value;
+            }
+        }
 
         return $result;
     }
@@ -308,7 +330,7 @@ class Game extends Base {
             $inc,
             $message,
             ["reason" => $reason, "place_from" => $reason] + $options,
-            $this->game_getPlayerIdByColor($color)
+            $this->custom_getPlayerIdByColor($color)
         );
 
         if ($value < 0 && $inc < 0) {
@@ -317,7 +339,7 @@ class Game extends Base {
     }
 
     function effect_incVp(string $owner, int $inc, string $stat = "", string $target = "") {
-        $player_id = $this->game_getPlayerIdByColor($owner);
+        $player_id = $this->custom_getPlayerIdByColor($owner);
 
         if ($target) {
             if ($inc < 0) {
@@ -641,7 +663,7 @@ class Game extends Base {
         $guildInfluence = []; // Track influence per guild per player for majority
 
         foreach ($players as $player_id => $player) {
-            $color = $this->game_getPlayerColorById((int) $player_id);
+            $color = $this->custom_getPlayerColorById((int) $player_id);
 
             // 1. Primary Land and Water Tags (City, Vista, Harbour, Open Water)
             $primaryTags = ["City", "Vista", "Harbour", "Sea"];
@@ -731,7 +753,7 @@ class Game extends Base {
 
         // Set tiebreaker: Black Influence, then Yellow, then Blue
         foreach ($players as $player_id => $player) {
-            $color = $this->game_getPlayerColorById((int) $player_id);
+            $color = $this->custom_getPlayerColorById((int) $player_id);
             $black = $guildInfluence["guild_black"][$color] ?? 0;
             $yellow = $guildInfluence["guild_yellow"][$color] ?? 0;
             $blue = $guildInfluence["guild_blue"][$color] ?? 0;
@@ -793,7 +815,7 @@ class Game extends Base {
             $tagCount = $this->countPlayerTags($tag, $owner);
             $players = $this->loadPlayersBasicInfos();
             foreach ($players as $player_id => $player) {
-                $color = $this->game_getPlayerColorById((int) $player_id);
+                $color = $this->custom_getPlayerColorById((int) $player_id);
                 if ($color === $owner) {
                     continue;
                 }
@@ -835,7 +857,7 @@ class Game extends Base {
 
     function restorePlayerTables($table, $saved_data, $meta) {
         $player_id = (int) $meta["player_id"];
-        $owner = $this->game_getPlayerColorById($player_id);
+        $owner = $this->custom_getPlayerColorById($player_id);
         if ($table == "token") {
             // filter the data
             $curtokens = $this->tokens->db->getTokensOfTypeInLocation(null, "%_{$owner}%");
@@ -884,11 +906,9 @@ class Game extends Base {
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
 
-    function debug_specialCard(int $num) {
-        $color = $this->getCurrentPlayerColor();
-        $cards = $this->tokens->getTokensOfTypeInLocation("action_special", "tableau_{$color}");
-        $this->tokens->dbSetTokensLocation($cards, "limbo", 0);
-        $this->tokens->dbSetTokenLocation("action_special_$num", "tableau_{$color}", 0);
+    function debug_ai_turn() {
+        $this->machine->push("ai_turn", "ffffff");
+        $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
 
     function debug_q() {

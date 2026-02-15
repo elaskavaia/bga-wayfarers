@@ -31,29 +31,29 @@
   - [x] Human player is always first player; AI is always second
 - [x] Bug fixes in Base.php:
   - [x] `loadPlayersBasicInfosWithBots()` - guard with `isSolo()` to not add automa in multiplayer
-  - [x] Added `game_getPlayerNameById()` for automa-safe name resolution in notifications
+  - [x] Added `custom_getPlayerNameById()` for automa-safe name resolution in notifications
   - [x] Fixed `getNextReadyPlayerId()` to use `self::PLAYER_AUTOMA` instead of `Game::PLAYER_AUTOMA`
 
 ### Phase 2: AI Turn Infrastructure
 
-- [ ] Create `Op_automaTurn.php` - main automa turn operation
-  - [ ] Determine if AI should Rest (3 faceup Red or 3 faceup Blue scheme cards) or reveal a new scheme card
-  - [ ] On reveal: draw top scheme card, place faceup to right of draw pile
-  - [ ] Move AI resource track marker clockwise by scheme card's silver value
-  - [ ] Resolve resource track effects passed over (comet, guild influence, townsfolk card)
-  - [ ] Resolve first action on scheme card; fallback to second action if first is impossible
-- [ ] Integrate automa turn into game flow via `getNextReadyPlayer()` (already returns PLAYER_AUTOMA after human turn)
-- [ ] Add game state or dispatch logic to route automa turns to `Op_automaTurn` instead of normal `Op_turn`
+- [x] Create `Op_ai_turn.php` - main automa turn operation
+  - [x] Determine if AI should Rest (3 faceup Red or 3 faceup Blue scheme cards) or reveal a new scheme card
+  - [x] On reveal: draw top scheme card, place faceup to right of draw pile
+  - [x] Move AI resource track marker clockwise by scheme card's silver value
+  - [x] Resolve resource track effects passed over (comet, guild influence, townsfolk card)
+  - [x] Resolve first action on scheme card; fallback to second action if first is impossible
+- [x] Integrate automa turn into game flow via `getNextReadyPlayer()` (already returns PLAYER_AUTOMA after human turn)
+- [x] Add game state or dispatch logic to route automa turns to `Op_ai_turn` instead of normal `Op_turn`
 
 ### Phase 3: AI Prioritization System
 
 - [ ] Implement resource track color priority: track position dictates color (Black, Blue, Yellow, Green)
   - [ ] Color determines priority for: influencing cards, acquiring upgrade tiles, placing/retrieving workers
   - [ ] If priority color yields no benefit, move to next color clockwise
-- [ ] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
+- [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
   - [ ] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
   - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around
-- [ ] Implement inspiration card priority based on resource track row position (top/middle/bottom)
+- [x] Implement inspiration card priority based on resource track row position (top/middle/bottom)
 
 ### Phase 4: AI Actions (Scheme Card Resolution)
 
@@ -88,9 +88,8 @@
 
 ### Phase 5: AI Resting
 
-- [ ] Check last revealed scheme card for comet icon -> move comet track marker up 1
-- [ ] AI acquires one of: Space Card, Townsfolk Card, Upgrade Tile, or Influences a Card
-  - [ ] Use prioritization system to determine which and which specific target
+- [x] Check last revealed scheme card for comet icon -> move comet track marker up 1
+- [x] AI acquires one of: Space Card, Townsfolk Card, Upgrade Tile, or Influences a Card based on board
 - [ ] AI journals:
   - [ ] Path determined by faceup scheme card colors: majority Blue = higher path, majority Red = lower path, tie = most recent card color
   - [ ] If only one path available, take that path
@@ -118,10 +117,10 @@
 
 ### Phase 7: Client-Side UI
 
-- [ ] AI player board display (show AI side of flipped board)
+- [x] AI player board display (show AI side of flipped board)
 - [ ] Scheme card reveal animations and faceup display area
-- [ ] Resource track marker visualization (AI board)
-- [ ] Comet track marker visualization (AI board)
+- [x] Resource track marker visualization (AI board)
+- [x] Comet track marker visualization (AI board)
 - [ ] AI turn narration/log messages (what the AI did each turn)
 - [ ] Solo end-game result screen (win/loss vs threshold or AI score)
-- [ ] Scheme card deck and discard pile UI elements
+- [x] Scheme card deck and discard pile UI elements

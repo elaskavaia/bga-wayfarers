@@ -69,7 +69,7 @@ class DbMultiUndo {
         if ($barrier) {
             $this->clearSnapshotsBefore($move_id, $player_id);
         }
-        if ($player_id == 0 || $barrier == 2) {
+        if ($player_id == 0 || $player_id == 1 || $barrier == 2) {
             // basically with player_id = 0 it will clear all tables
             return;
         }
@@ -358,7 +358,7 @@ function convertToUtf8($d) {
             $d->$k = convertToUtf8($v);
         }
     } else {
-        return mb_convert_encoding($d, 'UTF-8', 'ISO-8859-1');
+        return mb_convert_encoding($d, "UTF-8", "ISO-8859-1");
     }
 
     return $d;

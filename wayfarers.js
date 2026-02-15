@@ -216,7 +216,7 @@ var Game0Basics = /** @class */ (function (_super) {
         var _a, _b;
         return (_b = (_a = this.gamedatas.players[playerId]) === null || _a === void 0 ? void 0 : _a.name) !== null && _b !== void 0 ? _b : _("Not a Player");
     };
-    Game0Basics.prototype.game_getPlayerIdByColor = function (color) {
+    Game0Basics.prototype.custom_getPlayerIdByColor = function (color) {
         for (var playerId in this.gamedatas.players) {
             var playerInfo = this.gamedatas.players[playerId];
             if (color == playerInfo.color) {
@@ -1834,6 +1834,9 @@ var GameXBody = /** @class */ (function (_super) {
                 var playerInfo = gamedatas.players[playerId];
                 this.setupPlayer(playerInfo);
             }
+            if (this.isSolo()) {
+                this.setupAutoma(gamedatas.playerswithbots[1]);
+            }
             _super.prototype.setupGame.call(this, gamedatas);
             $("mainboard_3").appendChild($("supply"));
             this.addListenerWithGuard($("guild_black"), function (e) { return _this.onToken(e); });
@@ -1876,7 +1879,7 @@ var GameXBody = /** @class */ (function (_super) {
                 caravanCells += "<div id='ccell_".concat(pos, "_").concat(pcolor, "' class='ccell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
             }
         }
-        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(pcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard' data-player-name='").concat(playerInfo.name, "'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
         var boardNum = parseInt((_b = (_a = this.gamedatas.tokens["pboard_".concat(pcolor)]) === null || _a === void 0 ? void 0 : _a.state) !== null && _b !== void 0 ? _b : "1");
         $("caravan_".concat(pcolor))
             .querySelectorAll(".ccell")
@@ -1884,6 +1887,51 @@ var GameXBody = /** @class */ (function (_super) {
             _this.addListenerWithGuard(node, function (e) { return _this.onToken(e); });
             var num = Number(getPart(node.id, 1)) - 1;
             var r = _this.getRulesFor("pbonus_".concat(boardNum, "_").concat(num), "r", "");
+            node.dataset.r = r;
+            if (r) {
+                var title = _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r);
+                placeHtml("<div class='wicon_".concat(r, " wicon' title='").concat(title, "'></div>"), node);
+            }
+        });
+    };
+    GameXBody.prototype.setupAutoma = function (playerInfo) {
+        var _this = this;
+        var _a, _b, _c;
+        console.log("player info " + playerInfo.id, playerInfo);
+        var pcolor = playerInfo.color;
+        var realcolor = "982fff";
+        var op = "overall_player_board_".concat(playerInfo.id);
+        (_a = $(op)) === null || _a === void 0 ? void 0 : _a.remove();
+        this.bga.playerPanels.addAutomataPlayerPanel(playerInfo.id, playerInfo.name, {
+            iconClass: "aida-avatar",
+            score: playerInfo.score,
+            color: realcolor
+        });
+        document.querySelectorAll(".guild").forEach(function (guild) {
+            placeHtml("<div id='".concat(guild.id, "_").concat(pcolor, "' class='").concat(guild.id, "_").concat(pcolor, " infsupply'></div>"), guild);
+        });
+        //const pp = `player_panel_content_${pcolor}`;
+        // placeHtml(
+        //   `<div id='miniboard_${pcolor}' class='miniboard'>
+        //   </div>`,
+        //   pp
+        // );
+        var parent = "players_panels";
+        // Generate caravan grid cells (7x3)
+        var caravanCells = "";
+        for (var y = 0; y < 3; y++) {
+            for (var x = 0; x < 7; x++) {
+                var pos = x + y * 7 + 1;
+                caravanCells += "<div id='ccell_".concat(pos, "_").concat(pcolor, "' class='ccell' data-pos='").concat(pos, "' data-x='").concat(x, "' data-y='").concat(y, "'></div>");
+            }
+        }
+        var boardNum = -parseInt((_c = (_b = this.gamedatas.tokens["pboard_".concat(pcolor)]) === null || _b === void 0 ? void 0 : _b.state) !== null && _c !== void 0 ? _c : "-1");
+        placeHtml("\n      <div id='tableau_".concat(pcolor, "' class='tableau' data-player-name='").concat(playerInfo.name, "' style='--player-color: #").concat(realcolor, "'>\n\n         <div id='pboard_").concat(pcolor, "' class='pboard' data-player-name='").concat(playerInfo.name, "'>\n           <div id='breakroom_").concat(pcolor, "' class='breakroom'></div>\n           <div id='restrack_").concat(pcolor, "' class='restrack'></div>\n           <div id='comettrack_").concat(pcolor, "' class='comettrack'></div>\n           <div id='infsupply_").concat(pcolor, "' class='infsupply'></div>\n           <div id='caravan_").concat(pcolor, "' class='caravan'>\n             ").concat(caravanCells, "\n           </div>\n         </div>\n      </div>"), parent);
+        $("caravan_".concat(pcolor))
+            .querySelectorAll(".ccell")
+            .forEach(function (node) {
+            var num = Number(getPart(node.id, 1)) - 1;
+            var r = _this.getRulesFor("aipbonus_".concat(boardNum, "_").concat(num), "r", "");
             node.dataset.r = r;
             if (r) {
                 var title = _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r);
@@ -2138,6 +2186,14 @@ var GameXBody = /** @class */ (function (_super) {
         else if (tokenId.startsWith("slot") || tokenId == "round_banner") {
             result.nop = true; // do not move slots
         }
+        else if (tokenId.startsWith("tracker_res") && location.startsWith("tableau")) {
+            var color = getPart(location, 1);
+            result.location = "restrack_".concat(color);
+        }
+        else if (tokenId.startsWith("tracker_comet") && location.startsWith("tableau")) {
+            var color = getPart(location, 1);
+            result.location = "comettrack_".concat(color);
+        }
         else if (tokenId.startsWith("tracker")) {
             result.nop = true;
         }
@@ -2290,6 +2346,27 @@ var GameXBody = /** @class */ (function (_super) {
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
                         tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
                         break;
+                    case "scheme":
+                        // # 6 Scheme Cards for Solo AI
+                        // # t: blue or red
+                        // # c: silver value (0-2) - how far AI moves on Resource Track
+                        // # r1: first action AI attempts (primary)
+                        // # r2: second/fallback action if first is impossible r2 is also used on rest: AI acquires based on this
+                        // # p: special (pink) upgrade tile priority
+                        // # comet: 1 if card has comet icon (checked on rest), 0 otherwise
+                        tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+                        tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
+                        //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+                        tokenInfo.tooltip += this.ttSection(_("Silver"), tokenInfo.c);
+                        tokenInfo.tooltip += this.ttSection(_("Color"), tokenInfo.t == "red" ? _("Red") : _("Blue"));
+                        tokenInfo.tooltip += this.ttSection(_("Primary Action"), this.getOpListTr(tokenInfo.r1));
+                        tokenInfo.tooltip += this.ttSection(_("Fallback Action"), this.getOpListTr(tokenInfo.r2));
+                        tokenInfo.tooltip += this.ttSection(_("Special Upgrade"), tokenInfo.p);
+                        if (tokenInfo.comet == "1")
+                            tokenInfo.tooltip += this.ttSection(_("Comet"), _("Yes"));
+                        else
+                            tokenInfo.tooltip += this.ttSection(_("Comet"), _("No"));
+                        break;
                 }
                 return;
             }
@@ -2312,15 +2389,16 @@ var GameXBody = /** @class */ (function (_super) {
                 }
                 // Odd/even pairs are front/back of same physical tile
                 var numInt = parseInt(num);
-                var reverseNum = numInt % 2 === 1 ? numInt + 1 : numInt - 1;
-                var reverseTokenId = "upg_".concat(color, "_").concat(reverseNum);
-                var reverseInfo = this.getTokenDisplayInfo(reverseTokenId, true);
-                if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
-                    var revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].filter(Boolean).join(" | ");
-                    if (revAssets)
+                if (tokenInfo.r && tokenInfo.r2 && numInt % 2 == 1) {
+                    var reverseNum = numInt + 1;
+                    var reverseTokenId = "upg_".concat(color, "_").concat(reverseNum);
+                    var reverseInfo = this.getTokenDisplayInfo(reverseTokenId, false);
+                    if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
+                        var revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].join(" | ");
                         tokenInfo.tooltip += this.ttSection(_("Assets (Reverse Side)"), revAssets);
-                    tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
-                    tokenInfo.imageTypes += " _dual_image";
+                        tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
+                        tokenInfo.imageTypes += " _dual_image";
+                    }
                 }
                 if (tokenInfo.vp)
                     tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
@@ -2389,6 +2467,7 @@ var GameXBody = /** @class */ (function (_super) {
             case "ffcc02":
             case "yellow":
                 return _("Yellow");
+            case "ffffff": // automa purple
             case "982fff":
             case "purple":
                 return _("Purple");

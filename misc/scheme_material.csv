@@ -1,23 +1,52 @@
-num|color|silver|r1|r2|upgpri|comet
+num|t|c|r1|r2|p|comet|nomx
 #set create=1
 #set id=card_scheme_{num}
 #set type=card card_scheme
 #set location=deck_scheme
 # 6 Scheme Cards for Solo AI
-# color: blue or red
-# silver: silver value (0-2) - how far AI moves on Resource Track
+# t: blue or red
+# c: silver value (0-2) - how far AI moves on Resource Track
 # r1: first action AI attempts (primary)
-# r2: second/fallback action if first is impossible
-# r2 is also used on rest: AI acquires based on this
-# upgpri: special (pink) upgrade tile priority 
+# r2: second/fallback action if first is impossible r2 is also used on rest: AI acquires based on this
+# p: special (pink) upgrade tile priority 
 # comet: 1 if card has comet icon (checked on rest), 0 otherwise
 
 
 # Blue cards
-1|blue|2|ai_placeWorker(green)|ac_focusAction|1|1
-2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|3|1
-3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|5|0
+1|blue|2|ai_placeWorker(green)|ac_focusAction|1|1|Blue Focus
+2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|3|1|Blue Influence
+3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|5|0|Blue Upgrade
 # Red cards
-4|red|1|2n_infBlue:ai_cardWater|infBlue,ai_upgAny|6|1
-5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|8|1
-6|red|1|2n_infYellow:ai_cardYellow|infYellow,infYellow,ai_infCard|10|0
+4|red|1|2n_infBlue:ai_cardWater|infBlue,ai_upgAny|6|1|Red Buy Water
+5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|8|1|Red Buy Space
+6|red|1|2n_infYellow:ai_cardLand|infYellow,infYellow,ai_infCard|10|0|Red Buy Land
+
+
+#res track
+#set create=0
+#set id=spot_res_{num}
+#set type=spot spot_res
+#set location=
+#t: priority color
+#c: inspiration card order
+0|black|2
+1|black|2
+2|black|2
+3|blue|3
+4|blue|4
+5|yellow|4
+6|yellow|4
+7|green|3
+
+#AU boards
+#set create=0
+#set id=aiboard_{num}
+#set type=
+#set location=
+#t: focus action
+#r1: rest action
+#r2: res tracker bonus
+1|ai_cardBlack||ai_cardBlack|ai_comet
+2|ai_upgAny||ai_upgAny|infYellow
+3|ai_cardFolk||ai_cardFolk|ai_cardFolk
+4|ai_journal||ai_infCard|infBlack

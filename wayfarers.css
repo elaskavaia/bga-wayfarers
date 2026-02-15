@@ -1130,6 +1130,11 @@ html[data-theme=dark] .deck .counter {
 .guild .infsupply.guild_black_982fff {
   left: 75%;
 }
+.guild .infsupply.guild_blue_ffffff,
+.guild .infsupply.guild_yellow_ffffff,
+.guild .infsupply.guild_black_ffffff {
+  left: 75%;
+}
 
 .guild_blue {
   top: 65%;
@@ -1157,12 +1162,12 @@ html[data-theme=dark] .deck .counter {
   gap: 1px;
 }
 
-.tableau::after {
+.pboard::after {
   content: attr(data-player-name);
   position: absolute;
   width: 100px;
   height: 32px;
-  top: 274px;
+  top: 240px;
   left: 30px;
   color: var(--player-color);
   z-index: 10;
@@ -1216,6 +1221,22 @@ html[data-theme=dark] .deck .counter {
   height: 100%;
   position: absolute;
   z-index: 1;
+}
+
+.pboard[data-state="-1"]::before {
+  background-image: url(img/SoloBoard1-s.png);
+}
+
+.pboard[data-state="-2"]::before {
+  background-image: url(img/SoloBoard1-s.png);
+}
+
+.pboard[data-state="-3"]::before {
+  background-image: url(img/SoloBoard1-s.png);
+}
+
+.pboard[data-state="-4"]::before {
+  background-image: url(img/SoloBoard1-s.png);
 }
 
 .breakroom {
@@ -1740,6 +1761,8 @@ html[data-theme=dark] .miniboard .counter {
   left: 0;
   background-image: url(img/dice.png);
   background-size: 400% auto;
+  background-position-y: 100%;
+  background-position-x: 100%;
 }
 
 .wicon.dice {
@@ -1828,7 +1851,8 @@ html[data-theme=dark] .miniboard .counter {
   background-position-y: 68%;
 }
 
-.influence.color_982fff {
+.influence.color_982fff,
+.influence.color_ffffff {
   background-position-x: 67.5%;
 }
 
@@ -1844,7 +1868,9 @@ html[data-theme=dark] .miniboard .counter {
   background-position-x: 59.5%;
 }
 
-.marker {
+.marker,
+.tracker_comet,
+.tracker_res {
   background-image: url(img/tokens.png);
   background-size: auto 1100%;
   width: 32px;
@@ -1853,19 +1879,34 @@ html[data-theme=dark] .miniboard .counter {
   background-position-y: 69%;
   z-index: 2;
 }
-.marker.color_982fff {
+.marker.color_ffffff,
+.tracker_comet.color_ffffff,
+.tracker_res.color_ffffff {
   background-position-x: 84.6%;
 }
-.marker.color_6cd0f6 {
+.marker.color_982fff,
+.tracker_comet.color_982fff,
+.tracker_res.color_982fff {
+  background-position-x: 84.6%;
+}
+.marker.color_6cd0f6,
+.tracker_comet.color_6cd0f6,
+.tracker_res.color_6cd0f6 {
   background-position-x: 77%;
 }
-.marker.color_ffcc02 {
+.marker.color_ffcc02,
+.tracker_comet.color_ffcc02,
+.tracker_res.color_ffcc02 {
   background-position-x: 100%;
 }
-.marker.color_ff0000 {
+.marker.color_ff0000,
+.tracker_comet.color_ff0000,
+.tracker_res.color_ff0000 {
   background-position-x: 92.3%;
 }
-.mainboardall .marker {
+.mainboardall .marker,
+.mainboardall .tracker_comet,
+.mainboardall .tracker_res {
   position: absolute;
   filter: drop-shadow(2px 2px 3px black);
 }
@@ -2411,6 +2452,146 @@ html[data-theme=dark] .miniboard .counter {
 .tooltip-right {
   padding: 0.5em;
   padding-left: 0em;
+}
+
+.aida-avatar {
+  background-image: url("img/cards_scheme.jpg");
+  background-position: 96% 5%;
+  background-size: 1800% auto;
+}
+
+.tableau_ffffff .breakroom {
+  top: 8%;
+  left: 102%;
+}
+.tableau_ffffff .infsupply {
+  left: 110%;
+}
+.tableau_ffffff .caravan {
+  left: 19%;
+  top: 64%;
+  width: 75%;
+  height: 25%;
+  grid-template-columns: repeat(7, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+}
+.tableau_ffffff .tracker_res_ffffff {
+  position: absolute;
+  left: 18%;
+  top: 20%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="0"] {
+  left: 18%;
+  top: 20%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="1"] {
+  left: 50%;
+  top: 20%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="2"] {
+  left: 82%;
+  top: 20%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="3"] {
+  left: 82%;
+  top: 34%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="4"] {
+  left: 82%;
+  top: 48%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="5"] {
+  left: 50%;
+  top: 48%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="6"] {
+  left: 18%;
+  top: 48%;
+}
+.tableau_ffffff .tracker_res_ffffff[data-state="7"] {
+  left: 18%;
+  top: 34%;
+}
+.tableau_ffffff .tracker_comet_ffffff {
+  position: absolute;
+  z-index: 2;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="0"] {
+  left: 10%;
+  top: 83%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="1"] {
+  left: 10%;
+  top: 76%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="2"] {
+  left: 10%;
+  top: 69%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="3"] {
+  left: 10%;
+  top: 62%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="4"] {
+  left: 10%;
+  top: 55%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="5"] {
+  left: 10%;
+  top: 48%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="6"] {
+  left: 10%;
+  top: 41%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="7"] {
+  left: 10%;
+  top: 34%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="8"] {
+  left: 10%;
+  top: 27%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="9"] {
+  left: 10%;
+  top: 20%;
+}
+.tableau_ffffff .tracker_comet_ffffff[data-state="10"] {
+  left: 10%;
+  top: 13%;
+}
+.tableau_ffffff .card_scheme {
+  z-index: 2;
+  bottom: 8.5%;
+}
+
+.card_scheme {
+  background-image: url(img/cards_scheme.jpg);
+  background-size: 700% auto;
+}
+
+.card_scheme_1 {
+  background-position: 0% 0%;
+}
+
+.card_scheme_2 {
+  background-position: 16.6666666667% 0%;
+}
+
+.card_scheme_3 {
+  background-position: 33.3333333333% 0%;
+}
+
+.card_scheme_4 {
+  background-position: 50% 0%;
+}
+
+.card_scheme_5 {
+  background-position: 66.6666666667% 0%;
+}
+
+.card_scheme_6 {
+  background-position: 83.3333333333% 0%;
 }
 
 /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\OpCommon;
 
+use Bga\GameFramework\SystemException;
 use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
@@ -22,7 +23,6 @@ use Bga\Games\wayfarers\States\MultiPlayerTurnPrivate;
 use Bga\Games\wayfarers\States\MultiPlayerWaitPrivate;
 use Bga\Games\wayfarers\States\PlayerTurnConfirm;
 
-use BgaSystemException;
 use Exception;
 use ReflectionClass;
 use Throwable;
@@ -41,7 +41,7 @@ class OpMachine {
         if ($player_id === 0) {
             $owner = null;
         } else {
-            $owner = $this->game->game_getPlayerColorById($player_id);
+            $owner = $this->game->custom_getPlayerColorById($player_id);
         }
         return $this->createTopOperationFromDbForOwner($owner);
     }
@@ -88,7 +88,7 @@ class OpMachine {
             $op = $this->exprToOperation($expr, $owner)->withId($id)->withData($data);
             return $op;
         } catch (Exception $e) {
-            throw new BgaSystemException("Cannot instanciate '$type': " . $e->getMessage());
+            throw new SystemException("Cannot instantiate '$type': " . $e->getMessage());
         }
     }
     function exprToOperation(OpExpression $expr, ?string $owner) {
@@ -139,7 +139,7 @@ class OpMachine {
             ";" => "seq",
             "^" => "unique",
             "/" => "or",
-            default => throw new BgaSystemException("Unknown operator $operand"),
+            default => throw new SystemException("Unknown operator $operand"),
         };
     }
     function instanciateCommonOperation(string $type, ?string $owner = null, mixed $data = null): Operation {
@@ -150,7 +150,7 @@ class OpMachine {
 
     function instanciateSimpleOperation(string $type, ?string $owner = null, mixed $data = null): Operation {
         if (strlen($type) > 80) {
-            throw new BgaSystemException("Cannot instantice op");
+            throw new SystemException("Cannot instantiate op");
         }
 
         $operandclass = $this->game->getRulesFor("Op_$type", "class", "Op_$type");
@@ -160,7 +160,7 @@ class OpMachine {
             $reflectionClass = new ReflectionClass("Bga\\Games\\wayfarers\\Operations\\$operandclass");
             $instance = $reflectionClass->newInstance($type, $owner, $data);
         } catch (Throwable $e) {
-            throw new BgaSystemException("Cannot instanticate $type: " . $e->getMessage());
+            throw new SystemException("Cannot instantiate $type: " . $e->getMessage());
         }
 
         return $instance;
@@ -262,7 +262,7 @@ class OpMachine {
         $players = $this->game->loadPlayersBasicInfos();
         foreach ($players as $player_id => $player_info) {
             $pstate = $this->game->getPrivateStateId($player_id);
-            $color = $this->game->game_getPlayerColorById($player_id);
+            $color = $this->game->custom_getPlayerColorById($player_id);
             $results[$color]["instate"] = $pstate;
             $results[$color]["hit"] = false;
             $results[$color]["changestate"] = $pstate;
@@ -284,7 +284,7 @@ class OpMachine {
 
             // reset hit state
             foreach ($players as $player_id => $player_info) {
-                $color = $this->game->game_getPlayerColorById($player_id);
+                $color = $this->game->custom_getPlayerColorById($player_id);
                 $results[$color]["hit"] = false;
             }
             $results[OpMachine::GAME_MULTI_COLOR]["hit"] = false;

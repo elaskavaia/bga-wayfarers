@@ -432,6 +432,31 @@ class Material {
         "type" => "finalScoring",
         "name" => clienttranslate("Final Scoring"),
 ],
+// #ai ops
+    "Op_ai_turn" => [ 
+        "type" => "ai_turn",
+        "name" => clienttranslate("AI Turn"),
+],
+    "Op_ai_cardLand" => [ 
+        "class" => "Op_ai_cardBase",
+        "type" => "ai_cardLand",
+        "name" => clienttranslate("AI Acquire Land Card"),
+],
+    "Op_ai_cardWater" => [ 
+        "class" => "Op_ai_cardBase",
+        "type" => "ai_cardWater",
+        "name" => clienttranslate("AI Acquire Water Card"),
+],
+    "Op_ai_cardSpace" => [ 
+        "class" => "Op_ai_cardBase",
+        "type" => "ai_cardSpace",
+        "name" => clienttranslate("AI Acquire Space Card"),
+],
+    "Op_ai_cardFolk" => [ 
+        "class" => "Op_ai_cardBase",
+        "type" => "ai_cardFolk",
+        "name" => clienttranslate("AI Acquire Townsfolk Card"),
+],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
 // # create is one of the numbers
@@ -521,14 +546,14 @@ class Material {
     "tracker_comet" => [ 
         "name" => clienttranslate("AI Comet Track"),
         "count" => 0,
-        "type" => "tracker comet",
+        "type" => "tracker tracker_comet",
         "create" => 4,
         "location" => "tableau_{COLOR}",
 ],
     "tracker_res" => [ 
         "name" => clienttranslate("AI Resource Track"),
         "count" => 0,
-        "type" => "tracker res",
+        "type" => "tracker tracker_res",
         "create" => 4,
         "location" => "tableau_{COLOR}",
 ],
@@ -3804,12 +3829,11 @@ class Material {
 
             /* --- gen php begin scheme_material --- */
 // # 6 Scheme Cards for Solo AI
-// # color: blue or red
-// # silver: silver value (0-2) - how far AI moves on Resource Track
+// # t: blue or red
+// # c: silver value (0-2) - how far AI moves on Resource Track
 // # r1: first action AI attempts (primary)
-// # r2: second/fallback action if first is impossible
-// # r2 is also used on rest: AI acquires based on this
-// # upgpri: special (pink) upgrade tile priority
+// # r2: second/fallback action if first is impossible r2 is also used on rest: AI acquires based on this
+// # p: special (pink) upgrade tile priority
 // # comet: 1 if card has comet icon (checked on rest), 0 otherwise
 // # Blue cards
     "card_scheme_1" => [ 
@@ -3817,36 +3841,39 @@ class Material {
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 1,
-        "color" => "blue",
-        "silver" => 2,
+        "t" => "blue",
+        "c" => 2,
         "r1" => "ai_placeWorker(green)",
         "r2" => "ac_focusAction",
-        "upgpri" => 1,
+        "p" => 1,
         "comet" => 1,
+        "nomx" => "Blue Focus",
 ],
     "card_scheme_2" => [ 
         "create" => 1,
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 2,
-        "color" => "blue",
-        "silver" => 0,
+        "t" => "blue",
+        "c" => 0,
         "r1" => "ai_placeWorker(green/blue)",
         "r2" => "infBlue,infYellow,infBlack",
-        "upgpri" => 3,
+        "p" => 3,
         "comet" => 1,
+        "nomx" => "Blue Influence",
 ],
     "card_scheme_3" => [ 
         "create" => 1,
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 3,
-        "color" => "blue",
-        "silver" => 0,
+        "t" => "blue",
+        "c" => 0,
         "r1" => "ai_placeWorker(green/yellow)",
         "r2" => "ai_upgAny",
-        "upgpri" => 5,
+        "p" => 5,
         "comet" => 0,
+        "nomx" => "Blue Upgrade",
 ],
 // # Red cards
     "card_scheme_4" => [ 
@@ -3854,36 +3881,130 @@ class Material {
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 4,
-        "color" => "red",
-        "silver" => 1,
+        "t" => "red",
+        "c" => 1,
         "r1" => "2n_infBlue:ai_cardWater",
         "r2" => "infBlue,ai_upgAny",
-        "upgpri" => 6,
+        "p" => 6,
         "comet" => 1,
+        "nomx" => "Red Buy Water",
 ],
     "card_scheme_5" => [ 
         "create" => 1,
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 5,
-        "color" => "red",
-        "silver" => 2,
+        "t" => "red",
+        "c" => 2,
         "r1" => "2n_infBlack:ai_cardSpace",
         "r2" => "infBlack,ai_cardFolk",
-        "upgpri" => 8,
+        "p" => 8,
         "comet" => 1,
+        "nomx" => "Red Buy Space",
 ],
     "card_scheme_6" => [ 
         "create" => 1,
         "type" => "card card_scheme",
         "location" => "deck_scheme",
         "num" => 6,
-        "color" => "red",
-        "silver" => 1,
-        "r1" => "2n_infYellow:ai_cardYellow",
+        "t" => "red",
+        "c" => 1,
+        "r1" => "2n_infYellow:ai_cardLand",
         "r2" => "infYellow,infYellow,ai_infCard",
-        "upgpri" => 10,
+        "p" => 10,
         "comet" => 0,
+        "nomx" => "Red Buy Land",
+],
+// #res track
+// #t: priority color
+// #c: inspiration card order
+    "spot_res_0" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 0,
+        "t" => "black",
+        "c" => 2,
+],
+    "spot_res_1" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 1,
+        "t" => "black",
+        "c" => 2,
+],
+    "spot_res_2" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 2,
+        "t" => "black",
+        "c" => 2,
+],
+    "spot_res_3" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 3,
+        "t" => "blue",
+        "c" => 3,
+],
+    "spot_res_4" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 4,
+        "t" => "blue",
+        "c" => 4,
+],
+    "spot_res_5" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 5,
+        "t" => "yellow",
+        "c" => 4,
+],
+    "spot_res_6" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 6,
+        "t" => "yellow",
+        "c" => 4,
+],
+    "spot_res_7" => [ 
+        "create" => 0,
+        "type" => "spot spot_res",
+        "num" => 7,
+        "t" => "green",
+        "c" => 3,
+],
+// #AU boards
+// #t: focus action
+// #r1: rest action
+// #r2: res tracker bonus
+    "aiboard_1" => [ 
+        "create" => 0,
+        "num" => 1,
+        "t" => "ai_cardBlack",
+        "r1" => "ai_cardBlack",
+        "r2" => "ai_comet",
+],
+    "aiboard_2" => [ 
+        "create" => 0,
+        "num" => 2,
+        "t" => "ai_upgAny",
+        "r1" => "ai_upgAny",
+        "r2" => "infYellow",
+],
+    "aiboard_3" => [ 
+        "create" => 0,
+        "num" => 3,
+        "t" => "ai_cardFolk",
+        "r1" => "ai_cardFolk",
+        "r2" => "ai_cardFolk",
+],
+    "aiboard_4" => [ 
+        "create" => 0,
+        "num" => 4,
+        "t" => "ai_journal",
+        "r1" => "ai_infCard",
+        "r2" => "infBlack",
 ],
             /* --- gen php end scheme_material --- */
         ];

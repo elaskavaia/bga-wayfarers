@@ -64,6 +64,12 @@
   .infsupply.guild_black_982fff {
     left: 75%;
   }
+
+  .infsupply.guild_blue_ffffff,
+  .infsupply.guild_yellow_ffffff,
+  .infsupply.guild_black_ffffff {
+    left: 75%;
+  }
 }
 .guild_blue {
   top: 65%;
@@ -89,12 +95,12 @@
   gap: 1px;
 }
 
-.tableau::after {
+.pboard::after {
   content: attr(data-player-name);
   position: absolute;
   width: 100px;
   height: 32px;
-  top: 274px;
+  top: 240px;
   left: 30px;
   color: var(--player-color);
   z-index: 10;
@@ -148,6 +154,12 @@
   height: 100%;
   position: absolute;
   z-index: 1;
+}
+
+@for $i from -1 through -4 {
+  .pboard[data-state="#{$i}"]::before {
+    background-image: url(img/SoloBoard1-s.png);
+  }
 }
 
 .breakroom {

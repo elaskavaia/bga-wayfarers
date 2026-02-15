@@ -96,6 +96,10 @@ class GameXBody extends GameMachine {
         this.setupPlayer(playerInfo);
       }
 
+      if (this.isSolo()) {
+        this.setupAutoma(gamedatas.playerswithbots[1]);
+      }
+
       super.setupGame(gamedatas);
       $("mainboard_3").appendChild($("supply"));
       this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
@@ -150,7 +154,7 @@ class GameXBody extends GameMachine {
       `
       <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${pcolor}'>
 
-         <div id='pboard_${pcolor}' class='pboard'>
+         <div id='pboard_${pcolor}' class='pboard' data-player-name='${playerInfo.name}'>
            <div id='breakroom_${pcolor}' class='breakroom'></div>
            <div id='infsupply_${pcolor}' class='infsupply'></div>
            <div id='caravan_${pcolor}' class='caravan'>
@@ -175,10 +179,71 @@ class GameXBody extends GameMachine {
         }
       });
   }
+
+  setupAutoma(playerInfo: any) {
+    console.log("player info " + playerInfo.id, playerInfo);
+    const pcolor = playerInfo.color;
+    const realcolor = "982fff";
+
+    const op = `overall_player_board_${playerInfo.id}`;
+    $(op)?.remove();
+    this.bga.playerPanels.addAutomataPlayerPanel(playerInfo.id, playerInfo.name, {
+      iconClass: "aida-avatar",
+      score: playerInfo.score,
+      color: realcolor
+    });
+
+    document.querySelectorAll(`.guild`).forEach((guild) => {
+      placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
+    });
+    //const pp = `player_panel_content_${pcolor}`;
+    // placeHtml(
+    //   `<div id='miniboard_${pcolor}' class='miniboard'>
+    //   </div>`,
+    //   pp
+    // );
+    let parent = "players_panels";
+    // Generate caravan grid cells (7x3)
+    let caravanCells = "";
+    for (let y = 0; y < 3; y++) {
+      for (let x = 0; x < 7; x++) {
+        const pos = x + y * 7 + 1;
+        caravanCells += `<div id='ccell_${pos}_${pcolor}' class='ccell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
+      }
+    }
+    const boardNum = -parseInt(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? "-1");
+    placeHtml(
+      `
+      <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${realcolor}'>
+
+         <div id='pboard_${pcolor}' class='pboard' data-player-name='${playerInfo.name}'>
+           <div id='breakroom_${pcolor}' class='breakroom'></div>
+           <div id='restrack_${pcolor}' class='restrack'></div>
+           <div id='comettrack_${pcolor}' class='comettrack'></div>
+           <div id='infsupply_${pcolor}' class='infsupply'></div>
+           <div id='caravan_${pcolor}' class='caravan'>
+             ${caravanCells}
+           </div>
+         </div>
+      </div>`,
+      parent
+    );
+
+    $(`caravan_${pcolor}`)
+      .querySelectorAll(".ccell")
+      .forEach((node: HTMLElement) => {
+        const num = Number(getPart(node.id, 1)) - 1;
+        const r = this.getRulesFor(`aipbonus_${boardNum}_${num}`, "r", "");
+        node.dataset.r = r;
+        if (r) {
+          const title = _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r);
+          placeHtml(`<div class='wicon_${r} wicon' title='${title}'></div>`, node);
+        }
+      });
+  }
   setupLayoutControls() {
     super.setupLocalControls("board_layout_controls");
-    // Load saved preferences from localSto
-    // rage
+    // Load saved preferences from localStorage
     const savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
 
     this.boardLayout = savedLayout;
@@ -433,6 +498,12 @@ class GameXBody extends GameMachine {
       result.nop = true;
     } else if (tokenId.startsWith("slot") || tokenId == "round_banner") {
       result.nop = true; // do not move slots
+    } else if (tokenId.startsWith("tracker_res") && location.startsWith("tableau")) {
+      const color = getPart(location, 1);
+      result.location = `restrack_${color}`;
+    } else if (tokenId.startsWith("tracker_comet") && location.startsWith("tableau")) {
+      const color = getPart(location, 1);
+      result.location = `comettrack_${color}`;
     } else if (tokenId.startsWith("tracker")) {
       result.nop = true;
     } else if (location.startsWith("miniboard") && $(tokenId)) {
@@ -587,6 +658,26 @@ class GameXBody extends GameMachine {
             );
 
             break;
+
+          case "scheme":
+            // # 6 Scheme Cards for Solo AI
+            // # t: blue or red
+            // # c: silver value (0-2) - how far AI moves on Resource Track
+            // # r1: first action AI attempts (primary)
+            // # r2: second/fallback action if first is impossible r2 is also used on rest: AI acquires based on this
+            // # p: special (pink) upgrade tile priority
+            // # comet: 1 if card has comet icon (checked on rest), 0 otherwise
+            tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
+            tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
+            //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
+            tokenInfo.tooltip += this.ttSection(_("Silver"), tokenInfo.c);
+            tokenInfo.tooltip += this.ttSection(_("Color"), tokenInfo.t == "red" ? _("Red") : _("Blue"));
+            tokenInfo.tooltip += this.ttSection(_("Primary Action"), this.getOpListTr(tokenInfo.r1));
+            tokenInfo.tooltip += this.ttSection(_("Fallback Action"), this.getOpListTr(tokenInfo.r2));
+            tokenInfo.tooltip += this.ttSection(_("Special Upgrade"), tokenInfo.p);
+            if (tokenInfo.comet == "1") tokenInfo.tooltip += this.ttSection(_("Comet"), _("Yes"));
+            else tokenInfo.tooltip += this.ttSection(_("Comet"), _("No"));
+            break;
         }
 
         return;
@@ -609,17 +700,19 @@ class GameXBody extends GameMachine {
         }
 
         // Odd/even pairs are front/back of same physical tile
-        const numInt = parseInt(num);
-        const reverseNum = numInt % 2 === 1 ? numInt + 1 : numInt - 1;
-        const reverseTokenId = `upg_${color}_${reverseNum}`;
-        const reverseInfo = this.getTokenDisplayInfo(reverseTokenId, true);
-        if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
-          const revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].filter(Boolean).join(" | ");
-          if (revAssets) tokenInfo.tooltip += this.ttSection(_("Assets (Reverse Side)"), revAssets);
-          tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
-          tokenInfo.imageTypes += " _dual_image";
-        }
 
+        const numInt = parseInt(num);
+        if (tokenInfo.r && tokenInfo.r2 && numInt % 2 == 1) {
+          const reverseNum = numInt + 1;
+          const reverseTokenId = `upg_${color}_${reverseNum}`;
+          const reverseInfo = this.getTokenDisplayInfo(reverseTokenId, false);
+          if (reverseInfo && reverseInfo.typeKey !== tokenInfo.typeKey) {
+            const revAssets = [this.getOpListTr(reverseInfo.r), this.getOpListTr(reverseInfo.r2)].join(" | ");
+            tokenInfo.tooltip += this.ttSection(_("Assets (Reverse Side)"), revAssets);
+            tokenInfo.reverseImageTypes = reverseInfo.imageTypes;
+            tokenInfo.imageTypes += " _dual_image";
+          }
+        }
         if (tokenInfo.vp) tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
 
         return;
@@ -678,6 +771,7 @@ class GameXBody extends GameMachine {
       case "ffcc02":
       case "yellow":
         return _("Yellow");
+      case "ffffff": // automa purple
       case "982fff":
       case "purple":
         return _("Purple");

@@ -144,7 +144,7 @@ class Op_journal extends Operation {
             // Store the triggering player's number (1-4) in game_stage
             // This marks who triggered it so we know when to end after they complete their final turn
             $playerId = $this->getPlayerId();
-            $playerNo = $this->game->getPlayerNoById($playerId);
+            $playerNo = $this->game->custom_getPlayerNoById($playerId);
 
             $this->game->tokens->dbSetTokenState(
                 Game::GAME_STAGE,

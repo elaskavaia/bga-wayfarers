@@ -1,0 +1,96 @@
+@use "variables" as v;
+.aida-avatar {
+  background-image: url("img/cards_scheme.jpg");
+  background-position: 96% 5%;
+  background-size: 1800% auto;
+}
+
+.tableau_ffffff {
+  .breakroom {
+    top: 8%;
+    left: 102%;
+  }
+
+  .infsupply {
+    left: 110%;
+  }
+  // Caravan grid (7x3) for solo mode
+  .caravan {
+    left: 19%;
+    top: 64%;
+    width: 75%;
+    height: 25%;
+    grid-template-columns: repeat(7, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+  }
+
+  //tracker_res_ffffff
+  // 0 - 1 - 2
+  // 7       3
+  // 6 - 5 - 4
+  .tracker_res_ffffff {
+    position: absolute;
+    left: 18%;
+    top: 20%;
+    &[data-state="0"] {
+      left: 18%;
+      top: 20%;
+    }
+    &[data-state="1"] {
+      left: 50%;
+      top: 20%;
+    }
+    &[data-state="2"] {
+      left: 82%;
+      top: 20%;
+    }
+    &[data-state="3"] {
+      left: 82%;
+      top: 34%;
+    }
+    &[data-state="4"] {
+      left: 82%;
+      top: 48%;
+    }
+    &[data-state="5"] {
+      left: 50%;
+      top: 48%;
+    }
+    &[data-state="6"] {
+      left: 18%;
+      top: 48%;
+    }
+    &[data-state="7"] {
+      left: 18%;
+      top: 34%;
+    }
+  }
+
+  // from 0 to 10 bottom up
+  .tracker_comet_ffffff {
+    position: absolute;
+    z-index: 2;
+  }
+
+  @for $i from 0 through 10 {
+    .tracker_comet_ffffff[data-state="#{$i}"] {
+      left: 10%;
+      top: calc(83% - $i * 7%);
+    }
+  }
+
+  .card_scheme {
+    z-index: 2;
+    bottom: 8.5%;
+  }
+}
+
+.card_scheme {
+  background-image: url(img/cards_scheme.jpg);
+  background-size: 700% auto;
+}
+@for $i from 1 through 6 {
+  .card_scheme_#{$i} {
+    background-position: calc(100% / 6 * ($i - 1)) 0%;
+  }
+}
