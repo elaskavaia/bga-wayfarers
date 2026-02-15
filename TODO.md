@@ -105,7 +105,7 @@
 
 - [ ] AI comet track scoring (VP based on comet track position)
 - [ ] AI still participates in guild majorities (3 VP per guild with most influence)
-- [ ] AI influence is unlimited - if supply runs out, use unused color tokens (still counts as AI's)
+- [x] AI influence is unlimited - if supply runs out, create more tokens dynamically (Op_infBase.php)
 - [ ] Solo win condition based on difficulty variant:
   - Easy: player must beat 45 VP
   - Hard: player must beat 55 VP

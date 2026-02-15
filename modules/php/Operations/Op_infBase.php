@@ -44,11 +44,13 @@ abstract class Op_infBase extends Operation {
             $movable[$tokenId] = ["q" => Material::RET_OK, "place_from" => $place];
         }
         return $movable;
-
-        return $movable;
     }
 
     function getPossibleMoves() {
+        if ($this->isAutomaPlayer()) {
+            // Automa always has unlimited influence (created on demand in resolve)
+            return ["confirm"];
+        }
         $influence = $this->getInfluenceInPlayerSupply();
 
         if (count($influence) > 0) {
@@ -76,25 +78,40 @@ abstract class Op_infBase extends Operation {
             // Place from supply
             $influence = $this->getInfluenceInPlayerSupply();
             $influenceKey = array_key_first($influence);
-            $this->game->tokens->dbSetTokenLocation(
-                $influenceKey,
-                $guild,
-                0,
-                clienttranslate('${player_name} places ${token_name} on ${place_name}')
-            );
-        } else {
-            // Move from another location
+
+            // Automa has unlimited influence - create more if needed
+            if (!$influenceKey && $this->isAutomaPlayer()) {
+                $owner = $this->getOwner();
+                $influenceKey = $this->game->tokens->db->createTokenAutoInc("influence_$owner", "tableau_$owner", 0);
+            }
 
             $this->game->tokens->dbSetTokenLocation(
                 $influenceKey,
                 $guild,
                 0,
-                clienttranslate('${player_name} moves ${token_name} to ${place_name}')
+                clienttranslate('${player_name} places ${token_name} on ${place_name}'),
+                [],
+                $this->getPlayerId()
+            );
+        } else {
+            // Move from another location
+            $this->game->tokens->dbSetTokenLocation(
+                $influenceKey,
+                $guild,
+                0,
+                clienttranslate('${player_name} moves ${token_name} to ${place_name}'),
+                [],
+                $this->getPlayerId()
             );
         }
     }
 
     public function canSkip() {
+        // Automa never skips - always has unlimited influence
+        if ($this->isAutomaPlayer()) {
+            return false;
+        }
+
         $influence = $this->getInfluenceInPlayerSupply();
 
         if (count($influence) > 0) {

@@ -56,7 +56,14 @@ abstract class Op_n_infBase extends CountableOperation {
             if ($i >= $count) {
                 break;
             }
-            $this->game->tokens->dbSetTokenLocation($tokenId, "tableau_$owner", 0, clienttranslate('${player_name} spends ${token_name}'));
+            $this->game->tokens->dbSetTokenLocation(
+                $tokenId,
+                "tableau_$owner",
+                0,
+                clienttranslate('${player_name} spends ${token_name}'),
+                [],
+                $this->getPlayerId()
+            );
             $i++;
         }
     }

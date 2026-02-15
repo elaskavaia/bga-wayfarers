@@ -247,6 +247,14 @@ abstract class Operation {
         $this->game->machine->insert($type, $owner, $data, $this->queueRank);
         //$this->game->debugConsole("queue $type");
     }
+
+    /**
+     * wrapper for dbSetTokenLocation to pass proper player that owns the action
+     */
+    function dbSetTokenLocation(string $tokenId, string $placeId, int|null $state = null, string $notif = "*", mixed $args = []) {
+        $this->game->tokens->dbSetTokenLocation($tokenId, $placeId, $state, $notif, $args, $this->getPlayerId());
+    }
+
     protected function getCheckedArg(bool $checkMaxCount = false, bool $checkMinCount = false) {
         if ($this->userArgs === null) {
             throw new SystemException("No user args set");
