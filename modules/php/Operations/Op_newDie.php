@@ -35,7 +35,7 @@ class Op_newDie extends Operation {
         if (!$dieKey) return;
         $newValue = bga_rand(1, 6);
         $owner = $this->getOwner();
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $dieKey,
             "tableau_$owner",
             $newValue,

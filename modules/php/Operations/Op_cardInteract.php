@@ -108,7 +108,7 @@ class Op_cardInteract extends Operation {
 
             // Return the influence token to the player's tableau (unless buy is false)
             if ($this->isBeingBought()) {
-                $this->game->tokens->dbSetTokenLocation($inf, "tableau_$opp", 0);
+                $this->dbSetTokenLocation($inf, "tableau_$opp", 0);
             }
         }
 
@@ -116,13 +116,11 @@ class Op_cardInteract extends Operation {
         if ($this->isBeingBought() && $card) {
             $workers = $this->game->tokens->getTokensOfTypeInLocation("worker", $card);
             foreach (array_keys($workers) as $workerKey) {
-                $this->game->tokens->dbSetTokenLocation(
+                $this->dbSetTokenLocation(
                     $workerKey,
                     "tableau_$owner",
                     0,
-                    clienttranslate('${player_name} gains ${token_name}'),
-                    [],
-                    $this->getPlayerId()
+                    clienttranslate('${player_name} gains ${token_name}')
                 );
             }
         }

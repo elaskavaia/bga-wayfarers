@@ -60,7 +60,7 @@ class Op_pickWorker extends Operation {
         $this->queue("cardInteract", $owner, ["card" => $card, "buy" => false]);
 
         // Move worker to player's tableau
-        $this->game->tokens->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
+        $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
     }
 
     function getPrompt() {

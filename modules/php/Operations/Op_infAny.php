@@ -85,7 +85,7 @@ class Op_infAny extends Op_infBase {
         if (count($influence) > 0) {
             // Place from supply
             $influenceKey = array_key_first($influence);
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $influenceKey,
                 $selectedGuild,
                 0,
@@ -94,7 +94,7 @@ class Op_infAny extends Op_infBase {
         } else {
             // Move from another location
             $influenceKey = $this->getCheckedArg();
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $influenceKey,
                 $selectedGuild,
                 0,

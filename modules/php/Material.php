@@ -537,7 +537,7 @@ class Material {
         "create" => 4,
         "location" => "limbo",
 ],
-    "used_inf_back" => [ 
+    "used_inf_black" => [ 
         "count" => 1,
         "type" => "flag",
         "create" => 4,
@@ -556,6 +556,13 @@ class Material {
         "type" => "tracker tracker_res",
         "create" => 4,
         "location" => "tableau_{COLOR}",
+],
+    "tracker_vp" => [ 
+        "name" => clienttranslate("AI VP"),
+        "count" => 0,
+        "type" => "tracker tracker_vp",
+        "create" => 4,
+        "location" => "miniboard_{COLOR}",
 ],
 // #journal tiles
     "jtile" => [ 

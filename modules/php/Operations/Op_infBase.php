@@ -85,23 +85,19 @@ abstract class Op_infBase extends Operation {
                 $influenceKey = $this->game->tokens->db->createTokenAutoInc("influence_$owner", "tableau_$owner", 0);
             }
 
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $influenceKey,
                 $guild,
                 0,
-                clienttranslate('${player_name} places ${token_name} on ${place_name}'),
-                [],
-                $this->getPlayerId()
+                clienttranslate('${player_name} places ${token_name} on ${place_name}')
             );
         } else {
             // Move from another location
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $influenceKey,
                 $guild,
                 0,
-                clienttranslate('${player_name} moves ${token_name} to ${place_name}'),
-                [],
-                $this->getPlayerId()
+                clienttranslate('${player_name} moves ${token_name} to ${place_name}')
             );
         }
     }

@@ -88,7 +88,7 @@ class Op_rest extends Operation {
         foreach ($placedDice as $dieKey => $dieInfo) {
             // Roll the die (random value 1-6)
             $newValue = bga_rand(1, 6);
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $dieKey,
                 "tableau_$owner",
                 $newValue,

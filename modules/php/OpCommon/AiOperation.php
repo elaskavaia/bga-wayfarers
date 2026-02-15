@@ -48,7 +48,7 @@ abstract class AiOperation extends CountableOperation {
         return $this->game->tokens->getTrackerValue($this->getOwner(), "res", 0);
     }
 
-    function getCardTypeVP($type) {
+    static function getCardTypeVP($type) {
         //         The AI scores VP for the following: 1VP per acquired Townsfolk
         // Card; 2VP per acquired Water/Land Card; 3VP per acquired Space
         // Card;4VP per acquired Inspiration Card

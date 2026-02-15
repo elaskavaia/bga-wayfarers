@@ -90,7 +90,7 @@ class Op_infMove extends Operation {
         $to = $this->getCheckedArg();
         $selectedInfluence = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("influence_{$owner}", $selectedGuild);
 
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $selectedInfluence,
             $to,
             0,

@@ -48,6 +48,6 @@ class Op_cardLand extends Op_cardBase {
         $owner = $this->getOwner();
         $cardType = $this->getCardType();
         $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", -count($tokens) - 2);
+        $this->dbSetTokenLocation($card, "tableau_$owner", -count($tokens) - 2);
     }
 }

@@ -90,7 +90,7 @@ class Op_ai_turn extends Op_turn {
         $cardKey = $card["key"];
         //   - [ ] On reveal: draw top scheme card, place faceup to right of draw pile
         // state starts with 2
-        $this->game->tokens->dbSetTokenLocation($cardKey, "tableau_$owner", count($cards) + 2, "*", [], $this->getPlayerId());
+        $this->dbSetTokenLocation($cardKey, "tableau_$owner", count($cards) + 2);
         //   - [ ] Move AI resource track marker clockwise by scheme card's silver value
         $silver = (int) $this->game->getRulesFor($cardKey, "c", 0);
         $boardNumber = $this->aiGetBoardNumber();

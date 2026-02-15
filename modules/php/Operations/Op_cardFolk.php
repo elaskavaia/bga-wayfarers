@@ -109,7 +109,7 @@ class Op_cardFolk extends Op_cardBase {
         $cardTuck = $this->getCheckedArg();
         // Get the state of the target card to place folk card at same state
         $targetState = (int) $this->game->tokens->db->getTokenState($cardTuck);
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $card,
             "tableau_$owner",
             $targetState,

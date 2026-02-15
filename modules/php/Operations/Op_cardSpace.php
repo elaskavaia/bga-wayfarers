@@ -97,7 +97,7 @@ class Op_cardSpace extends Op_cardBase {
         $owner = $this->getOwner();
         $pos = $this->getNextAvailablePosition();
         $this->game->systemAssert("Cannot find position for space card", $pos);
-        $this->game->tokens->dbSetTokenLocation($card, "tableau_$owner", $pos, clienttranslate('${player_name} acquires ${token_name}'));
+        $this->dbSetTokenLocation($card, "tableau_$owner", $pos, clienttranslate('${player_name} acquires ${token_name}'));
     }
 
     public function getPrompt() {

@@ -176,13 +176,11 @@ class Op_placeDie extends Op_acquireBase {
 
         // Normal case - place die on a card
         $cardId = $selected;
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $selectedDie,
             $cardId,
             $dieValue,
-            clienttranslate('${player_name} places Die ${new_state} onto ${place_name}'),
-            [],
-            $this->getPlayerId()
+            clienttranslate('${player_name} places Die ${new_state} onto ${place_name}')
         );
         // Check for folk card tucked under this card (same state) and activate its ability
         $folkCard = $this->getTuckedFolk($cardId);

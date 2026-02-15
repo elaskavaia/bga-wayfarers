@@ -119,7 +119,7 @@ class Op_cardInsp extends Op_cardBase {
             // Discard the card
             $deck = "deck_insp";
             $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);
-            $this->game->tokens->dbSetTokenLocation(
+            $this->dbSetTokenLocation(
                 $cardSelected,
                 $deck,
                 $extreme_pos - 1,
@@ -142,7 +142,7 @@ class Op_cardInsp extends Op_cardBase {
         if (str_starts_with($spaceCard, "card_home")) {
             $targetState = 1;
         }
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $card,
             "tableau_$owner",
             $targetState,

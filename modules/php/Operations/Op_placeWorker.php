@@ -110,7 +110,7 @@ class Op_placeWorker extends Operation {
         $state = $this->game->tokens->db->getTokenState($targetCard);
         $ctype = getPart($targetCard, 1);
         // Move worker to the card
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $selectedWorker,
             $targetCard,
             0,

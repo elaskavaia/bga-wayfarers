@@ -118,7 +118,7 @@ class Op_cardDraw extends CountableOperation {
         foreach ($cards as $card => $info) {
             if ($card !== $selectedCard) {
                 $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);
-                $this->game->tokens->dbSetTokenLocation($card, $deck, $extreme_pos - 1, "");
+                $this->dbSetTokenLocation($card, $deck, $extreme_pos - 1, "");
             }
         }
 

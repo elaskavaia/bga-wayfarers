@@ -251,7 +251,7 @@ abstract class Op_upgBase extends Op_acquireBase {
         $posValue = (int) getPart($position, 1);
 
         // Place tile in tableau with position encoded in state
-        $this->game->tokens->dbSetTokenLocation(
+        $this->dbSetTokenLocation(
             $selectedTile,
             "tableau_$owner",
             $posValue,
