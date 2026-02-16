@@ -114,17 +114,12 @@ class Op_cardInsp extends Op_cardBase {
         if ($arg == "discard") {
             $state = $this->game->tokens->db->getTokenState($cardSelected);
             // Gain the benefit
-            $workerRule = $this->game->getRulesFor("action_insp_{$state}", "r", "");
+            $workerRule = $this->game->getRulesForAndAssert("action_insp_{$state}", "r");
             $this->queue($workerRule);
             // Discard the card
             $deck = "deck_insp";
             $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);
-            $this->dbSetTokenLocation(
-                $cardSelected,
-                $deck,
-                $extreme_pos - 1,
-                clienttranslate('${player_name} discards ${token_name}')
-            );
+            $this->dbSetTokenLocation($cardSelected, $deck, $extreme_pos - 1, clienttranslate('${player_name} discards ${token_name}'));
 
             // Refill the mainarea spot
             $this->queue("drawTab", $owner, ["card" => $cardSelected]);
@@ -142,12 +137,7 @@ class Op_cardInsp extends Op_cardBase {
         if (str_starts_with($spaceCard, "card_home")) {
             $targetState = 1;
         }
-        $this->dbSetTokenLocation(
-            $card,
-            "tableau_$owner",
-            $targetState,
-            clienttranslate('${player_name} acquires ${token_name}')
-        );
+        $this->dbSetTokenLocation($card, "tableau_$owner", $targetState, clienttranslate('${player_name} acquires ${token_name}'));
     }
 
     public function getPrompt() {

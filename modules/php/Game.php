@@ -405,6 +405,11 @@ class Game extends Base {
     function getRulesFor($token_id, $field = "r", $default = "") {
         return $this->material->getRulesFor($token_id, $field, $default);
     }
+    function getRulesForAndAssert($token_id, $field = "r", $default = "") {
+        $r = $this->material->getRulesFor($token_id, $field, $default);
+        $this->systemAssert("Expected non empty rule for for $token_id:$field", $r);
+        return $r;
+    }
     function getTokenName($token_id, $default = "") {
         if (!$default) {
             $default = "$token_id ?";

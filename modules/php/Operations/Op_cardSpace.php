@@ -107,8 +107,4 @@ class Op_cardSpace extends Op_cardBase {
         }
         return clienttranslate("Select a Space Card to buy");
     }
-
-    public function getIconicName() {
-        return "[wicon_card_space]";
-    }
 }

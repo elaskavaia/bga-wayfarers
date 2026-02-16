@@ -79,7 +79,7 @@ class Op_rest extends Operation {
             $this->queue("journal");
             $restCards = $this->getRestAbilityCards();
             foreach (array_keys($restCards) as $cardKey) {
-                $dr = $this->game->getRulesFor($cardKey, "dr", "");
+                $dr = $this->game->getRulesForAndAssert($cardKey, "dr", "");
                 $this->queue($dr);
             }
         }

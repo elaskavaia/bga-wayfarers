@@ -70,8 +70,7 @@ class Op_ai_rest extends AiOperation {
         // Step 2: Acquire (based on AI board r1 field)
         // The second step will have them acquiring stuff, rule r1
         $boardNumber = $this->getAiBoardNumber();
-        $acquire = $this->game->getRulesFor("aiboard_$boardNumber", "r1");
-        $this->game->systemAssert("r1 for aiboard_$boardNumber not found", $acquire);
+        $acquire = $this->game->getRulesForAndAssert("aiboard_$boardNumber", "r1");
         $this->queue($acquire);
 
         // Step 3: Journal

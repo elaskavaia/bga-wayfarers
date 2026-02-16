@@ -138,4 +138,9 @@ abstract class Op_cardBase extends Op_acquireBase {
     public function requireConfirmation() {
         return true;
     }
+
+    public function getIconicName() {
+        $type = $this->getType();
+        return "[wicon_Op_{$type}]";
+    }
 }

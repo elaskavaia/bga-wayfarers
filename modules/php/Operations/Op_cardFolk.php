@@ -109,12 +109,7 @@ class Op_cardFolk extends Op_cardBase {
         $cardTuck = $this->getCheckedArg();
         // Get the state of the target card to place folk card at same state
         $targetState = (int) $this->game->tokens->db->getTokenState($cardTuck);
-        $this->dbSetTokenLocation(
-            $card,
-            "tableau_$owner",
-            $targetState,
-            clienttranslate('${player_name} acquires ${token_name}')
-        );
+        $this->dbSetTokenLocation($card, "tableau_$owner", $targetState, clienttranslate('${player_name} acquires ${token_name}'));
     }
 
     public function getPrompt() {
@@ -123,9 +118,5 @@ class Op_cardFolk extends Op_cardBase {
             return clienttranslate("Select a Townsfolk Card to buy");
         }
         return clienttranslate("Select a card to tuck under");
-    }
-
-    public function getIconicName() {
-        return "[wicon_card_folk]";
     }
 }

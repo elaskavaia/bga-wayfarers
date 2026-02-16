@@ -35,8 +35,7 @@ class Op_ai_res extends AiOperation {
         if ($currentPos <= 4 && $newPos >= 5) {
             // means we passed 4.5 where bonus lies
             $boardNumber = $this->aiGetBoardNumber();
-            $bonus = $this->game->getRulesFor("aiboard_$boardNumber", "r2");
-            $this->game->systemAssert("Bonus missing for aiboard_$boardNumber", $bonus);
+            $bonus = $this->game->getRulesForAndAssert("aiboard_$boardNumber", "r2");
             // TODO: uncomment
             //$this->queue($bonus, $owner, [], "restracker_bonus");
             $this->notifyMessage("ai bonus $bonus");

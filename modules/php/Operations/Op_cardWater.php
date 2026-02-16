@@ -61,14 +61,12 @@ class Op_cardWater extends Op_cardBase {
 
         $prevC2 = "yxxx"; // starting card
         if ($prevCard) {
-            $prevC2 = $this->game->getRulesFor($prevCard, "c2", "");
+            $prevC2 = $this->game->getRulesForAndAssert($prevCard, "c2", "");
         }
 
         // Get card sides
-        $placedC1 = $this->game->getRulesFor($placedCard, "c1", "");
+        $placedC1 = $this->game->getRulesForAndAssert($placedCard, "c1", "");
 
-        $this->game->systemAssert("No c1 for $placedCard", $placedC1);
-        $this->game->systemAssert("No c2 for $prevCard", $prevC2);
         // Check if previous card's right side matches placed card's left side
         $this->checkMatch($prevC2, $placedC1);
     }
