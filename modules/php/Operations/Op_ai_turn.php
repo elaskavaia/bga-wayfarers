@@ -14,10 +14,12 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\OpCommon\AiOperation;
+
 /**
  *  Au turn
  */
-class Op_ai_turn extends Op_turn {
+class Op_ai_turn extends AiOperation {
     public function auto(): bool {
         $this->game->customUndoSavepoint(0, 1);
         $owner = $this->getOwner();
@@ -32,24 +34,9 @@ class Op_ai_turn extends Op_turn {
             $this->aiRevealScheme($owner);
         }
 
-        $this->queueNextTurnOrEnd();
+        // AI does not need confirmation of turn end
+        $this->game->queueNextTurnOrEnd($this->getPlayerId());
         return true;
-    }
-
-    function countCards(string $owner, string $color): int {
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner");
-        $count = 0;
-        foreach ($cards as $cardKey => $cardInfo) {
-            if ($this->game->getRulesFor($cardKey, "t") === $color) {
-                $count++;
-            }
-        }
-        return $count;
-    }
-
-    function aiGetBoardNumber(): int {
-        $owner = $this->getOwner();
-        return -(int) $this->game->tokens->db->getTokenState("pboard_$owner");
     }
 
     function aiRevealScheme(string $owner) {
@@ -67,25 +54,9 @@ class Op_ai_turn extends Op_turn {
         $this->dbSetTokenLocation($cardKey, "tableau_$owner", count($cards) + 2);
         //   - [ ] Move AI resource track marker clockwise by scheme card's silver value
         $silver = (int) $this->game->getRulesFor($cardKey, "c", 0);
-        $boardNumber = $this->aiGetBoardNumber();
+
         if ($silver > 0) {
-            [$trackerId, $currentPos] = $this->game->tokens->getTrackerIdAndValue($owner, "res");
-            $newPos = ($currentPos + $silver) % 8;
-            $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves resource marker to ${pos}'), [
-                "pos" => $newPos,
-            ]);
-
-            //   - [ ] Resolve resource track effects passed over (comet, guild influence, townsfolk card)
-            // Check if we passed position 4.5 (between 4 and 5)
-            // Silver is only 0, 1, or 2, so we can't wrap and pass 4.5 at the same time
-            if ($currentPos <= 4 && $newPos >= 5) {
-                // means we passed 4.5 where bonus lies
-                $bonus = $this->game->getRulesFor("aiboard_$boardNumber", "r2");
-                $this->game->systemAssert("Bonus missing for aiboard_$boardNumber", $bonus);
-
-                //$this->queue($bonus, $owner, [], "restracker_bonus");
-                $this->notifyMessage("ai bonus $bonus");
-            }
+            $this->queue("{$silver}ai_res");
         }
 
         //   - [ ] Resolve first action on scheme card; fallback to second action if first is impossible
@@ -93,11 +64,11 @@ class Op_ai_turn extends Op_turn {
         $action2 = $this->game->getRulesFor($cardKey, "r2");
         $this->game->systemAssert("r1 $cardKey", $action1);
         $this->game->systemAssert("r2 $cardKey", $action2);
-        $this->notifyMessage("ai actions   $action1   $action2");
-        // if ($this->instanciateOperation($action1)->isVoid()) {
-        //     $this->queue($action2);
-        // } else {
-        //     $this->queue($action1);
-        // }
+        $this->notifyMessage("debug: ai actions   $action1   $action2");
+        if ($this->instanciateOperation($action1)->isVoid()) {
+            $this->queue($action2);
+        } else {
+            $this->queue($action1);
+        }
     }
 }

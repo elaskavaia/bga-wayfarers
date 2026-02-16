@@ -482,6 +482,10 @@ class Material {
         "type" => "ai_shuffle",
         "name" => clienttranslate("AI Shuffle"),
 ],
+    "Op_ai_res" => [ 
+        "type" => "ai_res",
+        "name" => clienttranslate("AI Resource Track"),
+],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
 // # create is one of the numbers

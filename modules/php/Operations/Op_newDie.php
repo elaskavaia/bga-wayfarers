@@ -14,9 +14,18 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_newDie extends Operation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // AI  gets upgrade instead of new die
+            $this->queue("ai_upgAny", $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function getDie() {
         $owner = $this->getOwner();
         $die = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("dice_{$owner}", "supply");
@@ -32,7 +41,9 @@ class Op_newDie extends Operation {
 
     function resolve(): void {
         $dieKey = $this->getDie();
-        if (!$dieKey) return;
+        if (!$dieKey) {
+            return;
+        }
         $newValue = bga_rand(1, 6);
         $owner = $this->getOwner();
         $this->dbSetTokenLocation(

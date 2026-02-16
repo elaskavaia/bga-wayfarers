@@ -42,34 +42,6 @@ class Op_turn extends Operation {
     }
 
     /**
-     * Queue the next turn, or end the game if this was the final turn
-     * When end game is triggered, game_stage holds the player number (1-4) who triggered it.
-     * After that player completes their turn (everyone got their final turn), set game_stage to 5.
-     */
-    function queueNextTurnOrEnd(): void {
-        $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
-
-        // If end game was triggered (game_stage = 1-4)
-        if ($gameStage >= 1 && $gameStage <= 4) {
-            $triggeringPlayerNo = $gameStage;
-            $currentPlayerNo = $this->game->custom_getPlayerNoById($this->getPlayerId());
-
-            // If the current player is the one who triggered end game,
-            // that means everyone has had their final turn - end the game
-            if ($currentPlayerNo == $triggeringPlayerNo) {
-                $this->queue("finalScoring");
-                // Don't queue another turn - game will end
-                return;
-            }
-        }
-
-        // Continue with the next turn
-        $nextPlayerId = $this->game->getNextReadyPlayerId($this->getPlayerId());
-        $this->game->systemAssert("loop", $nextPlayerId != $this->getPlayerId());
-        $this->queue("turn", $this->game->custom_getPlayerColorById($nextPlayerId));
-    }
-
-    /**
      * Get dice in player's supply (tableau)
      */
     function getDiceInPlayerSupply(): array {
@@ -155,7 +127,7 @@ class Op_turn extends Operation {
             $this->queue("placeDie", $owner, ["die" => $selected]);
         }
         $this->queue("turnconf");
-        $this->queueNextTurnOrEnd();
+        $this->game->queueNextTurnOrEnd($this->getPlayerId());
     }
 
     public function getPrompt() {

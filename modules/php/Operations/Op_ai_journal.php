@@ -16,7 +16,6 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\AiOperation;
 
-use function Bga\Games\wayfarers\getPart;
 
 /**
  * AI Journaling
@@ -106,7 +105,9 @@ class Op_ai_journal extends AiOperation {
     }
 
     /**
-     * Select journal position based on path preference
+     * Select journal position based on path preference.
+     * Positions are ordered as listed in the conn field:
+     * first = upper/North path, last = lower/South path.
      */
     function selectPosition(array $availablePositions): ?int {
         if (empty($availablePositions)) {
@@ -120,26 +121,25 @@ class Op_ai_journal extends AiOperation {
             return array_values($availablePositions)[0]["pos"];
         }
 
-        // Sort positions to determine upper/lower path
-        // Higher position numbers = upper path, lower numbers = lower path
-        $positions = array_map(fn($item) => $item["pos"], $availablePositions);
-        sort($positions);
+        // Connection order from getPossibleMoves preserves CSV conn field order:
+        // first = upper/North, last = lower/South
+        $positions = array_values(array_map(fn($item) => $item["pos"], $availablePositions));
 
         // Check if we're in final column (3 options)
         if (count($positions) == 3) {
             // AI never takes middle option in final column
             if ($pathPreference === "blue") {
-                return max($positions); // highest = upper
+                return $positions[0]; // first = upper/North
             } else {
-                return min($positions); // lowest = lower
+                return $positions[2]; // last = lower/South
             }
         }
 
         // For 2 options, choose based on path preference
         if ($pathPreference === "blue") {
-            return max($positions); // higher path
+            return $positions[0]; // first = upper/North path
         } else {
-            return min($positions); // lower path
+            return $positions[1]; // last = lower/South path
         }
     }
 
@@ -228,9 +228,7 @@ class Op_ai_journal extends AiOperation {
 
         if ($more && $blackInf >= $requiredBlackInf) {
             // Spend black influence and journal extra space
-            $this->notifyMessage(clienttranslate('${player_name} spends ${num} Black Influence to journal an extra space'), [
-                "num" => $requiredBlackInf,
-            ]);
+            $this->notifyMessage(clienttranslate('${player_name} journals an extra space'));
             $this->queue("{$requiredBlackInf}infBlack");
             $this->journalOneStep();
         }

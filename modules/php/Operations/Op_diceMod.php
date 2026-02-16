@@ -14,10 +14,19 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_diceMod extends Operation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // AI  gets infCard instead of dice mod
+            $this->queue("infCard", $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function getAllDice(): array {
         $owner = $this->getOwner();
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");

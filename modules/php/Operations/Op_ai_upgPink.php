@@ -40,7 +40,7 @@ class Op_ai_upgPink extends Op_ai_upgAny {
         // instead acquire the next available Tile in clockwise order
         $lastScheme = $this->getRecentCard();
         $position = $this->game->getRulesFor($lastScheme, "p");
-        return $position;
+        return (int) $position;
     }
 
     public function getNextPositionPriorityDirection(int $prev): int {

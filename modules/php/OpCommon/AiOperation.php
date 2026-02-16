@@ -40,6 +40,22 @@ abstract class AiOperation extends CountableOperation {
         return $sumValue;
     }
 
+    function aiGetBoardNumber(): int {
+        $owner = $this->getOwner();
+        return -(int) $this->game->tokens->db->getTokenState("pboard_$owner");
+    }
+
+    function countCards(string $owner, string $color): int {
+        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner");
+        $count = 0;
+        foreach ($cards as $cardKey => $cardInfo) {
+            if ($this->game->getRulesFor($cardKey, "t") === $color) {
+                $count++;
+            }
+        }
+        return $count;
+    }
+
     public function getNextPositionPriorityDirection(int $prev): int {
         //1->2,2->3,3->2,4->3
         switch ($prev) {

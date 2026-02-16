@@ -957,6 +957,34 @@ class Game extends Base {
         }
     }
 
+    /**
+     * Queue the next turn, or end the game if this was the final turn.
+     * When end game is triggered, game_stage holds the player number (1-4) who triggered it.
+     * After that player completes their turn (everyone got their final turn), set game_stage to 5.
+     */
+    function queueNextTurnOrEnd(int $playerId): void {
+        $gameStage = $this->tokens->db->getTokenState(Game::GAME_STAGE);
+
+        // If end game was triggered (game_stage = 1-4)
+        if ($gameStage >= 1 && $gameStage <= 4) {
+            $triggeringPlayerNo = $gameStage;
+            $currentPlayerNo = $this->custom_getPlayerNoById($playerId);
+
+            // If the current player is the one who triggered end game,
+            // that means everyone has had their final turn - end the game
+            if ($currentPlayerNo == $triggeringPlayerNo) {
+                $this->machine->queue("finalScoring");
+                // Don't queue another turn - game will end
+                return;
+            }
+        }
+
+        // Continue with the next turn
+        $nextPlayerId = $this->getNextReadyPlayerId($playerId);
+        $this->systemAssert("loop", $nextPlayerId != $playerId);
+        $this->machine->queue("turn", $this->custom_getPlayerColorById($nextPlayerId));
+    }
+
     public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
         $this->debugLog("customUndoSavepoint $player_id bar= $barrier");
         if ($this->isMultiActive()) {

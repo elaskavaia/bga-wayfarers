@@ -608,6 +608,9 @@ abstract class Operation {
         $isAuto = $this->auto();
 
         if (!$isAuto) {
+            if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+                throw new UserException("Operation does not implement automata " . $this->getTypeFullExpr());
+            }
             // switch to player state
             if ($this->game->machine->isMultiplayerOperationMode()) {
                 return MultiPlayerTurnPrivate::class;

@@ -20,9 +20,18 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\CountableOperation;
 
 class Op_gain extends CountableOperation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // AI  gets res track
+            $this->queue("ai_res", $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function resolve(): void {
         $count = $this->getCheckedArg();
         //$this->game->systemAssert("missing reason", $this->getReason());
