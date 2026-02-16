@@ -4,10 +4,11 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Db;
 
+use Bga\GameFramework\SystemException;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
-use SystemException;
+
 use Throwable;
 
 /**

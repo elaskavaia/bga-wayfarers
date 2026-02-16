@@ -18,9 +18,8 @@
  */
 namespace Bga\Games\wayfarers\Db;
 
+use Bga\GameFramework\SystemException;
 use Bga\Games\wayfarers\Game;
-use Exception;
-use feException;
 
 class DbTokens {
     var $table;
@@ -106,11 +105,11 @@ class DbTokens {
                 }
                 $key = $token_info["key"];
                 if ($key == null) {
-                    throw new feException("createTokens: key cannot be null");
+                    throw new SystemException("createTokens: key cannot be null");
                 }
                 $key = $this->varsub($key, array_merge($token_info, ["INDEX" => $i]), true);
                 if ($location == null) {
-                    throw new feException("createTokens: location cannot be null (set per token location or location_global");
+                    throw new SystemException("createTokens: location cannot be null (set per token location or location_global");
                 }
                 self::checkLocation($location);
                 self::checkKey($key);
@@ -173,7 +172,7 @@ class DbTokens {
             $iterArr = [""];
         }
         if (!is_array($iterArr)) {
-            throw new feException("iterArr must be an array");
+            throw new SystemException("iterArr must be an array");
         }
         if (count($iterArr) == 0) {
             $iterArr = [""];
@@ -308,7 +307,7 @@ class DbTokens {
         if (isset($this->autoreshuffle_custom[$from_location])) {
             $discard_location = $this->autoreshuffle_custom[$from_location];
         } else {
-            throw new feException("reformDeckFromDiscard: Unknown discard location for $from_location !");
+            throw new SystemException("reformDeckFromDiscard: Unknown discard location for $from_location !");
         }
         self::checkLocation($discard_location);
         self::moveAllTokensInLocation($discard_location, $from_location);
@@ -324,8 +323,8 @@ class DbTokens {
     function setTokenState($token_key, $state) {
         try {
             self::checkState($state);
-        } catch (Exception $e) {
-            throw new feException($e->getMessage() . " for $token_key");
+        } catch (\Exception $e) {
+            throw new SystemException($e->getMessage() . " for $token_key");
         }
         self::checkKey($token_key);
         $this->clear_cache();
@@ -559,7 +558,7 @@ class DbTokens {
 
     function varsub($line, $keymap) {
         if ($line === null) {
-            throw new feException("varsub: line cannot be null");
+            throw new SystemException("varsub: line cannot be null");
         }
         if (strpos($line, "{") !== false) {
             foreach ($keymap as $key => $value) {
@@ -574,7 +573,7 @@ class DbTokens {
     final function checkLocation($location, $like = false, $canBeNull = false) {
         if ($location === null) {
             if ($canBeNull === false) {
-                throw new feException("location cannot be null");
+                throw new SystemException("location cannot be null");
             } else {
                 return;
             }
@@ -584,7 +583,7 @@ class DbTokens {
             $extra = "%";
         }
         if (preg_match("/^[A-Za-z{$extra}][A-Za-z_0-9{$extra}-]*$/", $location) == 0) {
-            throw new feException("location must be alphanum and underscore non empty string");
+            throw new SystemException("location must be alphanum and underscore non empty string");
         }
     }
 
@@ -608,12 +607,12 @@ class DbTokens {
 
     final function checkState($state, $canBeNull = false) {
         if ($state === null && $canBeNull == false) {
-            throw new feException("state cannot be null");
+            throw new SystemException("state cannot be null");
         }
         if ($state !== null && preg_match("/^-?[0-9]+$/", $state) != 1) {
             // $bt = debug_backtrace();
             // trigger_error("bt ".print_r($bt[2],true)) ;
-            throw new feException("state must be integer number");
+            throw new SystemException("state must be integer number");
         }
     }
 
@@ -621,36 +620,36 @@ class DbTokens {
         $res = $this->checkListOrTokenArray($token_arr);
         if ($res != 1) {
             $debug = var_export($token_arr, true);
-            throw new feException("token_arr is not a list of token ids $res: $debug");
+            throw new SystemException("token_arr is not a list of token ids $res: $debug");
         }
     }
 
     final function checkKey($key, $like = false) {
         if ($key == null) {
-            throw new feException("key cannot be null");
+            throw new SystemException("key cannot be null");
         }
         if (!is_string($key)) {
-            throw new feException("key is not a string");
+            throw new SystemException("key is not a string");
         }
         $extra = "";
         if ($like) {
             $extra = "%";
         }
         if (preg_match("/^[A-Za-z_0-9{$extra}]+$/", $key) == 0) {
-            throw new feException("key must be alphanum and underscore non empty string '$key'");
+            throw new SystemException("key must be alphanum and underscore non empty string '$key'");
         }
     }
 
     final function checkType($key) {
         if ($key == null) {
-            throw new feException("type cannot be null");
+            throw new SystemException("type cannot be null");
         }
         $this->checkKey($key, true);
     }
 
     final function checkPosInt($key) {
         if ($key && preg_match("/^[0-9]+$/", $key) == 0) {
-            throw new feException("must be integer number");
+            throw new SystemException("must be integer number");
         }
     }
 
@@ -669,11 +668,11 @@ class DbTokens {
     final function checkListOrTokenArray($token_arr, $bThrow = true) {
         try {
             if ($token_arr === null) {
-                throw new feException("token_arr cannot be null");
+                throw new SystemException("token_arr cannot be null");
             }
             $debug = var_export($token_arr, true);
             if (!is_array($token_arr)) {
-                throw new feException("token_arr is not an array: $debug");
+                throw new SystemException("token_arr is not an array: $debug");
             }
             if (count($token_arr) == 0) {
                 return 0;
@@ -684,7 +683,7 @@ class DbTokens {
                 if ($type == -1) {
                     $type = $typeone;
                 } elseif ($type != $typeone) {
-                    throw new feException("token_arr data has mixed types $type != $typeone: $debug");
+                    throw new SystemException("token_arr data has mixed types $type != $typeone: $debug");
                 }
                 if (is_numeric($key)) {
                     // ok
@@ -694,15 +693,15 @@ class DbTokens {
                 } elseif ($typeone == 2) {
                     $k = $info["key"];
                     if ($key != $k) {
-                        throw new feException("token_arr data key info mismatch $key != $k: $debug");
+                        throw new SystemException("token_arr data key info mismatch $key != $k: $debug");
                     }
                 }
                 if ($key === "key" || $key === "location" || $key === "state") {
-                    throw new feException("token_arr data is not right array: $key $debug");
+                    throw new SystemException("token_arr data is not right array: $key $debug");
                 }
             }
             return $type;
-        } catch (feException $e) {
+        } catch (SystemException $e) {
             if ($bThrow) {
                 throw $e;
             }
@@ -718,12 +717,12 @@ class DbTokens {
                     return 2;
                 }
                 $debug = var_export($info, true);
-                throw new feException("token info structure is not correct: $debug");
+                throw new SystemException("token info structure is not correct: $debug");
             } else {
                 $this->checkKey($info);
                 return 1;
             }
-        } catch (feException $e) {
+        } catch (SystemException $e) {
             if ($bThrow) {
                 throw $e;
             }
@@ -768,7 +767,7 @@ class DbTokens {
                 return $keys;
             default:
                 $debug = var_export($tokens, true);
-                throw new feException("tokens structure is not supported: $debug");
+                throw new SystemException("tokens structure is not supported: $debug");
         }
     }
 
