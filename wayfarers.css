@@ -2066,6 +2066,42 @@ html[data-theme=dark] .miniboard .counter {
   background-position: 90% 14%;
 }
 
+.wicon_Op_cardFolk {
+  background-position: 0% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
+}
+
+.wicon_Op_cardLand {
+  background-position: 6% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
+}
+
+.wicon_Op_cardWater {
+  background-position: 12% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
+}
+
+.wicon_Op_cardSpace {
+  background-position: 18% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
+}
+
+.wicon_Op_cardInsp {
+  background-position: 24% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
+}
+
+.wicon_Op_infCard {
+  background-position: 30% 28%;
+  background-size: auto 1000%;
+  aspect-ratio: 1;
+}
+
 .wicon_water {
   background-position: 0% 28%;
   background-size: auto 1200%;
@@ -2103,7 +2139,8 @@ html[data-theme=dark] .miniboard .counter {
 
 .wicon_card_folk {
   background-position: 37% 28%;
-  background-size: auto 1200%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_card_insp {
