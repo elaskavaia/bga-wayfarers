@@ -1,45 +1,46 @@
-num|t|r|r2|tags|vp|name
+num|t|r|r2|tags|vp|name|p
+#p: position on the mainboad
 #set id=upg_{t}_{num}
 #set type=upg upg_yellow
 #set w=2
 #set h=1
-1|yellow|dicePlus|camel|||Land Upgrade Camel Plus
-2|yellow|camel|diceMinus|||Land Upgrade Camel Minus
-3|yellow|pigeon|dicePlus|||Land Upgrade Pigeon Plus
-4|yellow|diceMinus|pigeon|||Land Upgrade Pigeon Minus
-5|yellow|vp|coinDis||1|Land Upgrade Discount Right
-6|yellow|coinDis|vp||1|Land Upgrade Discount Left
+1|yellow|dicePlus|camel|||Land Upgrade Camel Plus|1
+2|yellow|camel|diceMinus|||Land Upgrade Camel Minus|1
+3|yellow|pigeon|dicePlus|||Land Upgrade Pigeon Plus|2
+4|yellow|diceMinus|pigeon|||Land Upgrade Pigeon Minus|2
+5|yellow|vp|coinDis||1|Land Upgrade Discount Right|3
+6|yellow|coinDis|vp||1|Land Upgrade Discount Left|3
 #set type=upg upg_blue
-7|blue|dicePlus|ship|||Water Upgrade Ship Plus
-8|blue|ship|diceMinus|||Water Upgrade Ship Minus
-9|blue|ship|pigeon|||Water Upgrade Ship Pigeon
-10|blue|pigeon|ship|||Water Upgrade Pigeon Ship
-11|blue|coinDis|dicePlus|||Water Upgrade Discount Plus
-12|blue|diceMinus|coinDis|||Water Upgrade Discount Minus
+7|blue|dicePlus|ship|||Water Upgrade Ship Plus|1
+8|blue|ship|diceMinus|||Water Upgrade Ship Minus|1
+9|blue|ship|pigeon|||Water Upgrade Ship Pigeon|2
+10|blue|pigeon|ship|||Water Upgrade Pigeon Ship|2
+11|blue|coinDis|dicePlus|||Water Upgrade Discount Plus|3
+12|blue|diceMinus|coinDis|||Water Upgrade Discount Minus|3
 #set w=1
 #set h=2
 #set type=upg upg_black
-20|black|ship,pigeon,camel||||Space Upgrade Trio
-21|black|diceMod,vp|||3|Space Upgrade Dice Mod
-22|black|telescope,foodDis||||Space Upgrade Telescope
+20|black|ship,pigeon,camel||||Space Upgrade Trio|3
+21|black|diceMod,vp|||3|Space Upgrade Dice Mod|2
+22|black|telescope,foodDis||||Space Upgrade Telescope|1
 #set w=1
 #set h=1
 #set type=upg upg_green
-31|green|camel|||1|Basic Upgrade Camel
-32|green|ship|||1|Basic Upgrade Ship
-33|green|telescope|||1|Basic Upgrade Telescope
-34|green|pigeon|||1|Basic Upgrade Pigeon
+31|green|camel|||1|Basic Upgrade Camel|4
+32|green|ship|||1|Basic Upgrade Ship|2
+33|green|telescope|||1|Basic Upgrade Telescope|1
+34|green|pigeon|||1|Basic Upgrade Pigeon|3
 #set type=upg upg_pink
-40|pink|||Vista|1|Special Upgrade Vista
-41|pink|||City|1|Special Upgrade City
-42|pink|||Sea|1|Special Upgrade Sea
-43|pink|||Harbour|1|Special Upgrade Harbour
-44|pink|||Observatory|5|Special Upgrade Observatory
-45|pink|||Book|5|Special Upgrade Book
-46|pink|||Planet|3|Special Upgrade Planet
-47|pink|||Stars|5|Special Upgrade Stars
-48|pink|||Comet Comet|4|Special Upgrade Double Comet
-49|pink|||Comet|5|Special Upgrade Comet
+40|pink|||Vista|1|Special Upgrade Vista|5
+41|pink|||City|1|Special Upgrade City|4
+42|pink|||Sea|1|Special Upgrade Sea|1
+43|pink|||Harbour|1|Special Upgrade Harbour|2
+44|pink|||Observatory|5|Special Upgrade Observatory|8
+45|pink|||Book|5|Special Upgrade Book|3
+46|pink|||Planet|3|Special Upgrade Planet|6
+47|pink|||Stars|5|Special Upgrade Stars|7
+48|pink|||Comet Comet|4|Special Upgrade Double Comet|10
+49|pink|||Comet|5|Special Upgrade Comet|9
 
 
 

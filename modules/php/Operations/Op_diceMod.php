@@ -96,7 +96,7 @@ class Op_diceMod extends Operation {
         $currentValue = (int) $this->game->tokens->db->getTokenState($dieKey);
         $newValue = $direction == "up" ? $currentValue + 1 : $currentValue - 1;
 
-        $this->game->tokens->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} sets ${token_name} to ${new_state}'));
+        $this->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} sets ${token_name} to ${new_state}'));
     }
 
     function getPrompt() {

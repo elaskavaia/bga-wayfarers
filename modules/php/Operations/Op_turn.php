@@ -14,7 +14,6 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\GameFramework\SystemException;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;

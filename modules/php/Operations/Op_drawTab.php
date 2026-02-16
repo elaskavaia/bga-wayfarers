@@ -50,7 +50,7 @@ class Op_drawTab extends Operation {
         foreach ($cards as $card => $info) {
             $state = $info["state"];
             if ($state >= $prev) {
-                $this->game->tokens->dbSetTokenState($card, $state - 1, "");
+                $this->dbSetTokenState($card, $state - 1, "");
             }
         }
 

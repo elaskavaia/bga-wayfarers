@@ -933,6 +933,30 @@ class Game extends Base {
         return $endScores;
     }
 
+    /**
+     * Trigger end of game condition
+     * All players including the one who triggered get one more turn
+     */
+    function triggerEndGame(int $playerId): void {
+        $gameStage = $this->tokens->db->getTokenState(Game::GAME_STAGE);
+
+        // Only trigger if not already triggered (game_stage < 1 means not triggered yet)
+        if ($gameStage < 1) {
+            // Store the triggering player's number (1-4) in game_stage
+            // This marks who triggered it so we know when to end after they complete their final turn
+
+            $playerNo = $this->game->custom_getPlayerNoById($playerId);
+
+            $this->tokens->dbSetTokenState(
+                Game::GAME_STAGE,
+                $playerNo,
+                clienttranslate('${player_name} triggers end of game! All players get one more turn.')
+            );
+
+            // TODO: send special notification to clients to show end game banner
+        }
+    }
+
     public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
         $this->debugLog("customUndoSavepoint $player_id bar= $barrier");
         if ($this->isMultiActive()) {

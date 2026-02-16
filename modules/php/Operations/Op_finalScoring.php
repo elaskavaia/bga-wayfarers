@@ -19,7 +19,7 @@ use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_finalScoring extends Operation {
     function resolve(): void {
-        $this->game->tokens->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
+        $this->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
 
         $this->game->finalScoring();
     }

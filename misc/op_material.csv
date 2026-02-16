@@ -76,8 +76,16 @@ finalScoring|Final Scoring
 
 #ai ops
 ai_turn|AI Turn
+ai_rest|AI Rest
 #set class=Op_ai_cardBase
 ai_cardLand|AI Acquire Land Card
 ai_cardWater|AI Acquire Water Card
 ai_cardSpace|AI Acquire Space Card
 ai_cardFolk|AI Acquire Townsfolk Card
+ai_cardInsp|AI Acquire Inspiration Card
+
+#set class=
+ai_upgAny|AI Acquire Upgrade Tile
+ai_upgPink|AI Acquire Pink Upgrade Tile
+ai_journal|AI Journal
+ai_shuffle|AI Shuffle

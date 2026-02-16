@@ -51,7 +51,7 @@
 
 - [x] Implement resource track color priority: track position dictates color (Black, Blue, Yellow, Green)
   - [x] Color determines priority for: influencing cards, acquiring upgrade tiles, placing/retrieving workers
-  - [ ] If priority color yields no benefit, move to next color clockwise
+  - [x] If priority color yields no benefit, move to next color clockwise
 - [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
   - [x] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
   - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around
@@ -64,12 +64,17 @@
   - [x] AI ignores all costs except scheme card requirements
   - [x] AI ignores all icons on acquired cards (no comets, no influence, no free upgrades)
   - [x] AI still collects cards for end-game scoring
-- [ ] AI upgrade tile acquisition:
-  - [ ] Use resource track color priority to determine tile color
-  - [ ] Use sum value for positional selection within that color
-  - [ ] Place tiles in specific Caravan order (per AI board rules)
-  - [ ] AI gains VP from upgrade tiles at end of game but ignores other tile icons
-  - [ ] Use scheme card's special upgrade priority indicator for Special pink upgrades
+- [x] AI upgrade tile acquisition (Op_ai_upgAny.php):
+  - [x] Use resource track color priority to determine tile color
+  - [x] Use sum value for positional selection within that color
+  - [x] Place tiles in winding caravan path (bottom L→R, middle R→L, top L→R)
+  - [x] AI gains VP from upgrade tiles at end of game but ignores other tile icons
+  - [x] Use scheme card's special upgrade priority indicator for Special pink upgrades
+  - [x] If priority color has no tiles, move to next color clockwise
+  - [x] Track full footprint of multi-cell tiles for collision detection
+  - [x] Place tiles alongside board when caravan is full
+  - [ ] Rotate rectangular tiles to fit winding path
+  - [ ] Resolve effects of covered caravan icons when placing tiles
 - [ ] AI worker placement:
   - [ ] Green Workers go on Townsfolk Cards
   - [ ] Yellow Workers go on Land Cards
@@ -88,18 +93,23 @@
 
 - [x] Check last revealed scheme card for comet icon -> move comet track marker up 1
 - [x] AI acquires one of: Space Card, Townsfolk Card, Upgrade Tile, or Influences a Card based on board
-- [ ] AI journals:
-  - [ ] Path determined by faceup scheme card colors: majority Blue = higher path, majority Red = lower path, tie = most recent card color
-  - [ ] If only one path available, take that path
-  - [ ] In last column: AI never takes middle option; if blocked, take other available space
-  - [ ] Before journaling, check AI position vs human player marker:
+- [x] AI journals (Op_ai_journal.php):
+  - [x] Path determined by faceup scheme card colors: majority Blue = higher path, majority Red = lower path, tie = most recent card color
+  - [x] If only one path available, take that path
+  - [x] In last column: AI never takes middle option; if blocked, take other available space
+  - [x] Before journaling, check AI position vs human player marker:
     - Behind: spend 1 Black Influence for extra space
     - Same column: spend 2 Black Influence for extra space
     - Ahead: spend 3 Black Influence for extra space
-  - [ ] AI ignores all journal track requirements but gains all rewards
-  - [ ] In final column: AI gains Pink Upgrade Tile instead of Inspiration Card
-- [ ] Do NOT refresh any cards until AI completes full rest turn
-- [ ] Shuffle all scheme cards back into facedown draw pile after rest
+  - [x] AI ignores all journal track requirements but gains all rewards
+  - [x] In final column: AI gains Pink Upgrade Tile instead of Inspiration Card
+  - [x] Op_ai_upgPink for pink upgrade tile acquisition (extends Op_ai_upgAny)
+- [x] Op_ai_rest: refactored rest logic from Op_ai_turn
+  - [x] Check comet on most recent scheme card and move comet tracker
+  - [x] Acquire based on AI board r1 field
+  - [x] Journal
+  - [x] Shuffle all scheme cards back into facedown draw pile after rest
+- [ ] Do NOT refresh any cards until AI completes full rest turn (requires card refresh logic)
 
 ### Phase 6: AI Scoring & Game End
 
@@ -122,3 +132,4 @@
 - [ ] AI turn narration/log messages (what the AI did each turn)
 - [ ] Solo end-game result screen (win/loss vs threshold or AI score)
 - [x] Scheme card deck and discard pile UI elements
+- [ ] UI support for AI upgrade tiles placed alongside board (state 0, no caravan position)

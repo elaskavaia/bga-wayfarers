@@ -20,6 +20,8 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\OpCommon;
 
+use Bga\GameFramework\SystemException;
+
 abstract class AiOperation extends CountableOperation {
     //   - [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
     //   - [ ] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
@@ -36,6 +38,21 @@ abstract class AiOperation extends CountableOperation {
             $sumValue = 1;
         }
         return $sumValue;
+    }
+
+    public function getNextPositionPriorityDirection(int $prev): int {
+        //1->2,2->3,3->2,4->3
+        switch ($prev) {
+            case 1:
+                return 1;
+            case 2:
+                return 1;
+            case 3:
+                return -1;
+            case 4:
+                return -1;
+        }
+        throw new SystemException("Invalid position priority $prev");
     }
 
     function getRecentCard() {

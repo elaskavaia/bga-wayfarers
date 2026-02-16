@@ -26,12 +26,6 @@ class Op_diceMinus extends Operation {
 
         $currentValue = (int) $this->game->tokens->db->getTokenState($dieKey);
         $newValue = $currentValue - 1;
-        $this->game->tokens->dbSetTokenState(
-            $dieKey,
-            $newValue,
-            clienttranslate('${player_name} uses caravan to change die to ${new_state}'),
-            [],
-            $this->getPlayerId()
-        );
+        $this->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} uses caravan to change die to ${new_state}'));
     }
 }

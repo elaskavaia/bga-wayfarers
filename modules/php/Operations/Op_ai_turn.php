@@ -23,10 +23,10 @@ class Op_ai_turn extends Op_turn {
         $owner = $this->getOwner();
         $this->game->systemAssert("mismatch action owner", $owner === "ffffff");
 
-        //   - [ ] Determine if AI should Rest (3 faceup Red or 3 faceup Blue scheme cards) or reveal a new scheme card
+        // Determine if AI should Rest (3 faceup Red or 3 faceup Blue scheme cards) or reveal a new scheme card
         if ($this->countCards($owner, "red") >= 3 || $this->countCards($owner, "blue") >= 3) {
             // Rest
-            $this->aiRest($owner);
+            $this->queue("ai_rest");
         } else {
             // Reveal
             $this->aiRevealScheme($owner);
@@ -47,33 +47,7 @@ class Op_ai_turn extends Op_turn {
         return $count;
     }
 
-    function aiRest(string $owner) {
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner", null, "token_state");
-        $scheme = array_key_last($cards);
-        $this->game->systemAssert("No scheme cards available for rest", $scheme);
-
-        $comet = (int) $this->game->getRulesFor($scheme, "comet", 0);
-        //         When Resting, follow the steps shown in the blue banner at the
-        // bottom of the AI Board in order, from left to right.
-        // The first step will always be to check the most recently
-        // revealed Scheme Card. If it shows a Comet in the bottom-
-        // right corner, move their Marker 1 space up their Comet Track.
-        if ($comet) {
-            [$trackerId, $currentPos] = $this->game->tokens->getTrackerIdAndValue($owner, "comet");
-            $newPos = $currentPos + 1;
-            $this->game->tokens->dbSetTokenState($trackerId, $newPos, "*", [], $this->getPlayerId());
-        }
-        // The second step will have them acquiring stuff, rule r1
-        $boardNumber = $this->aiGetBoardNumber();
-        $acquire = $this->game->getRulesFor("aiboard_$boardNumber", "r1");
-        $this->game->systemAssert("r1 for aiboard_$boardNumber", $acquire);
-        $this->queue($acquire);
-
-        // The third step is Journaling.
-        $this->queue("ai_journal");
-    }
-
-    function aiGetBoardNumber() {
+    function aiGetBoardNumber(): int {
         $owner = $this->getOwner();
         return -(int) $this->game->tokens->db->getTokenState("pboard_$owner");
     }
@@ -97,15 +71,9 @@ class Op_ai_turn extends Op_turn {
         if ($silver > 0) {
             [$trackerId, $currentPos] = $this->game->tokens->getTrackerIdAndValue($owner, "res");
             $newPos = ($currentPos + $silver) % 8;
-            $this->game->tokens->dbSetTokenState(
-                $trackerId,
-                $newPos,
-                clienttranslate('${player_name} moves resource marker to ${pos}'),
-                [
-                    "pos" => $newPos,
-                ],
-                $this->getPlayerId()
-            );
+            $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves resource marker to ${pos}'), [
+                "pos" => $newPos,
+            ]);
 
             //   - [ ] Resolve resource track effects passed over (comet, guild influence, townsfolk card)
             // Check if we passed position 4.5 (between 4 and 5)

@@ -350,7 +350,7 @@ function convertToUtf8($d) {
         foreach ($d as $k => $v) {
             $d[$k] = convertToUtf8($v);
             // if ($d[$k] != $v) {
-            //     throw new BgaUserException("trip point $v $k ($d[$k])");
+            //     throw new UserException("trip point $v $k ($d[$k])");
             // }
         }
     } elseif (is_object($d)) {

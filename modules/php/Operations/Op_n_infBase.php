@@ -60,7 +60,7 @@ abstract class Op_n_infBase extends CountableOperation {
                 $tokenId,
                 "tableau_$owner",
                 0,
-                clienttranslate('${player_name} spends ${token_name}')
+                clienttranslate('${player_name} spends ${token_name} from ${place_from}')
             );
             $i++;
         }

@@ -12,7 +12,6 @@ use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
 use Bga\Games\wayfarers\StateConstants;
 use Bga\Games\wayfarers\States\GameDispatch;
-use BgaVisibleSystemException;
 use PHPUnit\Framework\TestCase;
 
 use function Bga\Games\wayfarers\array_get;
@@ -23,7 +22,7 @@ define("PCOLOR", "6cd0f6");
 define("BCOLOR", "982fff");
 define("CCOLOR", "ff0000");
 define("ACOLOR", "ffffff"); // automa
-define("PCOLOR_NO", 10);
+define("PCOLOR_ID", 10);
 
 class FakeNotify extends Notify {
     public function all(string $notifName, string|NotificationMessage $message = "", array $args = []): void {
@@ -54,14 +53,6 @@ class GameUT extends Game {
 
         $tokens = new TokensInMem($this);
         $this->tokens = new PGameTokens($this, $tokens);
-    }
-
-    public function _($s): string {
-        return $s;
-    }
-
-    function getPlayersNumber(): int {
-        return count($this->_colors);
     }
 
     function setPlayersNumber(int $num) {
@@ -103,12 +94,8 @@ class GameUT extends Game {
 
     public $curid;
 
-    public function getCurrentPlayerId($bReturnNullIfNotLogged = false): string|int {
+    function _getCurrentPlayerId() {
         return $this->curid;
-    }
-
-    public function getCurrentPlayerColor(): string {
-        return $this->custom_getPlayerColorById($this->curid);
     }
 
     function _getColors() {

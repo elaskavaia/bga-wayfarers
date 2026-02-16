@@ -21,12 +21,12 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers;
 
 use Bga\GameFramework\NotificationMessage;
+use Bga\GameFramework\SystemException;
 use Bga\GameFramework\Table;
 use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\OpCommon\MathExpression;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
-use BgaSystemException;
-use BgaUserException;
+
 use Exception;
 use ReflectionMethod;
 
@@ -437,7 +437,7 @@ class Base extends Table {
      * @param $cond boolean
      *            condition of assert
 
-     * @throws BgaUserException
+     * @throws UserException
      */
     function userAssert(string|NotificationMessage $message, $cond = false) {
         if ($cond) {
@@ -455,7 +455,7 @@ class Base extends Table {
      *            server side log message, no translation needed
      * @param bool $cond
      *            condition of assert
-     * @throws BgaUserException
+     * @throws UserException
      */
     function systemAssert($log, $cond = false, ?string $logonly = null) {
         if ($cond) {
@@ -602,7 +602,7 @@ class Base extends Table {
                 $owner = $this->getActivePlayerColor();
             }
             if (strlen($cond) > 80) {
-                throw new BgaSystemException("Parse expression is too long '$cond'");
+                throw new SystemException("Parse expression is too long '$cond'");
             }
             $expr = MathExpression::parse($cond);
             $mapper = function ($x) use ($owner, $context, $options) {
@@ -611,7 +611,7 @@ class Base extends Table {
             return $expr->evaluate($mapper);
         } catch (Exception $e) {
             $this->error(toJson($e));
-            throw new BgaSystemException("Cannot evaluate math expression '$cond'");
+            throw new SystemException("Cannot evaluate math expression '$cond'");
         }
     }
 
@@ -749,7 +749,7 @@ class Base extends Table {
     */
 
     function zombieTurn($state, $active_player) {
-        throw new \BgaUserException("Zombie mode not supported at this game");
+        throw new UserException("Zombie mode not supported at this game");
     }
 
     ///////////////////////////////////////////////////////////////////////////////////:
@@ -805,6 +805,26 @@ function endsWith($haystack, $needle) {
     return $length === 0 || substr($haystack, -$length) === $needle;
 }
 
+function custom_array_rotate(array $array, int $start_index, int $direction) {
+    $keys = array_keys($array);
+    $values = array_values($array);
+    $count = count($array);
+
+    if ($count == 0) {
+        return $array;
+    }
+
+    $result = [];
+
+    for ($i = 0; $i < $count; $i++) {
+        // Calculate the source index with wrapping: direction 1 = forward, -1 = backward
+        $source_index = ((($start_index + $i * $direction) % $count) + $count) % $count;
+        $result[$keys[$source_index]] = $values[$source_index];
+    }
+
+    return $result;
+}
+
 function getPart($haystack, $i, $bNoexeption = false) {
     $parts = explode("_", $haystack);
     $len = count($parts);
@@ -812,7 +832,7 @@ function getPart($haystack, $i, $bNoexeption = false) {
         return "";
     }
     if ($i >= $len) {
-        throw new BgaSystemException("Access to $i >= $len for $haystack");
+        throw new SystemException("Access to $i >= $len for $haystack");
     }
     return $parts[$i];
 }
@@ -858,7 +878,7 @@ if (!function_exists("array_get")) {
             return $default;
         }
         if (!is_array($array)) {
-            throw new BgaSystemException("array_get first arg is not array");
+            throw new SystemException("array_get first arg is not array");
         }
         if (array_key_exists($key, $array)) {
             return $array[$key];

@@ -7,7 +7,7 @@ namespace Bga\Games\wayfarers\Db;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
-use BgaSystemException;
+use SystemException;
 use Throwable;
 
 /**
@@ -29,18 +29,18 @@ class DbMachine {
     // DB OPERATIONS
     final function checkInt($key) {
         if ($key === null || $key === false) {
-            throw new BgaSystemException("must be integer number but was null/false");
+            throw new SystemException("must be integer number but was null/false");
         }
         if (is_numeric($key)) {
             return (int) $key;
         }
-        throw new BgaSystemException("must be integer number");
+        throw new SystemException("must be integer number");
     }
 
     final function checkId($key) {
         $id = $this->checkInt($key);
         if ($id <= 0) {
-            throw new BgaSystemException("must be positive integer number");
+            throw new SystemException("must be positive integer number");
         }
         return $id;
     }
@@ -60,7 +60,7 @@ class DbMachine {
                     return $this->checkId($info["id"]);
                 }
                 $debug = json_encode($info);
-                throw new BgaSystemException("operation structure is not correct: $debug");
+                throw new SystemException("operation structure is not correct: $debug");
             }
             return $this->checkId($info);
         } catch (Throwable $e) {
@@ -83,7 +83,7 @@ class DbMachine {
      */
     final function ids($arr) {
         if ($arr === null) {
-            throw new BgaSystemException("arr cannot be null");
+            throw new SystemException("arr cannot be null");
         }
 
         if (!is_array($arr)) {

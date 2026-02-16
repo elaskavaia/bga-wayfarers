@@ -61,7 +61,7 @@ class Op_spendInfBlack extends Operation {
 
         // Mark that black influence was spent this turn
         $flagToken = "used_inf_black_$owner";
-        $this->game->tokens->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends black influence to do extra Journal'));
+        $this->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends black influence to do extra Journal'));
 
         // Spend 1 black influence
         $this->queue("n_infBlack");

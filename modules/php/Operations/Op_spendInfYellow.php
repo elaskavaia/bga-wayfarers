@@ -58,7 +58,7 @@ class Op_spendInfYellow extends Operation {
 
         // Mark that yellow influence was spent this turn
         $flagToken = "used_inf_yellow_$owner";
-        $this->game->tokens->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends yellow influence to modify dice'));
+        $this->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends yellow influence to modify dice'));
 
         // Spend 1 yellow influence
         $this->queue("n_infYellow");

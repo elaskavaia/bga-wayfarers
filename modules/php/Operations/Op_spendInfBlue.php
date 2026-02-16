@@ -59,7 +59,7 @@ class Op_spendInfBlue extends Operation {
 
         // Mark that blue influence was spent this turn
         $flagToken = "used_inf_blue_$owner";
-        $this->game->tokens->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends blue influence to gain a ship'));
+        $this->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends blue influence to gain a ship'));
 
         // Spend 1 blue influence
         $this->queue("n_infBlue");

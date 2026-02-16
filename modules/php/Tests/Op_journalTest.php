@@ -280,7 +280,7 @@ final class Op_journalTest extends TestCase {
         $this->assertEquals(0, $gameStage);
 
         // Trigger end game
-        $op->triggerEndGame();
+        $this->game->triggerEndGame(PCOLOR_ID);
 
         // Verify game stage was set (end game triggered)
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
@@ -290,26 +290,24 @@ final class Op_journalTest extends TestCase {
     public function testTriggerEndGameSetsPlayerNumber(): void {
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
         $this->assertEquals(0, $gameStage);
-        $op = $this->createOp();
-        $op->triggerEndGame();
+
+        $this->game->triggerEndGame(PCOLOR_ID);
 
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
-        $this->assertEquals(PCOLOR_NO, $gameStage); // First player triggers end game
+        $this->assertEquals(PCOLOR_ID, $gameStage); // First player triggers end game
     }
 
     public function testTriggerEndGameOnlyTriggersOnce(): void {
-        $op = $this->createOp();
-
         // First trigger
-        $op->triggerEndGame();
+        $this->game->triggerEndGame(PCOLOR_ID);
         $gameStage1 = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
 
         // Second trigger (should not change)
-        $op->triggerEndGame();
+        $this->game->triggerEndGame(PCOLOR_ID);
         $gameStage2 = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
 
         $this->assertEquals($gameStage1, $gameStage2);
-        $this->assertEquals(PCOLOR_NO, $gameStage2);
+        $this->assertEquals(PCOLOR_ID, $gameStage2);
     }
 
     public function testGetIconicName(): void {

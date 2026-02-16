@@ -15,9 +15,9 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\OpCommon\Operation;
+use Bga\Games\wayfarers\OpCommon\CountableOperation;
 
-abstract class Op_infBase extends Operation {
+abstract class Op_infBase extends CountableOperation {
     abstract function getGuild(): string;
 
     /**
@@ -85,20 +85,15 @@ abstract class Op_infBase extends Operation {
                 $influenceKey = $this->game->tokens->db->createTokenAutoInc("influence_$owner", "tableau_$owner", 0);
             }
 
-            $this->dbSetTokenLocation(
-                $influenceKey,
-                $guild,
-                0,
-                clienttranslate('${player_name} places ${token_name} on ${place_name}')
-            );
+            $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} places ${token_name} on ${place_name}'));
         } else {
             // Move from another location
-            $this->dbSetTokenLocation(
-                $influenceKey,
-                $guild,
-                0,
-                clienttranslate('${player_name} moves ${token_name} to ${place_name}')
-            );
+            $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} moves ${token_name} to ${place_name}'));
+        }
+        if ($this->getCount() > 1) {
+            $this->incMinCount(-1);
+            $this->incCount(-1);
+            $this->saveToDb(1, true);
         }
     }
 

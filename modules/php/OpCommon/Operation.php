@@ -255,6 +255,10 @@ abstract class Operation {
         $this->game->tokens->dbSetTokenLocation($tokenId, $placeId, $state, $notif, $args, $this->getPlayerId());
     }
 
+    function dbSetTokenState($tokenId, $state = null, $notif = "*", $args = []) {
+        $this->game->tokens->dbSetTokenState($tokenId, $state, $notif, $args, $this->getPlayerId());
+    }
+
     protected function getCheckedArg(bool $checkMaxCount = false, bool $checkMinCount = false) {
         if ($this->userArgs === null) {
             throw new SystemException("No user args set");

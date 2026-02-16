@@ -14,11 +14,20 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
+
 /**
  * Pink (Special) upgrade tiles (1x1 square)
  * These are unique tiles - only 1 copy of each exists
  */
 class Op_upgPink extends Op_upgBase {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_upgPink", $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function getTileType(): string {
         return "pink";
     }

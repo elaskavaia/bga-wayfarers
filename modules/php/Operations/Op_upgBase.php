@@ -15,10 +15,7 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\GameFramework\NotificationMessage;
-use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\Material;
-use BgaUserException;
-use Dom\Node;
 
 use function Bga\Games\wayfarers\getPart;
 
@@ -275,7 +272,7 @@ abstract class Op_upgBase extends Op_acquireBase {
 
         for ($dy = 0; $dy < $dimensions["h"]; $dy++) {
             for ($dx = 0; $dx < $dimensions["w"]; $dx++) {
-                $cellPos = ($x + $dx) + ($y + $dy) * self::CARAVAN_WIDTH + 1;
+                $cellPos = $x + $dx + ($y + $dy) * self::CARAVAN_WIDTH + 1;
                 $bonus = $this->getBonus($cellPos);
                 if ($bonus) {
                     $this->queue($bonus, $owner, [], "caravanBonus");

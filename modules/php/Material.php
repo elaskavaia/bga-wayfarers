@@ -437,6 +437,10 @@ class Material {
         "type" => "ai_turn",
         "name" => clienttranslate("AI Turn"),
 ],
+    "Op_ai_rest" => [ 
+        "type" => "ai_rest",
+        "name" => clienttranslate("AI Rest"),
+],
     "Op_ai_cardLand" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardLand",
@@ -456,6 +460,27 @@ class Material {
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardFolk",
         "name" => clienttranslate("AI Acquire Townsfolk Card"),
+],
+    "Op_ai_cardInsp" => [ 
+        "class" => "Op_ai_cardBase",
+        "type" => "ai_cardInsp",
+        "name" => clienttranslate("AI Acquire Inspiration Card"),
+],
+    "Op_ai_upgAny" => [ 
+        "type" => "ai_upgAny",
+        "name" => clienttranslate("AI Acquire Upgrade Tile"),
+],
+    "Op_ai_upgPink" => [ 
+        "type" => "ai_upgPink",
+        "name" => clienttranslate("AI Acquire Pink Upgrade Tile"),
+],
+    "Op_ai_journal" => [ 
+        "type" => "ai_journal",
+        "name" => clienttranslate("AI Journal"),
+],
+    "Op_ai_shuffle" => [ 
+        "type" => "ai_shuffle",
+        "name" => clienttranslate("AI Shuffle"),
 ],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
@@ -2136,6 +2161,7 @@ class Material {
             /* --- gen php end cardwater_material --- */
 
             /* --- gen php begin upg_material --- */
+// #p: position on the mainboad
     "upg_yellow_1" => [ 
         "type" => "upg upg_yellow",
         "w" => 2,
@@ -2145,6 +2171,7 @@ class Material {
         "r" => "dicePlus",
         "r2" => "camel",
         "name" => clienttranslate("Land Upgrade Camel Plus"),
+        "p" => 1,
 ],
     "upg_yellow_2" => [ 
         "type" => "upg upg_yellow",
@@ -2155,6 +2182,7 @@ class Material {
         "r" => "camel",
         "r2" => "diceMinus",
         "name" => clienttranslate("Land Upgrade Camel Minus"),
+        "p" => 1,
 ],
     "upg_yellow_3" => [ 
         "type" => "upg upg_yellow",
@@ -2165,6 +2193,7 @@ class Material {
         "r" => "pigeon",
         "r2" => "dicePlus",
         "name" => clienttranslate("Land Upgrade Pigeon Plus"),
+        "p" => 2,
 ],
     "upg_yellow_4" => [ 
         "type" => "upg upg_yellow",
@@ -2175,6 +2204,7 @@ class Material {
         "r" => "diceMinus",
         "r2" => "pigeon",
         "name" => clienttranslate("Land Upgrade Pigeon Minus"),
+        "p" => 2,
 ],
     "upg_yellow_5" => [ 
         "type" => "upg upg_yellow",
@@ -2186,6 +2216,7 @@ class Material {
         "r2" => "coinDis",
         "vp" => 1,
         "name" => clienttranslate("Land Upgrade Discount Right"),
+        "p" => 3,
 ],
     "upg_yellow_6" => [ 
         "type" => "upg upg_yellow",
@@ -2197,6 +2228,7 @@ class Material {
         "r2" => "vp",
         "vp" => 1,
         "name" => clienttranslate("Land Upgrade Discount Left"),
+        "p" => 3,
 ],
     "upg_blue_7" => [ 
         "type" => "upg upg_blue",
@@ -2207,6 +2239,7 @@ class Material {
         "r" => "dicePlus",
         "r2" => "ship",
         "name" => clienttranslate("Water Upgrade Ship Plus"),
+        "p" => 1,
 ],
     "upg_blue_8" => [ 
         "type" => "upg upg_blue",
@@ -2217,6 +2250,7 @@ class Material {
         "r" => "ship",
         "r2" => "diceMinus",
         "name" => clienttranslate("Water Upgrade Ship Minus"),
+        "p" => 1,
 ],
     "upg_blue_9" => [ 
         "type" => "upg upg_blue",
@@ -2227,6 +2261,7 @@ class Material {
         "r" => "ship",
         "r2" => "pigeon",
         "name" => clienttranslate("Water Upgrade Ship Pigeon"),
+        "p" => 2,
 ],
     "upg_blue_10" => [ 
         "type" => "upg upg_blue",
@@ -2237,6 +2272,7 @@ class Material {
         "r" => "pigeon",
         "r2" => "ship",
         "name" => clienttranslate("Water Upgrade Pigeon Ship"),
+        "p" => 2,
 ],
     "upg_blue_11" => [ 
         "type" => "upg upg_blue",
@@ -2247,6 +2283,7 @@ class Material {
         "r" => "coinDis",
         "r2" => "dicePlus",
         "name" => clienttranslate("Water Upgrade Discount Plus"),
+        "p" => 3,
 ],
     "upg_blue_12" => [ 
         "type" => "upg upg_blue",
@@ -2257,6 +2294,7 @@ class Material {
         "r" => "diceMinus",
         "r2" => "coinDis",
         "name" => clienttranslate("Water Upgrade Discount Minus"),
+        "p" => 3,
 ],
     "upg_black_20" => [ 
         "type" => "upg upg_black",
@@ -2266,6 +2304,7 @@ class Material {
         "t" => "black",
         "r" => "ship,pigeon,camel",
         "name" => clienttranslate("Space Upgrade Trio"),
+        "p" => 3,
 ],
     "upg_black_21" => [ 
         "type" => "upg upg_black",
@@ -2276,6 +2315,7 @@ class Material {
         "r" => "diceMod,vp",
         "vp" => 3,
         "name" => clienttranslate("Space Upgrade Dice Mod"),
+        "p" => 2,
 ],
     "upg_black_22" => [ 
         "type" => "upg upg_black",
@@ -2285,6 +2325,7 @@ class Material {
         "t" => "black",
         "r" => "telescope,foodDis",
         "name" => clienttranslate("Space Upgrade Telescope"),
+        "p" => 1,
 ],
     "upg_green_31" => [ 
         "type" => "upg upg_green",
@@ -2295,6 +2336,7 @@ class Material {
         "r" => "camel",
         "vp" => 1,
         "name" => clienttranslate("Basic Upgrade Camel"),
+        "p" => 4,
 ],
     "upg_green_32" => [ 
         "type" => "upg upg_green",
@@ -2305,6 +2347,7 @@ class Material {
         "r" => "ship",
         "vp" => 1,
         "name" => clienttranslate("Basic Upgrade Ship"),
+        "p" => 2,
 ],
     "upg_green_33" => [ 
         "type" => "upg upg_green",
@@ -2315,6 +2358,7 @@ class Material {
         "r" => "telescope",
         "vp" => 1,
         "name" => clienttranslate("Basic Upgrade Telescope"),
+        "p" => 1,
 ],
     "upg_green_34" => [ 
         "type" => "upg upg_green",
@@ -2325,6 +2369,7 @@ class Material {
         "r" => "pigeon",
         "vp" => 1,
         "name" => clienttranslate("Basic Upgrade Pigeon"),
+        "p" => 3,
 ],
     "upg_pink_40" => [ 
         "type" => "upg upg_pink",
@@ -2335,6 +2380,7 @@ class Material {
         "tags" => "Vista",
         "vp" => 1,
         "name" => clienttranslate("Special Upgrade Vista"),
+        "p" => 5,
 ],
     "upg_pink_41" => [ 
         "type" => "upg upg_pink",
@@ -2345,6 +2391,7 @@ class Material {
         "tags" => "City",
         "vp" => 1,
         "name" => clienttranslate("Special Upgrade City"),
+        "p" => 4,
 ],
     "upg_pink_42" => [ 
         "type" => "upg upg_pink",
@@ -2355,6 +2402,7 @@ class Material {
         "tags" => "Sea",
         "vp" => 1,
         "name" => clienttranslate("Special Upgrade Sea"),
+        "p" => 1,
 ],
     "upg_pink_43" => [ 
         "type" => "upg upg_pink",
@@ -2365,6 +2413,7 @@ class Material {
         "tags" => "Harbour",
         "vp" => 1,
         "name" => clienttranslate("Special Upgrade Harbour"),
+        "p" => 2,
 ],
     "upg_pink_44" => [ 
         "type" => "upg upg_pink",
@@ -2375,6 +2424,7 @@ class Material {
         "tags" => "Observatory",
         "vp" => 5,
         "name" => clienttranslate("Special Upgrade Observatory"),
+        "p" => 8,
 ],
     "upg_pink_45" => [ 
         "type" => "upg upg_pink",
@@ -2385,6 +2435,7 @@ class Material {
         "tags" => "Book",
         "vp" => 5,
         "name" => clienttranslate("Special Upgrade Book"),
+        "p" => 3,
 ],
     "upg_pink_46" => [ 
         "type" => "upg upg_pink",
@@ -2395,6 +2446,7 @@ class Material {
         "tags" => "Planet",
         "vp" => 3,
         "name" => clienttranslate("Special Upgrade Planet"),
+        "p" => 6,
 ],
     "upg_pink_47" => [ 
         "type" => "upg upg_pink",
@@ -2405,6 +2457,7 @@ class Material {
         "tags" => "Stars",
         "vp" => 5,
         "name" => clienttranslate("Special Upgrade Stars"),
+        "p" => 7,
 ],
     "upg_pink_48" => [ 
         "type" => "upg upg_pink",
@@ -2415,6 +2468,7 @@ class Material {
         "tags" => "Comet Comet",
         "vp" => 4,
         "name" => clienttranslate("Special Upgrade Double Comet"),
+        "p" => 10,
 ],
     "upg_pink_49" => [ 
         "type" => "upg upg_pink",
@@ -2425,6 +2479,7 @@ class Material {
         "tags" => "Comet",
         "vp" => 5,
         "name" => clienttranslate("Special Upgrade Comet"),
+        "p" => 9,
 ],
             /* --- gen php end upg_material --- */
             /* --- gen php begin action_material --- */
@@ -3873,7 +3928,7 @@ class Material {
         "c" => 2,
         "r1" => "ai_placeWorker(green)",
         "r2" => "ac_focusAction",
-        "p" => 1,
+        "p" => 6,
         "comet" => 1,
         "nomx" => "Blue Focus",
 ],
@@ -3886,7 +3941,7 @@ class Material {
         "c" => 0,
         "r1" => "ai_placeWorker(green/blue)",
         "r2" => "infBlue,infYellow,infBlack",
-        "p" => 3,
+        "p" => 8,
         "comet" => 1,
         "nomx" => "Blue Influence",
 ],
@@ -3899,7 +3954,7 @@ class Material {
         "c" => 0,
         "r1" => "ai_placeWorker(green/yellow)",
         "r2" => "ai_upgAny",
-        "p" => 5,
+        "p" => 10,
         "comet" => 0,
         "nomx" => "Blue Upgrade",
 ],
@@ -3913,7 +3968,7 @@ class Material {
         "c" => 1,
         "r1" => "2n_infBlue:ai_cardWater",
         "r2" => "infBlue,ai_upgAny",
-        "p" => 6,
+        "p" => 5,
         "comet" => 1,
         "nomx" => "Red Buy Water",
 ],
@@ -3926,7 +3981,7 @@ class Material {
         "c" => 2,
         "r1" => "2n_infBlack:ai_cardSpace",
         "r2" => "infBlack,ai_cardFolk",
-        "p" => 8,
+        "p" => 3,
         "comet" => 1,
         "nomx" => "Red Buy Space",
 ],
@@ -3939,7 +3994,7 @@ class Material {
         "c" => 1,
         "r1" => "2n_infYellow:ai_cardLand",
         "r2" => "infYellow,infYellow,ai_infCard",
-        "p" => 10,
+        "p" => 1,
         "comet" => 0,
         "nomx" => "Red Buy Land",
 ],
