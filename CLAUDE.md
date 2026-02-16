@@ -124,28 +124,51 @@ The game supports a solo mode where a human player plays against an AI opponent 
 
 **Turn routing** ([modules/php/Operations/Op_turn.php](modules/php/Operations/Op_turn.php)):
 - `Op_turn::auto()` checks if the current player is `PLAYER_AUTOMA`; if so, it queues `ai_turn` for the automa color and returns true (no human UI needed)
-- `Op_turn::queueNextTurnOrEnd()` uses `getNextReadyPlayerId()` to alternate turns; always queues a `turn` operation (which then dispatches to `ai_turn` if it's the automa's turn)
+- `Game::queueNextTurnOrEnd($playerId)` — in [modules/php/Game.php](modules/php/Game.php), uses `getNextReadyPlayerId()` to alternate turns; queues `turn` or `finalScoring` based on end-game state
 
 **AI turn logic** ([modules/php/Operations/Op_ai_turn.php](modules/php/Operations/Op_ai_turn.php)):
-- Extends `Op_turn`; overrides `auto()` to fully resolve the AI turn without user input
+- Extends `AiOperation`; overrides `auto()` to fully resolve the AI turn without user input
 - Determines Rest vs Reveal based on faceup scheme card colors (3+ of one color → rest)
-- On reveal: draws scheme card to `tableau_ffffff`, moves resource track marker, resolves actions
-- On rest: checks comet, acquires per AI board rules, journals, shuffles scheme cards back to `deck_scheme`
-- Queues `turnconf` for the human player (so they can review the AI's actions before proceeding)
+- On reveal: draws scheme card to `tableau_ffffff`, queues `ai_res` for resource track movement, resolves actions
+- On rest: queues `ai_rest` which handles comet check, acquisition, journaling, and shuffle
+- Action resolution: tries `r1` first; if `isVoid()` (no valid targets and not skippable), falls back to `r2`
 
 **AI operations** (in `modules/php/Operations/Op_ai_*.php`):
 - All AI operations extend **AiOperation** ([modules/php/OpCommon/AiOperation.php](modules/php/OpCommon/AiOperation.php)) which extends `CountableOperation`
 - AI ops always auto-resolve (`auto()` returns true) — they never enter a player input state
 - `Op_ai_cardBase` — shared base for AI card acquisition (Land, Water, Space, Folk); mapped via `#set class=Op_ai_cardBase` in op_material.csv so multiple op types share one implementation
-- AI operations are registered in `misc/op_material.csv` with `ai_` prefix (e.g., `ai_turn`, `ai_cardLand`, `ai_cardWater`)
+- `Op_ai_upgAny` — AI upgrade tile acquisition with color priority, positional selection, and winding caravan path placement
+- `Op_ai_upgPink` — extends Op_ai_upgAny for pink/special tiles using scheme card `p` field for priority
+- `Op_ai_placeWorker` — AI worker placement; reads allowed colors from params (e.g., `green/blue`), maps worker color to card type, uses positional priority
+- `Op_ai_journal` — AI journaling with path selection based on scheme card color majority; connection order from CSV determines North/South (first = upper, last = lower)
+- `Op_ai_rest` — AI rest: comet check, acquire per AI board, journal, shuffle
+- `Op_ai_shuffle` — shuffles scheme cards back to deck
+- `Op_ai_res` — moves AI resource track marker clockwise
+- AI operations are registered in `misc/op_material.csv` with `ai_` prefix (e.g., `ai_turn`, `ai_cardLand`, `ai_placeWorker`)
+
+**Operation parameters**:
+- Operations can receive parameters via parenthesized syntax: `ai_placeWorker(green/blue)`, `cardDraw(land)`, `upgGreen(free)`
+- Accessed via `getParams()` (full string) or `getParam($index)` (comma-separated)
+- Slash-separated values are a convention for priority lists (parsed by the operation itself)
 
 **AI prioritization helpers** (in AiOperation):
-- `getPositionPriority()` — sum of silver values of the 2 most recent scheme cards; determines which mainarea slot to target
+- `getPositionPriority()` — sum of silver values of the 2 most recent scheme cards (1-4); determines which mainarea slot to target
+- `getNextPositionPriorityDirection($prev)` — returns 1 or -1 for wraparound direction based on priority value
 - `getResourceMarkerPosition()` / `getResourceMarkerRules()` — reads the resource track marker position and looks up rules (color priority, inspiration card row)
 - `getRecentCard()` — returns the most recently revealed scheme card
+- `aiGetBoardNumber()` — derives AI board number from negative state of `pboard_ffffff`
+- `countCards($owner, $color)` — counts faceup scheme cards of given color
+- `custom_array_rotate()` — global helper in Base.php for rotating arrays with direction (used for clockwise color priority)
+
+**Worker placement** (board actions defined in [misc/action_material.csv](misc/action_material.csv)):
+- Worker color determines valid card types: green→folk, yellow→land, blue→water
+- Board actions keyed as `action_{cardType}_{position}` with field `r` containing the operation expression
+- When a worker is placed on a card, the action rule at that position is queued
+- Workers become public resources once placed (location = card key); retrieved by any player via `pickWorker`
 
 **Scheme cards** (defined in [misc/scheme_material.csv](misc/scheme_material.csv)):
 - 6 cards (3 blue, 3 red) with fields: `t` (color), `c` (silver value 0-2), `r1` (primary action), `r2` (fallback action), `p` (upgrade priority), `comet` (0/1)
+- Blue cards have `ai_placeWorker(color_options)` as r1; Red cards have influence+card-acquisition patterns
 - Stored in `deck_scheme`; revealed cards move to `tableau_ffffff` with incrementing state values for ordering
 
 **AI board data** (also in scheme_material.csv):
@@ -153,10 +176,16 @@ The game supports a solo mode where a human player plays against an AI opponent 
 - `spot_res_{num}` entries define resource track positions: `t` (priority color), `c` (inspiration card order)
 - Board number is derived from the negative state of `pboard_ffffff`
 
+**Journal track** (defined in [misc/journal_material.csv](misc/journal_material.csv)):
+- Positions (`jpos_{num}`) have `conn` field listing connected positions; connection order matters: first = upper/North path, last = lower/South path
+- Connectors (`jconn_{from}_{to}_{side}`) define requirements (`r` field) and side of board (`gw` field)
+- AI ignores connector requirements but uses connection order for path preference (blue = upper/first, red = lower/last)
+
 **AI-specific tokens**:
 - `tracker_res_ffffff` — resource track marker (state 0-7, moves clockwise by silver value)
 - `tracker_comet_ffffff` — comet track marker (state 0-10)
 - Scheme cards in `tableau_ffffff` — faceup revealed cards (state >= 2 indicates reveal order)
+- Workers `worker_blue_*`, `worker_yellow_*`, `worker_green_*` — in `tableau_ffffff` when in AI supply, on card keys when placed
 
 ## BGA-Specific Considerations
 

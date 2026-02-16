@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\GameFramework\NotificationMessage;
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 
 use function Bga\Games\wayfarers\getPart;
@@ -26,6 +27,14 @@ use function Bga\Games\wayfarers\getPart;
 abstract class Op_upgBase extends Op_acquireBase {
     const CARAVAN_WIDTH = 6;
     const CARAVAN_HEIGHT = 3;
+
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_upgAny", $this->game->getAutomaColor(), ["upgrade" => $this->getTileType()]);
+            return true;
+        }
+        return parent::auto();
+    }
 
     /**
      * Get the tile type (e.g., "blue", "black", "yellow", "green", "pink")

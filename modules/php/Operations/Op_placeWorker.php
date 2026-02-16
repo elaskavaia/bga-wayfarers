@@ -118,7 +118,7 @@ class Op_placeWorker extends Operation {
             ["pos" => $state, "card_type" => $this->game->getTokenName($ctype)]
         );
 
-        $workerRule = $this->game->getRulesFor("action_{$ctype}_{$state}", "r", "");
+        $workerRule = $this->game->getRulesForAndAssert("action_{$ctype}_{$state}", "r", "");
         $this->queue($workerRule);
     }
 

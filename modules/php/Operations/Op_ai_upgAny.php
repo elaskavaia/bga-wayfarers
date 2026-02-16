@@ -83,6 +83,9 @@ class Op_ai_upgAny extends AiOperation {
      * Returns array of colors in priority order
      */
     function getColorPriority(): array {
+        if ($this->getUpgradeColor()) {
+            return [$this->getUpgradeColor()];
+        }
         $colorPriority = $this->getResourceMarkerRules("t");
 
         // Rotate color list to start from resource track priority color, in clockwise order
@@ -92,6 +95,10 @@ class Op_ai_upgAny extends AiOperation {
         }
 
         return custom_array_rotate(self::COLOR_PRIORITY, $startIndex, 1);
+    }
+
+    function getUpgradeColor() {
+        return $this->getDataField("upgrade", null);
     }
 
     /**
@@ -184,6 +191,10 @@ class Op_ai_upgAny extends AiOperation {
      */
     public function auto(): bool {
         $owner = $this->getOwner();
+        if ($this->getUpgradeColor() == "pink") {
+            $this->queue("ai_upgPink");
+            return true;
+        }
         $availableTiles = $this->getPossibleMoves();
 
         $selectedTile = $this->selectTile($availableTiles);

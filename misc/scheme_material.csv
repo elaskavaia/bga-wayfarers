@@ -13,7 +13,7 @@ num|t|c|r1|r2|p|comet|nomx
 
 
 # Blue cards
-1|blue|2|ai_placeWorker(green)|ac_focusAction|6|1|Blue Focus
+1|blue|2|ai_placeWorker(green)|ai_focusAction|6|1|Blue Focus
 2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|8|1|Blue Influence
 3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|10|0|Blue Upgrade
 # Red cards

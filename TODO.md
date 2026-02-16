@@ -75,12 +75,14 @@
   - [x] Place tiles alongside board when caravan is full
   - [ ] Rotate rectangular tiles to fit winding path
   - [ ] Resolve effects of covered caravan icons when placing tiles
-- [ ] AI worker placement:
-  - [ ] Green Workers go on Townsfolk Cards
-  - [ ] Yellow Workers go on Land Cards
-  - [ ] Blue Workers go on Water Cards
-  - [ ] When given choice of two workers, prioritize Green
-  - [ ] Resolve all printed actions of the space
+- [x] AI worker placement (Op_ai_placeWorker.php):
+  - [x] Green Workers go on Townsfolk Cards
+  - [x] Yellow Workers go on Land Cards
+  - [x] Blue Workers go on Water Cards
+  - [x] When given choice of two workers, prioritize Green
+  - [x] Resolve all printed actions of the space
+  - [x] Uses positional priority (sum value) to select target card
+  - [x] isVoid() check for fallback to second scheme card action
 - [ ] AI worker retrieval:
   - [ ] Prioritize Green Workers first
   - [ ] Then use resource track color priority for worker color

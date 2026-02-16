@@ -486,6 +486,10 @@ class Material {
         "type" => "ai_res",
         "name" => clienttranslate("AI Resource Track"),
 ],
+    "Op_ai_placeWorker" => [ 
+        "type" => "ai_placeWorker",
+        "name" => clienttranslate("AI Place Worker"),
+],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
 // # create is one of the numbers
@@ -3931,7 +3935,7 @@ class Material {
         "t" => "blue",
         "c" => 2,
         "r1" => "ai_placeWorker(green)",
-        "r2" => "ac_focusAction",
+        "r2" => "ai_focusAction",
         "p" => 6,
         "comet" => 1,
         "nomx" => "Blue Focus",
