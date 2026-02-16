@@ -111,7 +111,7 @@ class Game1Tokens extends Game0Basics {
   addShowMeButton(scroll: boolean) {
     const firstTarget = document.querySelector("." + this.classActiveSlot);
     if (!firstTarget) return;
-    this.statusBar.addActionButton(
+    this.bga.statusBar.addActionButton(
       _("Show me"),
       () => {
         const butt = $("button_showme");

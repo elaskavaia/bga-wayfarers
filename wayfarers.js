@@ -185,7 +185,7 @@ var Game0Basics = /** @class */ (function (_super) {
             handler = function () { return _this.onCancel(); };
         if ($("button_cancel"))
             $("button_cancel").remove();
-        this.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
+        this.bga.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
     };
     /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */
     Game0Basics.prototype.showPopin = function (html, id, title, refresh) {
@@ -591,7 +591,7 @@ var Game1Tokens = /** @class */ (function (_super) {
         var firstTarget = document.querySelector("." + this.classActiveSlot);
         if (!firstTarget)
             return;
-        this.statusBar.addActionButton(_("Show me"), function () {
+        this.bga.statusBar.addActionButton(_("Show me"), function () {
             var butt = $("button_showme");
             var firstTarget = document.querySelector("." + _this.classActiveSlot);
             if (!firstTarget)
@@ -1315,7 +1315,7 @@ var GameMachine = /** @class */ (function (_super) {
         var _a, _b, _c, _d, _e, _f;
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo === null || opInfo === void 0 ? void 0 : opInfo.description)
-                this.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
+                this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
             this.setSubPrompt("");
             this.addUndoButton((_a = opInfo.ui) === null || _a === void 0 ? void 0 : _a.undo);
             return;
@@ -1323,14 +1323,14 @@ var GameMachine = /** @class */ (function (_super) {
         this.completeOpInfo(opInfo);
         this.opInfo = opInfo;
         if (opInfo.prompt) {
-            this.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
+            this.bga.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
         }
         if (opInfo.subtitle)
             this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
         else
             this.setSubPrompt(this.getReasonText(opInfo.data.reason));
         if (opInfo.err) {
-            var button = this.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), function () { }, {
+            var button = this.bga.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), function () { }, {
                 color: "alert",
                 id: "button_err"
             });
@@ -1397,7 +1397,7 @@ var GameMachine = /** @class */ (function (_super) {
                 // skip, whatever TODO: anytime
                 var color = (_e = paramInfo.color) !== null && _e !== void 0 ? _e : "secondary";
                 var call_1 = (_f = paramInfo.call) !== null && _f !== void 0 ? _f : target;
-                var button = this_1.statusBar.addActionButton(this_1.getTargetButtonName(target, paramInfo), function () {
+                var button = this_1.bga.statusBar.addActionButton(this_1.getTargetButtonName(target, paramInfo), function () {
                     return _this.bga.actions.performAction("action_".concat(call_1), {
                         data: JSON.stringify({ target: target })
                     });
@@ -1427,7 +1427,7 @@ var GameMachine = /** @class */ (function (_super) {
         var q = paramInfo.q;
         var active = q == 0;
         var color = (_a = paramInfo.color) !== null && _a !== void 0 ? _a : this.opInfo.ui.color;
-        var button = this.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), function (event) { return _this.onToken(event); }, {
+        var button = this.bga.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), function (event) { return _this.onToken(event); }, {
             color: color,
             disabled: !active,
             id: "button_" + target
@@ -1452,7 +1452,7 @@ var GameMachine = /** @class */ (function (_super) {
         if (!cloneHtml) {
             return undefined;
         }
-        var button = this.statusBar.addActionButton(cloneHtml, function (event) { return _this.onToken(event); }, {
+        var button = this.bga.statusBar.addActionButton(cloneHtml, function (event) { return _this.onToken(event); }, {
             color: color,
             disabled: !active,
             id: "button_" + target
@@ -1546,7 +1546,7 @@ var GameMachine = /** @class */ (function (_super) {
         var buttonName = _("Submit");
         var doneButtonId = "button_done";
         var resetButtonId = "button_reset";
-        this.statusBar.addActionButton(buttonName, function () {
+        this.bga.statusBar.addActionButton(buttonName, function () {
             var res = {};
             var count = _this.getMultiSelectCountAndSync(res);
             if (opInfo.ttype == "token_count") {
@@ -1559,7 +1559,7 @@ var GameMachine = /** @class */ (function (_super) {
             color: "primary",
             id: doneButtonId
         });
-        this.statusBar.addActionButton(_("Reset"), function () {
+        this.bga.statusBar.addActionButton(_("Reset"), function () {
             var allSel = document.querySelectorAll(".".concat(_this.classSelectedAlt, ",.").concat(_this.classSelected));
             allSel.forEach(function (node) {
                 delete node.dataset.count;
@@ -1580,7 +1580,7 @@ var GameMachine = /** @class */ (function (_super) {
     };
     GameMachine.prototype.onUpdateActionButtons_PlayerTurnConfirm = function (args) {
         var _this = this;
-        this.statusBar.addActionButton(_("Confirm"), function () { return _this.resolveAction(); });
+        this.bga.statusBar.addActionButton(_("Confirm"), function () { return _this.resolveAction(); });
         this.addUndoButton();
     };
     GameMachine.prototype.resolveAction = function (args) {
@@ -1601,7 +1601,7 @@ var GameMachine = /** @class */ (function (_super) {
         var _a;
         if (cond === void 0) { cond = true; }
         if (!$("button_undo") && !this.bga.players.isCurrentPlayerSpectator() && cond) {
-            var div = this.statusBar.addActionButton(_("Undo"), function () {
+            var div = this.bga.statusBar.addActionButton(_("Undo"), function () {
                 var _a;
                 return (_a = _this.bga.actions
                     .performAction("action_undo", [], {
@@ -1850,7 +1850,7 @@ var GameXBody = /** @class */ (function (_super) {
             // document.rootElement?.classList.add("bgaext_cust_back");
             var parent = document.querySelector(".debug_section"); // studio only
             if (parent)
-                this.statusBar.addActionButton("Reload CSS", function () { return _this.reloadCss(); }, { id: "button_rcss", destination: $("topbar_content") });
+                this.bga.statusBar.addActionButton("Reload CSS", function () { return _this.reloadCss(); }, { id: "button_rcss", destination: $("topbar_content") });
             this.setupLayoutControls();
         }
         catch (e) {

@@ -1041,7 +1041,7 @@ class Game extends Base {
     }
 
     function debug_op(string $type) {
-        $color = $this->getCurrentPlayerColor();
+        $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
         $this->machine->push($type, $color);
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
@@ -1084,7 +1084,7 @@ class Game extends Base {
     }
 
     function debug_maxRes() {
-        $color = $this->getCurrentPlayerColor();
+        $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
 
         $this->machine->push("5food", $color);
         $this->machine->push("5coin", $color);
@@ -1122,7 +1122,7 @@ class Game extends Base {
     }
 
     function debug_eval(string $x) {
-        $color = $this->getCurrentPlayerColor();
+        $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
         $v = $this->evaluateExpression($x, $color);
         $this->notify->all("log", "result: $v");
     }

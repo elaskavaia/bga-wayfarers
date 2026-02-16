@@ -68,7 +68,7 @@ class GameMachine extends Game1Tokens {
   opInfo: OpInfo;
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
     if (!this.bga.players.isCurrentPlayerActive()) {
-      if (opInfo?.description) this.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
+      if (opInfo?.description) this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
       this.setSubPrompt("");
       this.addUndoButton(opInfo.ui?.undo);
       return;
@@ -76,12 +76,12 @@ class GameMachine extends Game1Tokens {
     this.completeOpInfo(opInfo);
     this.opInfo = opInfo;
     if (opInfo.prompt) {
-      this.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
+      this.bga.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
     }
     if (opInfo.subtitle) this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
     else this.setSubPrompt(this.getReasonText(opInfo.data.reason));
     if (opInfo.err) {
-      const button = this.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), () => {}, {
+      const button = this.bga.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), () => {}, {
         color: "alert",
         id: "button_err"
       });
@@ -154,7 +154,7 @@ class GameMachine extends Game1Tokens {
         // skip, whatever TODO: anytime
         const color: any = paramInfo.color ?? "secondary";
         const call = (paramInfo as any).call ?? target;
-        const button = this.statusBar.addActionButton(
+        const button = this.bga.statusBar.addActionButton(
           this.getTargetButtonName(target, paramInfo),
           () =>
             this.bga.actions.performAction(`action_${call}`, {
@@ -182,7 +182,7 @@ class GameMachine extends Game1Tokens {
     const q = paramInfo.q;
     const active = q == 0;
     const color: any = paramInfo.color ?? this.opInfo.ui.color;
-    const button = this.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), (event: Event) => this.onToken(event), {
+    const button = this.bga.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), (event: Event) => this.onToken(event), {
       color: color,
       disabled: !active,
       id: "button_" + target
@@ -206,7 +206,7 @@ class GameMachine extends Game1Tokens {
       return undefined;
     }
 
-    const button = this.statusBar.addActionButton(cloneHtml, (event: Event) => this.onToken(event), {
+    const button = this.bga.statusBar.addActionButton(cloneHtml, (event: Event) => this.onToken(event), {
       color,
       disabled: !active,
       id: "button_" + target
@@ -299,7 +299,7 @@ class GameMachine extends Game1Tokens {
     const doneButtonId = "button_done";
     const resetButtonId = "button_reset";
 
-    this.statusBar.addActionButton(
+    this.bga.statusBar.addActionButton(
       buttonName,
       () => {
         const res = {};
@@ -315,7 +315,7 @@ class GameMachine extends Game1Tokens {
         id: doneButtonId
       }
     );
-    this.statusBar.addActionButton(
+    this.bga.statusBar.addActionButton(
       _("Reset"),
       () => {
         const allSel = document.querySelectorAll(`.${this.classSelectedAlt},.${this.classSelected}`);
@@ -344,7 +344,7 @@ class GameMachine extends Game1Tokens {
   }
 
   onUpdateActionButtons_PlayerTurnConfirm(args: any) {
-    this.statusBar.addActionButton(_("Confirm"), () => this.resolveAction());
+    this.bga.statusBar.addActionButton(_("Confirm"), () => this.resolveAction());
 
     this.addUndoButton();
   }
@@ -364,7 +364,7 @@ class GameMachine extends Game1Tokens {
 
   addUndoButton(cond: boolean = true) {
     if (!$("button_undo") && !this.bga.players.isCurrentPlayerSpectator() && cond) {
-      const div = this.statusBar.addActionButton(
+      const div = this.bga.statusBar.addActionButton(
         _("Undo"),
         () =>
           this.bga.actions

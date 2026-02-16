@@ -156,7 +156,7 @@ class Game0Basics extends GameGui<any> {
     if (!name) name = _("Cancel");
     if (!handler) handler = () => this.onCancel();
     if ($("button_cancel")) $("button_cancel").remove();
-    this.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
+    this.bga.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
   }
 
   /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */

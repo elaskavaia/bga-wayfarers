@@ -116,7 +116,7 @@ class GameXBody extends GameMachine {
 
       var parent = document.querySelector(".debug_section"); // studio only
       if (parent)
-        this.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
+        this.bga.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
 
       this.setupLayoutControls();
     } catch (e) {
