@@ -1,18 +1,24 @@
 {
   "101": {
-    "name": "Solo Mode Difficulty",
+    "name": "Automa Board",
     "values": {
+      "0": {
+        "name": "Random"
+      },
       "1": {
-        "name": "Easy (45 vp)"
+        "name": "Space Dreamer"
       },
       "2": {
-        "name": "Hard (55 vp)"
+        "name": "Mechanic Upgrader"
       },
       "3": {
-        "name": "Beat your own score"
+        "name": "Townsfolk Mayor"
+      },
+      "4": {
+        "name": "Journal Writer"
       }
     },
-    "default": 1,
+    "default": 0,
     "displaycondition": [
       {
         "type": "maxplayers",

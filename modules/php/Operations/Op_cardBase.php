@@ -14,12 +14,21 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 abstract class Op_cardBase extends Op_acquireBase {
     public function getArgType() {
         return Operation::TTYPE_TOKEN;
+    }
+
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_" . $this->getType(), $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
     }
 
     public function getCard() {
@@ -119,7 +128,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
-            $this->queue($r, $owner, ["card" => $card], $this->getOpId());
+            $this->queue($r, $owner, [], $this->getOpId());
         }
         // Check if any Vista cards are triggered by this card
         $this->queueVistaTriggers($card);

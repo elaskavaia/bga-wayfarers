@@ -84,6 +84,14 @@ class TokensInMem extends DbTokens {
         return $ret === 1;
     }
 
+    function getTokensOnLocations(array $locs) {
+        $res = [];
+        foreach ($locs as $loc) {
+            $res = array_merge($res, $this->getTokensOfTypeInLocation(null, $loc));
+        }
+        return $res;
+    }
+
     function getTokensOfTypeInLocation($type, $location = null, $state = null, $order_by = null) {
         $result = [];
 

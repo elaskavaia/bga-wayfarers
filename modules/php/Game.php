@@ -133,6 +133,10 @@ class Game extends Base {
             }
         }
 
+        $pmunWithAutoma = $pnum;
+        if ($this->isSolo()) {
+            $pmunWithAutoma = 2;
+        }
         foreach ($token_types as $key => $info) {
             // Only process upgrade tiles
             if (!getPart($key, 2, true)) {
@@ -143,7 +147,7 @@ class Game extends Base {
                 $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", 1, 1);
             } elseif (str_starts_with($key, "upg_")) {
                 // Place 1 of each unique Green, Black, Yellow, and Blue Upgrade Tile per player on the Main Board. Return extras to the box if playing with fewer than 4 players.
-                $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", $pnum, 1);
+                $this->tokens->db->createTokensPack("{$key}_{INDEX}", "mainarea", $pmunWithAutoma, 1);
             }
         }
 
@@ -200,6 +204,7 @@ class Game extends Base {
         }
 
         $this->machine->queue("turn", $this->custom_getPlayerColorById($startingPlayer));
+        $this->customUndoSavepoint($startingPlayer, 1);
         return GameDispatch::class;
     }
 
@@ -521,16 +526,16 @@ class Game extends Base {
 
     /**
      * Get VP for primary tag count based on scoring table
-     * 2 tags = 2 VP, 3 = 4 VP, 4 = 7 VP, 5 = 10 VP, 6 = 13 VP, 7+ = 16 VP
+     * 2 tags = 2 VP, 3 = 3 VP, 4 = 5 VP, 5 = 8 VP, 6 = 12 VP, 7+ = 16 VP
      */
     function getTagVP(int $count): int {
         return match (true) {
             $count < 2 => 0,
             $count == 2 => 2,
-            $count == 3 => 4,
-            $count == 4 => 7,
-            $count == 5 => 10,
-            $count == 6 => 13,
+            $count == 3 => 3,
+            $count == 4 => 5,
+            $count == 5 => 8,
+            $count == 6 => 12,
             default => 16, // 7+
         };
     }
@@ -714,6 +719,12 @@ class Game extends Base {
             // 2. Space and Inspriration Cards VP
             $cards = $this->tokens->getTokensOfTypeInLocation("card_space", "tableau_$color");
             $inspCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
+            // preprined space card
+            $cards["card_space_1_$color"] = [
+                "key" => "card_space_1_$color",
+                "location" => "tableau_$color",
+                "state" => 1,
+            ];
 
             foreach ($cards as $cardKey => $cardInfo) {
                 $vp = $this->countVpForSpaceCard($cardKey, $color);
@@ -1057,7 +1068,12 @@ class Game extends Base {
     }
 
     function debug_q() {
+        $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
         $this->customUndoSavepoint((int) $this->getCurrentPlayerId(), 0);
+        $vp = $this->countVpForSpaceCard("card_space_1_$color", $color);
+        $upg = $this->evaluateExpression("tag_upg_green", $color);
+        $folk = $this->evaluateExpression("tag_card_folk", $color);
+        $this->debugConsole("vp=$vp upg=$upg fold=$folk");
     }
     function debug_game_variant(string $type = "variant_multi", int $value = 1) {
         $this->setGameStateValue($type, $value);

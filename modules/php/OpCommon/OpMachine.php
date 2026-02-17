@@ -455,7 +455,7 @@ class OpMachine {
         try {
             $this->game->undoRestorePoint();
         } catch (Exception $e) {
-            throw new UserException(_("Cannot undo: Internal Error"));
+            $this->game->userAssert($e->getMessage());
         }
         return GameDispatchForced::class;
     }

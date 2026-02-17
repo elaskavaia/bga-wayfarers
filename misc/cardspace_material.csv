@@ -44,9 +44,9 @@ num|r|vpexp|tags|tor|tovp|nom
 85|infBlue|tag_Sun?7:3|Moon|Place an Influence in Blue Guild|If you have a Sun tag: 7 VP, otherwise 3 VP|Moon
 112|infYellow|tag_Moon?7:3|Sun|Place an Influence in Yellow Guild|If you have a Moon tag: 7 VP, otherwise 3 VP|Sun
 #set ext=1
-113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
+# 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
 
 # Home card
 #set create=0
 #set ext=
-1||min(tag_upg_green,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Capital Sky
+1||min(tag_upg_any,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Capital Sky

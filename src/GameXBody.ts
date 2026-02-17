@@ -839,6 +839,9 @@ class GameXBody extends GameMachine {
         if (args.reason) {
           args.reason = "(" + this.getTokenName(args.reason) + ")";
         }
+        if (log.includes("actplayer") && !args.actplayer) {
+          args.actplayer = this.gamedatas.players[this.bga.players.getActivePlayerId()].name;
+        }
         const res = super.bgaFormatText(log, args);
         log = res.log;
         args = res.args;

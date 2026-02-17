@@ -42,5 +42,6 @@ num|r|d|dr|tags|trig|tor|todr
 35|reroll||journal|Vista|Observatory/Book|Refresh a die|Gain Journal
 36|reroll||food/coin|Vista|Observatory/Book|Refresh a die|Gain 1 Provision or 1 Silver
 # Row 7: City (38)
-37|coin||food|Vista|upg_any|Gain 1 Silver|Gain 1 Provision
-38||camel,pigeon|2n_food:cardLand,journal|City Book|||Pay 2 Provisions to acquire a Land card, then gain Journal
+#set ext=1
+# 37|coin||food|Vista|upg_any|Gain 1 Silver|Gain 1 Provision
+# 38||camel,pigeon|2n_food:cardLand,journal|City Book|||Pay 2 Provisions to acquire a Land card, then gain Journal

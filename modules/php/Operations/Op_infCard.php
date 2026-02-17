@@ -14,9 +14,17 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 
 class Op_infCard extends Op_infBase {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_" . $this->getType(), $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function getGuild(): string {
         // This returns the selected card (used as target location)
         return $this->getDataField("card", "");

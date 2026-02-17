@@ -29,7 +29,7 @@ class Op_jtile extends Operation {
         $owner = $this->getOwner();
         $pos = $this->getPos();
         $tile = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("jtile", "jpos_$pos");
-        $this->game->systemAssert("tile is null", $tile);
+        $this->game->systemAssert("tile is null at jpos_$pos", $tile);
         $r = $this->game->getRulesForAndAssert($tile, "r");
         $this->queue($r, $owner, [], $tile);
     }

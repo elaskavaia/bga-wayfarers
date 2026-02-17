@@ -82,7 +82,7 @@ final class Op_journalTest extends TestCase {
 
         $this->assertArrayHasKey("jpos_10", $moves);
         $this->assertEquals(Material::RET_OK, $moves["jpos_10"]["q"]);
-        $this->assertEquals("North", $moves["jpos_10"]["name"]);
+        $this->assertEquals("Upper", $moves["jpos_10"]["name"]);
     }
 
     public function testGetPossibleMovesWithMultipleConnections(): void {
@@ -363,10 +363,10 @@ final class Op_journalTest extends TestCase {
         $this->assertArrayHasKey("jpos_15", $moves);
 
         // Connection 0->10 should have name "North" from material
-        $this->assertEquals("North", $moves["jpos_10"]["name"]);
+        $this->assertEquals("Upper", $moves["jpos_10"]["name"]);
 
         // Connection 0->15 should have name "South" from material
-        $this->assertEquals("South", $moves["jpos_15"]["name"]);
+        $this->assertEquals("Lower", $moves["jpos_15"]["name"]);
 
         // Test position 10 which has tag-based requirements
         $this->setMarkerPosition(10);

@@ -14,10 +14,19 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_pickWorker extends Operation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_" . $this->getType(), $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
+
     /** Get available workers that can be picked */
     function getAvailableWorkers(): array {
         $workers = [];

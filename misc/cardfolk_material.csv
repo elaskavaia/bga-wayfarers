@@ -3,8 +3,8 @@ num|cost|dr|tags|nom|da|tooltip
 #set create=1
 #set id=card_folk_{num}
 #set ext=1
-114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
-115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
+# 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
+# 115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
 #set ext=
 116|1||Harbour|Adventurer|ship|Ship
 117|0||Observatory|Astronomer|telescope|Telescope

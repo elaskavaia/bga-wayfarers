@@ -41,17 +41,9 @@ class Op_cardInsp extends Op_cardBase {
             $res = [];
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_insp", "mainarea");
 
-            // Get available positions
-            $availablePositions = $this->getAvailablePositions();
-
             foreach (array_keys($tokens) as $card) {
                 // there is NO requirement on playing the card excp placement below
                 $res[$card] = ["q" => Material::RET_OK];
-
-                // Check if there's at least one available position
-                if (count($availablePositions) == 0) {
-                    $res[$card]["q"] = Material::ERR_NO_PLACE;
-                }
             }
 
             return $res;
@@ -143,7 +135,7 @@ class Op_cardInsp extends Op_cardBase {
     public function getPrompt() {
         $card = $this->getCard();
         if ($card == null) {
-            return clienttranslate("Select an Inspiration card to acquire");
+            return clienttranslate("Select an Inspiration card to acquire or discard");
         }
         return clienttranslate("Select a Space card to tuck under");
     }

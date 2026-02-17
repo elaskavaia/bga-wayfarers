@@ -6,8 +6,8 @@ num|r|d|dr|tags|c1|c2|tor|todr
 # Water Cards (39-76) - 6x7 sprite
 
 #set ext=1
-39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx||Pay 4 Silver to draw and acquire a Space card
-40|cardLand(draw1)|||Sea|___|___x|Draw and acquire 1 Land card|
+# 39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx||Pay 4 Silver to draw and acquire a Space card
+# 40|cardLand(draw1)|||Sea|___|___x|Draw and acquire 1 Land card|
 #set ext=
 41||pigeon|food,journal|Harbour Book|__x_|bx_x||Gain 1 Provision and Journal
 42||pigeon|coin,journal|Harbour Book|__x_|u_xx||Gain 1 Silver and Journal
