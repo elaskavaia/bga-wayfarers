@@ -49,9 +49,6 @@ Scheme Card. If that Upgrade Tile has already been acquired, they
 instead acquire the next available Tile in clockwise order
  */
 class Op_ai_upgAny extends AiOperation {
-    // Color priority based on resource track marker position
-    const COLOR_PRIORITY = ["black", "blue", "yellow", "green"];
-
     // AI caravan dimensions
     const CARAVAN_COLS = 7;
     const CARAVAN_ROWS = 3;
@@ -86,15 +83,8 @@ class Op_ai_upgAny extends AiOperation {
         if ($this->getUpgradeColor()) {
             return [$this->getUpgradeColor()];
         }
-        $colorPriority = $this->getResourceMarkerRules("t");
 
-        // Rotate color list to start from resource track priority color, in clockwise order
-        $startIndex = array_search($colorPriority, self::COLOR_PRIORITY);
-        if ($startIndex === false) {
-            return self::COLOR_PRIORITY;
-        }
-
-        return custom_array_rotate(self::COLOR_PRIORITY, $startIndex, 1);
+        return parent::getColorPriority();
     }
 
     function getUpgradeColor() {
@@ -226,7 +216,7 @@ class Op_ai_upgAny extends AiOperation {
             return true;
         }
 
-        // Place tile in caravan
+        // Place tile in caravan amd notify
         $this->dbSetTokenLocation(
             $selectedTile,
             "tableau_$owner",
@@ -235,10 +225,6 @@ class Op_ai_upgAny extends AiOperation {
         );
 
         // TODO activate bonus placement
-
-        $this->notifyMessage(clienttranslate('${player_name} acquires ${token_name} based on color priority'), [
-            "token_name" => $this->game->getTokenName($selectedTile),
-        ]);
 
         // AI ignores all tile bonuses and icons
         // VP from tiles is scored at end of game in finalScoring()

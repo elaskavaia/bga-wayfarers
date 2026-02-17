@@ -22,7 +22,34 @@ namespace Bga\Games\wayfarers\OpCommon;
 
 use Bga\GameFramework\SystemException;
 
+use function Bga\Games\wayfarers\custom_array_rotate;
+
 abstract class AiOperation extends CountableOperation {
+    // Color to card type mapping (same as worker placement)
+    const COLOR_CARD_TYPE = [
+        "black" => "space",
+        "blue" => "water",
+        "yellow" => "land",
+        "green" => "folk",
+    ];
+    // Color priority based on resource track marker position
+    const COLOR_PRIORITY = ["black", "blue", "yellow", "green"];
+    /**
+     * Get tile color priority based on resource track marker
+     * Returns array of colors in priority order
+     */
+    function getColorPriority(): array {
+        $colorPriority = $this->getResourceMarkerRules("t");
+
+        // Rotate color list to start from resource track priority color, in clockwise order
+        $startIndex = array_search($colorPriority, self::COLOR_PRIORITY, true);
+        if ($startIndex === false) {
+            return self::COLOR_PRIORITY;
+        }
+
+        return custom_array_rotate(self::COLOR_PRIORITY, $startIndex, 1);
+    }
+
     //   - [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
     //   - [ ] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
     //   - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around

@@ -34,13 +34,6 @@ use function Bga\Games\wayfarers\custom_array_rotate;
  *   ai_placeWorker(green/yellow)    — green preferred, yellow fallback
  */
 class Op_ai_placeWorker extends AiOperation {
-    // Worker color → card type mapping
-    const WORKER_CARD_TYPE = [
-        "green" => "folk",
-        "yellow" => "land",
-        "blue" => "water",
-    ];
-
     /**
      * Get allowed worker colors from operation params, in priority order.
      * Params are like "green", "green/blue", "green/yellow"
@@ -99,7 +92,7 @@ class Op_ai_placeWorker extends AiOperation {
             if ($worker === null) {
                 continue;
             }
-            $cardType = self::WORKER_CARD_TYPE[$color] ?? null;
+            $cardType = self::COLOR_CARD_TYPE[$color] ?? null;
             if ($cardType === null) {
                 continue;
             }
@@ -124,13 +117,16 @@ class Op_ai_placeWorker extends AiOperation {
                 continue;
             }
 
-            $cardType = self::WORKER_CARD_TYPE[$color] ?? null;
+            $cardType = self::COLOR_CARD_TYPE[$color] ?? null;
             $this->game->systemAssert("Invalid worker color $color", $cardType);
 
             $targetCard = $this->selectTargetCard($cardType);
             if ($targetCard === null) {
                 continue;
             }
+
+            // Handle influence interaction if there's influence on the card
+            $this->queue("ai_cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
 
             // Place the worker on the card
             $state = (int) $this->game->tokens->db->getTokenState($targetCard);

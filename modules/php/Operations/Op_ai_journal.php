@@ -16,7 +16,6 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\AiOperation;
 
-
 /**
  * AI Journaling
  *
@@ -107,7 +106,7 @@ class Op_ai_journal extends AiOperation {
     /**
      * Select journal position based on path preference.
      * Positions are ordered as listed in the conn field:
-     * first = upper/North path, last = lower/South path.
+     * first = upper path, last = lower path.
      */
     function selectPosition(array $availablePositions): ?int {
         if (empty($availablePositions)) {
@@ -200,7 +199,7 @@ class Op_ai_journal extends AiOperation {
 
         // Position Bonus
         $selected = "jpos_$selectedPos";
-        $r = $this->game->getRulesFor($selected);
+        $r = $this->game->getRulesForAndAssert($selected, "r");
         $r = str_replace("upgPink/cardInsp", "upgPink", $r);
         $this->queue($r, $owner, ["jpos" => $selected], $selected);
 
@@ -218,8 +217,12 @@ class Op_ai_journal extends AiOperation {
      * Auto-resolve: AI journals
      */
     public function auto(): bool {
-        $owner = $this->getOwner();
+        if ($this->isFinal()) {
+            $this->journalOneStep();
+            return true;
+        }
 
+        $owner = $this->getOwner();
         // Attempt to spend black influence for extra journaling
         $requiredBlackInf = $this->getBlackInfluenceAmountForDoubleAdvance();
         $blackInf = $this->game->countGuildInfluence("guild_black", $owner);
@@ -230,9 +233,13 @@ class Op_ai_journal extends AiOperation {
             // Spend black influence and journal extra space
             $this->notifyMessage(clienttranslate('${player_name} journals an extra space'));
             $this->queue("{$requiredBlackInf}infBlack");
-            $this->journalOneStep();
+            $this->queue("ai_journal", $owner, ["final" => 1]);
         }
 
         return true;
+    }
+
+    function isFinal(): bool {
+        return $this->getDataField("final", 0) == 1;
     }
 }

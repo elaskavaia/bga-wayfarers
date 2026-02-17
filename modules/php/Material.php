@@ -296,6 +296,10 @@ class Material {
         "type" => "cardInteract",
         "name" => clienttranslate("Card Interaction"),
 ],
+    "Op_ai_cardInteract" => [ 
+        "type" => "ai_cardInteract",
+        "name" => clienttranslate("AI Card Interaction"),
+],
     "Op_upgBlack" => [ 
         "type" => "upgBlack",
         "name" => clienttranslate("Acquire Space Upgrade"),
@@ -489,6 +493,18 @@ class Material {
     "Op_ai_placeWorker" => [ 
         "type" => "ai_placeWorker",
         "name" => clienttranslate("AI Place Worker"),
+],
+    "Op_ai_pickWorker" => [ 
+        "type" => "ai_pickWorker",
+        "name" => clienttranslate("AI Pick Worker"),
+],
+    "Op_ai_infCard" => [ 
+        "type" => "ai_infCard",
+        "name" => clienttranslate("AI Influence on Card"),
+],
+    "Op_ai_focusAction" => [ 
+        "type" => "ai_focusAction",
+        "name" => clienttranslate("AI Focus Action"),
 ],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
@@ -1082,26 +1098,8 @@ class Material {
 ],
             /* --- gen php end card_material --- */
             /* --- gen php begin cardfolk_material --- */
-    "card_folk_114" => [ 
-        "create" => 1,
-        "ext" => 1,
-        "num" => 114,
-        "cost" => 1,
-        "dr" => "(coin/food):(pickWorker,reroll)",
-        "tags" => "Vista",
-        "nom" => clienttranslate("Protector"),
-        "tooltip" => clienttranslate("Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die"),
-],
-    "card_folk_115" => [ 
-        "create" => 1,
-        "ext" => 1,
-        "num" => 115,
-        "cost" => 2,
-        "dr" => "food:2coin",
-        "tags" => "Observatory",
-        "nom" => clienttranslate("Wanderer"),
-        "tooltip" => clienttranslate("Pay 1 Provision: Gain 2 Silver"),
-],
+// # 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
+// # 115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
     "card_folk_116" => [ 
         "create" => 1,
         "num" => 116,
@@ -1781,49 +1779,11 @@ class Material {
         "tor" => clienttranslate("Refresh a die"),
         "todr" => clienttranslate("Gain 1 Provision or 1 Silver"),
 ],
-// # Row 7: City (38)
-    "card_land_37" => [ 
-        "create" => 1,
-        "num" => 37,
-        "r" => "coin",
-        "dr" => "food",
-        "tags" => "Vista",
-        "trig" => "upg_any",
-        "tor" => clienttranslate("Gain 1 Silver"),
-        "todr" => clienttranslate("Gain 1 Provision"),
-],
-    "card_land_38" => [ 
-        "create" => 1,
-        "num" => 38,
-        "d" => "camel,pigeon",
-        "dr" => "2n_food:cardLand,journal",
-        "tags" => "City Book",
-        "todr" => clienttranslate("Pay 2 Provisions to acquire a Land card, then gain Journal"),
-],
             /* --- gen php end cardland_material --- */
             /* --- gen php begin cardwater_material --- */
 // # Water Cards (39-76) - 6x7 sprite
-    "card_water_39" => [ 
-        "create" => 1,
-        "ext" => 1,
-        "num" => 39,
-        "d" => "2telescope",
-        "dr" => "4n_coin:cardSpace(draw)",
-        "tags" => "Harbour Observatory",
-        "c1" => "xx__",
-        "c2" => "_xxx",
-        "todr" => clienttranslate("Pay 4 Silver to draw and acquire a Space card"),
-],
-    "card_water_40" => [ 
-        "create" => 1,
-        "ext" => 1,
-        "num" => 40,
-        "r" => "cardLand(draw1)",
-        "tags" => "Sea",
-        "c1" => "___",
-        "c2" => "___x",
-        "tor" => clienttranslate("Draw and acquire 1 Land card"),
-],
+// # 39||2telescope|4n_coin:cardSpace(draw)|Harbour Observatory|xx__|_xxx||Pay 4 Silver to draw and acquire a Space card
+// # 40|cardLand(draw1)|||Sea|___|___x|Draw and acquire 1 Land card|
     "card_water_41" => [ 
         "create" => 1,
         "num" => 41,
@@ -2953,22 +2913,12 @@ class Material {
         "tovp" => "If you have a Moon tag: 7 VP, otherwise 3 VP",
         "nom" => clienttranslate("Sun"),
 ],
-    "card_space_113" => [ 
-        "create" => 1,
-        "ext" => 1,
-        "num" => 113,
-        "r" => "upgPink",
-        "vpexp" => 1,
-        "tags" => "Comet",
-        "tor" => "Gain special upgrade tile",
-        "tovp" => "1 VP",
-        "nom" => clienttranslate("Rare Fragment"),
-],
+// # 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
 // # Home card
     "card_space_1" => [ 
         "create" => 0,
         "num" => 1,
-        "vpexp" => "min(tag_upg_green,tag_card_folk)",
+        "vpexp" => "min(tag_upg_any,tag_card_folk)",
         "tags" => "Stars",
         "tovp" => "1 VP per set of Basic upgrade and Townsfolk",
         "nom" => clienttranslate("Capital Sky"),
@@ -3334,14 +3284,14 @@ class Material {
 ],
 // #Connection requirements side A
     "jconn_0_10_0" => [ 
-        "name" => clienttranslate("North"),
+        "name" => clienttranslate("Upper"),
         "num" => 0,
         "conn" => 10,
         "r" => "true",
         "gw" => 1,
 ],
     "jconn_0_15_0" => [ 
-        "name" => clienttranslate("South"),
+        "name" => clienttranslate("Lower"),
         "num" => 0,
         "conn" => 15,
         "r" => "true",

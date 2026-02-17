@@ -44,8 +44,6 @@
   - [x] Resolve first action on scheme card; fallback to second action if first is impossible
 - [x] Integrate automa turn into game flow via `getNextReadyPlayer()` (already returns PLAYER_AUTOMA after human turn)
 - [x] Add game state or dispatch logic to route automa turns to `Op_ai_turn` instead of normal `Op_turn`
-- [ ] Bugs to fix in Op_ai_turn:
-  - [ ] Action resolution commented out (WIP) — AI actions don't execute yet
 
 ### Phase 3: AI Prioritization System
 
@@ -54,7 +52,7 @@
   - [x] If priority color yields no benefit, move to next color clockwise
 - [x] Implement scheme card sum value calculation: sum of 2 most recent faceup cards (or single card value)
   - [x] Sum value (0-4) determines positional priority: 0-1 = center-most card/tile, higher = outward
-  - [ ] If AI cannot interact with prioritized target, move to next possible, wrapping around
+  - [x] If AI cannot interact with prioritized target, move to next possible, wrapping around
 - [x] Implement inspiration card priority based on resource track row position (top/middle/bottom)
 
 ### Phase 4: AI Actions (Scheme Card Resolution)
@@ -83,13 +81,18 @@
   - [x] Resolve all printed actions of the space
   - [x] Uses positional priority (sum value) to select target card
   - [x] isVoid() check for fallback to second scheme card action
-- [ ] AI worker retrieval:
-  - [ ] Prioritize Green Workers first
-  - [ ] Then use resource track color priority for worker color
-  - [ ] Use sum value to choose among multiple workers of same color
-- [ ] AI influence on cards:
-  - [ ] Use resource track color priority for card type selection
-  - [ ] Use sum value for positional selection
+- [x] AI worker retrieval (Op_ai_pickWorker.php):
+  - [x] Prioritize Green Workers first
+  - [x] Then use resource track color priority for worker color
+  - [x] Use sum value to choose among multiple workers of same color
+  - [x] Handles card interaction (influence) when picking worker
+  - [x] isVoid() check for fallback to second scheme card action
+- [x] AI influence on cards (Op_ai_infCard.php):
+  - [x] Use resource track color priority for card type selection
+  - [x] Use sum value for positional selection
+  - [x] Only influence cards with no existing influence
+  - [x] AI has unlimited influence (created on demand)
+  - [x] isVoid() check for fallback to second scheme card action
 
 ### Phase 5: AI Resting
 
@@ -115,15 +118,11 @@
 
 ### Phase 6: AI Scoring & Game End
 
-- [ ] AI comet track scoring (VP based on comet track position)
-- [ ] AI still participates in guild majorities (3 VP per guild with most influence)
+- [x] AI still participates in guild majorities (3 VP per guild with most influence)
 - [x] AI influence is unlimited - if supply runs out, create more tokens dynamically (Op_infBase.php)
-- [ ] Solo win condition based on difficulty variant:
-  - Easy: player must beat 45 VP
-  - Hard: player must beat 55 VP
-  - Beat own score: compare against AI's score
-- [ ] Game end trigger: AI reaching final journal column also triggers end-game
-- [ ] All players (human + AI) take one final turn after end-game trigger
+- [ ] Solo game option (choise board)
+- [x] Game end trigger: AI reaching final journal column also triggers end-game
+- [x] All players (human + AI) take one final turn after end-game trigger
 
 ### Phase 7: Client-Side UI
 
@@ -131,7 +130,7 @@
 - [ ] Scheme card reveal animations and faceup display area
 - [x] Resource track marker visualization (AI board)
 - [x] Comet track marker visualization (AI board)
-- [ ] AI turn narration/log messages (what the AI did each turn)
-- [ ] Solo end-game result screen (win/loss vs threshold or AI score)
+- [x] AI turn narration/log messages (what the AI did each turn)
+- [x] Solo end-game result screen (win/loss vs threshold or AI score)
 - [x] Scheme card deck and discard pile UI elements
 - [ ] UI support for AI upgrade tiles placed alongside board (state 0, no caravan position)
