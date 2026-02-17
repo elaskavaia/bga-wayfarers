@@ -8,6 +8,6 @@ num|r|d|dr|tags|nom|todr|php
 3||ship|2n_food:cardWater|Harbour|Capital Harbour|Pay 2 Provisions to acquire a Water Card|"state"=>1
 #set type=card card_home card_slot
 10||telescope|(cardSpace/upgBlack)||Capital Observatory|Acquire a Space Card or Space Upgrade
-11||pigeon|(journal/(pickWorker,infAny))||Capital Library|Journal or Piack a Worker and Gain any Influence
+11||pigeon|(journal/(infAny,pickWorker))||Capital Library|Journal or Piack a Worker and Gain any Influence
 12||any|(cardFolk/2food)||Capital Market|Acquire a Townsfolk Card or Gain 2 Provisions
 13||any|(upgGreen/2coin)||Capital Reserve|Acquire a Basic Upgrade or Gain 2 Silver

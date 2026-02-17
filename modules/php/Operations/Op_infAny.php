@@ -23,14 +23,9 @@ class Op_infAny extends Op_infBase {
 
     function getPossibleMoves() {
         $selectedGuild = $this->getGuild();
-        $influence = $this->getInfluenceInPlayerSupply();
 
         if ($selectedGuild === "") {
             // Step 1: Select which guild to place on
-            // Check if player has any influence available (supply or movable)
-            if (count($influence) == 0 && count($this->getMovableInfluenceForAny()) == 0) {
-                return ["q" => Material::ERR_NONE_LEFT];
-            }
 
             return [
                 "guild_black" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_black")],
@@ -40,6 +35,7 @@ class Op_infAny extends Op_infBase {
         }
 
         // Step 2: Guild selected, now place or select influence to move
+        $influence = $this->getInfluenceInPlayerSupply();
         if (count($influence) > 0) {
             return ["confirm"];
         }
@@ -51,13 +47,6 @@ class Op_infAny extends Op_infBase {
         }
 
         return $movable;
-    }
-
-    /**
-     * Get movable influence for any guild (all guilds are valid targets)
-     */
-    function getMovableInfluenceForAny(): array {
-        return $this->getMovableInfluence("guild_any");
     }
 
     function canSkip() {

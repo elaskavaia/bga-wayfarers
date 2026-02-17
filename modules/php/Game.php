@@ -1073,7 +1073,9 @@ class Game extends Base {
         $vp = $this->countVpForSpaceCard("card_space_1_$color", $color);
         $upg = $this->evaluateExpression("tag_upg_green", $color);
         $folk = $this->evaluateExpression("tag_card_folk", $color);
-        $this->debugConsole("vp=$vp upg=$upg fold=$folk");
+        $obs = $this->evaluateExpression("tag_Observatory", $color);
+
+        $this->debugConsole("vp=$vp upg=$upg fold=$folk obs=$obs");
     }
     function debug_game_variant(string $type = "variant_multi", int $value = 1) {
         $this->setGameStateValue($type, $value);
