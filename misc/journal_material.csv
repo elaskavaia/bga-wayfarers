@@ -51,9 +51,9 @@ num|conn|r|gw
 #Connection requirements side A
 #set id=jconn_{num}_{conn}_0
 #set location=
-#set name=North
+#set name=Upper
 0|10|true|1
-#set name=South
+#set name=Lower
 0|15|true|1
 #set name=
 10|20|tag_City|2

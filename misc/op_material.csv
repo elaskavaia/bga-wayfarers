@@ -32,6 +32,7 @@ cardLand|Acquire Land Card
 cardDraw|Draw and Pick Card
 cardInsp|Acquire Inspiration Card
 cardInteract|Card Interaction
+ai_cardInteract|AI Card Interaction
 
 upgBlack|Acquire Space Upgrade
 upgBlue|Acquire Water Upgrade
@@ -91,3 +92,6 @@ ai_journal|AI Journal
 ai_shuffle|AI Shuffle
 ai_res|AI Resource Track
 ai_placeWorker|AI Place Worker
+ai_pickWorker|AI Pick Worker
+ai_infCard|AI Influence on Card
+ai_focusAction|AI Focus Action
