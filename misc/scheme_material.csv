@@ -46,7 +46,8 @@ num|t|c|r1|r2|p|comet|nomx
 #t: focus action
 #r1: rest action
 #r2: res tracker bonus
-1|ai_cardBlack||ai_cardBlack|ai_comet
-2|ai_upgAny||ai_upgAny|infYellow
-3|ai_cardFolk||ai_cardFolk|ai_cardFolk
-4|ai_journal||ai_infCard|infBlack
+
+1|ai_cardSpace||ai_cardSpace|ai_comet|
+2|ai_upgAny||ai_upgAny|infYellow|
+3|ai_cardFolk||ai_cardFolk|ai_cardFolk|
+4|ai_journal||ai_infCard|infBlack|

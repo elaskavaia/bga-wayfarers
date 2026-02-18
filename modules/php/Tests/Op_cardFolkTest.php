@@ -30,7 +30,7 @@ final class Op_cardFolkTest extends TestCase {
 
     private function setupFolkCardInMainArea(string $cardId, string $tags, int $cost): void {
         $this->game->tokens->db->moveToken($cardId, "mainarea");
-        $this->game->material->setRulesFor($cardId, ["tags" => $tags, "r" => (string) $cost]);
+        $this->game->material->setRulesFor($cardId, ["tags" => $tags, "cost" => (string) $cost]);
     }
 
     private function setupFolkOnCard(string $folkId, string $tableauCardId): void {
@@ -43,27 +43,27 @@ final class Op_cardFolkTest extends TestCase {
         // Setup: tableau card with "Vista" tag
         $this->setupTableauCard("card_space_1", "Vista");
         // Setup: folk card in mainarea with matching "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
         $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
-        $this->assertArrayHasKey("card_folk_114", $moves);
-        $this->assertEquals(Material::RET_OK, $moves["card_folk_114"]["q"]);
+        $this->assertArrayHasKey("card_folk_133", $moves);
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_133"]["q"]);
     }
 
     public function testGetPossibleMovesWithNoMatchingTags(): void {
         // Setup: tableau card with "Harbour" tag
         $this->setupTableauCard("card_water_1", "Harbour");
         // Setup: folk card in mainarea with different "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
         $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
-        $this->assertArrayHasKey("card_folk_114", $moves);
+        $this->assertArrayHasKey("card_folk_133", $moves);
         // Should have prereq error since no matching tableau card
-        $this->assertEquals(Material::ERR_PREREQ, $moves["card_folk_114"]["q"]);
+        $this->assertEquals(Material::ERR_PREREQ, $moves["card_folk_133"]["q"]);
     }
 
     public function testGetPossibleMovesWithOccupiedTableauCard(): void {
@@ -72,12 +72,12 @@ final class Op_cardFolkTest extends TestCase {
         // Setup: existing folk already on the tableau card
         $this->setupFolkOnCard("card_folk_existing", "card_space_1");
         // Setup: folk card in mainarea with matching "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
-        $this->assertArrayHasKey("card_folk_114", $moves);
+        $this->assertArrayHasKey("card_folk_133", $moves);
     }
 
     public function testGetPossibleMovesWithCardSelected(): void {
@@ -85,9 +85,9 @@ final class Op_cardFolkTest extends TestCase {
         $this->setupTableauCard("card_space_1", "Vista");
         $this->setupTableauCard("card_space_2", "Observatory");
         // Setup: the selected folk card with "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
-        $op = $this->createOp("card_folk_114");
+        $op = $this->createOp("card_folk_133");
         $moves = $op->getPossibleMoves();
 
         // Should only show matching tableau card
@@ -99,31 +99,31 @@ final class Op_cardFolkTest extends TestCase {
 
     public function testHasMatchingTagsWithMatch(): void {
         $this->setupTableauCard("card_space_1", "Vista Harbour");
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
         $op = $this->createOp();
-        $result = $op->hasMatchingTags("card_folk_114", "card_space_1");
+        $result = $op->hasMatchingTags("card_folk_133", "card_space_1");
 
         $this->assertTrue($result);
     }
 
     public function testHasMatchingTagsWithNoMatch(): void {
         $this->setupTableauCard("card_space_1", "Harbour");
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
         $op = $this->createOp();
-        $result = $op->hasMatchingTags("card_folk_114", "card_space_1");
+        $result = $op->hasMatchingTags("card_folk_133", "card_space_1");
 
         $this->assertFalse($result);
     }
 
     public function testGetCost(): void {
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 3);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 2);
 
         $op = $this->createOp();
-        $cost = $op->getCost("card_folk_114");
+        $cost = $op->getCost("card_folk_133");
 
-        $this->assertEquals(1, $cost);
+        $this->assertEquals(2, $cost);
     }
 
     public function testGetCostDefaultsToFive(): void {
@@ -137,8 +137,8 @@ final class Op_cardFolkTest extends TestCase {
     }
 
     public function testGetCard(): void {
-        $op = $this->createOp("card_folk_114");
-        $this->assertEquals("card_folk_114", $op->getCard());
+        $op = $this->createOp("card_folk_133");
+        $this->assertEquals("card_folk_133", $op->getCard());
     }
 
     public function testGetCardReturnsNullWhenNotSet(): void {
@@ -154,7 +154,7 @@ final class Op_cardFolkTest extends TestCase {
     }
 
     public function testGetPromptWithCardSelected(): void {
-        $op = $this->createOp("card_folk_114");
+        $op = $this->createOp("card_folk_133");
         $prompt = $op->getPrompt();
 
         $this->assertEquals("Select a card to tuck under", $prompt);
@@ -170,20 +170,20 @@ final class Op_cardFolkTest extends TestCase {
         $this->setupTableauCard("card_space_1", "Vista");
         $this->setupTableauCard("card_space_2", "Vista");
         // Setup: folk card with matching tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
         $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
         // Both tableau cards should be valid options
-        $this->assertEquals(Material::RET_OK, $moves["card_folk_114"]["q"]);
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_133"]["q"]);
     }
 
     public function testMultipleFolkCardsInMainArea(): void {
         // Setup: tableau card
         $this->setupTableauCard("card_space_1", "Vista Observatory");
         // Setup: multiple folk cards
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
         $this->setupFolkCardInMainArea("card_folk_115", "Observatory", 2);
         $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
 
@@ -191,9 +191,9 @@ final class Op_cardFolkTest extends TestCase {
         $moves = $op->getPossibleMoves();
 
         // Both folk cards should be available
-        $this->assertArrayHasKey("card_folk_114", $moves);
+        $this->assertArrayHasKey("card_folk_133", $moves);
         $this->assertArrayHasKey("card_folk_115", $moves);
-        $this->assertEquals(Material::RET_OK, $moves["card_folk_114"]["q"]);
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_133"]["q"]);
         $this->assertEquals(Material::RET_OK, $moves["card_folk_115"]["q"]);
     }
 
@@ -204,14 +204,14 @@ final class Op_cardFolkTest extends TestCase {
         // First one is occupied
         $this->setupFolkOnCard("card_folk_existing", "card_space_1");
         // Setup: folk card to buy
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
         // Based on the error, the implementation returns ERR_PREREQ when there are no available positions
         // This suggests that both positions are considered occupied
-        $this->assertEquals(Material::ERR_COST, $moves["card_folk_114"]["q"]);
+        $this->assertEquals(Material::ERR_COST, $moves["card_folk_133"]["q"]);
     }
 
     public function testFullyOccupiedTableau(): void {
@@ -220,14 +220,14 @@ final class Op_cardFolkTest extends TestCase {
         // Setup: existing folk already on the tableau card
         $this->setupFolkOnCard("card_folk_existing", "card_space_1");
         // Setup: folk card in mainarea with matching "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
 
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
-        $this->assertArrayHasKey("card_folk_114", $moves);
+        $this->assertArrayHasKey("card_folk_133", $moves);
         // Should have prereq error since all matching tableau cards are occupied
-        $this->assertEquals(Material::ERR_COST, $moves["card_folk_114"]["q"]);
+        $this->assertEquals(Material::ERR_COST, $moves["card_folk_133"]["q"]);
     }
 
     private function createFreeOp(?string $card = null): Op_cardFolk {
@@ -245,15 +245,15 @@ final class Op_cardFolkTest extends TestCase {
     public function testFreeMovesAffordableWithNoCoins(): void {
         // Setup: tableau card and folk card, but player has no coins
         $this->setupTableauCard("card_space_1", "Vista");
-        $this->setupFolkCardInMainArea("card_folk_114", "Vista", 3);
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 3);
 
         $op = $this->createFreeOp();
         $moves = $op->getPossibleMoves();
 
-        $this->assertArrayHasKey("card_folk_114", $moves);
+        $this->assertArrayHasKey("card_folk_133", $moves);
         // Should be OK even with no coins since it's free
-        $this->assertEquals(Material::RET_OK, $moves["card_folk_114"]["q"]);
-        $this->assertEquals("", $moves["card_folk_114"]["pay"]);
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_133"]["q"]);
+        $this->assertEquals("", $moves["card_folk_133"]["pay"]);
     }
 
     public function testFreePreservesParamOnRequeue(): void {

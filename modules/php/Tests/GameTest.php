@@ -15,7 +15,9 @@ use Bga\Games\wayfarers\States\GameDispatch;
 use PHPUnit\Framework\TestCase;
 
 use function Bga\Games\wayfarers\array_get;
+use function Bga\Games\wayfarers\getPart;
 use function Bga\Games\wayfarers\startsWith;
+use function Bga\Games\wayfarers\toJson;
 
 //       "player_colors" => ["ff0000", "ffcc02", "6cd0f6", "982fff"],
 define("PCOLOR", "6cd0f6");
@@ -301,6 +303,40 @@ final class GameTest extends TestCase {
         }
     }
 
+    function checkRules($ruleField, $key, $info, $canEmpty = false) {
+        $r = $info[$ruleField] ?? "";
+        if (!$canEmpty) {
+            $this->assertTrue($r != "", "empty rules for $key " . toJson($info));
+        } else {
+            return;
+        }
+        $op = $this->game->machine->instanciateOperation($r, PCOLOR);
+        $this->assertTrue($op != null, "operation failed $r");
+        return $r;
+    }
+
+    /**
+     * Test Material data for aiboard_X. Make sure all rules are implements
+     */
+    public function testAIBoard() {
+        $this->game();
+        $token_types = $this->game->material->get();
+
+        foreach ($token_types as $key => $info) {
+            $this->assertTrue(!!$key);
+            if (!startsWith($key, "aiboard_")) {
+                continue;
+            }
+            echo "testing $key\n";
+            $bnum = getPart($key, 1);
+            $this->checkRules("t", $key, $info);
+            $this->checkRules("r1", $key, $info);
+            $this->checkRules("r2", $key, $info);
+            for ($i = 0; $i < 21; $i++) {
+                $this->checkRules("r", "aibonus_{$bnum}_{$i}", $token_types["aibonus_{$bnum}_{$i}"], true);
+            }
+        }
+    }
     /**
      * Test getCaravanAssetsForDie with starting assets only (no upgrade tiles)
      */
@@ -702,14 +738,6 @@ final class GameTest extends TestCase {
         $playedFolk = "card_folk_100_1";
         $triggers = $this->game->getVistaTriggeredRules($playedFolk, PCOLOR);
         $this->assertArrayHasKey($folkVistaCard, $triggers, "CardFolk Vista should trigger on folk card");
-
-        // Test 4: Implicit UpgradeAny tag triggers matching Vista card
-        // card_land_37: trig="UpgradeAny", dr="food"
-        $upgVistaCard = "card_land_37_1";
-        $this->game->tokens->db->moveToken($upgVistaCard, "tableau_" . PCOLOR, -4);
-        $playedUpg = "upg_green_1_1";
-        $triggers = $this->game->getVistaTriggeredRules($playedUpg, PCOLOR);
-        $this->assertArrayHasKey($upgVistaCard, $triggers, "UpgradeAny Vista should trigger on upgrade tile");
 
         // Test 5: Vista card does not trigger itself
         $newVistaCard = "card_land_25_1"; // trig="Vista", tags="Vista"

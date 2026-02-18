@@ -114,13 +114,12 @@
   - [x] Acquire based on AI board r1 field
   - [x] Journal
   - [x] Shuffle all scheme cards back into facedown draw pile after rest
-- [ ] Do NOT refresh any cards until AI completes full rest turn (requires card refresh logic)
 
 ### Phase 6: AI Scoring & Game End
 
 - [x] AI still participates in guild majorities (3 VP per guild with most influence)
 - [x] AI influence is unlimited - if supply runs out, create more tokens dynamically (Op_infBase.php)
-- [ ] Solo game option (choise board)
+- [ ] Solo game option (choose board)
 - [x] Game end trigger: AI reaching final journal column also triggers end-game
 - [x] All players (human + AI) take one final turn after end-game trigger
 

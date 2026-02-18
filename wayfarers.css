@@ -1208,8 +1208,8 @@ html[data-theme=dark] .deck .counter {
 }
 
 .pboard {
-  height: 100%;
-  aspect-ratio: 798/1024;
+  width: 374px;
+  aspect-ratio: 374/480;
   position: relative;
 }
 

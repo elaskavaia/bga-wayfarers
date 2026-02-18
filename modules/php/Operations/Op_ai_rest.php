@@ -57,14 +57,7 @@ class Op_ai_rest extends AiOperation {
         // right corner, move their Marker 1 space up their Comet Track.
         $comet = (int) $this->game->getRulesFor($scheme, "comet", 0);
         if ($comet) {
-            [$trackerId, $currentPos] = $this->game->tokens->getTrackerIdAndValue($owner, "comet");
-            $newPos = $currentPos + 1;
-            if ($newPos <= 10) {
-                // Max comet track is 10
-                $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves comet marker to ${pos}'), [
-                    "pos" => $newPos,
-                ]);
-            }
+            $this->queue("ai_comet");
         }
 
         // Step 2: Acquire (based on AI board r1 field)

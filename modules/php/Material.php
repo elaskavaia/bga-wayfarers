@@ -506,6 +506,10 @@ class Material {
         "type" => "ai_focusAction",
         "name" => clienttranslate("AI Focus Action"),
 ],
+    "Op_ai_comet" => [ 
+        "type" => "ai_comet",
+        "name" => clienttranslate("AI Comet Track"),
+],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
 // # create is one of the numbers
@@ -3545,6 +3549,9 @@ class Material {
         "r" => "tag_Vista",
         "gw" => 4,
 ],
+            /* --- gen php end journal_material --- */
+
+            /* --- gen php begin caravan_material --- */
 // #Player board randomized Bonuses
     "pbonus_1_0" => [ 
         "num" => 1,
@@ -3866,7 +3873,410 @@ class Material {
         "num" => 4,
         "conn" => 17,
 ],
-            /* --- gen php end journal_material --- */
+// #AI board randomized Bonuses
+    "aibonus_1_0" => [ 
+        "num" => 1,
+        "conn" => 0,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_1_1" => [ 
+        "num" => 1,
+        "conn" => 1,
+        "r" => "ai_comet",
+],
+    "aibonus_1_2" => [ 
+        "num" => 1,
+        "conn" => 2,
+        "r" => "infBlack",
+],
+    "aibonus_1_3" => [ 
+        "num" => 1,
+        "conn" => 3,
+        "r" => "ai_comet",
+],
+    "aibonus_1_4" => [ 
+        "num" => 1,
+        "conn" => 4,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_1_5" => [ 
+        "num" => 1,
+        "conn" => 5,
+        "r" => "ai_comet",
+],
+    "aibonus_1_6" => [ 
+        "num" => 1,
+        "conn" => 6,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_1_7" => [ 
+        "num" => 1,
+        "conn" => 7,
+],
+    "aibonus_1_8" => [ 
+        "num" => 1,
+        "conn" => 8,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_1_9" => [ 
+        "num" => 1,
+        "conn" => 9,
+],
+    "aibonus_1_10" => [ 
+        "num" => 1,
+        "conn" => 10,
+        "r" => "ai_cardFolk",
+],
+    "aibonus_1_11" => [ 
+        "num" => 1,
+        "conn" => 11,
+],
+    "aibonus_1_12" => [ 
+        "num" => 1,
+        "conn" => 12,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_1_13" => [ 
+        "num" => 1,
+        "conn" => 13,
+],
+    "aibonus_1_14" => [ 
+        "num" => 1,
+        "conn" => 14,
+        "r" => "ai_cardWater",
+],
+    "aibonus_1_15" => [ 
+        "num" => 1,
+        "conn" => 15,
+],
+    "aibonus_1_16" => [ 
+        "num" => 1,
+        "conn" => 16,
+        "r" => "infBlack",
+],
+    "aibonus_1_17" => [ 
+        "num" => 1,
+        "conn" => 17,
+],
+    "aibonus_1_18" => [ 
+        "num" => 1,
+        "conn" => 18,
+        "r" => "ai_cardLand",
+],
+    "aibonus_1_19" => [ 
+        "num" => 1,
+        "conn" => 19,
+],
+    "aibonus_1_20" => [ 
+        "num" => 1,
+        "conn" => 20,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_2_0" => [ 
+        "num" => 2,
+        "conn" => 0,
+        "r" => "ai_cardWater",
+],
+    "aibonus_2_1" => [ 
+        "num" => 2,
+        "conn" => 1,
+        "r" => "infBlack",
+],
+    "aibonus_2_2" => [ 
+        "num" => 2,
+        "conn" => 2,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_2_3" => [ 
+        "num" => 2,
+        "conn" => 3,
+        "r" => "infYellow",
+],
+    "aibonus_2_4" => [ 
+        "num" => 2,
+        "conn" => 4,
+        "r" => "cardInsp",
+],
+    "aibonus_2_5" => [ 
+        "num" => 2,
+        "conn" => 5,
+        "r" => "infBlue",
+],
+    "aibonus_2_6" => [ 
+        "num" => 2,
+        "conn" => 6,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_2_7" => [ 
+        "num" => 2,
+        "conn" => 7,
+        "r" => "ai_comet",
+],
+    "aibonus_2_8" => [ 
+        "num" => 2,
+        "conn" => 8,
+        "r" => "ai_cardLand",
+],
+    "aibonus_2_9" => [ 
+        "num" => 2,
+        "conn" => 9,
+],
+    "aibonus_2_10" => [ 
+        "num" => 2,
+        "conn" => 10,
+        "r" => "infBlack",
+],
+    "aibonus_2_11" => [ 
+        "num" => 2,
+        "conn" => 11,
+],
+    "aibonus_2_12" => [ 
+        "num" => 2,
+        "conn" => 12,
+        "r" => "ai_cardWater",
+],
+    "aibonus_2_13" => [ 
+        "num" => 2,
+        "conn" => 13,
+        "r" => "ai_comet",
+],
+    "aibonus_2_14" => [ 
+        "num" => 2,
+        "conn" => 14,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_2_15" => [ 
+        "num" => 2,
+        "conn" => 15,
+],
+    "aibonus_2_16" => [ 
+        "num" => 2,
+        "conn" => 16,
+        "r" => "ai_cardWater",
+],
+    "aibonus_2_17" => [ 
+        "num" => 2,
+        "conn" => 17,
+],
+    "aibonus_2_18" => [ 
+        "num" => 2,
+        "conn" => 18,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_2_19" => [ 
+        "num" => 2,
+        "conn" => 19,
+],
+    "aibonus_2_20" => [ 
+        "num" => 2,
+        "conn" => 20,
+        "r" => "ai_cardLand",
+],
+    "aibonus_3_0" => [ 
+        "num" => 3,
+        "conn" => 0,
+        "r" => "ai_cardWater",
+],
+    "aibonus_3_1" => [ 
+        "num" => 3,
+        "conn" => 1,
+        "r" => "infBlue",
+],
+    "aibonus_3_2" => [ 
+        "num" => 3,
+        "conn" => 2,
+        "r" => "cardInsp",
+],
+    "aibonus_3_3" => [ 
+        "num" => 3,
+        "conn" => 3,
+        "r" => "infYellow",
+],
+    "aibonus_3_4" => [ 
+        "num" => 3,
+        "conn" => 4,
+        "r" => "ai_cardLand",
+],
+    "aibonus_3_5" => [ 
+        "num" => 3,
+        "conn" => 5,
+        "r" => "infBlack",
+],
+    "aibonus_3_6" => [ 
+        "num" => 3,
+        "conn" => 6,
+        "r" => "infAny",
+],
+    "aibonus_3_7" => [ 
+        "num" => 3,
+        "conn" => 7,
+        "r" => "ai_infCard",
+],
+    "aibonus_3_8" => [ 
+        "num" => 3,
+        "conn" => 8,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_3_9" => [ 
+        "num" => 3,
+        "conn" => 9,
+        "r" => "ai_comet",
+],
+    "aibonus_3_10" => [ 
+        "num" => 3,
+        "conn" => 10,
+        "r" => "cardInsp",
+],
+    "aibonus_3_11" => [ 
+        "num" => 3,
+        "conn" => 11,
+        "r" => "ai_comet",
+],
+    "aibonus_3_12" => [ 
+        "num" => 3,
+        "conn" => 12,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_3_13" => [ 
+        "num" => 3,
+        "conn" => 13,
+        "r" => "ai_infCard",
+],
+    "aibonus_3_14" => [ 
+        "num" => 3,
+        "conn" => 14,
+        "r" => "infBlack",
+],
+    "aibonus_3_15" => [ 
+        "num" => 3,
+        "conn" => 15,
+        "r" => "ai_infCard",
+],
+    "aibonus_3_16" => [ 
+        "num" => 3,
+        "conn" => 16,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_3_17" => [ 
+        "num" => 3,
+        "conn" => 17,
+        "r" => "ai_infCard",
+],
+    "aibonus_3_18" => [ 
+        "num" => 3,
+        "conn" => 18,
+        "r" => "cardInsp",
+],
+    "aibonus_3_19" => [ 
+        "num" => 3,
+        "conn" => 19,
+        "r" => "ai_infCard",
+],
+    "aibonus_3_20" => [ 
+        "num" => 3,
+        "conn" => 20,
+        "r" => "infBlack",
+],
+    "aibonus_4_0" => [ 
+        "num" => 4,
+        "conn" => 0,
+        "r" => "ai_infCard",
+],
+    "aibonus_4_1" => [ 
+        "num" => 4,
+        "conn" => 1,
+        "r" => "ai_comet",
+],
+    "aibonus_4_2" => [ 
+        "num" => 4,
+        "conn" => 2,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_4_3" => [ 
+        "num" => 4,
+        "conn" => 3,
+        "r" => "ai_cardFolk",
+],
+    "aibonus_4_4" => [ 
+        "num" => 4,
+        "conn" => 4,
+        "r" => "ai_infCard",
+],
+    "aibonus_4_5" => [ 
+        "num" => 4,
+        "conn" => 5,
+        "r" => "ai_comet",
+],
+    "aibonus_4_6" => [ 
+        "num" => 4,
+        "conn" => 6,
+        "r" => "cardInsp",
+],
+    "aibonus_4_7" => [ 
+        "num" => 4,
+        "conn" => 7,
+],
+    "aibonus_4_8" => [ 
+        "num" => 4,
+        "conn" => 8,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_4_9" => [ 
+        "num" => 4,
+        "conn" => 9,
+],
+    "aibonus_4_10" => [ 
+        "num" => 4,
+        "conn" => 10,
+        "r" => "infBlack",
+],
+    "aibonus_4_11" => [ 
+        "num" => 4,
+        "conn" => 11,
+],
+    "aibonus_4_12" => [ 
+        "num" => 4,
+        "conn" => 12,
+        "r" => "ai_cardSpace",
+],
+    "aibonus_4_13" => [ 
+        "num" => 4,
+        "conn" => 13,
+],
+    "aibonus_4_14" => [ 
+        "num" => 4,
+        "conn" => 14,
+        "r" => "ai_cardFolk",
+],
+    "aibonus_4_15" => [ 
+        "num" => 4,
+        "conn" => 15,
+],
+    "aibonus_4_16" => [ 
+        "num" => 4,
+        "conn" => 16,
+        "r" => "ai_cardLand",
+],
+    "aibonus_4_17" => [ 
+        "num" => 4,
+        "conn" => 17,
+        "r" => "ai_comet",
+],
+    "aibonus_4_18" => [ 
+        "num" => 4,
+        "conn" => 18,
+        "r" => "ai_cardWater",
+],
+    "aibonus_4_19" => [ 
+        "num" => 4,
+        "conn" => 19,
+],
+    "aibonus_4_20" => [ 
+        "num" => 4,
+        "conn" => 20,
+        "r" => "infBlack",
+],
+            /* --- gen php end caravan_material --- */
 
             /* --- gen php begin scheme_material --- */
 // # 6 Scheme Cards for Solo AI
@@ -4022,8 +4432,8 @@ class Material {
     "aiboard_1" => [ 
         "create" => 0,
         "num" => 1,
-        "t" => "ai_cardBlack",
-        "r1" => "ai_cardBlack",
+        "t" => "ai_cardSpace",
+        "r1" => "ai_cardSpace",
         "r2" => "ai_comet",
 ],
     "aiboard_2" => [ 

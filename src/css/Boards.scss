@@ -141,9 +141,9 @@
 }
 
 .pboard {
-  height: 100%;
-
-  aspect-ratio: 798 / 1024;
+  //height: 480px;
+  width: 374px;
+  aspect-ratio: 374 / 480;
   position: relative;
 }
 .pboard::before {
