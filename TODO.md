@@ -29,10 +29,6 @@
   - [x] Give AI 1 Influence in Yellow Guild and 1 in Blue Guild (no provisions/silver)
   - [x] Shuffle scheme cards into a facedown draw pile
   - [x] Human player is always first player; AI is always second
-- [x] Bug fixes in Base.php:
-  - [x] `loadPlayersBasicInfosWithBots()` - guard with `isSolo()` to not add automa in multiplayer
-  - [x] Added `custom_getPlayerNameById()` for automa-safe name resolution in notifications
-  - [x] Fixed `getNextReadyPlayerId()` to use `self::PLAYER_AUTOMA` instead of `Game::PLAYER_AUTOMA`
 
 ### Phase 2: AI Turn Infrastructure
 
@@ -72,7 +68,7 @@
   - [x] Track full footprint of multi-cell tiles for collision detection
   - [x] Place tiles alongside board when caravan is full
   - [ ] Rotate rectangular tiles to fit winding path
-  - [ ] Resolve effects of covered caravan icons when placing tiles
+  - [x] Resolve effects of covered caravan icons when placing tiles
 - [x] AI worker placement (Op_ai_placeWorker.php):
   - [x] Green Workers go on Townsfolk Cards
   - [x] Yellow Workers go on Land Cards

@@ -25,28 +25,7 @@ use function Bga\Games\wayfarers\custom_array_rotate;
  * Uses resource track color priority to select tile color
  * Uses sum value for positional selection within that color
  * Places tiles in sequential caravan positions
- * 
- * 
- RULES:
- If their
-colour priority would result in them not benefiting (for example, if
-there were no remaining Upgrade Tiles of that colour), they move to
-the next colour in clockwise order.
-
- When acquiring Upgrade Tiles, the AI places them onto their Board,
-starting in the bottom-left corner of their Caravan. From here they
-continue placing Upgrade Tiles, filling the bottom row from left to
-right, then the middle row from right to left, and finally the top row
-from left to right. Rotate rectangular Tiles as needed, in order to
-keep them from breaking out of this winding path. If the AI gains
-more Upgrade Tiles than they have room for, simply place any
-further Tiles alongside their Board.
-When placing an Upgrade Tile, immediately resolve the effects of
-any icons covered in their Caravan.
-When acquiring a Special (Pink) Upgrade Tile, the AI prioritises
-using the reference at the bottom of their most recently revealed
-Scheme Card. If that Upgrade Tile has already been acquired, they
-instead acquire the next available Tile in clockwise order
+ *
  */
 class Op_ai_upgAny extends AiOperation {
     // AI caravan dimensions
@@ -224,10 +203,19 @@ class Op_ai_upgAny extends AiOperation {
             clienttranslate('${player_name} acquires ${token_name} and places it in caravan')
         );
 
-        // TODO activate bonus placement
-
-        // AI ignores all tile bonuses and icons
-        // VP from tiles is scored at end of game in finalScoring()
+        // Resolve effects of covered caravan icons
+        $boardNumber = $this->aiGetBoardNumber();
+        $x = ($position - 1) % self::CARAVAN_COLS;
+        $y = (int) floor(($position - 1) / self::CARAVAN_COLS);
+        for ($dy = 0; $dy < $tileH; $dy++) {
+            for ($dx = 0; $dx < $tileW; $dx++) {
+                $i = $x + $dx + ($y + $dy) * self::CARAVAN_COLS;
+                $bonus = $this->game->getRulesFor("aibonus_{$boardNumber}_{$i}", "r", "");
+                if ($bonus) {
+                    $this->queue($bonus);
+                }
+            }
+        }
 
         return true;
     }
