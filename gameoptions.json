@@ -6,16 +6,16 @@
         "name": "Random"
       },
       "1": {
-        "name": "Space Dreamer"
+        "name": "Spacer"
       },
       "2": {
-        "name": "Mechanic Upgrader"
+        "name": "Upgrader"
       },
       "3": {
-        "name": "Townsfolk Mayor"
+        "name": "Citizen"
       },
       "4": {
-        "name": "Journal Writer"
+        "name": "Wayfarer"
       }
     },
     "default": 0,

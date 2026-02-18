@@ -4298,7 +4298,7 @@ class Material {
         "r2" => "ai_focusAction",
         "p" => 6,
         "comet" => 1,
-        "nomx" => "Blue Focus",
+        "nom" => "Worker or Focus",
 ],
     "card_scheme_2" => [ 
         "create" => 1,
@@ -4311,7 +4311,7 @@ class Material {
         "r2" => "infBlue,infYellow,infBlack",
         "p" => 8,
         "comet" => 1,
-        "nomx" => "Blue Influence",
+        "nom" => "Worker or Influence",
 ],
     "card_scheme_3" => [ 
         "create" => 1,
@@ -4324,7 +4324,7 @@ class Material {
         "r2" => "ai_upgAny",
         "p" => 10,
         "comet" => 0,
-        "nomx" => "Blue Upgrade",
+        "nom" => "Worker or Upgrade",
 ],
 // # Red cards
     "card_scheme_4" => [ 
@@ -4338,7 +4338,7 @@ class Material {
         "r2" => "infBlue,ai_upgAny",
         "p" => 5,
         "comet" => 1,
-        "nomx" => "Red Buy Water",
+        "nom" => "Buy Water or Upgrade",
 ],
     "card_scheme_5" => [ 
         "create" => 1,
@@ -4351,7 +4351,7 @@ class Material {
         "r2" => "infBlack,ai_cardFolk",
         "p" => 3,
         "comet" => 1,
-        "nomx" => "Red Buy Space",
+        "nom" => "Buy Space or Buy Townsfolk",
 ],
     "card_scheme_6" => [ 
         "create" => 1,
@@ -4364,7 +4364,7 @@ class Material {
         "r2" => "infYellow,infYellow,ai_infCard",
         "p" => 1,
         "comet" => 0,
-        "nomx" => "Red Buy Land",
+        "nom" => "Buy Land or Influence",
 ],
 // #res track
 // #t: priority color
@@ -4435,6 +4435,7 @@ class Material {
         "t" => "ai_cardSpace",
         "r1" => "ai_cardSpace",
         "r2" => "ai_comet",
+        "nom" => "Spacer",
 ],
     "aiboard_2" => [ 
         "create" => 0,
@@ -4442,6 +4443,7 @@ class Material {
         "t" => "ai_upgAny",
         "r1" => "ai_upgAny",
         "r2" => "infYellow",
+        "nom" => "Upgrader",
 ],
     "aiboard_3" => [ 
         "create" => 0,
@@ -4449,6 +4451,7 @@ class Material {
         "t" => "ai_cardFolk",
         "r1" => "ai_cardFolk",
         "r2" => "ai_cardFolk",
+        "nom" => "Citizen",
 ],
     "aiboard_4" => [ 
         "create" => 0,
@@ -4456,6 +4459,7 @@ class Material {
         "t" => "ai_journal",
         "r1" => "ai_infCard",
         "r2" => "infBlack",
+        "nom" => "Wayfarer",
 ],
             /* --- gen php end scheme_material --- */
         ];

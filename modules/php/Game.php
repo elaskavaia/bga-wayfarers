@@ -42,9 +42,7 @@ class Game extends Base {
         Game::$instance = $this;
         parent::__construct();
         self::initGameStateLabels([
-            "variant_draft_num" => 100,
-            "variant_solo_dif" => 101,
-            "variant_multi" => 102,
+            "variant_solo_board" => 101,
         ]);
 
         $this->material = new Material();
@@ -399,12 +397,8 @@ class Game extends Base {
         }
     }
 
-    function isSimultanousPlay() {
-        return ((int) $this->getGameStateValue("variant_multi")) ? 1 : 0;
-    }
-
-    function getVariantSoloDif() {
-        return (int) $this->getGameStateValue("variant_solo_dif");
+    function getVariantSoloBoard() {
+        return (int) $this->getGameStateValue("variant_solo_board");
     }
 
     function getRulesFor($token_id, $field = "r", $default = "") {

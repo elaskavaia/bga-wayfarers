@@ -1,4 +1,4 @@
-num|t|c|r1|r2|p|comet|nomx
+num|t|c|r1|r2|p|comet|nom
 #set create=1
 #set id=card_scheme_{num}
 #set type=card card_scheme
@@ -13,13 +13,13 @@ num|t|c|r1|r2|p|comet|nomx
 
 
 # Blue cards
-1|blue|2|ai_placeWorker(green)|ai_focusAction|6|1|Blue Focus
-2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|8|1|Blue Influence
-3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|10|0|Blue Upgrade
+1|blue|2|ai_placeWorker(green)|ai_focusAction|6|1|Worker or Focus
+2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|8|1|Worker or Influence
+3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|10|0|Worker or Upgrade
 # Red cards
-4|red|1|2n_infBlue:ai_cardWater|infBlue,ai_upgAny|5|1|Red Buy Water
-5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|3|1|Red Buy Space
-6|red|1|2n_infYellow:ai_cardLand|infYellow,infYellow,ai_infCard|1|0|Red Buy Land
+4|red|1|2n_infBlue:ai_cardWater|infBlue,ai_upgAny|5|1|Buy Water or Upgrade
+5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|3|1|Buy Space or Buy Townsfolk
+6|red|1|2n_infYellow:ai_cardLand|infYellow,infYellow,ai_infCard|1|0|Buy Land or Influence
 
 
 #res track
@@ -47,7 +47,7 @@ num|t|c|r1|r2|p|comet|nomx
 #r1: rest action
 #r2: res tracker bonus
 
-1|ai_cardSpace||ai_cardSpace|ai_comet|
-2|ai_upgAny||ai_upgAny|infYellow|
-3|ai_cardFolk||ai_cardFolk|ai_cardFolk|
-4|ai_journal||ai_infCard|infBlack|
+1|ai_cardSpace||ai_cardSpace|ai_comet|||Spacer
+2|ai_upgAny||ai_upgAny|infYellow|||Upgrader
+3|ai_cardFolk||ai_cardFolk|ai_cardFolk|||Citizen
+4|ai_journal||ai_infCard|infBlack|||Wayfarer
