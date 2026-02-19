@@ -141,9 +141,9 @@
 }
 
 .pboard {
-  //height: 480px;
-  width: 374px;
-  aspect-ratio: 374 / 480;
+  width: calc(v.$cardWidth * 3);
+  height: v.$pboardHeight;
+  aspect-ratio: 798 / 1024;
   position: relative;
 }
 .pboard::before {
