@@ -230,7 +230,6 @@ class Game extends Base {
         $this->tokens->db->createToken("tracker_res_$color", "tableau_$color", 0);
         // Create AI comet track marker (position 0, values 0-10)
         $this->tokens->db->createToken("tracker_comet_$color", "tableau_$color", 0);
-
         $this->tokens->db->createToken("tracker_vp_$color", "miniboard_$color", 0);
 
         // Shuffle scheme cards
@@ -444,6 +443,11 @@ class Game extends Base {
      * @return int - count of tags
      */
     function countPlayerTags(string $tagName, string $owner): int {
+        if ($owner == $this->getAutomaColor() && $tagName == "Comet") {
+            // Special case for Comet: count AI's position on comet track
+            $pos = $this->tokens->getTrackerValue($this->getAutomaColor(), "comet");
+            return $pos; // comet track positions directly correspond to Comet tag count
+        }
         $count = 0;
 
         $cardTypes = ["card_land", "card_water", "card_space", "card_home"];
@@ -893,7 +897,7 @@ class Game extends Base {
             // check if player has more Comet tags than all individual opponents
             $tag = getPart($x, 1);
             $tagCount = $this->countPlayerTags($tag, $owner);
-            $players = $this->loadPlayersBasicInfos();
+            $players = $this->loadPlayersBasicInfosWithBots();
             foreach ($players as $player_id => $player) {
                 $color = $this->custom_getPlayerColorById((int) $player_id);
                 if ($color === $owner) {
@@ -964,6 +968,36 @@ class Game extends Base {
             );
 
             // TODO: send special notification to clients to show end game banner
+        }
+    }
+
+    /**
+     * Refill all mainarea card displays. For each card type, slide existing cards down
+     * to fill gaps and draw from the deck to fill position 4.
+     */
+    function refillMainArea(): void {
+        $cardTypes = ["folk", "space", "land", "water", "insp"];
+        foreach ($cardTypes as $ctype) {
+            $cards = $this->tokens->getTokensOfTypeInLocation("card_$ctype", "mainarea", null, "token_state");
+            if (count($cards) >= 4) {
+                continue; // No gaps
+            }
+            // Compact: slide cards down to fill gaps (states 1-4)
+            $sorted = $cards;
+            uasort($sorted, fn($a, $b) => $a["state"] <=> $b["state"]);
+            $pos = 1;
+            foreach ($sorted as $cardKey => $info) {
+                if ($info["state"] != $pos) {
+                    $this->tokens->dbSetTokenLocation($cardKey, "mainarea", $pos, "");
+                }
+                $pos++;
+            }
+            // Draw to fill remaining slots
+            $missing = 4 - count($cards);
+            for ($i = 0; $i < $missing; $i++) {
+                $this->tokens->dbPickTokenForLocation("deck_$ctype", "mainarea", $pos);
+                $pos++;
+            }
         }
     }
 

@@ -49,7 +49,8 @@ class Op_reroll extends Operation {
     function getPossibleMoves() {
         $dieKey = $this->getDie();
         if ($dieKey) {
-            return ["confirm"];
+            $res["confirm"] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll")];
+            return $res;
         }
 
         $dice = $this->getAllDice();
@@ -58,6 +59,10 @@ class Op_reroll extends Operation {
             $res[$key] = ["q" => Material::RET_OK];
         }
         return $res;
+    }
+
+    public function getSkipName() {
+        return clienttranslate("Keep as is");
     }
 
     public function getUiArgs() {
@@ -98,7 +103,7 @@ class Op_reroll extends Operation {
     function getPrompt() {
         $dieKey = $this->getDataField("die");
         if ($dieKey) {
-            return clienttranslate('Confirm to reroll ${token_div} or skip to keep as is');
+            return clienttranslate('Confirm to reroll ${token_div}');
         }
         return clienttranslate("Select a die to reroll");
     }

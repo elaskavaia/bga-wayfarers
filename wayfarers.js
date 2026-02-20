@@ -1141,6 +1141,7 @@ var Game1Tokens = /** @class */ (function (_super) {
                     "token_divs",
                     "token_names",
                     "place_name",
+                    "card_type_name",
                     "token_div",
                     "token2_div",
                     "token3_div",
@@ -2224,7 +2225,12 @@ var GameXBody = /** @class */ (function (_super) {
                 // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
                 var color = getPart(location, 1);
                 var pos = Number(tokenInfo.state);
-                result.location = "ccell_".concat(pos, "_").concat(color);
+                if (pos <= 0) {
+                    // they hung out on tableau?
+                }
+                else {
+                    result.location = "ccell_".concat(pos, "_").concat(color);
+                }
             }
             else if (location.startsWith("mainarea")) {
                 var cardType = getPart(tokenId, 1);

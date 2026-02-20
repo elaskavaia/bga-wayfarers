@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\AiOperation;
 
 use function Bga\Games\wayfarers\custom_array_rotate;
@@ -27,20 +28,24 @@ use function Bga\Games\wayfarers\custom_array_rotate;
  */
 class Op_ai_infCard extends AiOperation {
     /**
-     * Get mainarea cards of the given type that don't have any influence yet, sorted by position
+     * Get mainarea cards of the given type
      */
-    function getAvailableCards(string $cardType): array {
+    function getCards(string $cardType): array {
         $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_$cardType", "mainarea", null, "token_state");
 
-        $available = [];
+        $res = [];
         foreach ($cards as $cardId => $info) {
             // Card is available if it has no children (no influence on it)
+            $state = $info["state"];
+            $argkey = "p$state";
             if (count($info["children"]) == 0) {
-                $available[$cardId] = $info;
+                $res[$argkey] = $info + ["q" => Material::RET_OK];
+            } else {
+                $res[$argkey] = $info + ["q" => Material::ERR_OCCUPIED];
             }
         }
 
-        return $available;
+        return $res;
     }
 
     /**
@@ -49,22 +54,21 @@ class Op_ai_infCard extends AiOperation {
     function selectTargetCard(): ?array {
         // Get color priority from resource track
         $colorPriority = $this->getColorPriority();
+        // Use sum value for positional selection
+        $prio = $this->getPositionPriority();
+        $dir = $this->getNextPositionPriorityDirection($prio);
 
         // Try each color in priority order
         foreach ($colorPriority as $color) {
             $cardType = self::COLOR_CARD_TYPE[$color] ?? null;
-            $cards = $this->getAvailableCards($cardType);
-            if (empty($cards)) {
-                continue;
+            $cards = $this->getCards($cardType);
+            $sorted = custom_array_rotate($cards, $prio - 1, $dir);
+
+            foreach ($sorted as $state => $info) {
+                if ($info["q"] == Material::RET_OK) {
+                    return ["card" => $info["key"], "card_type_name" => $cardType, "pos" => $prio];
+                }
             }
-
-            // Use sum value for positional selection
-            $prio = $this->getPositionPriority();
-            $cardKeys = array_keys($cards);
-            $dir = $this->getNextPositionPriorityDirection($prio);
-            $sorted = custom_array_rotate($cardKeys, $prio - 1, $dir);
-
-            return ["card" => $sorted[0], "card_type_name" => $cardType, "pos" => $prio];
         }
 
         return null;
@@ -100,7 +104,7 @@ class Op_ai_infCard extends AiOperation {
             $influenceKey,
             $targetCardInfo["card"],
             0,
-            clienttranslate('${player_name} places ${token_name} on ${place_name} (${card_type_name}:${pos})'),
+            clienttranslate('${player_name} places ${token_name} on ${place_name} (${card_type_name} at ${pos})'),
             $targetCardInfo
         );
 

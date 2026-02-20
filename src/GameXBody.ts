@@ -529,7 +529,11 @@ class GameXBody extends GameMachine {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
         const color = getPart(location, 1);
         const pos = Number(tokenInfo.state);
-        result.location = `ccell_${pos}_${color}`;
+        if (pos <= 0) {
+          // they hung out on tableau?
+        } else {
+          result.location = `ccell_${pos}_${color}`;
+        }
       } else if (location.startsWith("mainarea")) {
         const cardType = getPart(tokenId, 1);
         result.onClick = (x) => this.onToken(x);

@@ -1158,7 +1158,7 @@ html[data-theme=dark] .deck .counter {
   justify-content: safe center;
   align-items: flex-start;
   margin-top: 5px;
-  height: 480px;
+  height: 490px;
   gap: 1px;
 }
 
@@ -1183,8 +1183,7 @@ html[data-theme=dark] .deck .counter {
   overflow-y: visible;
   width: 100%;
   position: relative;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
 }
 
 #ebd-body[data-board-layout=scale] #current_player_panel {
@@ -1209,7 +1208,6 @@ html[data-theme=dark] .deck .counter {
 
 .pboard {
   width: 376.9633507853px;
-  height: 480px;
   aspect-ratio: 798/1024;
   position: relative;
 }

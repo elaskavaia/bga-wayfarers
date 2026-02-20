@@ -21,6 +21,7 @@ use Bga\Games\wayfarers\OpCommon\AiOperation;
  */
 class Op_ai_turn extends AiOperation {
     public function auto(): bool {
+        $this->game->refillMainArea();
         $this->game->customUndoSavepoint(0, 1);
         $owner = $this->getOwner();
         $this->game->systemAssert("mismatch action owner", $owner === "ffffff");

@@ -402,6 +402,18 @@ class OpMachine {
         }
         return [];
     }
+
+    function getAllOperations(?string $owner = null) {
+        $operations = $this->db->getOperations();
+        $result = [];
+        while (count($operations) > 0) {
+            $op = array_shift($operations);
+            if ($op["owner"] === null || $op["owner"] === $owner) {
+                $result[$op["id"]] = $op;
+            }
+        }
+        return $result;
+    }
     function isMultiplayerOperationMode() {
         if (!$this->isMultiplayerSupported()) {
             return false;

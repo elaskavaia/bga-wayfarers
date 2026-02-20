@@ -20,6 +20,9 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\OpCommon;
 
+use Bga\Games\wayfarers\Material;
+use Bga\Games\wayfarers\Operations\Op_pay;
+
 abstract class ComplexOperation extends CountableOperation {
     /** @var Operation[] */
     public array $delegates = [];
@@ -53,15 +56,46 @@ abstract class ComplexOperation extends CountableOperation {
         return $this;
     }
 
+    function paramInfo(Operation $sub) {
+        $err = "";
+        if ($sub->isVoid()) {
+            $err = $sub->getError();
+        }
+        $q = 0;
+        $max = 0;
+        if ($err) {
+            $q = Material::ERR_NOT_APPLICABLE;
+        } elseif ($sub instanceof CountableOperation) {
+            $count = $this->getCount();
+            $limit = $sub->getLimitCount();
+            $max = min($count, $limit);
+        } else {
+            $max = 1000;
+        }
+
+        $args = $sub->getExtraArgs();
+        $res = [
+            "name" => $sub->getIconicName(),
+            "args" => $args,
+            "err" => $err,
+            "r" => $sub->getTypeFullExpr(),
+            "q" => $q,
+            "max" => $max,
+            "tooltip" => $sub->getOpName(),
+        ];
+        if ($sub instanceof Op_pay) {
+            $res["token_id"] = $args["token_id"] ?? null;
+        }
+        return $res;
+    }
+
     function getPossibleMoves() {
         if ($this->isRangedChoice()) {
             return parent::getPossibleMoves();
         }
         $res = [];
         foreach ($this->delegates as $sub) {
-            $res[$sub->getOpId()] = [
-                "name" => $sub->getIconicName(),
-            ];
+            $res[$sub->getOpId()] = $this->paramInfo($sub);
         }
         return $res;
     }

@@ -11,6 +11,7 @@
 - Board action tooltips (also dup hot slots?)
 - Miniboards
 - Visual UI for insp under home space
+- Player markers are overlapping on journal
 
 ## Solo Rules
 

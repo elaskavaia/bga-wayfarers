@@ -24,26 +24,35 @@ use Bga\Games\wayfarers\OpCommon\ComplexOperation;
 
 class Op_order extends ComplexOperation {
     function resolve(): void {
+        // this suppose to pick selected operation and push on top of stack, remaing choice if any stored back
         $target = $this->getCheckedArg();
-        foreach ($this->delegates as $arg) {
-            if ($arg->getId() == $target) {
-                // XXX
-                $this->game->machine->push($arg->getType(), $arg->getOwner(), $arg->getData());
-                $this->notifyMessage(clienttranslate('${player_name} selected ${opname}'), ["opname" => $arg->getOpName()]);
+        foreach ($this->delegates as $i => $arg) {
+            if ($arg->getOpId() == $target) {
+                $this->queue($arg->getTypeFullExpr(), $arg->getOwner(), $arg->getDataForDb());
                 $arg->destroy();
+                unset($this->delegates[$i]);
+                break;
             }
+        }
+        if (count($this->delegates) > 0) {
+            $this->queueRank++;
+            $this->saveToDb($this->queueRank, true);
         }
 
         return;
     }
 
     function getPrompt() {
-        return clienttranslate("Choose first to resolve");
+        return clienttranslate("Choose order of operations");
     }
     function getDescription() {
-        return clienttranslate('${actplayer} chooses one of the options');
+        return clienttranslate('${actplayer} chooses order');
     }
     function getOperator() {
         return "+";
+    }
+
+    function getOpName() {
+        return $this->getRecName(" + ");
     }
 }

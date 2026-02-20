@@ -15,7 +15,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 44||ship,ship|1n_food:cardWater|Harbour Book|_xx_|yx__||Pay 1 Provision to acquire a Water card
 
 45||ship|2n_food:cardWater,coin|Harbour|_x_x|ux_x||Pay 2 Provisions to acquire a Water card, then gain Silver
-46||ship|2n_food:cardWater,pickWorker|Harbour|_x_x|__xx||Pay 2 Provisions to acquire a Water card, then pick a Worker
+46||ship|2n_food:(cardWater+pickWorker)|Harbour|_x_x|__xx||Pay 2 Provisions to acquire a Water card, then pick a Worker
 47||ship|upgBlue/(infBlue,infBlue)|Harbour|xx__|u_x_||Acquire a Water upgrade or gain 2 Blue influence
 48||ship|upgBlue/(infBlue,infBlue)|Harbour|__xx|yx__||Acquire a Water upgrade or gain 2 Blue influence
 49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_||Refresh a die, modify dice by +/- 1, then gain 1 Provision

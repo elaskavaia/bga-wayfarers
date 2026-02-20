@@ -91,7 +91,7 @@
   justify-content: safe center;
   align-items: flex-start;
   margin-top: 5px;
-  height: calc(v.$cardHeight * 2.4);
+  height: calc(v.$cardHeight * 2.4 + 10px);
   gap: 1px;
 }
 
@@ -116,8 +116,7 @@
   overflow-y: visible;
   width: 100%;
   position: relative;
-  justify-content: center;
-  align-items: center;
+  justify-content: space-around;
 }
 
 #ebd-body[data-board-layout="scale"] #current_player_panel {
@@ -142,7 +141,6 @@
 
 .pboard {
   width: calc(v.$cardWidth * 3);
-  height: v.$pboardHeight;
   aspect-ratio: 798 / 1024;
   position: relative;
 }

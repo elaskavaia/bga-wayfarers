@@ -112,9 +112,6 @@ class Op_cardInsp extends Op_cardBase {
             $deck = "deck_insp";
             $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);
             $this->dbSetTokenLocation($cardSelected, $deck, $extreme_pos - 1, clienttranslate('${player_name} discards ${token_name}'));
-
-            // Refill the mainarea spot
-            $this->queue("drawTab", $owner, ["card" => $cardSelected]);
             return;
         }
         // Second step: place the card

@@ -17,58 +17,42 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
-class Op_infMove extends Operation {
-    /**
-     * Get all player's influence that can be moved (on guilds or cards)
-     */
-    function getGuildFrom(): array {
-        $owner = $this->getOwner();
-        $influence = [];
+use function Bga\Games\wayfarers\getPart;
 
-        // Check guilds
-        foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
-            $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $guild);
-            foreach ($tokens as $tokenId => $info) {
-                $influence[$guild] = ["q" => Material::RET_OK, "from" => $guild, "token_id" => $tokenId];
-                break; // Only need first token from each guild
+class Op_infMove extends Operation {
+    const GUILDS = ["guild_black", "guild_yellow", "guild_blue"];
+
+    function getPossibleMoves() {
+        $owner = $this->getOwner();
+        $res = [];
+
+        foreach (self::GUILDS as $from) {
+            $tokens = $this->game->tokens->getTokensOfTypeInLocation("influence_{$owner}", $from);
+            if (empty($tokens)) {
+                continue;
+            }
+            $tokenId = array_key_first($tokens);
+            foreach (self::GUILDS as $to) {
+                if ($to === $from) {
+                    continue;
+                }
+                $fromColor = getPart($from, 1);
+                $toColor = getPart($to, 1);
+                $res["{$from}_{$to}"] = [
+                    "q" => Material::RET_OK,
+                    "from" => $from,
+                    "to" => $to,
+                    "name" => "[wicon_inf_$fromColor] ⤇ [wicon_inf_$toColor]",
+                    "token_id" => $tokenId,
+                ];
             }
         }
 
-        return $influence;
-    }
-
-    /**
-     * Get possible destinations (guilds and available cards)
-     */
-    function getPossibleDestinations(string $sourceLocation): array {
-        $res = [];
-
-        // Add guilds (except source if it's a guild)
-        foreach (["guild_black", "guild_yellow", "guild_blue"] as $guild) {
-            if ($guild !== $sourceLocation) {
-                $res[$guild] = ["q" => Material::RET_OK, "name" => $this->game->getTokenName($guild)];
-            }
+        if (empty($res)) {
+            return ["q" => Material::ERR_NONE_LEFT];
         }
 
         return $res;
-    }
-
-    function getPossibleMoves() {
-        $selectedGuild = $this->getDataField("guild", null);
-
-        if ($selectedGuild === null) {
-            // Step 1: Select influence to move
-            $influence = $this->getGuildFrom();
-
-            if (count($influence) == 0) {
-                return ["q" => Material::ERR_NONE_LEFT];
-            }
-
-            return $influence + ["prompt" => clienttranslate("Select Guild to move from")];
-        }
-        // Step 2: Select destination
-
-        return $this->getPossibleDestinations($selectedGuild);
     }
 
     function canSkip() {
@@ -76,34 +60,20 @@ class Op_infMove extends Operation {
     }
 
     function resolve(): void {
-        $owner = $this->getOwner();
-        $selectedGuild = $this->getDataField("guild", null);
+        $selected = $this->getCheckedArg();
 
-        if ($selectedGuild === null) {
-            // Step 1: Store selected guild, queue step 2
-            $selectedGuild = $this->getCheckedArg();
-            $this->queue($this->getType(), $owner, ["guild" => $selectedGuild]);
-            return;
-        }
-
-        // Step 2: Move influence to destination
-        $to = $this->getCheckedArg();
-        $selectedInfluence = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("influence_{$owner}", $selectedGuild);
-
+        $moves = $this->getArgs()["info"];
+        $move = $moves[$selected]; // this cannot fail - getCheckedArg already checked
         $this->dbSetTokenLocation(
-            $selectedInfluence,
-            $to,
+            $move["token_id"],
+            $move["to"],
             0,
-            clienttranslate('${player_name} moves ${token_name} to ${place_name}')
+            clienttranslate('${player_name} moves ${token_name} from ${place_from} to ${place_name}')
         );
     }
 
     function getPrompt() {
-        $selectedGuild = $this->getDataField("guild", null);
-        if ($selectedGuild === null) {
-            return clienttranslate("Select Guild to move from");
-        }
-        return clienttranslate("Select destination Guild");
+        return clienttranslate("Select where to move Influence");
     }
 
     public function getIconicName() {

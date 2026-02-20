@@ -328,10 +328,6 @@ class Material {
         "type" => "pickWorker",
         "name" => clienttranslate("Pick a Worker"),
 ],
-    "Op_drawTab" => [ 
-        "type" => "drawTab",
-        "name" => clienttranslate("Refill Cards"),
-],
     "Op_reroll" => [ 
         "type" => "reroll",
         "name" => clienttranslate("Refresh a Die"),
@@ -884,6 +880,21 @@ class Material {
 ],
     "vp" => [ 
         "name" => clienttranslate("VP"),
+],
+    "space" => [ 
+        "name" => clienttranslate("Space"),
+],
+    "land" => [ 
+        "name" => clienttranslate("Land"),
+],
+    "water" => [ 
+        "name" => clienttranslate("Water"),
+],
+    "folk" => [ 
+        "name" => clienttranslate("Townsfolk"),
+],
+    "mainarea" => [ 
+        "name" => clienttranslate("Main Board"),
 ],
 // #ui elements
     "wicon_die_1" => [ 
@@ -1842,7 +1853,7 @@ class Material {
         "create" => 1,
         "num" => 46,
         "d" => "ship",
-        "dr" => "2n_food:cardWater,pickWorker",
+        "dr" => "2n_food:(cardWater+pickWorker)",
         "tags" => "Harbour",
         "c1" => "_x_x",
         "c2" => "__xx",

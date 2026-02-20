@@ -33,8 +33,8 @@ class Op_ai_cardBase extends AiOperation {
     public function auto(): bool {
         $owner = $this->getOwner();
         $moves = $this->getPossibleMoves();
-        $type = $this->getCardType();
-        if ($type == "insp") {
+        $cardType = $this->getCardType();
+        if ($cardType == "insp") {
             // inspiration card position check resource marker
             $prio = $this->getResourceMarkerRules("c");
             $this->notifyMessage(
@@ -55,10 +55,20 @@ class Op_ai_cardBase extends AiOperation {
 
         $this->queue("ai_cardInteract", $owner, ["card" => $card]);
 
-        $vp = $this->getCardTypeVP($type);
-        // arrange cards based on VP staring at -2 for townsfolk
-        $this->dbSetTokenLocation($card, "tableau_$owner", -1 - $vp);
-        $this->queue("drawTab", $owner, ["card" => $card]);
+        switch ($cardType) {
+            case "water":
+            case "land":
+                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_land", "tableau_$owner");
+                $count = count($tokens);
+                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_water", "tableau_$owner");
+                $count += count($tokens);
+            default:
+                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
+                $count = count($tokens);
+        }
+
+        // arrange cards based on type staring at -2 (land and water count together)
+        $this->dbSetTokenLocation($card, "tableau_$owner", -2 - $count);
         return true;
     }
 }

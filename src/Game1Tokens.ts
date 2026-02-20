@@ -667,6 +667,7 @@ class Game1Tokens extends Game0Basics {
           "token_divs",
           "token_names",
           "place_name",
+          "card_type_name",
           "token_div",
           "token2_div",
           "token3_div",

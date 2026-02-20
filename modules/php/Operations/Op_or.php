@@ -76,37 +76,9 @@ class Op_or extends ComplexOperation {
         $res = [];
         $totalLimit = 0;
         foreach ($this->delegates as $i => $sub) {
-            $err = "";
-            if ($sub->isVoid()) {
-                $err = $sub->getError();
-            }
-            $q = 0;
-            $max = 0;
-            if ($err) {
-                $q = 1;
-            } elseif ($sub instanceof CountableOperation) {
-                $count = $this->getCount();
-                $limit = $sub->getLimitCount();
-                $max = min($count, $limit);
-            } else {
-                $max = 1000;
-            }
-
-            $totalLimit += $max;
-
-            $args = $sub->getExtraArgs();
-            $res["choice_$i"] = [
-                "name" => $sub->getIconicName(),
-                "args" => $args,
-                "err" => $err,
-                "r" => $sub->getTypeFullExpr(),
-                "q" => $q,
-                "max" => $max,
-                "tooltip" => $sub->getOpName(),
-            ];
-            if ($sub instanceof Op_pay) {
-                $res["choice_$i"]["token_id"] = $args["token_id"] ?? null;
-            }
+            $arg = $this->paramInfo($sub);
+            $totalLimit += $arg["max"] ?? 0;
+            $res["choice_$i"] = $arg;
         }
         if ($totalLimit < $this->getMinCount()) {
             return ["q" => Material::ERR_COST];

@@ -132,8 +132,6 @@ abstract class Op_cardBase extends Op_acquireBase {
         }
         // Check if any Vista cards are triggered by this card
         $this->queueVistaTriggers($card);
-
-        $this->queue("drawTab", $owner, ["card" => $card]);
         return;
     }
 
