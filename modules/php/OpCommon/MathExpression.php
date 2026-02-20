@@ -223,6 +223,11 @@ class MathFunctionExpression extends MathExpression {
                     throw new Exception("min function requires at least 2 arguments");
                 }
                 return (int) min(...$evaluatedArgs);
+            case "max":
+                if (count($evaluatedArgs) < 2) {
+                    throw new Exception("max function requires at least 2 arguments");
+                }
+                return (int) max(...$evaluatedArgs);
             default:
                 throw new Exception("Unknown function: {$this->name}");
         }

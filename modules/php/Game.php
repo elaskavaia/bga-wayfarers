@@ -74,8 +74,9 @@ class Game extends Base {
 
         // Place the 3 Main Board Sections in the center of the play area (either side can be used for variety).
 
-        // TODO: pick a side
-
+        for ($i = 1; $i <= 3; $i++) {
+            $this->tokens->db->setTokenState("mainboard_$i", bga_rand(0, 1));
+        }
         // Shuffle the Townsfolk, Space, Land, Water, and Inspiration Cards into separate decks and place them in their designated spaces on the Main Board.
         // Draw the top 4 cards from each deck and place them faceup next to their respective draw piles.
 
@@ -211,8 +212,17 @@ class Game extends Base {
         $color = $this->getAutomaColor();
 
         // Assign AI a player board
-        $boardnum = bga_rand(1, 4);
+        $boardnum = $this->getVariantSoloBoard();
+        if ($boardnum < 1 || $boardnum > 4) {
+            $boardnum = bga_rand(1, 4);
+        }
         $this->tokens->db->createToken("pboard_$color", "tableau_$color", -$boardnum);
+        $name = $this->getRulesFor("aiboard_$boardnum", "nom");
+        $this->notifyMessage(
+            clienttranslate('${player_name} (AI opponent) takes Player Board ${boardnum}: ${ai_name}'),
+            ["boardnum" => $boardnum, "ai_name" => $name],
+            self::PLAYER_AUTOMA
+        );
 
         // Place AI marker on starting space of Journal Track
         $this->tokens->db->createToken("marker_{$color}", "mainarea", 0);
@@ -443,10 +453,13 @@ class Game extends Base {
      * @return int - count of tags
      */
     function countPlayerTags(string $tagName, string $owner): int {
-        if ($owner == $this->getAutomaColor() && $tagName == "Comet") {
-            // Special case for Comet: count AI's position on comet track
-            $pos = $this->tokens->getTrackerValue($this->getAutomaColor(), "comet");
-            return $pos; // comet track positions directly correspond to Comet tag count
+        if ($this->isSolo() && $owner == $this->getAutomaColor()) {
+            if ($tagName == "Comet") {
+                // Special case for Comet: count AI's position on comet track
+                $pos = $this->tokens->getTrackerValue($this->getAutomaColor(), "comet");
+                return $pos; // comet track positions directly correspond to Comet tag count
+            }
+            return 0; // Automa does not have more tags
         }
         $count = 0;
 

@@ -99,10 +99,12 @@ class Op_ai_journal extends AiOperation {
     }
 
     function getConnectorId(int $currentState, int $newState) {
-        $connector = "jconn_{$currentState}_{$newState}_0"; // TODO check side of the board instead of 0
+        // board part number is the same for both sides
+        $boardPart = $this->game->getRulesFor("jconn_{$currentState}_{$newState}_0", "location", "mainboard_1");
+        $side = (int) $this->game->tokens->db->getTokenState($boardPart);
+        $connector = "jconn_{$currentState}_{$newState}_{$side}";
         return $connector;
     }
-
     /**
      * Select journal position based on path preference.
      * Positions are ordered as listed in the conn field:

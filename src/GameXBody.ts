@@ -174,8 +174,9 @@ class GameXBody extends GameMachine {
         const r = this.getRulesFor(`pbonus_${boardNum}_${num}`, "r", "");
         node.dataset.r = r;
         if (r) {
-          const title = _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r);
-          placeHtml(`<div class='wicon_${r} wicon' title='${title}'></div>`, node);
+          placeHtml(`<div class='wicon_${r} wicon'></div>`, node);
+          const html = this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r));
+          this.game.addTooltipHtml(node.id, html, this.game.defaultTooltipDelay);
         }
       });
   }
@@ -233,11 +234,11 @@ class GameXBody extends GameMachine {
       .querySelectorAll(".ccell")
       .forEach((node: HTMLElement) => {
         const num = Number(getPart(node.id, 1)) - 1;
-        const r = this.getRulesFor(`aipbonus_${boardNum}_${num}`, "r", "");
+        const r = this.getRulesFor(`aibonus_${boardNum}_${num}`, "r", "");
         node.dataset.r = r;
         if (r) {
-          const title = _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r);
-          placeHtml(`<div class='wicon_${r} wicon' title='${title}'></div>`, node);
+          const html = this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r));
+          this.game.addTooltipHtml(node.id, html, this.game.defaultTooltipDelay);
         }
       });
   }

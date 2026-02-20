@@ -982,6 +982,8 @@ var Game1Tokens = /** @class */ (function (_super) {
         }
     };
     Game1Tokens.prototype.getTooltipHtml = function (name, message, imgTypes, reverseImgTypes) {
+        if (imgTypes === void 0) { imgTypes = ""; }
+        if (reverseImgTypes === void 0) { reverseImgTypes = ""; }
         if (name == null || message == "-")
             return "";
         if (!message)
@@ -1890,8 +1892,9 @@ var GameXBody = /** @class */ (function (_super) {
             var r = _this.getRulesFor("pbonus_".concat(boardNum, "_").concat(num), "r", "");
             node.dataset.r = r;
             if (r) {
-                var title = _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r);
-                placeHtml("<div class='wicon_".concat(r, " wicon' title='").concat(title, "'></div>"), node);
+                placeHtml("<div class='wicon_".concat(r, " wicon'></div>"), node);
+                var html = _this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r));
+                _this.game.addTooltipHtml(node.id, html, _this.game.defaultTooltipDelay);
             }
         });
     };
@@ -1932,11 +1935,11 @@ var GameXBody = /** @class */ (function (_super) {
             .querySelectorAll(".ccell")
             .forEach(function (node) {
             var num = Number(getPart(node.id, 1)) - 1;
-            var r = _this.getRulesFor("aipbonus_".concat(boardNum, "_").concat(num), "r", "");
+            var r = _this.getRulesFor("aibonus_".concat(boardNum, "_").concat(num), "r", "");
             node.dataset.r = r;
             if (r) {
-                var title = _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r);
-                placeHtml("<div class='wicon_".concat(r, " wicon' title='").concat(title, "'></div>"), node);
+                var html = _this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + _this.getOpListTr(r));
+                _this.game.addTooltipHtml(node.id, html, _this.game.defaultTooltipDelay);
             }
         });
     };

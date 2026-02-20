@@ -494,7 +494,12 @@ class Game1Tokens extends Game0Basics {
     }
   }
 
-  getTooltipHtml(name: string | NotificationMessage, message: string | NotificationMessage, imgTypes?: string, reverseImgTypes?: string) {
+  getTooltipHtml(
+    name: string | NotificationMessage,
+    message: string | NotificationMessage,
+    imgTypes: string = "",
+    reverseImgTypes: string = ""
+  ) {
     if (name == null || message == "-") return "";
     if (!message) message = "";
     var divImg = "";

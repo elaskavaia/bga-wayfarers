@@ -900,4 +900,58 @@ final class GameTest extends TestCase {
         $vp = $this->game->countVpForSpaceCard("card_space_108", PCOLOR);
         $this->assertEquals(4, $vp);
     }
+
+    /**
+     * Automa Comet tag uses comet tracker value, not card tags
+     */
+    public function testCountPlayerTags_AutomaCometUsesTracker(): void {
+        $this->game->setPlayersNumber(1);
+        // Tracker starts at 0 → Comet count = 0
+        $count = $this->game->countPlayerTags("Comet", ACOLOR);
+        $this->assertEquals(0, $count, "Automa Comet should be 0 when tracker is at 0");
+
+        // Advance tracker to 5
+        $this->game->tokens->db->setTokenState("tracker_comet_" . ACOLOR, 5);
+        $count = $this->game->countPlayerTags("Comet", ACOLOR);
+        $this->assertEquals(5, $count, "Automa Comet should equal comet tracker value");
+    }
+
+    /**
+     * Automa regular tag (non-Comet) counts tags from cards in tableau
+     */
+    public function testCountPlayerTags_AutomaRegularTagFromCards(): void {
+        $this->game->setPlayersNumber(1);
+
+        // Place an additional Stars-tagged card in automa tableau (card_space_91 has tags="Stars")
+        $this->game->tokens->db->moveToken("card_space_91_1", "tableau_" . ACOLOR);
+
+        $count = $this->game->countPlayerTags("Stars", ACOLOR);
+        $this->assertEquals(0, $count, "Automa should not count Stars tag");
+    }
+
+    /**
+     * Automa counts tags from upgrade tiles in its tableau
+     */
+    public function testCountPlayerTags_TagFromUpgradeTile(): void {
+        // Place an upgrade tile with a known tag in automa tableau
+        // upg_black_1 has tags="City" based on material
+        $this->game->tokens->db->moveToken("upg_black_1_1", "tableau_" . BCOLOR);
+        $this->game->material->setRulesFor("upg_black_1_1", ["tags" => "City"]);
+
+        $count = $this->game->countPlayerTags("City", BCOLOR);
+        $this->assertGreaterThanOrEqual(1, $count, "Player should count City tag from upgrade tile");
+    }
+
+    /**
+     * Automa Comet ignores any Comet-tagged cards; only uses tracker
+     */
+    public function testCountPlayerTags_AutomaCometIgnoresCards(): void {
+        $this->game->setPlayersNumber(1);
+        // Place a card with Comet tag in automa tableau (card_space_77 has tags="Comet")
+        $this->game->tokens->db->moveToken("card_space_77_1", "tableau_" . ACOLOR);
+
+        // Tracker still at 0 → result should be 0 (card tags are ignored for Comet)
+        $count = $this->game->countPlayerTags("Comet", ACOLOR);
+        $this->assertEquals(0, $count, "Automa Comet count should use tracker, not card tags");
+    }
 }

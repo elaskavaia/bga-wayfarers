@@ -197,4 +197,30 @@ final class MathExpressionTest extends TestCase {
 
         $this->assertIsInt($result);
     }
+
+    public function testMaxFunctionWithTwoNumbers() {
+        $expr = MathExpression::parse("max(5,3)");
+        $this->assertEquals("max(5,3)", (string)$expr);
+        $result = $expr->evaluate(fn($x) => $x);
+        $this->assertEquals(5, $result);
+    }
+
+    public function testMaxFunctionWithVariables() {
+        $expr = MathExpression::parse("max(a,b)");
+        $result = $expr->evaluate(fn($x) => ['a' => 2, 'b' => 7][$x] ?? 0);
+        $this->assertEquals(7, $result);
+    }
+
+    public function testMaxFunctionWithMultipleArguments() {
+        $expr = MathExpression::parse("max(10,5,15,3)");
+        $result = $expr->evaluate(fn($x) => $x);
+        $this->assertEquals(15, $result);
+    }
+
+    public function testMaxFunctionWithOneArgumentThrowsException() {
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage("max function requires at least 2 arguments");
+        $expr = MathExpression::parse("max(5)");
+        $expr->evaluate(fn($x) => $x);
+    }
 }

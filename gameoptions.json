@@ -6,16 +6,16 @@
         "name": "Random"
       },
       "1": {
-        "name": "Spacer"
+        "name": "Aida the Stargazer"
       },
       "2": {
-        "name": "Upgrader"
+        "name": "Aida the Inventor"
       },
       "3": {
-        "name": "Citizen"
+        "name": "Aida the Mayor"
       },
       "4": {
-        "name": "Wayfarer"
+        "name": "Aida the Wayfarer"
       }
     },
     "default": 0,

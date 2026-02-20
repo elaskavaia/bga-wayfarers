@@ -43,13 +43,23 @@ class Op_journal extends Operation {
             if (!$prereq) {
                 $achived = false;
             } elseif (str_starts_with($prereq, "Op_")) {
-                // Operations are costs (e.g., Op_n_infBlack) - check if player has the resource
-                if ($prereq === "Op_n_infBlack") {
-                    $achived = $this->game->countGuildInfluence("guild_black", $owner) > 0;
-                    $name = "[wicon_inf_black_pay]";
-                } else {
-                    $this->game->systemAssert("unsupported operation $prereq");
+                // Operations are costs (e.g., Op_n_infBlack, Op_n_infBlue,Op_n_infYellow)
+                $ops = explode(",", $prereq);
+                $achived = true;
+                $icons = [];
+                foreach ($ops as $op) {
+                    $op = trim($op);
+                    if (preg_match('/^Op_n_inf(\w+)$/', $op, $m)) {
+                        $color = lcfirst($m[1]);
+                        if ($this->game->countGuildInfluence("guild_$color", $owner) <= 0) {
+                            $achived = false;
+                        }
+                        $icons[] = "[wicon_inf_{$color}_pay]";
+                    } else {
+                        $this->game->systemAssert("unsupported operation $op");
+                    }
                 }
+                $name = implode("", $icons);
             } else {
                 $required = (int) $this->game->getRulesFor($connector, "gw", 1);
                 $count = $this->game->evaluateExpression($prereq, $owner);
@@ -77,7 +87,10 @@ class Op_journal extends Operation {
     }
 
     function getConnectorId(int $currentState, int $newState) {
-        $connector = "jconn_{$currentState}_{$newState}_0"; // TODO check side of the board instead of 0
+        // board part number is the same for both sides
+        $boardPart = $this->game->getRulesFor("jconn_{$currentState}_{$newState}_0", "location", "mainboard_1");
+        $side = (int) $this->game->tokens->db->getTokenState($boardPart);
+        $connector = "jconn_{$currentState}_{$newState}_{$side}";
         return $connector;
     }
 
@@ -107,7 +120,9 @@ class Op_journal extends Operation {
         $connector = $this->getConnectorId($currentState, $newState);
         $r = $this->game->getRulesFor($connector, "r", "");
         if (str_starts_with($r, "Op_")) {
-            $this->queue(substr($r, 3), $owner);
+            foreach (explode(",", $r) as $op) {
+                $this->queue(substr(trim($op), 3), $owner);
+            }
         }
         // Update marker state
         $this->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [

@@ -191,6 +191,48 @@ final class Op_journalTest extends TestCase {
         $this->assertEquals("jconn_0_10_0", $connector);
     }
 
+    public function testGetConnectorIdSideB(): void {
+        // mainboard_1 flipped to side B
+        $this->game->tokens->db->setTokenState("mainboard_1", 1);
+
+        $op = $this->createOp();
+        // 0→10 connector is on mainboard_1
+        $connector = $op->getConnectorId(0, 10);
+        $this->assertEquals("jconn_0_10_1", $connector);
+    }
+
+    public function testGetConnectorIdCrossBoardUsesConnectorBoard(): void {
+        // mainboard_1 side B, mainboard_2 side A
+        $this->game->tokens->db->setTokenState("mainboard_1", 1);
+        $this->game->tokens->db->setTokenState("mainboard_2", 0);
+
+        $op = $this->createOp();
+        // 20→40 crosses mainboard_1→mainboard_2, but connector belongs to mainboard_1
+        $connector = $op->getConnectorId(20, 40);
+        $this->assertEquals("jconn_20_40_1", $connector, "Cross-board connector should use the connector's own board part side");
+    }
+
+    public function testGetConnectorIdDifferentBoardsDifferentSides(): void {
+        // mainboard_1 side A, mainboard_2 side B
+        $this->game->tokens->db->setTokenState("mainboard_1", 0);
+        $this->game->tokens->db->setTokenState("mainboard_2", 1);
+
+        $op = $this->createOp();
+        // 10→20 is on mainboard_1 (side A)
+        $this->assertEquals("jconn_10_20_0", $op->getConnectorId(10, 20));
+        // 50→60 is on mainboard_2 (side B)
+        $this->assertEquals("jconn_50_60_1", $op->getConnectorId(50, 60));
+    }
+
+    public function testGetConnectorIdBoard3(): void {
+        $this->game->tokens->db->setTokenState("mainboard_3", 1);
+
+        $op = $this->createOp();
+        // 72→80 is on mainboard_3
+        $connector = $op->getConnectorId(72, 80);
+        $this->assertEquals("jconn_72_80_1", $connector);
+    }
+
     public function testCanSkipWhenNoValidTargets(): void {
         // Setup: terminal position with no connections
         $this->setMarkerPosition(100);

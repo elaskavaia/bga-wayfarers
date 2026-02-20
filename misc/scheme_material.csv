@@ -47,7 +47,7 @@ num|t|c|r1|r2|p|comet|nom
 #r1: rest action
 #r2: res tracker bonus
 
-1|ai_cardSpace||ai_cardSpace|ai_comet|||Spacer
-2|ai_upgAny||ai_upgAny|infYellow|||Upgrader
-3|ai_cardFolk||ai_cardFolk|ai_cardFolk|||Citizen
-4|ai_journal||ai_infCard|infBlack|||Wayfarer
+1|ai_cardSpace||ai_cardSpace|ai_comet|||Aida the Stargazer
+2|ai_upgAny||ai_upgAny|infYellow|||Aida the Inventor
+3|ai_cardFolk||ai_cardFolk|ai_cardFolk|||Aida the Mayor
+4|ai_journal||ai_infCard|infBlack|||Aida the Wayfarer
