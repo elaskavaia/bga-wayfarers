@@ -977,7 +977,9 @@ class Game extends Base {
             $this->tokens->dbSetTokenState(
                 Game::GAME_STAGE,
                 $playerNo,
-                clienttranslate('${player_name} triggers end of game! All players get one more turn.')
+                clienttranslate('${player_name} triggers end of game! All players get one more turn.'),
+                [],
+                $playerId
             );
 
             // TODO: send special notification to clients to show end game banner
@@ -1008,7 +1010,12 @@ class Game extends Base {
             // Draw to fill remaining slots
             $missing = 4 - count($cards);
             for ($i = 0; $i < $missing; $i++) {
-                $this->tokens->dbPickTokenForLocation("deck_$ctype", "mainarea", $pos);
+                $this->tokens->dbPickTokenForLocation(
+                    "deck_$ctype",
+                    "mainarea",
+                    $pos,
+                    clienttranslate('Card is placed on Main Bord: ${token_name}')
+                );
                 $pos++;
             }
         }

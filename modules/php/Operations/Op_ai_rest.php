@@ -48,6 +48,7 @@ class Op_ai_rest extends AiOperation {
         $cards = $this->game->tokens->getTokensOfTypeInLocation("card_scheme", "tableau_$owner", null, "token_state");
         $scheme = array_key_last($cards);
         $this->game->systemAssert("No scheme cards available for rest", $scheme);
+        $this->notifyMessage(clienttranslate('${player_name} rests'));
 
         // Step 1: Check most recently revealed Scheme Card for Comet
         // When Resting, follow the steps shown in the blue banner at the

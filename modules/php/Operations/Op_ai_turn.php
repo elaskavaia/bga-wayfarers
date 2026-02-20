@@ -52,7 +52,12 @@ class Op_ai_turn extends AiOperation {
         $cardKey = $card["key"];
         //   - [ ] On reveal: draw top scheme card, place faceup to right of draw pile
         // state starts with 2
-        $this->dbSetTokenLocation($cardKey, "tableau_$owner", count($cards) + 2);
+        $this->dbSetTokenLocation(
+            $cardKey,
+            "tableau_$owner",
+            count($cards) + 2,
+            clienttranslate('${player_name} plays Scheme card ${token_name}')
+        );
         //   - [ ] Move AI resource track marker clockwise by scheme card's silver value
         $silver = (int) $this->game->getRulesFor($cardKey, "c", 0);
 
@@ -65,7 +70,7 @@ class Op_ai_turn extends AiOperation {
         $action2 = $this->game->getRulesForAndAssert($cardKey, "r2");
 
         if ($this->instanciateOperation($action1)->isVoid()) {
-            $this->notifyMessage(clienttranslate('${player_name} cannot perform first sheme action, performing the second'));
+            $this->notifyMessage(clienttranslate('${player_name} cannot perform first Scheme action, performing the second'));
             $this->queue($action2);
         } else {
             $this->queue($action1);

@@ -184,6 +184,22 @@
   .mainboardall & {
     position: absolute;
     filter: v.$dropShadow2;
+
+    &.color_6cd0f6 {
+      top: 10px;
+      left: 0px;
+      z-index: 8;
+    }
+    &.color_ffcc02 {
+      top: 0px;
+      left: 10px;
+      z-index: 9;
+    }
+    &.color_ff0000 {
+      top: 10px;
+      left: 10px;
+      z-index: 10;
+    }
   }
 }
 

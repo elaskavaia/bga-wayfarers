@@ -1909,6 +1909,27 @@ html[data-theme=dark] .miniboard .counter {
   position: absolute;
   filter: drop-shadow(2px 2px 3px black);
 }
+.mainboardall .marker.color_6cd0f6,
+.mainboardall .tracker_comet.color_6cd0f6,
+.mainboardall .tracker_res.color_6cd0f6 {
+  top: 10px;
+  left: 0px;
+  z-index: 8;
+}
+.mainboardall .marker.color_ffcc02,
+.mainboardall .tracker_comet.color_ffcc02,
+.mainboardall .tracker_res.color_ffcc02 {
+  top: 0px;
+  left: 10px;
+  z-index: 9;
+}
+.mainboardall .marker.color_ff0000,
+.mainboardall .tracker_comet.color_ff0000,
+.mainboardall .tracker_res.color_ff0000 {
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+}
 
 .food {
   background-image: url(img/tokens.png);
