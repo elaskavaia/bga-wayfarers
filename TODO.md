@@ -1,17 +1,13 @@
 ## Server
 
-- Caravan different boards per player
-- Bonus did not ask to move inf
-- Mainboard variants
+- Bonus did not ask to move inf bug?
 
 ## Client
 
-- Game end trigger banner
 - Deck tooltips
 - Board action tooltips (also dup hot slots?)
 - Miniboards
 - Visual UI for insp under home space
-- Player markers are overlapping on journal
 
 ## Solo Rules
 
@@ -116,7 +112,7 @@
 
 - [x] AI still participates in guild majorities (3 VP per guild with most influence)
 - [x] AI influence is unlimited - if supply runs out, create more tokens dynamically (Op_infBase.php)
-- [ ] Solo game option (choose board)
+- [x] Solo game option (choose board)
 - [x] Game end trigger: AI reaching final journal column also triggers end-game
 - [x] All players (human + AI) take one final turn after end-game trigger
 

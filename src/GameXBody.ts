@@ -12,6 +12,7 @@
 /** Game class. Its Call XBody to be last in alphabetical order */
 class GameXBody extends GameMachine {
   private scoreSheet: any;
+  private scoreSheetAI: any;
   private inSetup = true;
   private boardLayout: string = "scale";
 
@@ -22,6 +23,7 @@ class GameXBody extends GameMachine {
 </div>
 <div id='selection_area' class='selection_area'></div>
 <div id="game-score-sheet"></div>
+  <div id="game-score-sheet-ai"></div>
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
@@ -337,7 +339,10 @@ class GameXBody extends GameMachine {
     scalecontrol.style.height = `${naturalHeight * scale}px`;
   }
 
-  updateBanner() {}
+  updateBanner() {
+    if (this.gamedatas.lastTurn) this.bga.gameArea.addLastTurnBanner(_("This is the last round!"));
+    else this.bga.gameArea.removeLastTurnBanner();
+  }
 
   setupScoreSheet() {
     const entries = [
@@ -356,7 +361,7 @@ class GameXBody extends GameMachine {
       entryLabelWidth: 180,
       entryLabelHeight: 20,
       classes: "score-sheet",
-      players: this.gamedatas.playerswithbots,
+      players: this.gamedatas.players,
       entries,
       scores: this.gamedatas.endScores,
       onScoreDisplayed: (property, playerId, score) => {
@@ -365,6 +370,36 @@ class GameXBody extends GameMachine {
         // }
       }
     });
+
+    // add second scoreSheet for AI
+    if (this.isSolo() && this.gamedatas.aiEndScores) {
+      const aiEntries = [
+        { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
+        { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
+        { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
+        { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
+        { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
+        { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
+        { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
+      ];
+      const aiPlayer = this.gamedatas.playerswithbots[1];
+      this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet-ai`), {
+        animationsActive: () => this.gameAnimationsActive(),
+        playerNameWidth: 80,
+        playerNameHeight: 30,
+        entryLabelWidth: 220,
+        entryLabelHeight: 20,
+        classes: "score-sheet",
+        players: { 1: { ...aiPlayer, color: "982fff" } },
+        entries: aiEntries,
+        scores: this.gamedatas.aiEndScores,
+        onScoreDisplayed: (property, playerId, score: number) => {
+          if (property === "total") {
+            this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
+          }
+        }
+      });
+    }
   }
   onUpdateActionButtons_MultiPlayerTurnPrivate(opInfo: OpInfo) {
     // this.onEnteringState_PlayerTurn(opInfo);
@@ -816,6 +851,11 @@ class GameXBody extends GameMachine {
     return this.wait(1);
   }
 
+  async notif_lastTurn(args: any) {
+    this.gamedatas.lastTurn = true;
+    this.updateBanner();
+  }
+
   async notif_endScores(args: any) {
     // setting scores will make the score sheet visible if it isn't already
     if (args.final) {
@@ -824,6 +864,9 @@ class GameXBody extends GameMachine {
     await this.scoreSheet.setScores(args.endScores, {
       startBy: this.bga.players.getCurrentPlayerId()
     });
+    if (args.aiEndScores) {
+      await this.scoreSheetAI.setScores(args.aiEndScores);
+    }
   }
   /** @Override */
   bgaFormatText(log: string, args: any) {

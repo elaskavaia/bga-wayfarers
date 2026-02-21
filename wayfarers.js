@@ -1805,7 +1805,7 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
         _this.boardLayout = "scale";
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n  <div id=\"game-score-sheet-ai\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () {
             _this.updateBoardScale($("mainboardall"));
             // main player
@@ -2009,7 +2009,12 @@ var GameXBody = /** @class */ (function (_super) {
         // Set container height to scaled height so content below doesn't overlap
         scalecontrol.style.height = "".concat(naturalHeight * scale, "px");
     };
-    GameXBody.prototype.updateBanner = function () { };
+    GameXBody.prototype.updateBanner = function () {
+        if (this.gamedatas.lastTurn)
+            this.bga.gameArea.addLastTurnBanner(_("This is the last round!"));
+        else
+            this.bga.gameArea.removeLastTurnBanner();
+    };
     GameXBody.prototype.setupScoreSheet = function () {
         var _this = this;
         var entries = [
@@ -2028,7 +2033,7 @@ var GameXBody = /** @class */ (function (_super) {
             entryLabelWidth: 180,
             entryLabelHeight: 20,
             classes: "score-sheet",
-            players: this.gamedatas.playerswithbots,
+            players: this.gamedatas.players,
             entries: entries,
             scores: this.gamedatas.endScores,
             onScoreDisplayed: function (property, playerId, score) {
@@ -2037,6 +2042,35 @@ var GameXBody = /** @class */ (function (_super) {
                 // }
             }
         });
+        // add second scoreSheet for AI
+        if (this.isSolo() && this.gamedatas.aiEndScores) {
+            var aiEntries = [
+                { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
+                { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
+                { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
+                { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
+                { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
+                { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
+                { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
+            ];
+            var aiPlayer = this.gamedatas.playerswithbots[1];
+            this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById("game-score-sheet-ai"), {
+                animationsActive: function () { return _this.gameAnimationsActive(); },
+                playerNameWidth: 80,
+                playerNameHeight: 30,
+                entryLabelWidth: 220,
+                entryLabelHeight: 20,
+                classes: "score-sheet",
+                players: { 1: __assign(__assign({}, aiPlayer), { color: "982fff" }) },
+                entries: aiEntries,
+                scores: this.gamedatas.aiEndScores,
+                onScoreDisplayed: function (property, playerId, score) {
+                    if (property === "total") {
+                        _this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
+                    }
+                }
+            });
+        }
     };
     GameXBody.prototype.onUpdateActionButtons_MultiPlayerTurnPrivate = function (opInfo) {
         // this.onEnteringState_PlayerTurn(opInfo);
@@ -2520,6 +2554,15 @@ var GameXBody = /** @class */ (function (_super) {
             });
         });
     };
+    GameXBody.prototype.notif_lastTurn = function (args) {
+        return __awaiter(this, void 0, void 0, function () {
+            return __generator(this, function (_a) {
+                this.gamedatas.lastTurn = true;
+                this.updateBanner();
+                return [2 /*return*/];
+            });
+        });
+    };
     GameXBody.prototype.notif_endScores = function (args) {
         return __awaiter(this, void 0, void 0, function () {
             return __generator(this, function (_a) {
@@ -2534,7 +2577,12 @@ var GameXBody = /** @class */ (function (_super) {
                             })];
                     case 1:
                         _a.sent();
-                        return [2 /*return*/];
+                        if (!args.aiEndScores) return [3 /*break*/, 3];
+                        return [4 /*yield*/, this.scoreSheetAI.setScores(args.aiEndScores)];
+                    case 2:
+                        _a.sent();
+                        _a.label = 3;
+                    case 3: return [2 /*return*/];
                 }
             });
         });

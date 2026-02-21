@@ -296,9 +296,12 @@ class Game extends Base {
 
         $result = array_merge($result, $this->tokens->getAllDatas());
 
-        $isGameEnded = $this->isEndOfGame();
+        $gameStage = $this->tokens->db->getTokenState(Game::GAME_STAGE);
+        $isGameEnded = $gameStage >= 5;
         $result["gameEnded"] = $isGameEnded;
+        $result["lastTurn"] = $gameStage >= 1 && $gameStage <= 4;
         $result["endScores"] = $isGameEnded ? $this->getEndScores() : null;
+        $result["aiEndScores"] = $isGameEnded ? $this->getAiEndScores() : null;
 
         $players = $this->loadPlayersBasicInfosWithBots();
 
@@ -841,6 +844,7 @@ class Game extends Base {
         }
 
         // Set tiebreaker: Black Influence, then Yellow, then Blue
+        $score = 0;
         foreach ($players as $player_id => $player) {
             $color = $this->custom_getPlayerColorById((int) $player_id);
             $black = $guildInfluence["guild_black"][$color] ?? 0;
@@ -855,15 +859,21 @@ class Game extends Base {
             $this->playerStats->set("game_vp_total", $score, $player_id);
         }
 
+        $aiEndScored = null;
         if ($this->isSolo()) {
             // notify with total of automa scope
-            $score = $this->tokens->getTrackerValue($this->getAutomaColor(), "vp");
+            $aiScore = $this->tokens->getTrackerValue($this->getAutomaColor(), "vp");
             $player_id = self::PLAYER_AUTOMA;
-            $this->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $score], $player_id);
-            // TODO: if Automa wins negate the score of player
+            $this->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $aiScore], $player_id);
+            $aiEndScored = $this->getAiEndScores();
+
+            if ($score < $aiScore) {
+                $this->notifyMessage(clienttranslate('${player_name} wins! Player score is negated'), [], $player_id);
+                $this->playerScore->set($this->getFirstPlayer(), -$score);
+            }
         }
 
-        $this->notify->all("endScores", "", ["endScores" => $this->getEndScores(), "final" => true]);
+        $this->notify->all("endScores", "", ["endScores" => $this->getEndScores(), "aiEndScores" => $aiEndScored, "final" => true]);
     }
 
     function evaluateTerm($x, $owner, $context = null, ?array $options = null) {
@@ -939,20 +949,25 @@ class Game extends Base {
             $endScores[$player_id]["total"] = $this->playerStats->get("game_vp_total", $player_id);
         }
 
+        return $endScores;
+    }
+
+    function getAiEndScores(): array {
+        $endScores = [];
         if ($this->isSolo()) {
             $color = $this->getAutomaColor();
             $player_id = self::PLAYER_AUTOMA;
 
             $vp_stats_ai = [
-                "game_vp_ai_folk" => "game_vp_sets",
-                "game_vp_ai_cards" => "game_vp_tags", // TODO: sort out mapping later
-                "game_vp_ai_space" => "game_vp_space",
-                "game_vp_ai_insp" => "game_vp_insp",
-                "game_vp_ai_caravan" => "game_vp_caravan",
-                "game_vp_ai_guilds" => "game_vp_guilds",
+                "game_vp_ai_folk",
+                "game_vp_ai_cards",
+                "game_vp_ai_space",
+                "game_vp_ai_insp",
+                "game_vp_ai_caravan",
+                "game_vp_ai_guilds",
             ];
-            foreach ($vp_stats_ai as $stat => $mapstat) {
-                $endScores[$player_id][$mapstat] = $this->tableStats->get($stat, $player_id);
+            foreach ($vp_stats_ai as $stat) {
+                $endScores[$player_id][$stat] = $this->tableStats->get($stat, $player_id);
             }
             $endScores[$player_id]["total"] = $this->tokens->getTrackerValue($color, "vp");
         }
@@ -982,7 +997,7 @@ class Game extends Base {
                 $playerId
             );
 
-            // TODO: send special notification to clients to show end game banner
+            $this->notify->all("lastTurn", "", []);
         }
     }
 
