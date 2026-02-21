@@ -47,111 +47,77 @@
   position: absolute;
 }
 
-.mainarea {
-  .card_folk {
-    bottom: 99%;
-  }
-  .card_folk[data-state="4"] {
-    left: 36%;
-  }
-  .card_folk[data-state="3"] {
-    left: 68%;
-  }
-  .card_folk[data-state="2"] {
-    left: 1%;
-  }
-  .card_folk[data-state="1"] {
-    left: 22%;
-  }
-  .card_land {
-    top: 99%;
-    left: 44%;
-  }
-  .card_land[data-state="4"] {
-    left: 36%;
-  }
-  .card_land[data-state="3"] {
-    left: 68%;
-  }
-  .card_land[data-state="2"] {
-    left: 1%;
-  }
-  .card_land[data-state="1"] {
-    left: 22%;
-  }
-
-  .card_space {
-    bottom: 99%;
-  }
-  .card_space[data-state="4"] {
-    left: 35%;
-  }
-  .card_space[data-state="3"] {
-    left: 1%;
-  }
-  .card_space[data-state="2"] {
-    left: 80%;
-  }
-  .card_space[data-state="1"] {
-    left: 59%;
-  }
-
-  .card_water {
-    top: 99%;
-  }
-  .card_water[data-state="4"] {
-    left: 35%;
-  }
-  .card_water[data-state="3"] {
-    left: 1%;
-  }
-  .card_water[data-state="2"] {
-    left: 80%;
-  }
-  .card_water[data-state="1"] {
-    left: 59%;
-  }
-
-  .card_insp {
-    left: 108%;
-    transform: rotate(90deg);
-  }
-  .card_insp[data-state="4"] {
-    top: 70%;
-  }
-  .card_insp[data-state="3"] {
-    top: 45%;
-  }
-  .card_insp[data-state="2"] {
-    top: 20%;
-  }
-  .card_insp[data-state="1"] {
-    top: -5%;
+.carddisplay {
+  .card,
+  .deck {
+    position: absolute;
   }
 }
-.mainarea {
-  .deck_insp {
-    left: 108%;
-    bottom: 99%;
-    transform: rotate(90deg);
-  }
-  .deck_space {
-    right: 2%;
 
-    bottom: 99%;
-  }
-  .deck_folk {
-    left: 0;
-    bottom: 99%;
-  }
-  .deck_land {
-    left: 0;
-    top: 99%;
-  }
-  .deck_water {
-    right: 2%;
+// Folk & Land: deck on left, cards spread right
+// 738px container, ~126px card width
+// Positions: 0%, 21%, 41%, 62%, 83%
+.carddisplay_folk .deck,
+.carddisplay_land .deck {
+  left: 0;
+}
 
-    top: 99%;
+.carddisplay_folk .card[data-state="4"],
+.carddisplay_land .card[data-state="4"] {
+  left: 21%;
+}
+.carddisplay_folk .card[data-state="3"],
+.carddisplay_land .card[data-state="3"] {
+  left: 41%;
+}
+.carddisplay_folk .card[data-state="2"],
+.carddisplay_land .card[data-state="2"] {
+  left: 62%;
+}
+.carddisplay_folk .card[data-state="1"],
+.carddisplay_land .card[data-state="1"] {
+  left: 83%;
+}
+
+// Space & Water: deck on right, cards spread left
+.carddisplay_space .deck,
+.carddisplay_water .deck {
+  right: 0;
+}
+
+.carddisplay_space .card[data-state="4"],
+.carddisplay_water .card[data-state="4"] {
+  left: 62%;
+}
+.carddisplay_space .card[data-state="3"],
+.carddisplay_water .card[data-state="3"] {
+  left: 41%;
+}
+.carddisplay_space .card[data-state="2"],
+.carddisplay_water .card[data-state="2"] {
+  left: 21%;
+}
+.carddisplay_space .card[data-state="1"],
+.carddisplay_water .card[data-state="1"] {
+  left: 0%;
+}
+
+// Inspiration: vertical, deck on top, cards spread down from state 4
+.carddisplay_insp {
+  .deck {
+    top: 0;
+  }
+  .card[data-state="4"] {
+    top: 21%;
+  }
+  .card[data-state="3"] {
+    top: 41%;
+  }
+  .card[data-state="2"] {
+    top: 62%;
+  }
+  .card[data-state="1"] {
+    top: 83%;
   }
 }
 

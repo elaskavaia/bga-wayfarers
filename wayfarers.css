@@ -87,104 +87,75 @@ html[data-theme=dark] .deck .counter {
   position: absolute;
 }
 
-.mainarea .card_folk {
-  bottom: 99%;
-}
-.mainarea .card_folk[data-state="4"] {
-  left: 36%;
-}
-.mainarea .card_folk[data-state="3"] {
-  left: 68%;
-}
-.mainarea .card_folk[data-state="2"] {
-  left: 1%;
-}
-.mainarea .card_folk[data-state="1"] {
-  left: 22%;
-}
-.mainarea .card_land {
-  top: 99%;
-  left: 44%;
-}
-.mainarea .card_land[data-state="4"] {
-  left: 36%;
-}
-.mainarea .card_land[data-state="3"] {
-  left: 68%;
-}
-.mainarea .card_land[data-state="2"] {
-  left: 1%;
-}
-.mainarea .card_land[data-state="1"] {
-  left: 22%;
-}
-.mainarea .card_space {
-  bottom: 99%;
-}
-.mainarea .card_space[data-state="4"] {
-  left: 35%;
-}
-.mainarea .card_space[data-state="3"] {
-  left: 1%;
-}
-.mainarea .card_space[data-state="2"] {
-  left: 80%;
-}
-.mainarea .card_space[data-state="1"] {
-  left: 59%;
-}
-.mainarea .card_water {
-  top: 99%;
-}
-.mainarea .card_water[data-state="4"] {
-  left: 35%;
-}
-.mainarea .card_water[data-state="3"] {
-  left: 1%;
-}
-.mainarea .card_water[data-state="2"] {
-  left: 80%;
-}
-.mainarea .card_water[data-state="1"] {
-  left: 59%;
-}
-.mainarea .card_insp {
-  left: 108%;
-  transform: rotate(90deg);
-}
-.mainarea .card_insp[data-state="4"] {
-  top: 70%;
-}
-.mainarea .card_insp[data-state="3"] {
-  top: 45%;
-}
-.mainarea .card_insp[data-state="2"] {
-  top: 20%;
-}
-.mainarea .card_insp[data-state="1"] {
-  top: -5%;
+.carddisplay .card,
+.carddisplay .deck {
+  position: absolute;
 }
 
-.mainarea .deck_insp {
-  left: 108%;
-  bottom: 99%;
-  transform: rotate(90deg);
-}
-.mainarea .deck_space {
-  right: 2%;
-  bottom: 99%;
-}
-.mainarea .deck_folk {
+.carddisplay_folk .deck,
+.carddisplay_land .deck {
   left: 0;
-  bottom: 99%;
 }
-.mainarea .deck_land {
-  left: 0;
-  top: 99%;
+
+.carddisplay_folk .card[data-state="4"],
+.carddisplay_land .card[data-state="4"] {
+  left: 21%;
 }
-.mainarea .deck_water {
-  right: 2%;
-  top: 99%;
+
+.carddisplay_folk .card[data-state="3"],
+.carddisplay_land .card[data-state="3"] {
+  left: 41%;
+}
+
+.carddisplay_folk .card[data-state="2"],
+.carddisplay_land .card[data-state="2"] {
+  left: 62%;
+}
+
+.carddisplay_folk .card[data-state="1"],
+.carddisplay_land .card[data-state="1"] {
+  left: 83%;
+}
+
+.carddisplay_space .deck,
+.carddisplay_water .deck {
+  right: 0;
+}
+
+.carddisplay_space .card[data-state="4"],
+.carddisplay_water .card[data-state="4"] {
+  left: 62%;
+}
+
+.carddisplay_space .card[data-state="3"],
+.carddisplay_water .card[data-state="3"] {
+  left: 41%;
+}
+
+.carddisplay_space .card[data-state="2"],
+.carddisplay_water .card[data-state="2"] {
+  left: 21%;
+}
+
+.carddisplay_space .card[data-state="1"],
+.carddisplay_water .card[data-state="1"] {
+  left: 0%;
+}
+
+.carddisplay_insp .deck {
+  top: 0;
+}
+.carddisplay_insp .card[data-state="4"] {
+  top: 21%;
+}
+.carddisplay_insp .card[data-state="3"] {
+  top: 41%;
+}
+.carddisplay_insp .card[data-state="2"] {
+  top: 62%;
+}
+.carddisplay_insp .card[data-state="1"] {
+  top: 83%;
 }
 
 .tableau .card {
@@ -1106,10 +1077,6 @@ html[data-theme=dark] .deck .counter {
   z-index: 0;
   position: relative;
 }
-#mainarea .card,
-#mainarea .deck {
-  position: absolute;
-}
 
 .guild {
   position: absolute;
@@ -1330,14 +1297,55 @@ html[data-theme=dark] .deck .counter {
 .mainboardall {
   position: relative;
   white-space: nowrap;
+  width: 1820px;
 }
-.mainboardall > * {
+.mainboardall > .mainboard_x {
   display: inline-block;
   vertical-align: top;
   position: relative;
   aspect-ratio: 768/1024;
   height: 600px;
   background-size: cover;
+}
+.mainboardall .carddisplay {
+  position: absolute;
+  display: block;
+  aspect-ratio: unset;
+  height: 200px;
+  width: 738px;
+  background-size: unset;
+}
+.mainboardall .carddisplay_folk {
+  top: 0;
+  left: 0;
+}
+.mainboardall .carddisplay_space {
+  top: 0;
+  right: 12%;
+  left: auto;
+}
+.mainboardall .carddisplay_land {
+  bottom: 0;
+  left: 0;
+  top: auto;
+}
+.mainboardall .carddisplay_water {
+  bottom: 0;
+  right: 12%;
+  left: auto;
+  top: auto;
+}
+.mainboardall .carddisplay_insp {
+  right: 0;
+  top: 2%;
+  left: auto;
+  width: 200px;
+  height: 738px;
+}
+.mainboardall .carddisplay_insp .card,
+.mainboardall .carddisplay_insp .deck {
+  transform: rotate(90deg);
+  left: 15%;
 }
 
 .mainboard_x {
@@ -1397,7 +1405,7 @@ html[data-theme=dark] .deck .counter {
 
 .mainboard_2 {
   background-image: url(img/MainBoard2.jpg);
-  aspect-ratio: 1212/1024;
+  aspect-ratio: 1212/1024 !important;
 }
 .mainboard_2[data-state="1"] {
   background-image: url(img/MainBoard5.jpg);
@@ -1493,7 +1501,6 @@ html[data-theme=dark] .deck .counter {
 
 .mainboard_3 {
   background-image: url(img/MainBoard3.jpg);
-  margin-right: 200px;
 }
 .mainboard_3[data-state="1"] {
   background-image: url(img/MainBoard6.jpg);
@@ -2507,7 +2514,8 @@ html[data-theme=dark] .miniboard .counter {
   flex-direction: column;
   gap: 0.5em;
 }
-.tooltip-left .tooltipimage.card {
+.tooltip-left .tooltipimage.card,
+.tooltip-left .tooltipimage.deck {
   height: 300px;
 }
 .tooltip-left .tooltipimage.card_slot {
@@ -2520,6 +2528,38 @@ html[data-theme=dark] .miniboard .counter {
 .tooltip-right {
   padding: 0.5em;
   padding-left: 0em;
+}
+
+#pile_content {
+  position: relative;
+  justify-content: space-around;
+  align-items: flex-start;
+  display: flex;
+  flex-wrap: wrap;
+  margin-top: 2em;
+}
+#pile_content .counter {
+  position: absolute;
+  display: none;
+}
+#pile_content > * {
+  opacity: 1;
+  position: relative;
+  color: black;
+  margin-right: 1em;
+  margin-bottom: 1em;
+}
+#pile_content > *:only-child {
+  display: none;
+}
+
+.card_pile_selector .tooltip-right {
+  min-width: 20em;
+}
+
+.card_pile_help {
+  font-size: x-small;
+  font-style: italic;
 }
 
 .aida-avatar {

@@ -34,9 +34,22 @@ class GameXBody extends GameMachine {
  </div>
  <div id="mainarea">
   <div id="mainboardall" class="mainboardall">
-    <div id="mainboard_1">
-         <div id="deck_folk" class="deck deck_folk"></div>
-         <div id="deck_land" class="deck deck_land"></div>
+    <div id="carddisplay_folk" class="carddisplay carddisplay_folk">
+      <div id="deck_folk" class="deck deck_folk"></div>
+    </div>
+    <div id="carddisplay_land" class="carddisplay carddisplay_land">
+      <div id="deck_land" class="deck deck_land"></div>
+    </div>
+    <div id="carddisplay_space" class="carddisplay carddisplay_space">
+      <div id="deck_space" class="deck deck_space"></div>
+    </div>
+    <div id="carddisplay_water" class="carddisplay carddisplay_water">
+      <div id="deck_water" class="deck deck_water"></div>
+    </div>
+    <div id="carddisplay_insp" class="carddisplay carddisplay_insp">
+      <div id="deck_insp" class="deck deck_insp"></div>
+    </div>
+    <div id="mainboard_1" class="mainboard_x">
         <div id="jpos_0" class="jpos jpos_0"></div>
         <div id="jpos_10" class="jpos jpos_10"></div>
         <div id="jpos_15" class="jpos jpos_15"></div>
@@ -47,7 +60,7 @@ class GameXBody extends GameMachine {
         <div id="jpos_36" class="jpos jpos_36"></div>
 
     </div>
-    <div id="mainboard_2">
+    <div id="mainboard_2" class="mainboard_x">
             <div id="jpos_40" class="jpos jpos_40"></div>
         <div id="jpos_43" class="jpos jpos_43"></div>
         <div id="jpos_47" class="jpos jpos_47"></div>
@@ -64,15 +77,13 @@ class GameXBody extends GameMachine {
         <div id="jpos_90" class="jpos jpos_90"></div>
         <div id="jpos_95" class="jpos jpos_95"></div>
     </div>
-    <div id="mainboard_3">
+    <div id="mainboard_3" class="mainboard_x">
         <div id="jpos_100" class="jpos jpos_100"></div>
         <div id="jpos_102" class="jpos jpos_102"></div>
         <div id="jpos_103" class="jpos jpos_103"></div>
         <div id="jpos_106" class="jpos jpos_106"></div>
         <div id="jpos_107" class="jpos jpos_107"></div>
-     <div id="deck_water" class="deck deck_water"></div>
-     <div id="deck_space" class="deck deck_space"></div>
-     <div id="deck_insp" class="deck deck_insp"></div>
+
 
       <div id="guild_yellow" class="guild guild_yellow"></div>
       <div id="guild_blue" class="guild guild_blue"></div>
@@ -474,17 +485,8 @@ class GameXBody extends GameMachine {
       // cards
       result.onClick = (x) => this.onToken(x);
       const cardType = getPart(tokenId, 1);
-      const state = Number(tokenInfo.state);
       if (location.startsWith("mainarea")) {
-        if (cardType == "folk" && state >= 3) result.location = "mainboard_1";
-        else if (cardType == "folk") result.location = "mainboard_2";
-        else if (cardType == "land" && state >= 3) result.location = "mainboard_1";
-        else if (cardType == "land") result.location = "mainboard_2";
-        else if (cardType == "water" && state >= 3) result.location = "mainboard_3";
-        else if (cardType == "water") result.location = "mainboard_2";
-        else if (cardType == "space" && state >= 3) result.location = "mainboard_3";
-        else if (cardType == "space") result.location = "mainboard_2";
-        else if (cardType == "insp") result.location = "mainboard_3";
+        result.location = `carddisplay_${cardType}`;
       } else if (location.startsWith("hand")) {
         const color = getPart(location, 1);
         if (color != this.player_color) result.nop = true;
@@ -588,6 +590,27 @@ class GameXBody extends GameMachine {
       }
     }
     return result;
+  }
+
+  onTokenNonActive(event: Event, fromMethod?: string) {
+    super.onTokenNonActive(event);
+    const id = this.onClickSanity(event, false, false);
+    if (!id) return false;
+    const mainType = getPart(id, 0);
+    switch (mainType) {
+      case "card":
+        {
+          const cardType = getPart(id, 1);
+          const container = $(id).parentElement?.id;
+          this.showHiddenContent(container, _("Pile contents"), 0, function (a: HTMLElement, b: HTMLElement) {
+            const orderA = parseInt(a.dataset.state);
+            const orderB = parseInt(b.dataset.state);
+            return -orderA + orderB; // descending
+          });
+        }
+        break;
+    }
+    return true;
   }
 
   createCustomButtonImageHtml(target: string, paramInfo: ParamInfo): string | undefined {
@@ -829,6 +852,41 @@ class GameXBody extends GameMachine {
       default:
         return _("Black");
     }
+  }
+
+  showHiddenContent(id: ElementOrId, title: string, selectedId?: string | number, sort?: any) {
+    let dialog = new ebg.popindialog();
+    dialog.create("pile");
+    dialog.setTitle(title);
+    const node = this.cloneAndFixIds(id, "_tt", true);
+    node.removeAttribute("_lis");
+    const cards_htm = node.innerHTML;
+    const html = `
+    <div id="card_pile_selector" class="card_pile_selector"></div>
+    <div id="card_pile_help" class="card_pile_help">${_("Click on element below to see details")}</div>
+    <div id="pile_content" class="pile_content">${cards_htm}</div>`;
+    dialog.setContent(html);
+    const parent = $("pile_content");
+
+    let children = Array.from(parent.children);
+    if (sort) {
+      children.sort(sort);
+      parent.replaceChildren(...children);
+    }
+    children.forEach((node: HTMLElement, index) => {
+      node.addEventListener("click", (e) => {
+        const origId = node.id.replace("_tt", "");
+        const selected_html = this.getTooltipHtmlForToken(origId);
+        $("card_pile_selector").innerHTML = selected_html;
+      });
+      if (index === selectedId) selectedId = node.id;
+    });
+    if (selectedId && typeof selectedId === "string") {
+      const selected_html = this.getTooltipHtmlForToken(selectedId);
+      $("card_pile_selector").innerHTML = selected_html;
+    }
+    dialog.show();
+    return dialog;
   }
 
   setupNotifications() {

@@ -263,7 +263,9 @@ class GameMachine extends Game1Tokens {
   onToken(event: Event, fromMethod?: string) {
     console.log(event);
     let id: string = this.onClickSanity(event);
-    if (!id) return true;
+    if (!id) {
+      return true;
+    }
     if (!fromMethod) fromMethod = "onToken";
     event.stopPropagation();
     event.preventDefault();
@@ -273,8 +275,16 @@ class GameMachine extends Game1Tokens {
       let ret = this.callfn(methodName, id, event.currentTarget as HTMLElement);
       if (ret === undefined) return false;
       return true;
+    } else if (!this.isActiveSlot(id)) {
+      return this.onTokenNonActive(event);
     }
     console.error("no handler for ", ttype);
+    return false;
+  }
+
+  onTokenNonActive(event: Event, fromMethod?: string) {
+    event.stopPropagation();
+    event.preventDefault();
     return false;
   }
 

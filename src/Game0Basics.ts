@@ -265,6 +265,27 @@ class Game0Basics extends GameGui<any> {
     return you;
   }
 
+  cloneAndFixIds(orig: ElementOrId, postfix: string, removeInlineStyle?: boolean) {
+    if (!$(orig)) {
+      const div = document.createElement("div");
+      div.innerHTML = _("NOT FOUND") + " " + orig.toString();
+      return div;
+    }
+    const fixIds = function (node: HTMLElement) {
+      if (node.id) {
+        node.id = node.id + postfix;
+      }
+      if (removeInlineStyle) {
+        node.removeAttribute("style");
+      }
+    };
+    const div = $(orig).cloneNode(true) as HTMLElement;
+    div.querySelectorAll("*").forEach(fixIds);
+    fixIds(div);
+
+    return div;
+  }
+
   getTr(name: string | NotificationMessage, args: any = {}) {
     if (!name) return "";
 

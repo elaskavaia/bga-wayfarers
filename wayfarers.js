@@ -297,6 +297,25 @@ var Game0Basics = /** @class */ (function (_super) {
         var you = '<span style="font-weight:bold;color:#' + color + ";" + color_bg + '">' + _("You") + "</span>";
         return you;
     };
+    Game0Basics.prototype.cloneAndFixIds = function (orig, postfix, removeInlineStyle) {
+        if (!$(orig)) {
+            var div_1 = document.createElement("div");
+            div_1.innerHTML = _("NOT FOUND") + " " + orig.toString();
+            return div_1;
+        }
+        var fixIds = function (node) {
+            if (node.id) {
+                node.id = node.id + postfix;
+            }
+            if (removeInlineStyle) {
+                node.removeAttribute("style");
+            }
+        };
+        var div = $(orig).cloneNode(true);
+        div.querySelectorAll("*").forEach(fixIds);
+        fixIds(div);
+        return div;
+    };
     Game0Basics.prototype.getTr = function (name, args) {
         if (args === void 0) { args = {}; }
         if (!name)
@@ -1514,8 +1533,9 @@ var GameMachine = /** @class */ (function (_super) {
         var _a;
         console.log(event);
         var id = this.onClickSanity(event);
-        if (!id)
+        if (!id) {
             return true;
+        }
         if (!fromMethod)
             fromMethod = "onToken";
         event.stopPropagation();
@@ -1528,7 +1548,15 @@ var GameMachine = /** @class */ (function (_super) {
                 return false;
             return true;
         }
+        else if (!this.isActiveSlot(id)) {
+            return this.onTokenNonActive(event);
+        }
         console.error("no handler for ", ttype);
+        return false;
+    };
+    GameMachine.prototype.onTokenNonActive = function (event, fromMethod) {
+        event.stopPropagation();
+        event.preventDefault();
         return false;
     };
     GameMachine.prototype.onToken_token = function (target) {
@@ -1807,7 +1835,7 @@ var GameXBody = /** @class */ (function (_super) {
         _this.boardLayout = "scale";
         _this.AI_PLAYER_ID = 1;
         _this.AI_COLOR_OVERRIDE = "982fff";
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n  <div id=\"game-score-sheet-ai\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck deck_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck deck_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n  <div id=\"game-score-sheet-ai\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"carddisplay_folk\" class=\"carddisplay carddisplay_folk\">\n      <div id=\"deck_folk\" class=\"deck deck_folk\"></div>\n    </div>\n    <div id=\"carddisplay_land\" class=\"carddisplay carddisplay_land\">\n      <div id=\"deck_land\" class=\"deck deck_land\"></div>\n    </div>\n    <div id=\"carddisplay_space\" class=\"carddisplay carddisplay_space\">\n      <div id=\"deck_space\" class=\"deck deck_space\"></div>\n    </div>\n    <div id=\"carddisplay_water\" class=\"carddisplay carddisplay_water\">\n      <div id=\"deck_water\" class=\"deck deck_water\"></div>\n    </div>\n    <div id=\"carddisplay_insp\" class=\"carddisplay carddisplay_insp\">\n      <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n    </div>\n    <div id=\"mainboard_1\" class=\"mainboard_x\">\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\" class=\"mainboard_x\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\" class=\"mainboard_x\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () {
             _this.updateBoardScale($("mainboardall"));
             // main player
@@ -2145,26 +2173,8 @@ var GameXBody = /** @class */ (function (_super) {
             // cards
             result.onClick = function (x) { return _this.onToken(x); };
             var cardType = getPart(tokenId, 1);
-            var state = Number(tokenInfo.state);
             if (location.startsWith("mainarea")) {
-                if (cardType == "folk" && state >= 3)
-                    result.location = "mainboard_1";
-                else if (cardType == "folk")
-                    result.location = "mainboard_2";
-                else if (cardType == "land" && state >= 3)
-                    result.location = "mainboard_1";
-                else if (cardType == "land")
-                    result.location = "mainboard_2";
-                else if (cardType == "water" && state >= 3)
-                    result.location = "mainboard_3";
-                else if (cardType == "water")
-                    result.location = "mainboard_2";
-                else if (cardType == "space" && state >= 3)
-                    result.location = "mainboard_3";
-                else if (cardType == "space")
-                    result.location = "mainboard_2";
-                else if (cardType == "insp")
-                    result.location = "mainboard_3";
+                result.location = "carddisplay_".concat(cardType);
             }
             else if (location.startsWith("hand")) {
                 var color = getPart(location, 1);
@@ -2287,6 +2297,28 @@ var GameXBody = /** @class */ (function (_super) {
             }
         }
         return result;
+    };
+    GameXBody.prototype.onTokenNonActive = function (event, fromMethod) {
+        var _a;
+        _super.prototype.onTokenNonActive.call(this, event);
+        var id = this.onClickSanity(event, false, false);
+        if (!id)
+            return false;
+        var mainType = getPart(id, 0);
+        switch (mainType) {
+            case "card":
+                {
+                    var cardType = getPart(id, 1);
+                    var container = (_a = $(id).parentElement) === null || _a === void 0 ? void 0 : _a.id;
+                    this.showHiddenContent(container, _("Pile contents"), 0, function (a, b) {
+                        var orderA = parseInt(a.dataset.state);
+                        var orderB = parseInt(b.dataset.state);
+                        return -orderA + orderB; // descending
+                    });
+                }
+                break;
+        }
+        return true;
     };
     GameXBody.prototype.createCustomButtonImageHtml = function (target, paramInfo) {
         var op = this.opInfo.type;
@@ -2527,6 +2559,38 @@ var GameXBody = /** @class */ (function (_super) {
             default:
                 return _("Black");
         }
+    };
+    GameXBody.prototype.showHiddenContent = function (id, title, selectedId, sort) {
+        var _this = this;
+        var dialog = new ebg.popindialog();
+        dialog.create("pile");
+        dialog.setTitle(title);
+        var node = this.cloneAndFixIds(id, "_tt", true);
+        node.removeAttribute("_lis");
+        var cards_htm = node.innerHTML;
+        var html = "\n    <div id=\"card_pile_selector\" class=\"card_pile_selector\"></div>\n    <div id=\"card_pile_help\" class=\"card_pile_help\">".concat(_("Click on element below to see details"), "</div>\n    <div id=\"pile_content\" class=\"pile_content\">").concat(cards_htm, "</div>");
+        dialog.setContent(html);
+        var parent = $("pile_content");
+        var children = Array.from(parent.children);
+        if (sort) {
+            children.sort(sort);
+            parent.replaceChildren.apply(parent, children);
+        }
+        children.forEach(function (node, index) {
+            node.addEventListener("click", function (e) {
+                var origId = node.id.replace("_tt", "");
+                var selected_html = _this.getTooltipHtmlForToken(origId);
+                $("card_pile_selector").innerHTML = selected_html;
+            });
+            if (index === selectedId)
+                selectedId = node.id;
+        });
+        if (selectedId && typeof selectedId === "string") {
+            var selected_html = this.getTooltipHtmlForToken(selectedId);
+            $("card_pile_selector").innerHTML = selected_html;
+        }
+        dialog.show();
+        return dialog;
     };
     GameXBody.prototype.setupNotifications = function () {
         var _this = this;

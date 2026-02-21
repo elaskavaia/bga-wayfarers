@@ -22,11 +22,6 @@
   flex-wrap: wrap;
   z-index: 0;
   position: relative;
-
-  .card,
-  .deck {
-    position: absolute;
-  }
 }
 .guild {
   position: absolute;
@@ -250,8 +245,9 @@
 .mainboardall {
   position: relative;
   white-space: nowrap;
+  width: 1820px;
 
-  & > * {
+  & > .mainboard_x {
     display: inline-block;
     vertical-align: top;
     position: relative;
@@ -259,6 +255,53 @@
     aspect-ratio: 768 / 1024;
     height: 600px;
     background-size: cover;
+  }
+
+  .carddisplay {
+    position: absolute;
+    display: block;
+    aspect-ratio: unset;
+    height: v.$cardHeight;
+    width: 738px;
+    background-size: unset;
+  }
+
+  .carddisplay_folk {
+    top: 0;
+    left: 0;
+  }
+
+  .carddisplay_space {
+    top: 0;
+    right: 12%;
+    left: auto;
+  }
+
+  .carddisplay_land {
+    bottom: 0;
+    left: 0;
+    top: auto;
+  }
+
+  .carddisplay_water {
+    bottom: 0;
+    right: 12%;
+    left: auto;
+    top: auto;
+  }
+
+  .carddisplay_insp {
+    right: 0;
+    top: 2%;
+    left: auto;
+    width: v.$cardHeight;
+    height: 738px;
+
+    .card,
+    .deck {
+      transform: rotate(90deg);
+      left: 15%;
+    }
   }
 }
 .mainboard_x {
@@ -336,7 +379,7 @@
 }
 .mainboard_2 {
   background-image: url(img/MainBoard2.jpg);
-  aspect-ratio: 1212 / 1024;
+  aspect-ratio: 1212 / 1024 !important;
 
   &[data-state="1"] {
     background-image: url(img/MainBoard5.jpg);
@@ -439,7 +482,6 @@
 
 .mainboard_3 {
   background-image: url(img/MainBoard3.jpg);
-  margin-right: 200px;
 
   &[data-state="1"] {
     background-image: url(img/MainBoard6.jpg);
