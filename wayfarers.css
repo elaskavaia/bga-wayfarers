@@ -1060,16 +1060,27 @@ html[data-theme=dark] .deck .counter {
   background-position: 100% 100%;
 }
 
+.card {
+  text-wrap: wrap;
+}
 .card .dice {
   position: absolute;
   bottom: 3%;
   left: 3%;
 }
-.card .worker,
-.card .influence {
+.card .worker {
   position: relative;
+  display: inline-block;
   margin-top: 21%;
-  margin-left: 4%;
+  margin-left: 25%;
+}
+.card .worker ~ .worker {
+  margin-left: unset;
+}
+.card .influence {
+  position: absolute;
+  top: 21%;
+  left: 4%;
 }
 
 .selection_area {

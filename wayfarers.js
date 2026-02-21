@@ -1791,7 +1791,7 @@ var GameMachine = /** @class */ (function (_super) {
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * GalacticCruise implementation : © Alena Laskavaia <laskava@gmail.com>
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -1805,7 +1805,9 @@ var GameXBody = /** @class */ (function (_super) {
         var _this = _super !== null && _super.apply(this, arguments) || this;
         _this.inSetup = true;
         _this.boardLayout = "scale";
-        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n  <div id=\"game-score-sheet-ai\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck decl_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck decl_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
+        _this.AI_PLAYER_ID = 1;
+        _this.AI_COLOR_OVERRIDE = "982fff";
+        _this.gameTemplate = "\n<div id=\"thething\">\n\n<div id=\"round_banner\">\n</div>\n<div id='selection_area' class='selection_area'></div>\n<div id=\"game-score-sheet\"></div>\n  <div id=\"game-score-sheet-ai\"></div>\n<div id=\"current_player_panel\"></div>\n<div id=\"mainarea_wrap\">\n <div id=\"board_layout_controls\" class=\"board_layout_controls\">\n   <button id=\"layout_scale\" class=\"layout_button active\">\u2922</button>\n   <button id=\"layout_scroll\" class=\"layout_button\">\u2194</button>\n </div>\n <div id=\"mainarea\">\n  <div id=\"mainboardall\" class=\"mainboardall\">\n    <div id=\"mainboard_1\">\n         <div id=\"deck_folk\" class=\"deck deck_folk\"></div>\n         <div id=\"deck_land\" class=\"deck deck_land\"></div>\n        <div id=\"jpos_0\" class=\"jpos jpos_0\"></div>\n        <div id=\"jpos_10\" class=\"jpos jpos_10\"></div>\n        <div id=\"jpos_15\" class=\"jpos jpos_15\"></div>\n        <div id=\"jpos_20\" class=\"jpos jpos_20\"></div>\n        <div id=\"jpos_23\" class=\"jpos jpos_23\"></div>\n        <div id=\"jpos_27\" class=\"jpos jpos_27\"></div>\n        <div id=\"jpos_32\" class=\"jpos jpos_32\"></div>\n        <div id=\"jpos_36\" class=\"jpos jpos_36\"></div>\n\n    </div>\n    <div id=\"mainboard_2\">\n            <div id=\"jpos_40\" class=\"jpos jpos_40\"></div>\n        <div id=\"jpos_43\" class=\"jpos jpos_43\"></div>\n        <div id=\"jpos_47\" class=\"jpos jpos_47\"></div>\n        <div id=\"jpos_50\" class=\"jpos jpos_50\"></div>\n        <div id=\"jpos_55\" class=\"jpos jpos_55\"></div>\n        <div id=\"jpos_60\" class=\"jpos jpos_60\"></div>\n        <div id=\"jpos_63\" class=\"jpos jpos_63\"></div>\n        <div id=\"jpos_67\" class=\"jpos jpos_67\"></div>\n        <div id=\"jpos_72\" class=\"jpos jpos_72\"></div>\n        <div id=\"jpos_76\" class=\"jpos jpos_76\"></div>\n        <div id=\"jpos_80\" class=\"jpos jpos_80\"></div>\n        <div id=\"jpos_83\" class=\"jpos jpos_83\"></div>\n        <div id=\"jpos_87\" class=\"jpos jpos_87\"></div>\n        <div id=\"jpos_90\" class=\"jpos jpos_90\"></div>\n        <div id=\"jpos_95\" class=\"jpos jpos_95\"></div>\n    </div>\n    <div id=\"mainboard_3\">\n        <div id=\"jpos_100\" class=\"jpos jpos_100\"></div>\n        <div id=\"jpos_102\" class=\"jpos jpos_102\"></div>\n        <div id=\"jpos_103\" class=\"jpos jpos_103\"></div>\n        <div id=\"jpos_106\" class=\"jpos jpos_106\"></div>\n        <div id=\"jpos_107\" class=\"jpos jpos_107\"></div>\n     <div id=\"deck_water\" class=\"deck deck_water\"></div>\n     <div id=\"deck_space\" class=\"deck deck_space\"></div>\n     <div id=\"deck_insp\" class=\"deck deck_insp\"></div>\n\n      <div id=\"guild_yellow\" class=\"guild guild_yellow\"></div>\n      <div id=\"guild_blue\" class=\"guild guild_blue\"></div>\n      <div id=\"guild_black\" class=\"guild guild_black\"></div>\n    </div>\n  </div>\n </div>\n</div>\n<div id=\"players_panels\"></div>\n<div id=\"test_stuff\">\n</div>\n<div id=\"supply\">\n</div>\n\n\n";
         _this.boundUpdateBoardScale = function () {
             _this.updateBoardScale($("mainboardall"));
             // main player
@@ -1838,7 +1840,7 @@ var GameXBody = /** @class */ (function (_super) {
                 this.setupPlayer(playerInfo);
             }
             if (this.isSolo()) {
-                this.setupAutoma(gamedatas.playerswithbots[1]);
+                this.setupAutoma(gamedatas.playerswithbots[this.AI_PLAYER_ID]);
             }
             _super.prototype.setupGame.call(this, gamedatas);
             $("mainboard_3").appendChild($("supply"));
@@ -1903,7 +1905,7 @@ var GameXBody = /** @class */ (function (_super) {
         var _a, _b, _c;
         console.log("player info " + playerInfo.id, playerInfo);
         var pcolor = playerInfo.color;
-        var realcolor = "982fff";
+        var realcolor = this.AI_COLOR_OVERRIDE;
         var op = "overall_player_board_".concat(playerInfo.id);
         (_a = $(op)) === null || _a === void 0 ? void 0 : _a.remove();
         this.bga.playerPanels.addAutomataPlayerPanel(playerInfo.id, playerInfo.name, {
@@ -2053,7 +2055,9 @@ var GameXBody = /** @class */ (function (_super) {
                 { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
                 { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
             ];
-            var aiPlayer = this.gamedatas.playerswithbots[1];
+            var aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
+            var players = {};
+            players[this.AI_PLAYER_ID] = __assign(__assign({}, aiPlayer), { color: this.AI_COLOR_OVERRIDE });
             this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById("game-score-sheet-ai"), {
                 animationsActive: function () { return _this.gameAnimationsActive(); },
                 playerNameWidth: 80,
@@ -2061,7 +2065,7 @@ var GameXBody = /** @class */ (function (_super) {
                 entryLabelWidth: 220,
                 entryLabelHeight: 20,
                 classes: "score-sheet",
-                players: { 1: __assign(__assign({}, aiPlayer), { color: "982fff" }) },
+                players: players,
                 entries: aiEntries,
                 scores: this.gamedatas.aiEndScores,
                 onScoreDisplayed: function (property, playerId, score) {
@@ -2356,6 +2360,7 @@ var GameXBody = /** @class */ (function (_super) {
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+                        tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
                         tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
@@ -2455,6 +2460,7 @@ var GameXBody = /** @class */ (function (_super) {
                 return;
             }
             case "pboard":
+            case "mainarea":
                 tokenInfo.showtooltip = false;
                 break;
         }
@@ -2577,7 +2583,7 @@ var GameXBody = /** @class */ (function (_super) {
                             })];
                     case 1:
                         _a.sent();
-                        if (!args.aiEndScores) return [3 /*break*/, 3];
+                        if (!(args.aiEndScores && this.scoreSheetAI)) return [3 /*break*/, 3];
                         return [4 /*yield*/, this.scoreSheetAI.setScores(args.aiEndScores)];
                     case 2:
                         _a.sent();
@@ -2596,7 +2602,10 @@ var GameXBody = /** @class */ (function (_super) {
                 if (!args.player_id) {
                     args.player_id = this.bga.players.getActivePlayerId();
                 }
-                if (args.player_id && !args.player_name) {
+                if (args.player_id == this.AI_PLAYER_ID) {
+                    args.player_name = "<span class=\"playername\" style=\"color: #".concat(this.AI_COLOR_OVERRIDE, ";\">Aida</span>");
+                }
+                else if (args.player_id && !args.player_name) {
                     args.player_name = this.gamedatas.players[args.player_id].name;
                 }
                 if (args.you)

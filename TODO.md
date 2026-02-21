@@ -119,7 +119,7 @@
 ### Phase 7: Client-Side UI
 
 - [x] AI player board display (show AI side of flipped board)
-- [ ] Scheme card reveal animations and faceup display area
+- [x] Scheme card reveal animations and faceup display area
 - [x] Resource track marker visualization (AI board)
 - [x] Comet track marker visualization (AI board)
 - [x] AI turn narration/log messages (what the AI did each turn)

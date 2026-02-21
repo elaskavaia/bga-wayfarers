@@ -1,13 +1,14 @@
 id|name|location|scope|counter|content|php
 #set type=location
-#set showtooltip=0
-#set create=0
-deck_folk|Townsfolk Cards|supply|global|public|hidden|
-deck_land|Land Cards|supply|global|public|hidden|
-deck_water|Water Cards|supply|global|public|hidden|
-deck_space|Space Cards|supply|global|public|hidden|
-deck_insp|Inspiration Cards|supply|global|public|hidden|
 
+#set create=0
+deck_folk|Townsfolk Deck|supply|global|public|hidden|
+deck_land|Land Deck|supply|global|public|hidden|
+deck_water|Water Deck|supply|global|public|hidden|
+deck_space|Space Deck|supply|global|public|hidden|
+deck_insp|Inspiration Deck|supply|global|public|hidden|
+
+#set showtooltip=0
 limbo|Limbo||global|hidden|hidden|
 tableau|Player Area|players_panels|player|hidden|public|
 hand|Player Hand|players_panels|player|hidden|private|

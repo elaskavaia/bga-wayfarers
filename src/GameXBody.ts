@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * GalacticCruise implementation : © Alena Laskavaia <laskava@gmail.com>
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -15,6 +15,8 @@ class GameXBody extends GameMachine {
   private scoreSheetAI: any;
   private inSetup = true;
   private boardLayout: string = "scale";
+  private AI_PLAYER_ID = 1;
+  private AI_COLOR_OVERRIDE = "982fff";
 
   readonly gameTemplate = `
 <div id="thething">
@@ -33,7 +35,7 @@ class GameXBody extends GameMachine {
  <div id="mainarea">
   <div id="mainboardall" class="mainboardall">
     <div id="mainboard_1">
-         <div id="deck_folk" class="deck decl_folk"></div>
+         <div id="deck_folk" class="deck deck_folk"></div>
          <div id="deck_land" class="deck deck_land"></div>
         <div id="jpos_0" class="jpos jpos_0"></div>
         <div id="jpos_10" class="jpos jpos_10"></div>
@@ -69,7 +71,7 @@ class GameXBody extends GameMachine {
         <div id="jpos_106" class="jpos jpos_106"></div>
         <div id="jpos_107" class="jpos jpos_107"></div>
      <div id="deck_water" class="deck deck_water"></div>
-     <div id="deck_space" class="deck decl_space"></div>
+     <div id="deck_space" class="deck deck_space"></div>
      <div id="deck_insp" class="deck deck_insp"></div>
 
       <div id="guild_yellow" class="guild guild_yellow"></div>
@@ -99,7 +101,7 @@ class GameXBody extends GameMachine {
       }
 
       if (this.isSolo()) {
-        this.setupAutoma(gamedatas.playerswithbots[1]);
+        this.setupAutoma(gamedatas.playerswithbots[this.AI_PLAYER_ID]);
       }
 
       super.setupGame(gamedatas);
@@ -186,7 +188,7 @@ class GameXBody extends GameMachine {
   setupAutoma(playerInfo: any) {
     console.log("player info " + playerInfo.id, playerInfo);
     const pcolor = playerInfo.color;
-    const realcolor = "982fff";
+    const realcolor = this.AI_COLOR_OVERRIDE;
 
     const op = `overall_player_board_${playerInfo.id}`;
     $(op)?.remove();
@@ -382,7 +384,9 @@ class GameXBody extends GameMachine {
         { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
         { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
       ];
-      const aiPlayer = this.gamedatas.playerswithbots[1];
+      const aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
+      const players = {};
+      players[this.AI_PLAYER_ID] = { ...aiPlayer, color: this.AI_COLOR_OVERRIDE };
       this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet-ai`), {
         animationsActive: () => this.gameAnimationsActive(),
         playerNameWidth: 80,
@@ -390,7 +394,7 @@ class GameXBody extends GameMachine {
         entryLabelWidth: 220,
         entryLabelHeight: 20,
         classes: "score-sheet",
-        players: { 1: { ...aiPlayer, color: "982fff" } },
+        players,
         entries: aiEntries,
         scores: this.gamedatas.aiEndScores,
         onScoreDisplayed: (property, playerId, score: number) => {
@@ -658,6 +662,7 @@ class GameXBody extends GameMachine {
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
+            tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
             if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
             tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
             break;
@@ -766,6 +771,7 @@ class GameXBody extends GameMachine {
         return;
       }
       case "pboard":
+      case "mainarea":
         tokenInfo.showtooltip = false;
         break;
     }
@@ -864,7 +870,7 @@ class GameXBody extends GameMachine {
     await this.scoreSheet.setScores(args.endScores, {
       startBy: this.bga.players.getCurrentPlayerId()
     });
-    if (args.aiEndScores) {
+    if (args.aiEndScores && this.scoreSheetAI) {
       await this.scoreSheetAI.setScores(args.aiEndScores);
     }
   }
@@ -877,7 +883,9 @@ class GameXBody extends GameMachine {
         if (!args.player_id) {
           args.player_id = this.bga.players.getActivePlayerId();
         }
-        if (args.player_id && !args.player_name) {
+        if (args.player_id == this.AI_PLAYER_ID) {
+          args.player_name = `<span class="playername" style="color: #${this.AI_COLOR_OVERRIDE};">Aida</span>`;
+        } else if (args.player_id && !args.player_name) {
           args.player_name = this.gamedatas.players[args.player_id].name;
         }
 

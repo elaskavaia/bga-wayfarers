@@ -76,9 +76,8 @@ class Material {
             /* --- gen php begin loc_material --- */
     "deck_folk" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
-        "name" => clienttranslate("Townsfolk Cards"),
+        "name" => clienttranslate("Townsfolk Deck"),
         "location" => "supply",
         "scope" => "global",
         "counter" => "public",
@@ -86,9 +85,8 @@ class Material {
 ],
     "deck_land" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
-        "name" => clienttranslate("Land Cards"),
+        "name" => clienttranslate("Land Deck"),
         "location" => "supply",
         "scope" => "global",
         "counter" => "public",
@@ -96,9 +94,8 @@ class Material {
 ],
     "deck_water" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
-        "name" => clienttranslate("Water Cards"),
+        "name" => clienttranslate("Water Deck"),
         "location" => "supply",
         "scope" => "global",
         "counter" => "public",
@@ -106,9 +103,8 @@ class Material {
 ],
     "deck_space" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
-        "name" => clienttranslate("Space Cards"),
+        "name" => clienttranslate("Space Deck"),
         "location" => "supply",
         "scope" => "global",
         "counter" => "public",
@@ -116,9 +112,8 @@ class Material {
 ],
     "deck_insp" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
-        "name" => clienttranslate("Inspiration Cards"),
+        "name" => clienttranslate("Inspiration Deck"),
         "location" => "supply",
         "scope" => "global",
         "counter" => "public",
@@ -126,8 +121,8 @@ class Material {
 ],
     "limbo" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Limbo"),
         "scope" => "global",
         "counter" => "hidden",
@@ -135,8 +130,8 @@ class Material {
 ],
     "tableau" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Player Area"),
         "location" => "players_panels",
         "scope" => "player",
@@ -145,8 +140,8 @@ class Material {
 ],
     "hand" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Player Hand"),
         "location" => "players_panels",
         "scope" => "player",
@@ -155,8 +150,8 @@ class Material {
 ],
     "supply" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Supply"),
         "location" => "supply",
         "scope" => "global",
@@ -165,8 +160,8 @@ class Material {
 ],
     "guild_black" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Black Guild (Science)"),
         "location" => "mainarea",
         "scope" => "global",
@@ -175,8 +170,8 @@ class Material {
 ],
     "guild_blue" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Blue Guild (Exploration)"),
         "location" => "mainarea",
         "scope" => "global",
@@ -185,8 +180,8 @@ class Material {
 ],
     "guild_yellow" => [ 
         "type" => "location",
-        "showtooltip" => 0,
         "create" => 0,
+        "showtooltip" => 0,
         "name" => clienttranslate("Yellow Guild (Trade)"),
         "location" => "mainarea",
         "scope" => "global",

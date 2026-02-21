@@ -373,15 +373,24 @@
 }
 
 .card {
+  text-wrap: wrap;
   .dice {
     position: absolute;
     bottom: 3%;
     left: 3%;
   }
-  .worker,
-  .influence {
+  .worker {
     position: relative;
+    display: inline-block;
     margin-top: 21%;
-    margin-left: 4%;
+    margin-left: 25%;
+  }
+  .worker ~ .worker {
+    margin-left: unset;
+  }
+  .influence {
+    position: absolute;
+    top: 21%;
+    left: 4%;
   }
 }
