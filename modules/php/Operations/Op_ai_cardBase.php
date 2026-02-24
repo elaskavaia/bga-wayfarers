@@ -55,20 +55,8 @@ class Op_ai_cardBase extends AiOperation {
 
         $this->queue("ai_cardInteract", $owner, ["card" => $card]);
 
-        switch ($cardType) {
-            case "water":
-            case "land":
-                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_land", "tableau_$owner");
-                $count = count($tokens);
-                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_water", "tableau_$owner");
-                $count += count($tokens);
-            default:
-                $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_$cardType", "tableau_$owner");
-                $count = count($tokens);
-        }
-
-        // arrange cards based on type staring at -2 (land and water count together)
-        $this->dbSetTokenLocation($card, "tableau_$owner", -2 - $count);
+        // arrange cards with state of -2
+        $this->dbSetTokenLocation($card, "tableau_$owner", -2);
         return true;
     }
 }
