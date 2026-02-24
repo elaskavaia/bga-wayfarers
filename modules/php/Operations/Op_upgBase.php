@@ -241,12 +241,12 @@ abstract class Op_upgBase extends Op_acquireBase {
             if (!$this->isFree()) {
                 $op = $this->getPaymentOperation($tile);
                 if ($op) {
-                    $this->queue($op, $owner, [], $tile);
+                    $this->queue($op, $owner, ["reason" => $tile]);
                 }
             }
 
             // Queue step 2 with the selected tile
-            $this->queue($this->getType(), $owner, ["tile" => $tile], $tile);
+            $this->queue($this->getType(), $owner, ["tile" => $tile, "reason" => $tile]);
             return;
         }
 
@@ -284,7 +284,7 @@ abstract class Op_upgBase extends Op_acquireBase {
                 $cellPos = $x + $dx + ($y + $dy) * self::CARAVAN_WIDTH + 1;
                 $bonus = $this->getBonus($cellPos);
                 if ($bonus) {
-                    $this->queue($bonus, $owner, [], "caravanBonus");
+                    $this->queue($bonus, $owner, ["reason" => "caravanBonus"]);
                 }
             }
         }

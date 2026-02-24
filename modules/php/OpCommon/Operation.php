@@ -210,39 +210,23 @@ abstract class Operation {
         }
         return GameDispatch::class;
     }
-    function instanciateOperation($type, $owner = null, $data = null, $reason = null) {
-        // TODO: get rid of reason parameter
+    function instanciateOperation($type, $owner = null, $data = null) {
         if ($owner === null) {
             $owner = $this->getOwner();
         }
-
-        if ($reason === null) {
-            $reason = $this->getOpId();
-        }
-
-        if ($reason) {
-            if ($data === null) {
-                $data = [];
-            }
-            $data["reason"] = $reason;
-        }
         return $this->game->machine->instanciateOperation($type, $owner, $data);
     }
-    function queue($type, $owner = null, $data = null, $reason = null) {
+    function queue($type, $owner = null, $data = null) {
         $this->game->systemAssert("empty op pushed", $type);
         if ($owner === null) {
             $owner = $this->getOwner();
         }
 
-        if ($reason === null) {
-            $reason = $this->getOpId();
+        if ($data === null) {
+            $data = [];
         }
-
-        if ($reason) {
-            if ($data === null) {
-                $data = [];
-            }
-            $data["reason"] = $reason;
+        if (!isset($data["reason"])) {
+            $data["reason"] = $this->getOpId();
         }
         $this->game->machine->insert($type, $owner, $data, $this->queueRank);
         //$this->game->debugConsole("queue $type");

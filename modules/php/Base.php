@@ -126,8 +126,6 @@ class Base extends Table {
         //self::initStat( 'table', 'table_teststat1', 0 );    // Init a table statistics
         //self::initStat( 'player', 'player_teststat1', 0 );  // Init a player statistics (for all players)
 
-        // TODO: setup the initial game situation here
-
         // Activate first player (which is in general a good idea :) )
         $player_ids = array_keys($players);
         shuffle($player_ids);
@@ -248,8 +246,6 @@ class Base extends Table {
         (see states.inc.php)
     */
     function getGameProgression() {
-        // TODO: compute and return the game progression
-
         return 0;
     }
 

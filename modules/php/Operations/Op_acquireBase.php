@@ -104,9 +104,9 @@ abstract class Op_acquireBase extends Operation {
             $folkCard = $this->getTuckedFolk($vistaCard);
             if ($folkCard) {
                 $folkRule = $this->game->getRulesFor($folkCard, "dr", "abort");
-                $this->queue($folkRule, $owner, [], $folkCard);
+                $this->queue($folkRule, $owner, ["reason" => $folkCard]);
             }
-            $this->queue($dr, $owner, [], $vistaCard);
+            $this->queue($dr, $owner, ["reason" => $vistaCard]);
         }
     }
 

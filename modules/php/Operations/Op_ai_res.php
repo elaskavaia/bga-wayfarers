@@ -37,7 +37,7 @@ class Op_ai_res extends AiOperation {
             $boardNumber = $this->aiGetBoardNumber();
             $bonus = $this->game->getRulesForAndAssert("aiboard_$boardNumber", "r2");
 
-            $this->queue($bonus, $owner, [], "restracker_bonus");
+            $this->queue($bonus, $owner, ["reason" => "restracker_bonus"]);
         }
         return true;
     }

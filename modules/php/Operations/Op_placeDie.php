@@ -159,18 +159,18 @@ class Op_placeDie extends Op_acquireBase {
         $dieValue = $this->getDieValue();
         $selected = $this->getCheckedArg();
         if ($selected === "change") {
-            $this->queue("placeDie", $owner, [], $this->getReason());
+            $this->queue("placeDie", $owner, ["reason" => $this->getReason()]);
             return;
         }
         if (str_starts_with($selected, "dice_")) {
-            $this->queue("placeDie", $owner, ["die" => $selected], $this->getReason());
+            $this->queue("placeDie", $owner, ["die" => $selected, "reason" => $this->getReason()]);
             return;
         }
         // Handle extra action - queue the operation and re-enter placeDie
         if (str_starts_with($selected, "Op_")) {
             $optype = str_replace("Op_", "", $selected);
             $this->queue($optype, $owner, ["die" => $selectedDie]);
-            $this->queue("placeDie", $owner, ["die" => $selectedDie], $this->getReason());
+            $this->queue("placeDie", $owner, ["die" => $selectedDie, "reason" => $this->getReason()]);
             return;
         }
 
@@ -187,13 +187,13 @@ class Op_placeDie extends Op_acquireBase {
         if ($folkCard) {
             $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
             if ($folkRule) {
-                $this->queue($folkRule, $owner, ["die" => $selectedDie], $folkCard);
+                $this->queue($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]);
             }
         }
         // XXX player can chose order
         $r = $this->game->getRulesFor($cardId, "dr");
         $r = $this->applyFoodDiscount($r);
-        $this->queue($r, $owner, ["die" => $selectedDie], $cardId);
+        $this->queue($r, $owner, ["die" => $selectedDie, "reason" => $cardId]);
     }
 
     public function getExtraArgs() {

@@ -203,7 +203,7 @@ class Op_ai_journal extends AiOperation {
         $selected = "jpos_$selectedPos";
         $r = $this->game->getRulesForAndAssert($selected, "r");
         $r = str_replace("upgPink/cardInsp", "upgPink", $r);
-        $this->queue($r, $owner, ["jpos" => $selected], $selected);
+        $this->queue($r, $owner, ["jpos" => $selected, "reason" => $selected]);
 
         // Check if end game is triggered (terminal position)
         $conn = $this->game->getRulesFor("jpos_$selectedPos", "conn", "");

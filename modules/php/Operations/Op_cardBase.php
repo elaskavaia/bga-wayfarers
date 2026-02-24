@@ -109,7 +109,7 @@ abstract class Op_cardBase extends Op_acquireBase {
             $owner = $this->getOwner();
             // If pigeon is a leftover asset
             if (!$this->hasPigeonLeftover()) {
-                $this->queue("n_food", $owner, [], "Op_cardDraw");
+                $this->queue("n_food", $owner, ["reason" => "Op_cardDraw"]);
             }
             $this->queue("3cardDraw({$this->getCardType()})");
             return;
@@ -128,7 +128,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
-            $this->queue($r, $owner, [], $this->getOpId());
+            $this->queue($r, $owner, []);
         }
         // Check if any Vista cards are triggered by this card
         $this->queueVistaTriggers($card);

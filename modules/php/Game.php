@@ -326,7 +326,7 @@ class Game extends Base {
         (see states.inc.php)
     */
     function getGameProgression() {
-        return 0;
+        return 0; // TODO impement
     }
 
     function isEndOfGame() {

@@ -124,7 +124,7 @@ class Op_cardDraw extends CountableOperation {
 
         // Capitalize first letter: land -> Land, folk -> Folk, etc.
         $ccolor = ucfirst($deckType);
-        $this->queue("card{$ccolor}", $owner, ["card" => $selectedCard], $this->getOpId());
+        $this->queue("card{$ccolor}", $owner, ["card" => $selectedCard, "reason" => $this->getOpId()]);
     }
 
     public function getPrompt() {
