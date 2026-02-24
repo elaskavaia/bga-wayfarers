@@ -245,7 +245,6 @@
 .mainboardall {
   position: relative;
   white-space: nowrap;
-  width: 1820px;
 
   & > .mainboard_x {
     display: inline-block;
@@ -255,6 +254,11 @@
     aspect-ratio: 768 / 1024;
     height: 600px;
     background-size: cover;
+
+    &:last-of-type {
+      // Extra margin to make room for the absolutely positioned carddisplay_insp
+      margin-right: v.$cardHeight;
+    }
   }
 
   .carddisplay {

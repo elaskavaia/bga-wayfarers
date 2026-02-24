@@ -1297,7 +1297,6 @@ html[data-theme=dark] .deck .counter {
 .mainboardall {
   position: relative;
   white-space: nowrap;
-  width: 1820px;
 }
 .mainboardall > .mainboard_x {
   display: inline-block;
@@ -1306,6 +1305,9 @@ html[data-theme=dark] .deck .counter {
   aspect-ratio: 768/1024;
   height: 600px;
   background-size: cover;
+}
+.mainboardall > .mainboard_x:last-of-type {
+  margin-right: 200px;
 }
 .mainboardall .carddisplay {
   position: absolute;

@@ -324,6 +324,7 @@ class GameXBody extends GameMachine {
     scalecontrol.style.transform = "none";
     scalecontrol.style.width = "";
     scalecontrol.style.height = "";
+    scalecontrol.style.marginBottom = "";
     scalecontrol.style.transformOrigin = "";
     scalecontrol.scrollLeft = 0;
     scalecontrol.dataset.scale = "1";
@@ -348,8 +349,10 @@ class GameXBody extends GameMachine {
     scalecontrol.dataset.scale = String(scale);
     scalecontrol.style.transform = `scale(${scale})`;
     scalecontrol.style.transformOrigin = "top center";
-    // Set container height to scaled height so content below doesn't overlap
-    scalecontrol.style.height = `${naturalHeight * scale}px`;
+    // Use negative margin to reduce flow space instead of setting height,
+    // so that absolutely positioned children keep their containing block size
+    const reducedHeight = naturalHeight * (1 - scale);
+    scalecontrol.style.marginBottom = `-${reducedHeight}px`;
   }
 
   updateBanner() {
@@ -566,6 +569,9 @@ class GameXBody extends GameMachine {
         const color = getPart(tokenId, 1);
         result.location = `${location}_${color}`;
       }
+    } else if (tokenId.startsWith("jpos")) {
+      //jpos_10
+      result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
@@ -601,6 +607,10 @@ class GameXBody extends GameMachine {
       case "card":
         {
           const cardType = getPart(id, 1);
+          if (cardType == "home") {
+            // XXX require special handling
+            return false;
+          }
           const container = $(id).parentElement?.id;
           this.showHiddenContent(container, _("Pile contents"), 0, function (a: HTMLElement, b: HTMLElement) {
             const orderA = parseInt(a.dataset.state);
@@ -874,12 +884,12 @@ class GameXBody extends GameMachine {
       parent.replaceChildren(...children);
     }
     children.forEach((node: HTMLElement, index) => {
+      const origId = node.id.replace("_tt", "");
       node.addEventListener("click", (e) => {
-        const origId = node.id.replace("_tt", "");
         const selected_html = this.getTooltipHtmlForToken(origId);
         $("card_pile_selector").innerHTML = selected_html;
       });
-      if (index === selectedId) selectedId = node.id;
+      if (index === selectedId) selectedId = origId;
     });
     if (selectedId && typeof selectedId === "string") {
       const selected_html = this.getTooltipHtmlForToken(selectedId);

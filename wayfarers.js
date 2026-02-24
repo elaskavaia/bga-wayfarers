@@ -2015,6 +2015,7 @@ var GameXBody = /** @class */ (function (_super) {
         scalecontrol.style.transform = "none";
         scalecontrol.style.width = "";
         scalecontrol.style.height = "";
+        scalecontrol.style.marginBottom = "";
         scalecontrol.style.transformOrigin = "";
         scalecontrol.scrollLeft = 0;
         scalecontrol.dataset.scale = "1";
@@ -2036,8 +2037,10 @@ var GameXBody = /** @class */ (function (_super) {
         scalecontrol.dataset.scale = String(scale);
         scalecontrol.style.transform = "scale(".concat(scale, ")");
         scalecontrol.style.transformOrigin = "top center";
-        // Set container height to scaled height so content below doesn't overlap
-        scalecontrol.style.height = "".concat(naturalHeight * scale, "px");
+        // Use negative margin to reduce flow space instead of setting height,
+        // so that absolutely positioned children keep their containing block size
+        var reducedHeight = naturalHeight * (1 - scale);
+        scalecontrol.style.marginBottom = "-".concat(reducedHeight, "px");
     };
     GameXBody.prototype.updateBanner = function () {
         if (this.gamedatas.lastTurn)
@@ -2271,6 +2274,10 @@ var GameXBody = /** @class */ (function (_super) {
                 result.location = "".concat(location, "_").concat(color);
             }
         }
+        else if (tokenId.startsWith("jpos")) {
+            //jpos_10
+            result.onClick = function (x) { return _this.onToken(x); };
+        }
         else if (tokenId.startsWith("upg")) {
             if (location.startsWith("tableau")) {
                 // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
@@ -2309,6 +2316,10 @@ var GameXBody = /** @class */ (function (_super) {
             case "card":
                 {
                     var cardType = getPart(id, 1);
+                    if (cardType == "home") {
+                        // XXX require special handling
+                        return false;
+                    }
                     var container = (_a = $(id).parentElement) === null || _a === void 0 ? void 0 : _a.id;
                     this.showHiddenContent(container, _("Pile contents"), 0, function (a, b) {
                         var orderA = parseInt(a.dataset.state);
@@ -2577,13 +2588,13 @@ var GameXBody = /** @class */ (function (_super) {
             parent.replaceChildren.apply(parent, children);
         }
         children.forEach(function (node, index) {
+            var origId = node.id.replace("_tt", "");
             node.addEventListener("click", function (e) {
-                var origId = node.id.replace("_tt", "");
                 var selected_html = _this.getTooltipHtmlForToken(origId);
                 $("card_pile_selector").innerHTML = selected_html;
             });
             if (index === selectedId)
-                selectedId = node.id;
+                selectedId = origId;
         });
         if (selectedId && typeof selectedId === "string") {
             var selected_html = this.getTooltipHtmlForToken(selectedId);
