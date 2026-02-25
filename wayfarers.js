@@ -1549,19 +1549,29 @@ var GameMachine = /** @class */ (function (_super) {
             return true;
         }
         else if (!this.isActiveSlot(id)) {
-            return this.onTokenNonActive(event);
+            return this.onToken_nonActive(id, event.currentTarget);
         }
         console.error("no handler for ", ttype);
         return false;
     };
-    GameMachine.prototype.onTokenNonActive = function (event, fromMethod) {
-        event.stopPropagation();
-        event.preventDefault();
+    GameMachine.prototype.onToken_nonActive = function (target, node) {
         return false;
     };
-    GameMachine.prototype.onToken_token = function (target) {
+    GameMachine.prototype.clientCheckTargetError = function (target, opInfo, node) {
+        var _a;
+        var paramInfo = (_a = opInfo === null || opInfo === void 0 ? void 0 : opInfo.info) === null || _a === void 0 ? void 0 : _a[target];
+        if (!paramInfo) {
+            this.onToken_nonActive(target, node);
+            return false; // not sending to server
+        }
+        return true;
+    };
+    GameMachine.prototype.onToken_token = function (target, node) {
         if (!target)
             return false;
+        if (!this.clientCheckTargetError(target, this.opInfo, node)) {
+            return false;
+        }
         this.resolveAction({ target: target });
         return true;
     };
@@ -2309,22 +2319,20 @@ var GameXBody = /** @class */ (function (_super) {
         }
         return result;
     };
-    GameXBody.prototype.onTokenNonActive = function (event, fromMethod) {
+    GameXBody.prototype.onToken_nonActive = function (target, node) {
         var _a;
-        _super.prototype.onTokenNonActive.call(this, event);
-        var id = this.onClickSanity(event, false, false);
-        if (!id)
+        if (!target)
             return false;
-        var mainType = getPart(id, 0);
+        var mainType = getPart(target, 0);
         switch (mainType) {
             case "card":
                 {
-                    var cardType = getPart(id, 1);
+                    var cardType = getPart(target, 1);
                     if (cardType == "home") {
                         // XXX require special handling
                         return false;
                     }
-                    var container = (_a = $(id).parentElement) === null || _a === void 0 ? void 0 : _a.id;
+                    var container = (_a = $(target).parentElement) === null || _a === void 0 ? void 0 : _a.id;
                     this.showHiddenContent(container, _("Pile contents"), 0, function (a, b) {
                         var orderA = parseInt(a.dataset.state);
                         var orderB = parseInt(b.dataset.state);

@@ -599,20 +599,18 @@ class GameXBody extends GameMachine {
     return result;
   }
 
-  onTokenNonActive(event: Event, fromMethod?: string) {
-    super.onTokenNonActive(event);
-    const id = this.onClickSanity(event, false, false);
-    if (!id) return false;
-    const mainType = getPart(id, 0);
+  onToken_nonActive(target: string, node: HTMLElement) {
+    if (!target) return false;
+    const mainType = getPart(target, 0);
     switch (mainType) {
       case "card":
         {
-          const cardType = getPart(id, 1);
+          const cardType = getPart(target, 1);
           if (cardType == "home") {
             // XXX require special handling
             return false;
           }
-          const container = $(id).parentElement?.id;
+          const container = $(target).parentElement?.id;
           this.showHiddenContent(container, _("Pile contents"), 0, function (a: HTMLElement, b: HTMLElement) {
             const orderA = parseInt(a.dataset.state);
             const orderB = parseInt(b.dataset.state);

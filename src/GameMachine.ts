@@ -276,20 +276,30 @@ class GameMachine extends Game1Tokens {
       if (ret === undefined) return false;
       return true;
     } else if (!this.isActiveSlot(id)) {
-      return this.onTokenNonActive(event);
+      return this.onToken_nonActive(id, event.currentTarget as HTMLElement);
     }
     console.error("no handler for ", ttype);
     return false;
   }
 
-  onTokenNonActive(event: Event, fromMethod?: string) {
-    event.stopPropagation();
-    event.preventDefault();
+  onToken_nonActive(target: string, node: HTMLElement) {
     return false;
   }
 
-  onToken_token(target: string) {
+  clientCheckTargetError(target: string, opInfo: OpInfo, node: HTMLElement): boolean {
+    const paramInfo = opInfo?.info?.[target];
+    if (!paramInfo) {
+      this.onToken_nonActive(target, node);
+      return false; // not sending to server
+    }
+    return true;
+  }
+
+  onToken_token(target: string, node: HTMLElement) {
     if (!target) return false;
+    if (!this.clientCheckTargetError(target, this.opInfo, node)) {
+      return false;
+    }
     this.resolveAction({ target });
     return true;
   }

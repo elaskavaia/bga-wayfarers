@@ -2,17 +2,15 @@
 
 ## Client
 
-- Deck tooltips
 - Board action tooltips (also dup hot slots?)
 - Miniboards - add inf number on each guid
 - Visual UI for insp under home space
 
 ## Bugs
 
-[ ] Some layout things a little off for me
-
-[ ] You can't have more than 1 of the same colour worker on a card
-[X] Clicking these when resting doesn't work (you have to click up top)
+[x] Some layout things a little off for me
+[x] You can't have more than 1 of the same colour worker on a card
+[x] Clicking these when resting doesn't work (you have to click up top)
 
 ## SOLO AI
 
@@ -20,4 +18,4 @@
   - [ ] Rotate rectangular tiles to fit winding path
 
 - [ ] UI support for AI upgrade tiles placed alongside board (state 0, no caravan position)
-- [ ] The solo bot, is it easier to stack all their cards facedown and just put a number next to them? That's what you do in real life
+- [x] The solo bot, is it easier to stack all their cards facedown and just put a number next to them? That's what you do in real life
