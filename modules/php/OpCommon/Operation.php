@@ -350,14 +350,14 @@ abstract class Operation {
         return null;
     }
     private function checkUserTargetSelection($target, $info) {
-        $this->game->systemAssert("checkUserTargetSelection:01", $info);
+        $this->game->userAssert("This selection is not allowed by the rules");
         $this->game->systemAssert("checkUserTargetSelection:02", is_array($info));
         $q = $info["q"] ?? null;
         $this->game->systemAssert("checkUserTargetSelection:03", $q !== null);
         if ($q === 0) {
             return $target;
         }
-        $err = $info["err"] ?? $this->game->getRulesFor("err_$q", "name", "code $q");
+        $err = $info["err"] ?? $this->game->getRulesFor("err_$q", "name", "This selection is not allowed by the rules. Code $q");
         $this->game->userAssert($err);
     }
 

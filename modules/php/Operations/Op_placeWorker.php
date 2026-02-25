@@ -37,17 +37,7 @@ class Op_placeWorker extends Operation {
      * Workers can be placed on faceup cards in the mainarea
      */
     function getWorkerSlots(): array {
-        $cards = $this->game->tokens->getTokensOfTypeInLocation("card", "mainarea");
-        $slots = [];
-        foreach ($cards as $cardKey => $cardInfo) {
-            // Check if card accepts workers (has worker slot)
-            // For now, all mainarea cards can accept workers
-            $slots[$cardKey] = [
-                "key" => $cardKey,
-                "location" => $cardKey,
-            ];
-        }
-        return $slots;
+        return $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "mainarea");
     }
 
     /**
@@ -82,6 +72,19 @@ class Op_placeWorker extends Operation {
                 $res[$key] = ["q" => Material::RET_OK];
             } elseif ($wcolor == "green" && !str_starts_with($key, "card_space")) {
                 $res[$key] = ["q" => Material::RET_OK];
+            }
+            // You can't have more than 1 of the same colour worker on a card
+            if (isset($res[$key]) && $res[$key]["q"] === Material::RET_OK) {
+                $children = $slot["children"];
+                foreach ($children as $child) {
+                    if (str_starts_with($child["key"], "worker_$wcolor")) {
+                        $res[$key] = [
+                            "q" => Material::ERR_OCCUPIED,
+                            "err" => clienttranslate("You cannot place more than 1 worker of the same color on a card"),
+                        ];
+                        break;
+                    }
+                }
             }
         }
         return $res;

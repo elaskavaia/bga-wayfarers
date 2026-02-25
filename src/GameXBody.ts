@@ -122,6 +122,9 @@ class GameXBody extends GameMachine {
       this.addListenerWithGuard($("guild_blue"), (e) => this.onToken(e));
       this.addListenerWithGuard($("deck_land"), (e) => this.onToken(e));
       this.addListenerWithGuard($("deck_water"), (e) => this.onToken(e));
+      document.querySelectorAll(".jpos").forEach((node: HTMLElement) => {
+        this.addListenerWithGuard(node, (e) => this.onToken(e));
+      });
 
       this.setupNotifications();
       this.setupScoreSheet();
@@ -532,7 +535,8 @@ class GameXBody extends GameMachine {
     } else if (tokenId.startsWith("tableau")) {
       result.nop = true;
       // } else if (tokenId.startsWith("jpos")) {
-      //   result.location = this.getRulesFor(tokenId, "location");
+      //   //jpos_10
+      //   result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("mainboard_")) {
       result.location = `mainboardall`;
     } else if (tokenId.startsWith("marker")) {
@@ -569,9 +573,6 @@ class GameXBody extends GameMachine {
         const color = getPart(tokenId, 1);
         result.location = `${location}_${color}`;
       }
-    } else if (tokenId.startsWith("jpos")) {
-      //jpos_10
-      result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
         // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1

@@ -9,9 +9,10 @@
 
 ## Bugs
 
-- Some layout things a little off for me
-- You can't have more than 1 of the same colour worker on a card
-- Clicking these when resting doesn't work (you have to click up top)
+[ ] Some layout things a little off for me
+
+[ ] You can't have more than 1 of the same colour worker on a card
+[X] Clicking these when resting doesn't work (you have to click up top)
 
 ## SOLO AI
 

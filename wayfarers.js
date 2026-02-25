@@ -1616,15 +1616,18 @@ var GameMachine = /** @class */ (function (_super) {
     };
     GameMachine.prototype.resolveAction = function (args) {
         var _this = this;
-        var _a;
         if (args === void 0) { args = {}; }
-        (_a = this.bga.actions
+        this.bga.actions
             .performAction("action_resolve", {
             data: JSON.stringify(args)
-        })) === null || _a === void 0 ? void 0 : _a.then(function (x) {
+        })
+            .then(function (x) {
             console.log("action complete", x);
-        }).catch(function (e) {
-            _this.setSubPrompt(e.message, e.args);
+        })
+            .catch(function (e) {
+            var _a;
+            console.log("action failed", e);
+            _this.setSubPrompt(e.message, (_a = e.args) !== null && _a !== void 0 ? _a : []);
         });
     };
     GameMachine.prototype.addUndoButton = function (cond) {
@@ -1633,12 +1636,13 @@ var GameMachine = /** @class */ (function (_super) {
         if (cond === void 0) { cond = true; }
         if (!$("button_undo") && !this.bga.players.isCurrentPlayerSpectator() && cond) {
             var div = this.bga.statusBar.addActionButton(_("Undo"), function () {
-                var _a;
-                return (_a = _this.bga.actions
+                return _this.bga.actions
                     .performAction("action_undo", [], {
                     checkAction: false
-                })) === null || _a === void 0 ? void 0 : _a.catch(function (e) {
-                    _this.setSubPrompt(e.message, e.args);
+                })
+                    .catch(function (e) {
+                    var _a;
+                    _this.setSubPrompt(e.message, (_a = e.args) !== null && _a !== void 0 ? _a : []);
                 });
             }, {
                 color: "alert",
@@ -1877,6 +1881,9 @@ var GameXBody = /** @class */ (function (_super) {
             this.addListenerWithGuard($("guild_blue"), function (e) { return _this.onToken(e); });
             this.addListenerWithGuard($("deck_land"), function (e) { return _this.onToken(e); });
             this.addListenerWithGuard($("deck_water"), function (e) { return _this.onToken(e); });
+            document.querySelectorAll(".jpos").forEach(function (node) {
+                _this.addListenerWithGuard(node, function (e) { return _this.onToken(e); });
+            });
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
@@ -2223,7 +2230,8 @@ var GameXBody = /** @class */ (function (_super) {
         else if (tokenId.startsWith("tableau")) {
             result.nop = true;
             // } else if (tokenId.startsWith("jpos")) {
-            //   result.location = this.getRulesFor(tokenId, "location");
+            //   //jpos_10
+            //   result.onClick = (x) => this.onToken(x);
         }
         else if (tokenId.startsWith("mainboard_")) {
             result.location = "mainboardall";
@@ -2273,10 +2281,6 @@ var GameXBody = /** @class */ (function (_super) {
                 var color = getPart(tokenId, 1);
                 result.location = "".concat(location, "_").concat(color);
             }
-        }
-        else if (tokenId.startsWith("jpos")) {
-            //jpos_10
-            result.onClick = function (x) { return _this.onToken(x); };
         }
         else if (tokenId.startsWith("upg")) {
             if (location.startsWith("tableau")) {
