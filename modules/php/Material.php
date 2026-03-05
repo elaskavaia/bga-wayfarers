@@ -2503,7 +2503,7 @@ class Material {
         "ctype" => "water",
         "num" => 2,
         "r" => "2food,infBlue",
-        "name" => clienttranslate("Blue Influece"),
+        "name" => clienttranslate("Blue Influence"),
 ],
     "action_water_3" => [ 
         "type" => "action",

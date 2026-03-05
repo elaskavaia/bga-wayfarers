@@ -5,22 +5,16 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\OpCommon;
 
 use Bga\GameFramework\SystemException;
-use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
 use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\StateConstants;
 use Bga\Games\wayfarers\Db\DbMachine;
-use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\ComplexOperation;
 use Bga\Games\wayfarers\OpCommon\CountableOperation;
-use Bga\Games\wayfarers\OpCommon\UnresolvedOperation;
 use Bga\Games\wayfarers\States\GameDispatchForced;
 use Bga\Games\wayfarers\States\GameDispatch;
-use Bga\Games\wayfarers\States\MultiPlayerMaster;
-use Bga\Games\wayfarers\States\MultiPlayerTurnPrivate;
-use Bga\Games\wayfarers\States\MultiPlayerWaitPrivate;
 use Bga\Games\wayfarers\States\PlayerTurnConfirm;
 
 use Exception;
@@ -216,9 +210,6 @@ class OpMachine {
     function dispatchAll(int $n = OpMachine::MA_GAME_DISPATCH_MAX) {
         // dispatch does mulple rounds without switching state, need to watch for notif limit
         for ($i = 0; $i < $n; $i++) {
-            if ($this->isMultiplayerOperationMode()) {
-                return MultiPlayerMaster::class;
-            }
             $state = $this->dispatchOne();
             if ($state && $state !== GameDispatch::class) {
                 return $state;
@@ -234,160 +225,6 @@ class OpMachine {
         }
         //$this->game->notify->all("message", "starting op " . $op->getType());
         return $op->onEnteringGameState();
-    }
-
-    /** This only runs when state first entered, after that every action has to run personal dispatch */
-    function multiplayerDistpatch() {
-        //$this->game->debugLog("multiplayerDistpatch", array_values($this->getAllOperationsMulti()));
-        if (!$this->isMultiplayerOperationMode()) {
-            // fall out of multiplayer state
-            $this->game->gamestate->unsetPrivateStateForAllPlayers();
-            return GameDispatchForced::class;
-        }
-        $this->game->gamestate->setAllPlayersMultiactive();
-        $this->game->gamestate->initializePrivateStateForAllActivePlayers();
-        return $this->multiplayerDistpatchContinue();
-    }
-
-    function multiplayerDistpatchContinue(int $n = OpMachine::MA_GAME_DISPATCH_MAX) {
-        //$this->game->debugLog("multiplayerDistpatchContinue");
-        $results = [
-            OpMachine::GAME_MULTI_COLOR => [
-                "instate" => 0,
-                "changestate" => 0,
-                "hit" => false,
-            ],
-        ];
-
-        $players = $this->game->loadPlayersBasicInfos();
-        foreach ($players as $player_id => $player_info) {
-            $pstate = $this->game->getPrivateStateId($player_id);
-            $color = $this->game->custom_getPlayerColorById($player_id);
-            $results[$color]["instate"] = $pstate;
-            $results[$color]["hit"] = false;
-            $results[$color]["changestate"] = $pstate;
-            $results[$color]["finalstate"] = $pstate;
-        }
-        $lastId = -1;
-        $playersloop = false;
-        for ($i = 0; $i < $n; $i++) {
-            $operations = $this->getAllOperationsMulti();
-
-            $isMulti = count($operations) > 0;
-            if (!$isMulti) {
-                // fall out of multiplayer state
-                //$this->game->debugLog("- MULTI $i: FALL OUT");
-                $this->game->gamestate->unsetPrivateStateForAllPlayers();
-                return GameDispatchForced::class;
-            }
-            $lastId = $this->db->getLastId();
-
-            // reset hit state
-            foreach ($players as $player_id => $player_info) {
-                $color = $this->game->custom_getPlayerColorById($player_id);
-                $results[$color]["hit"] = false;
-            }
-            $results[OpMachine::GAME_MULTI_COLOR]["hit"] = false;
-            $playersloop = true;
-
-            //$this->game->debugLog("- MULTI $i: RESET machine top", $operations);
-            while (count($operations) > 0 && $playersloop) {
-                $dop = array_shift($operations);
-                $op = $this->instanciateOperationFromDbRow($dop);
-                $color = $op->getOwner();
-                $this->game->systemAssert("not set result", isset($results[$color]));
-                $prevresult = &$results[$color];
-                if ($prevresult["hit"]) {
-                    continue;
-                    // $opcode = $prevresult["opcode"] ?? -1;
-                    // if ($opcode == $op->getId()) {
-                    //     continue;
-                    // }
-                }
-                $prevresult["hit"] = true;
-                $prevresult["opcode"] = $op->getId();
-                $state = $op->onEnteringGameState();
-                $type = $op->getType();
-                //$this->game->debugLog("- MULTI $i: switching state $color: $type => $state");
-                if ($state === null) {
-                    $state = MultiPlayerWaitPrivate::class;
-                    $playersloop = false; // have to reset
-                }
-                if ($state != $prevresult["instate"]) {
-                    $prevresult["changestate"] = $state;
-                }
-                $prevresult["finalstate"] = $state;
-
-                $currLastId = $this->db->getLastId();
-                if ($currLastId != $lastId) {
-                    $playersloop = false; // have to reset
-                }
-            }
-            if ($playersloop) {
-                // we finish dispatch loop without reset
-                break;
-            }
-        }
-        if ($i >= OpMachine::MA_GAME_DISPATCH_MAX) {
-            return PlayerTurnConfirm::class;
-        }
-        //$this->game->dbSetPlayerMultiactive(null, 1);
-
-        $changedState = null;
-        $keepMultiplayer = 0;
-        $deactivate = [];
-        foreach ($players as $player_id => $player_info) {
-            $color = $player_info["player_color"];
-            $this->game->systemAssert("not set result", isset($results[$color]));
-            $prevresult = &$results[$color];
-
-            $state = $prevresult["finalstate"];
-            //$this->game->debugLog("- MULTI FINAL  $color switching state => $state");
-            if ($prevresult["changestate"] != $state) {
-                $this->game->gamestate->setPrivateState($player_id, StateConstants::STATE_MULTI_PLAYER_WAIT_PRIVATE);
-            }
-            if ($state === MultiPlayerTurnPrivate::class || $state == StateConstants::STATE_MULTI_PLAYER_TURN_PRIVATE) {
-                $pstate = $prevresult["instate"];
-                if ($pstate != StateConstants::STATE_MULTI_PLAYER_TURN_PRIVATE) {
-                    $this->game->gamestate->setPrivateState($player_id, StateConstants::STATE_MULTI_PLAYER_TURN_PRIVATE);
-                }
-
-                $keepMultiplayer = 1;
-            } elseif ($state == MultiPlayerWaitPrivate::class || $state == StateConstants::STATE_MULTI_PLAYER_WAIT_PRIVATE) {
-                $this->game->gamestate->setPrivateState($player_id, StateConstants::STATE_MULTI_PLAYER_WAIT_PRIVATE);
-
-                if ($this->game->gamestate->isPlayerActive($player_id)) {
-                    $deactivate[] = $player_id;
-                }
-            } else {
-                $changedState = $state;
-            }
-        }
-
-        // deactivate players
-        foreach ($deactivate as $player_id) {
-            $this->game->gamestate->setPlayerNonMultiactive($player_id, "loopback");
-        }
-
-        //if (!$this->game->gamestate->updateMultiactiveOrNextState($changedState))
-        if (count($this->game->gamestate->getActivePlayerList()) == 0) {
-            // transition already happen
-            return null;
-        }
-        if ($keepMultiplayer > 0) {
-            // not switching yet
-            return null;
-        }
-        if ($changedState) {
-            $this->game->gamestate->unsetPrivateStateForAllPlayers();
-        }
-        return $changedState;
-    }
-    function multiplayerDistpatchAfterAction(int $player_id, int $n = OpMachine::MA_GAME_DISPATCH_MAX) {
-        //$this->game->debugLog("multiplayerDistpatchAfterAction");
-        //$this->game->gamestate->setPlayerNonMultiactive($player_id, "loopback");
-        $this->game->gamestate->setPrivateState($player_id, StateConstants::STATE_MULTI_PLAYER_WAIT_PRIVATE);
-        return $this->multiplayerDistpatchContinue();
     }
 
     function getAllOperationsMulti() {
@@ -414,17 +251,6 @@ class OpMachine {
         }
         return $result;
     }
-    function isMultiplayerOperationMode() {
-        if (!$this->isMultiplayerSupported()) {
-            return false;
-        }
-        return count($this->getAllOperationsMulti()) > 0;
-    }
-
-    function isMultiplayerSupported() {
-        return false;
-    }
-
     /** Debug functions */
 
     function gettablearr() {

@@ -326,7 +326,26 @@ class Game extends Base {
         (see states.inc.php)
     */
     function getGameProgression() {
-        return 0; // TODO impement
+        $gameStage = $this->tokens->db->getTokenState(Game::GAME_STAGE);
+        if ($gameStage >= 5) {
+            return 100;
+        }
+
+        // Find the furthest player marker column (jpos num / 10, max 10)
+        $maxColumn = 0;
+        $players = $this->loadPlayersBasicInfosWithBots();
+        foreach ($players as $playerId => $player) {
+            $color = $player["player_color"];
+            $markerId = "marker_$color";
+            $pos = (int) $this->tokens->db->getTokenState($markerId);
+            $column = intdiv($pos, 10);
+            if ($column > $maxColumn) {
+                $maxColumn = $column;
+            }
+        }
+
+        // 10 columns total (0-10), map to 0-95%
+        return min(95, (int) ($maxColumn * 95 / 10));
     }
 
     function isEndOfGame() {
@@ -1029,7 +1048,7 @@ class Game extends Base {
                     "deck_$ctype",
                     "mainarea",
                     $pos,
-                    clienttranslate('Card is placed on Main Bord: ${token_name}')
+                    clienttranslate('Card is placed on Main Board: ${token_name}')
                 );
                 $pos++;
             }

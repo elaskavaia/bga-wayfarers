@@ -29,7 +29,6 @@ use Bga\Games\wayfarers\States\PlayerTurn;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
 use Bga\Games\wayfarers\OpCommon\OpParser;
-use Bga\Games\wayfarers\States\MultiPlayerTurnPrivate;
 use Exception;
 
 use function Bga\Games\wayfarers\array_get;
@@ -595,10 +594,6 @@ abstract class Operation {
             if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
                 throw new UserException("Operation does not implement automata " . $this->getTypeFullExpr());
             }
-            // switch to player state
-            if ($this->game->machine->isMultiplayerOperationMode()) {
-                return MultiPlayerTurnPrivate::class;
-            }
             return PlayerTurn::class;
         }
         $this->destroy();
@@ -701,7 +696,7 @@ abstract class Operation {
             $state = $this->skip();
         } else {
             // TODO: support multi-select
-            $state = $this->resolve([Operation::ARG_TARGET => $targets[bga_rand(0, $num - 1)]]);
+            $state = $this->action_resolve([Operation::ARG_TARGET => $targets[bga_rand(0, $num - 1)]]);
         }
         return $state;
     }

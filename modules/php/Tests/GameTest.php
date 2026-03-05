@@ -954,4 +954,27 @@ final class GameTest extends TestCase {
         $count = $this->game->countPlayerTags("Comet", ACOLOR);
         $this->assertEquals(0, $count, "Automa Comet count should use tracker, not card tags");
     }
+
+    /**
+     * Test that action_whatever resolves an operation by picking a target and setting userArgs.
+     * This is the zombie turn handler — it must call action_resolve (not resolve directly)
+     * so that userArgs is set before getCheckedArg is called.
+     */
+    public function testActionWhatever_ResolvesWithTarget(): void {
+        $this->game();
+
+        // Instantiate a coin gain operation directly (bypass dispatch which auto-resolves single-choice ops)
+        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+
+        // Get initial coin value
+        $trackerId = $this->game->tokens->getTrackerId(PCOLOR, "coin");
+        $before = (int) $this->game->tokens->db->getTokenState($trackerId);
+
+        // Call action_whatever — simulates zombie turn
+        $op->action_whatever();
+
+        // Coin should have increased by 1
+        $after = (int) $this->game->tokens->db->getTokenState($trackerId);
+        $this->assertEquals($before + 1, $after, "Coin tracker should increase by 1 after action_whatever");
+    }
 }

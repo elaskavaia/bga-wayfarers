@@ -10,7 +10,7 @@ land|4|3n_food:3cardDraw(land)|Explore
 
 # Water card worker actions (positions 1-4)
 water|1|reroll,diceMod,diceMod|Organize
-water|2|2food,infBlue|Blue Influece
+water|2|2food,infBlue|Blue Influence
 water|3|upgBlue|Blue Upgrade
 water|4|3n_food:3cardDraw(water)|Voyage
 

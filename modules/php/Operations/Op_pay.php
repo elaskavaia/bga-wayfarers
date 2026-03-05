@@ -69,11 +69,15 @@ class Op_pay extends CountableOperation {
         } elseif ($count == 3) {
             return "[wicon_$type][wicon_$type][wicon_$type]";
         }
-        return clienttranslate('${count} x ' . "[wicon_$type]");
+        return "\${count} x [wicon_$type]";
+    }
+
+    public function getExtraArgs() {
+        $type = $this->getResType();
+        return parent::getExtraArgs() + ["token_div" => "[wicon_$type]"];
     }
 
     public function getPrompt() {
-        $type = $this->getResType();
-        return clienttranslate('Pay ${count} ' . "[wicon_$type]");
+        return clienttranslate('Pay ${count} ${token_div}');
     }
 }

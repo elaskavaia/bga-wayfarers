@@ -336,7 +336,7 @@ final class Op_journalTest extends TestCase {
         $this->game->triggerEndGame(PCOLOR_ID);
 
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
-        $this->assertEquals(PCOLOR_ID, $gameStage); // First player triggers end game
+        $this->assertEquals(1, $gameStage); // player_no for PCOLOR_ID is 1
     }
 
     public function testTriggerEndGameOnlyTriggersOnce(): void {
@@ -349,8 +349,47 @@ final class Op_journalTest extends TestCase {
         $gameStage2 = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
 
         $this->assertEquals($gameStage1, $gameStage2);
-        $this->assertEquals(PCOLOR_ID, $gameStage2);
+        $this->assertEquals(1, $gameStage2); // player_no for PCOLOR_ID is 1
     }
+
+    // --- getGameProgression tests ---
+
+    public function testGameProgressionStartsAtZero(): void {
+        $this->assertEquals(0, $this->game->getGameProgression());
+    }
+
+    public function testGameProgressionUsesFurthestPlayer(): void {
+        // Player 1 at column 4 (pos 40), player 2 at column 2 (pos 20)
+        $this->setMarkerPosition(40, PCOLOR);
+        $this->setMarkerPosition(20, BCOLOR);
+        // Column 4 → 4 * 95 / 10 = 38
+        $this->assertEquals(38, $this->game->getGameProgression());
+    }
+
+    public function testGameProgressionMidGame(): void {
+        $this->setMarkerPosition(63, PCOLOR);
+        // Column 6 → 6 * 95 / 10 = 57
+        $this->assertEquals(57, $this->game->getGameProgression());
+    }
+
+    public function testGameProgressionNearEnd(): void {
+        $this->setMarkerPosition(95, PCOLOR);
+        // Column 9 → 9 * 95 / 10 = 85
+        $this->assertEquals(85, $this->game->getGameProgression());
+    }
+
+    public function testGameProgressionTerminalCapsAt95(): void {
+        $this->setMarkerPosition(100, PCOLOR);
+        // Column 10 → min(95, 10 * 95 / 10) = 95
+        $this->assertEquals(95, $this->game->getGameProgression());
+    }
+
+    public function testGameProgressionReturns100WhenGameOver(): void {
+        $this->game->tokens->db->setTokenState(Game::GAME_STAGE, 5);
+        $this->assertEquals(100, $this->game->getGameProgression());
+    }
+
+    // --- other tests ---
 
     public function testGetIconicName(): void {
         $op = $this->createOp();
