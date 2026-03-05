@@ -116,6 +116,12 @@ class GameXBody extends GameMachine {
       }
 
       super.setupGame(gamedatas);
+      for (const playerId of gamedatas.playerorder) {
+        this.updateGuildCounters(gamedatas.players[playerId].color);
+      }
+      if (this.isSolo()) {
+        this.updateGuildCounters(gamedatas.playerswithbots[this.AI_PLAYER_ID].color);
+      }
       $("mainboard_3").appendChild($("supply"));
       this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
       this.addListenerWithGuard($("guild_yellow"), (e) => this.onToken(e));
@@ -153,11 +159,7 @@ class GameXBody extends GameMachine {
     document.querySelectorAll(`.guild`).forEach((guild) => {
       placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
     });
-    placeHtml(
-      `<div id='miniboard_${pcolor}' class='miniboard'>
-      </div>`,
-      pp
-    );
+    this.createMiniboard(pcolor, pp);
     let parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
     // Generate caravan grid cells (6x3)
     let caravanCells = "";
@@ -215,12 +217,8 @@ class GameXBody extends GameMachine {
     document.querySelectorAll(`.guild`).forEach((guild) => {
       placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
     });
-    //const pp = `player_panel_content_${pcolor}`;
-    // placeHtml(
-    //   `<div id='miniboard_${pcolor}' class='miniboard'>
-    //   </div>`,
-    //   pp
-    // );
+    placeHtml(`<div id='player_panel_content_${pcolor}' class='player_panel_content'></div>`, `player_board_${playerInfo.id}`);
+    this.createMiniboard(pcolor, `player_panel_content_${pcolor}`);
     let parent = "players_panels";
     // Generate caravan grid cells (7x3)
     let caravanCells = "";
@@ -566,12 +564,14 @@ class GameXBody extends GameMachine {
     } else if (tokenId.startsWith("inf")) {
       // influence
       result.onClick = (x) => this.onToken(x);
+      const infColor = getPart(tokenId, 1);
       if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
         result.location = `infsupply_${color}`;
+        result.onEnd = () => this.updateGuildCounters(infColor);
       } else if (location.startsWith("guild")) {
-        const color = getPart(tokenId, 1);
-        result.location = `${location}_${color}`;
+        result.location = `${location}_${infColor}`;
+        result.onEnd = () => this.updateGuildCounters(infColor);
       }
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
@@ -597,6 +597,31 @@ class GameXBody extends GameMachine {
       }
     }
     return result;
+  }
+
+  createMiniboard(pcolor: string, parentId: string) {
+    placeHtml(
+      `<div id='miniboard_${pcolor}' class='miniboard'>
+        <div id='guild_yellow_count_${pcolor}' class='guild_count wicon wicon_inf_yellow' data-state='0'></div>
+        <div id='guild_blue_count_${pcolor}' class='guild_count wicon wicon_inf_blue' data-state='0'></div>
+        <div id='guild_black_count_${pcolor}' class='guild_count wicon wicon_inf_black' data-state='0'></div>
+      </div>`,
+      parentId
+    );
+  }
+
+  updateGuildCounters(pcolor: string) {
+    const guilds = ["yellow", "blue", "black"];
+    for (const guild of guilds) {
+      let count = 0;
+      for (const token in this.gamedatas.tokens) {
+        if (token.startsWith(`influence_${pcolor}_`) && this.gamedatas.tokens[token].location === `guild_${guild}`) {
+          count++;
+        }
+      }
+      const node = $(`guild_${guild}_count_${pcolor}`);
+      if (node) node.dataset.state = String(count);
+    }
   }
 
   onToken_nonActive(target: string, node: HTMLElement) {

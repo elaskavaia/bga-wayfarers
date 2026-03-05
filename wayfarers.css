@@ -1740,24 +1740,36 @@ html[data-theme=dark] .influence {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  justify-content: center;
+  justify-content: space-around;
 }
 .miniboard .tracker,
-.miniboard .counter {
+.miniboard .counter,
+.miniboard .guild_count {
   color: black;
   text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
 }
 html[data-theme=dark] .miniboard .tracker,
-html[data-theme=dark] .miniboard .counter {
+html[data-theme=dark] .miniboard .counter,
+html[data-theme=dark] .miniboard .guild_count {
   color: white;
   text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
 }
 .miniboard .tracker::after,
-.miniboard .counter::after {
+.miniboard .counter::after,
+.miniboard .guild_count::after {
   content: attr(data-state);
   position: relative;
   left: 12px;
   top: 9px;
+}
+.miniboard .guild_count::after {
+  content: attr(data-state);
+  position: relative;
+  left: 8px;
+  top: 9px;
+}
+.miniboard .tracker_vp_ffffff {
+  display: none;
 }
 
 .wooden {

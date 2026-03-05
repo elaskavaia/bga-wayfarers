@@ -1885,6 +1885,13 @@ var GameXBody = /** @class */ (function (_super) {
                 this.setupAutoma(gamedatas.playerswithbots[this.AI_PLAYER_ID]);
             }
             _super.prototype.setupGame.call(this, gamedatas);
+            for (var _b = 0, _c = gamedatas.playerorder; _b < _c.length; _b++) {
+                var playerId = _c[_b];
+                this.updateGuildCounters(gamedatas.players[playerId].color);
+            }
+            if (this.isSolo()) {
+                this.updateGuildCounters(gamedatas.playerswithbots[this.AI_PLAYER_ID].color);
+            }
             $("mainboard_3").appendChild($("supply"));
             this.addListenerWithGuard($("guild_black"), function (e) { return _this.onToken(e); });
             this.addListenerWithGuard($("guild_yellow"), function (e) { return _this.onToken(e); });
@@ -1919,7 +1926,7 @@ var GameXBody = /** @class */ (function (_super) {
         document.querySelectorAll(".guild").forEach(function (guild) {
             placeHtml("<div id='".concat(guild.id, "_").concat(pcolor, "' class='").concat(guild.id, "_").concat(pcolor, " infsupply'></div>"), guild);
         });
-        placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n      </div>"), pp);
+        this.createMiniboard(pcolor, pp);
         var parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
         // Generate caravan grid cells (6x3)
         var caravanCells = "";
@@ -1961,12 +1968,8 @@ var GameXBody = /** @class */ (function (_super) {
         document.querySelectorAll(".guild").forEach(function (guild) {
             placeHtml("<div id='".concat(guild.id, "_").concat(pcolor, "' class='").concat(guild.id, "_").concat(pcolor, " infsupply'></div>"), guild);
         });
-        //const pp = `player_panel_content_${pcolor}`;
-        // placeHtml(
-        //   `<div id='miniboard_${pcolor}' class='miniboard'>
-        //   </div>`,
-        //   pp
-        // );
+        placeHtml("<div id='player_panel_content_".concat(pcolor, "' class='player_panel_content'></div>"), "player_board_".concat(playerInfo.id));
+        this.createMiniboard(pcolor, "player_panel_content_".concat(pcolor));
         var parent = "players_panels";
         // Generate caravan grid cells (7x3)
         var caravanCells = "";
@@ -2283,13 +2286,15 @@ var GameXBody = /** @class */ (function (_super) {
         else if (tokenId.startsWith("inf")) {
             // influence
             result.onClick = function (x) { return _this.onToken(x); };
+            var infColor_1 = getPart(tokenId, 1);
             if (location.startsWith("tableau")) {
                 var color = getPart(location, 1);
                 result.location = "infsupply_".concat(color);
+                result.onEnd = function () { return _this.updateGuildCounters(infColor_1); };
             }
             else if (location.startsWith("guild")) {
-                var color = getPart(tokenId, 1);
-                result.location = "".concat(location, "_").concat(color);
+                result.location = "".concat(location, "_").concat(infColor_1);
+                result.onEnd = function () { return _this.updateGuildCounters(infColor_1); };
             }
         }
         else if (tokenId.startsWith("upg")) {
@@ -2318,6 +2323,24 @@ var GameXBody = /** @class */ (function (_super) {
             }
         }
         return result;
+    };
+    GameXBody.prototype.createMiniboard = function (pcolor, parentId) {
+        placeHtml("<div id='miniboard_".concat(pcolor, "' class='miniboard'>\n        <div id='guild_yellow_count_").concat(pcolor, "' class='guild_count wicon wicon_inf_yellow' data-state='0'></div>\n        <div id='guild_blue_count_").concat(pcolor, "' class='guild_count wicon wicon_inf_blue' data-state='0'></div>\n        <div id='guild_black_count_").concat(pcolor, "' class='guild_count wicon wicon_inf_black' data-state='0'></div>\n      </div>"), parentId);
+    };
+    GameXBody.prototype.updateGuildCounters = function (pcolor) {
+        var guilds = ["yellow", "blue", "black"];
+        for (var _i = 0, guilds_1 = guilds; _i < guilds_1.length; _i++) {
+            var guild = guilds_1[_i];
+            var count = 0;
+            for (var token in this.gamedatas.tokens) {
+                if (token.startsWith("influence_".concat(pcolor, "_")) && this.gamedatas.tokens[token].location === "guild_".concat(guild)) {
+                    count++;
+                }
+            }
+            var node = $("guild_".concat(guild, "_count_").concat(pcolor));
+            if (node)
+                node.dataset.state = String(count);
+        }
     };
     GameXBody.prototype.onToken_nonActive = function (target, node) {
         var _a;
