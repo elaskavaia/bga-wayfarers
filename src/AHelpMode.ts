@@ -1,3 +1,13 @@
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
+
 class HelpMode {
   _helpMode: boolean = false; // help mode where tooltip shown instead of click action
   _displayedTooltip: any = null; // used in help mode

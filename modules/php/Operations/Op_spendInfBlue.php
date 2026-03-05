@@ -59,14 +59,14 @@ class Op_spendInfBlue extends Operation {
 
         // Mark that blue influence was spent this turn
         $flagToken = "used_inf_blue_$owner";
-        $this->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends blue influence to gain a ship'));
+        $this->dbSetTokenState($flagToken, 1, clienttranslate('${player_name} spends Blue influence to gain a ship'));
 
         // Spend 1 blue influence
         $this->queue("n_infBlue");
     }
 
     public function getPrompt() {
-        return clienttranslate("Spend blue influence to gain a ship for this die placement (once per turn)");
+        return clienttranslate("Spend Blue influence to gain a ship for this die placement (once per turn)");
     }
     public function getIconicName() {
         return "[wicon_inf_blue_pay]: [wicon_ship]";

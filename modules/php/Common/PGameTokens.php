@@ -1,4 +1,13 @@
 <?php
+/**
+ *------
+ * BGA framework: © Gregory Isabelli <gisabelli@boardgamearena.com> & Emmanuel Colin <ecolin@boardgamearena.com>
+ * wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
 namespace Bga\Games\wayfarers\Common;
 
 use Bga\Games\wayfarers\Db\DbTokens;
@@ -78,7 +87,7 @@ class PGameTokens {
         //$color = $this->getPlayerColor($current_player_id);
         foreach ($locs as $location => $count) {
             $sort = $this->getRulesFor($location, "sort", null);
-            $this->game->debugLog("$location sort=$sort");
+            //s$this->game->debugLog("$location sort=$sort");
             if ($this->isCounterAllowedForLocation($current_player_id, $location)) {
                 $this->fillCounters($result["counters"], [$location => $count]);
             }

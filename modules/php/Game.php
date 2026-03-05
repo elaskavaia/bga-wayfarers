@@ -887,7 +887,7 @@ class Game extends Base {
             $aiEndScored = $this->getAiEndScores();
 
             if ($score < $aiScore) {
-                $this->notifyMessage(clienttranslate('${player_name} wins! Player score is negated'), [], $player_id);
+                $this->notifyMessage(clienttranslate('${player_name} wins! Your score is negated'), [], $player_id);
                 $this->playerScore->set($this->getFirstPlayer(), -$score);
             }
         }
