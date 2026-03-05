@@ -1,7 +1,6 @@
 # bga-wayfarers
 
-Bga project template with as little dojo as possible.
-Only usable when you develop games for https://boardgamearena.com
+This is a Board Game Arena (BGA) implementation of the game "Wayfarers". It uses a custom template with minimal Dojo dependencies, featuring TypeScript for client-side code and PHP for server-side game logic.
 
 Warning: Not for Beginners!
 

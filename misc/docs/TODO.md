@@ -3,7 +3,6 @@
 ## Client
 
 - Board action tooltips (also dup hot slots?)
-- Miniboards - add inf number on each guid
 - Visual UI for insp under home space
 
 ## Bugs

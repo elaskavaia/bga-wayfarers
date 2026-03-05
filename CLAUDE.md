@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This is a Board Game Arena (BGA) implementation of the game "Wayfarers". It uses a custom template with minimal Dojo dependencies, featuring TypeScript for client-side code and PHP for server-side game logic.
 
+Games rules as in misc/docs/RULES.md
+
 ## Development Commands
 
 ### Build and Watch
