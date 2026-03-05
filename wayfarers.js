@@ -440,6 +440,15 @@ function getParentParts(word) {
         return "";
     return getFirstParts(word, arr.length - 1);
 }
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
 var HelpMode = /** @class */ (function () {
     function HelpMode(game) {
         this.game = game;
@@ -512,6 +521,15 @@ var HelpMode = /** @class */ (function () {
     };
     return HelpMode;
 }());
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -1958,7 +1976,8 @@ var GameXBody = /** @class */ (function (_super) {
         console.log("player info " + playerInfo.id, playerInfo);
         var pcolor = playerInfo.color;
         var realcolor = this.AI_COLOR_OVERRIDE;
-        var op = "overall_player_board_".concat(playerInfo.id);
+        // const op = this.bga.playerPanels.getElement(playerInfo.id);// this does not work
+        var op = "overall_player" + "_board_" + playerInfo.id;
         (_a = $(op)) === null || _a === void 0 ? void 0 : _a.remove();
         this.bga.playerPanels.addAutomataPlayerPanel(playerInfo.id, playerInfo.name, {
             iconClass: "aida-avatar",
@@ -1968,7 +1987,7 @@ var GameXBody = /** @class */ (function (_super) {
         document.querySelectorAll(".guild").forEach(function (guild) {
             placeHtml("<div id='".concat(guild.id, "_").concat(pcolor, "' class='").concat(guild.id, "_").concat(pcolor, " infsupply'></div>"), guild);
         });
-        placeHtml("<div id='player_panel_content_".concat(pcolor, "' class='player_panel_content'></div>"), "player_board_".concat(playerInfo.id));
+        placeHtml("<div id='player_panel_content_".concat(pcolor, "' class='player_panel_content'></div>"), this.bga.playerPanels.getElement(playerInfo.id));
         this.createMiniboard(pcolor, "player_panel_content_".concat(pcolor));
         var parent = "players_panels";
         // Generate caravan grid cells (7x3)
@@ -2752,6 +2771,15 @@ var GameXBody = /** @class */ (function (_super) {
     };
     return GameXBody;
 }(GameMachine));
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
 var LaAnimations = /** @class */ (function () {
     function LaAnimations() {
         this.defaultAnimationDuration = 500;
@@ -2970,6 +2998,15 @@ function setStyleAttributes(element, attrs) {
         });
     }
 }
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
+ * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
+ * See http://en.boardgamearena.com/#!doc/Studio for more information.
+ * -----
+ */
 /**
  * This is only code that has to use dojo
  * Note: this only works when targeting ES5

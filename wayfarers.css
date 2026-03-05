@@ -1356,10 +1356,10 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_1 {
-  background-image: url(img/MainBoard1.jpg);
+  background-image: url(img/boards/MainBoard1.jpg);
 }
 .mainboard_1[data-state="1"] {
-  background-image: url(img/MainBoard4.jpg);
+  background-image: url(img/boards/MainBoard4.jpg);
 }
 .mainboard_1 .upg_pink {
   position: absolute;
@@ -1406,11 +1406,11 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_2 {
-  background-image: url(img/MainBoard2.jpg);
+  background-image: url(img/boards/MainBoard2.jpg);
   aspect-ratio: 1212/1024 !important;
 }
 .mainboard_2[data-state="1"] {
-  background-image: url(img/MainBoard5.jpg);
+  background-image: url(img/boards/MainBoard5.jpg);
 }
 .mainboard_2 .upg {
   position: absolute;
@@ -1502,10 +1502,10 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_3 {
-  background-image: url(img/MainBoard3.jpg);
+  background-image: url(img/boards/MainBoard3.jpg);
 }
 .mainboard_3[data-state="1"] {
-  background-image: url(img/MainBoard6.jpg);
+  background-image: url(img/boards/MainBoard6.jpg);
 }
 
 #mainarea_wrap {

@@ -206,8 +206,10 @@ class GameXBody extends GameMachine {
     const pcolor = playerInfo.color;
     const realcolor = this.AI_COLOR_OVERRIDE;
 
-    const op = `overall_player_board_${playerInfo.id}`;
+    // const op = this.bga.playerPanels.getElement(playerInfo.id);// this does not work
+    const op = "overall_player" + "_board_" + playerInfo.id;
     $(op)?.remove();
+
     this.bga.playerPanels.addAutomataPlayerPanel(playerInfo.id, playerInfo.name, {
       iconClass: "aida-avatar",
       score: playerInfo.score,
@@ -217,7 +219,10 @@ class GameXBody extends GameMachine {
     document.querySelectorAll(`.guild`).forEach((guild) => {
       placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
     });
-    placeHtml(`<div id='player_panel_content_${pcolor}' class='player_panel_content'></div>`, `player_board_${playerInfo.id}`);
+    placeHtml(
+      `<div id='player_panel_content_${pcolor}' class='player_panel_content'></div>`,
+      this.bga.playerPanels.getElement(playerInfo.id)
+    );
     this.createMiniboard(pcolor, `player_panel_content_${pcolor}`);
     let parent = "players_panels";
     // Generate caravan grid cells (7x3)

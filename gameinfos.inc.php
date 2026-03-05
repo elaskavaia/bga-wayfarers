@@ -54,7 +54,9 @@ $gameinfos = [
     // Note: if you are NOT using any tie breaker, leave the empty string.
     //
     // Example: 'tie_breaker_description' => totranslate( "Number of remaining cards in hand" ),
-    "tie_breaker_description" => totranslate("If tied, the winner is determined by the most Black Influence, then Yellow Influence, then Blue Influence. If still tied, players share the victory."),
+    "tie_breaker_description" => totranslate(
+        "If tied, the winner is determined by the most Black Influence, then Yellow Influence, then Blue Influence. If still tied, players share the victory."
+    ),
 
     // If in the game, all losers are equal (no score to rank them or explicit in the rules that losers are not ranked between them), set this to true
     // The game end result will display "Winner" for the 1st player and "Loser" for all other players
@@ -92,8 +94,5 @@ $gameinfos = [
         "min" => 1024,
     ],
 
-    // Flag to enable 3D mode (adds a 3D button to the menu)
-    // Enable this only if your game functions correctly in 3D
-    "enable_3d" => false,
     "db_undo_support" => true,
 ];
