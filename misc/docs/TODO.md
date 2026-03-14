@@ -18,4 +18,4 @@
 
 - [ ] UI support for AI upgrade tiles placed alongside board (state 0, no caravan position)
 - [x] The solo bot, is it easier to stack all their cards facedown and just put a number next to them? That's what you do in real life
-- [ ] Solo boards are suppose to be different!
+- [x] Solo boards are suppose to be different!

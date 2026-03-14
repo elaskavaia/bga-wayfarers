@@ -24,5 +24,6 @@
   "editor.formatOnSaveMode": "file",
   "editor.formatOnSave": true,
   "eslint.codeActionsOnSave.mode": "problems",
-  "eslint.codeActionsOnSave.rules": []
+  "eslint.codeActionsOnSave.rules": [],
+  "workbench.colorTheme": "Monokai Dimmed"
 }

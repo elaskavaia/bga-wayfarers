@@ -240,6 +240,12 @@ html[data-theme=dark] .deck .counter {
   height: 7.5%;
 }
 
+.tableau_ffffff .column .card {
+  top: unset;
+  bottom: 0;
+  left: 0;
+}
+
 .card_home {
   background-image: url(img/PlayerBoard-nb.png);
   background-size: 300% auto;
@@ -259,11 +265,11 @@ html[data-theme=dark] .deck .counter {
 }
 
 .card_home_10 {
-  background-image: unset !important;
+  background-image: unset;
 }
 
 .card_folk_1 {
-  background-image: unset !important;
+  background-image: unset;
 }
 
 .card_slot {
@@ -1201,19 +1207,19 @@ html[data-theme=dark] .deck .counter {
 }
 
 .pboard[data-state="-1"]::before {
-  background-image: url(img/SoloBoard1-s.png);
+  background-image: url(img/boards/SoloBoard1.webp);
 }
 
 .pboard[data-state="-2"]::before {
-  background-image: url(img/SoloBoard1-s.png);
+  background-image: url(img/boards/SoloBoard2.webp);
 }
 
 .pboard[data-state="-3"]::before {
-  background-image: url(img/SoloBoard1-s.png);
+  background-image: url(img/boards/SoloBoard3.webp);
 }
 
 .pboard[data-state="-4"]::before {
-  background-image: url(img/SoloBoard1-s.png);
+  background-image: url(img/boards/SoloBoard4.webp);
 }
 
 .breakroom {
@@ -2533,7 +2539,7 @@ html[data-theme=dark] .miniboard .guild_count {
   height: 300px;
 }
 .tooltip-left .tooltipimage.card_slot {
-  height: 40px;
+  height: 60px;
 }
 .tooltip-left .tooltipimage + .tooltipimage {
   margin-top: 0.3em;
@@ -2574,6 +2580,45 @@ html[data-theme=dark] .miniboard .guild_count {
 .card_pile_help {
   font-size: x-small;
   font-style: italic;
+}
+
+.tooltipcontainer .card_home {
+  background-image: url(img/PlayerBoard-nb.png);
+  background-size: 300% auto;
+  background-position-y: 86%;
+}
+.tooltipcontainer .card_slot {
+  aspect-ratio: 5/1;
+  height: 50px;
+}
+.tooltipcontainer .card_home_2 {
+  background-position-x: 0%;
+}
+.tooltipcontainer .card_home_3 {
+  background-position-x: 100%;
+}
+.tooltipcontainer .card_home_10 {
+  background-position-x: 50%;
+  background-position-y: 68%;
+  aspect-ratio: 5/1.4;
+}
+.tooltipcontainer .card_home_11 {
+  background-position-x: 50%;
+  background-position-y: 75%;
+}
+.tooltipcontainer .card_home_12 {
+  background-position-x: 50%;
+  background-position-y: 82%;
+  aspect-ratio: 5/1.2;
+}
+.tooltipcontainer .card_home_13 {
+  background-position-x: 50%;
+  background-position-y: 90%;
+  aspect-ratio: 5/1.4;
+}
+.tooltipcontainer .card_folk_1 {
+  background-position-x: 50%;
+  background-position-y: 100%;
 }
 
 .aida-avatar {

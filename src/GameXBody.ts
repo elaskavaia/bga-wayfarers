@@ -505,10 +505,28 @@ class GameXBody extends GameMachine {
         }
       } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
-        const x = tokenInfo.state;
+        let x = tokenInfo.state;
         if (cardType == "home" || x == 1 || x == -1) {
           result.location = `pboard_${color}`;
           return result;
+        }
+        if (location.startsWith("tableau_ffffff")) {
+          // automa places card in different negative column per type
+          switch (cardType) {
+            case "folk":
+              x = -2;
+              break;
+            case "land":
+            case "water":
+              x = -3;
+              break;
+            case "space":
+              x = -4;
+              break;
+            case "insp":
+              x = -5;
+              break;
+          }
         }
         result.location = `pboard_column_${x}_${color}`;
         if (!$(result.location)) {
@@ -637,7 +655,7 @@ class GameXBody extends GameMachine {
         {
           const cardType = getPart(target, 1);
           if (cardType == "home") {
-            // XXX require special handling
+            this.showHiddenContent(node, _("Home Actions"), target);
             return false;
           }
           const container = $(target).parentElement?.id;
@@ -920,6 +938,9 @@ class GameXBody extends GameMachine {
       });
       if (index === selectedId) selectedId = origId;
     });
+    if (children.length == 0) {
+      $("card_pile_help").remove();
+    }
     if (selectedId && typeof selectedId === "string") {
       const selected_html = this.getTooltipHtmlForToken(selectedId);
       $("card_pile_selector").innerHTML = selected_html;

@@ -2234,6 +2234,24 @@ var GameXBody = /** @class */ (function (_super) {
                     result.location = "pboard_".concat(color);
                     return result;
                 }
+                if (location.startsWith("tableau_ffffff")) {
+                    // automa places card in different negative column per type
+                    switch (cardType) {
+                        case "folk":
+                            x = -2;
+                            break;
+                        case "land":
+                        case "water":
+                            x = -3;
+                            break;
+                        case "space":
+                            x = -4;
+                            break;
+                        case "insp":
+                            x = -5;
+                            break;
+                    }
+                }
                 result.location = "pboard_column_".concat(x, "_").concat(color);
                 if (!$(result.location)) {
                     // if (x < 0) placeHtml(`<div id='${result.location}' class='column' data-state='${x}' ></div>`, `tableau_${color}`, "afterbegin");
@@ -2371,7 +2389,7 @@ var GameXBody = /** @class */ (function (_super) {
                 {
                     var cardType = getPart(target, 1);
                     if (cardType == "home") {
-                        // XXX require special handling
+                        this.showHiddenContent(node, _("Home Actions"), target);
                         return false;
                     }
                     var container = (_a = $(target).parentElement) === null || _a === void 0 ? void 0 : _a.id;
@@ -2650,6 +2668,9 @@ var GameXBody = /** @class */ (function (_super) {
             if (index === selectedId)
                 selectedId = origId;
         });
+        if (children.length == 0) {
+            $("card_pile_help").remove();
+        }
         if (selectedId && typeof selectedId === "string") {
             var selected_html = this.getTooltipHtmlForToken(selectedId);
             $("card_pile_selector").innerHTML = selected_html;

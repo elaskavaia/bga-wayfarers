@@ -206,6 +206,11 @@
     }
   }
 }
+.tableau_ffffff .column .card {
+  top: unset;
+  bottom: 0;
+  left: 0;
+}
 
 .card_home {
   background-image: url(img/PlayerBoard-nb.png);
@@ -223,10 +228,10 @@
   background-position-x: 100%;
 }
 .card_home_10 {
-  background-image: unset !important;
+  background-image: unset;
 }
 .card_folk_1 {
-  background-image: unset !important;
+  background-image: unset;
 }
 .card_slot {
   background-image: unset;

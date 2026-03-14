@@ -151,7 +151,8 @@
 
 @for $i from -1 through -4 {
   .pboard[data-state="#{$i}"]::before {
-    background-image: url(img/SoloBoard1-s.png);
+    $x: calc(-1 * $i);
+    background-image: url(img/boards/SoloBoard#{$x}.webp);
   }
 }
 

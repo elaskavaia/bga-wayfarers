@@ -1,3 +1,4 @@
+@use "variables" as v;
 /* tooltips */
 .midSizeDialog {
   max-width: 700px;
@@ -63,7 +64,7 @@
   }
 
   .tooltipimage.card_slot {
-    height: 40px;
+    height: 60px;
   }
 
   // For dual images (upgrade tiles showing front and reverse)
@@ -112,4 +113,50 @@
 .card_pile_help {
   font-size: x-small;
   font-style: italic;
+}
+
+.tooltipcontainer {
+  .card_home {
+    background-image: url(img/PlayerBoard-nb.png);
+    background-size: 300% auto;
+    background-position-y: 86%;
+  }
+
+  .card_slot {
+    aspect-ratio: 5 / 1;
+    height: 50px;
+  }
+
+  .card_home_1 {
+  }
+
+  .card_home_2 {
+    background-position-x: 0%;
+  }
+  .card_home_3 {
+    background-position-x: 100%;
+  }
+  .card_home_10 {
+    background-position-x: 50%;
+    background-position-y: 68%;
+    aspect-ratio: 5 / 1.4;
+  }
+  .card_home_11 {
+    background-position-x: 50%;
+    background-position-y: 75%;
+  }
+  .card_home_12 {
+    background-position-x: 50%;
+    background-position-y: 82%;
+    aspect-ratio: 5 / 1.2;
+  }
+  .card_home_13 {
+    background-position-x: 50%;
+    background-position-y: 90%;
+    aspect-ratio: 5 / 1.4;
+  }
+  .card_folk_1 {
+    background-position-x: 50%;
+    background-position-y: 100%;
+  }
 }
