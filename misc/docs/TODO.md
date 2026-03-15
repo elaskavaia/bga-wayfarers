@@ -1,5 +1,7 @@
 ## Server
 
+[x] Interraction for inf placed by player, player may refuse interaction (and pay)
+
 ## Client
 
 - Board action tooltips (also dup hot slots?)
