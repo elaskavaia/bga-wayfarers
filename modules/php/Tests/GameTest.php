@@ -26,21 +26,11 @@ define("CCOLOR", "ff0000");
 define("ACOLOR", "ffffff"); // automa
 define("PCOLOR_ID", 10);
 
-class FakeNotify extends Notify {
-    public function all(string $notifName, string|NotificationMessage $message = "", array $args = []): void {
-        //echo "Notify all: $notifName : $message\n";
-    }
-    public function player(int $playerId, string $notifName, string|NotificationMessage $message = "", array $args = []): void {
-        //echo "Notify player $playerId: $notifName : $message\n";
-    }
-}
-
 class GameUT extends Game {
     var $multimachine;
     var $xtable;
     var $gameap_number = 0;
     var $var_colonies = 0;
-    var $_colors = [];
 
     function __construct() {
         parent::__construct();
@@ -49,31 +39,17 @@ class GameUT extends Game {
         //$this->tokens = new TokensInMem($this);
         $this->xtable = [];
         $this->machine = new OpMachine(new MachineInMem($this, $this->xtable));
-        $this->curid = 1;
-        $this->_colors = [PCOLOR, BCOLOR];
-        $this->notify = new FakeNotify();
+        $this->_setCurrentPlayerId(10);
+        $this->_setPlayerBasicInfoFromColors([PCOLOR, BCOLOR]);
 
         $tokens = new TokensInMem($this);
         $this->tokens = new PGameTokens($this, $tokens);
     }
 
     function setPlayersNumber(int $num) {
-        switch ($num) {
-            case 1:
-                $this->_colors = [PCOLOR];
-                break;
-            case 2:
-                $this->_colors = [PCOLOR, BCOLOR];
-                break;
-            case 3:
-                $this->_colors = [PCOLOR, BCOLOR, CCOLOR];
-                break;
-            case 4:
-                $this->_colors = [PCOLOR, BCOLOR, CCOLOR, "ef58a2"];
-                break;
-            default:
-                throw new UserException("Invalid number of players");
-        }
+        $allColors = [PCOLOR, BCOLOR, CCOLOR, "ef58a2"];
+        $colors = array_slice($allColors, 0, $num);
+        $this->_setPlayerBasicInfoFromColors($colors);
     }
 
     function getUserPreference(int $player_id, int $code): int {
@@ -94,14 +70,8 @@ class GameUT extends Game {
         return $this->multimachine;
     }
 
-    public $curid;
-
     function _getCurrentPlayerId() {
-        return $this->curid;
-    }
-
-    function _getColors() {
-        return $this->_colors;
+        return $this->getCurrentPlayerId();
     }
 
     function fakeUserAction(Operation $op, $target = null) {

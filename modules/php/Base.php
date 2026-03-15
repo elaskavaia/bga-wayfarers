@@ -70,10 +70,10 @@ class Base extends Table {
         });
     }
 
-    function getAvailColors($players) {
+    function getAvailColors(int $count = 2) {
         $gameinfos = self::getGameinfos();
         $default_colors = $gameinfos["player_colors"];
-        if (count($players) == 1) {
+        if ($count == 1) {
             unset($default_colors[count($default_colors) - 1]); // last one will be reserved to automa
         }
         return $default_colors;
@@ -90,7 +90,7 @@ class Base extends Table {
         // The default below is red/green/blue/orange/brown
         // The number of colors defined here must correspond to the maximum number of players allowed for the gams
 
-        $default_colors = $this->getAvailColors($players);
+        $default_colors = $this->getAvailColors(count($players));
         shuffle($default_colors);
 
         // Create players
@@ -112,7 +112,7 @@ class Base extends Table {
         }
         $sql .= implode(",", $values);
         $this->DbQuery($sql);
-        $default_colors = $this->getAvailColors($players);
+        $default_colors = $this->getAvailColors(count($players));
         self::reattributeColorsBasedOnPreferences($players, $default_colors);
         self::reloadPlayersBasicInfos();
 

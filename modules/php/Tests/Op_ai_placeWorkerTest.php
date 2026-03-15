@@ -15,7 +15,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
         $this->game = new GameUT();
         $this->game->init();
         // Setup AI color in game
-        $this->game->curid = PCOLOR_ID;
+        $this->game->_setCurrentPlayerId(PCOLOR_ID);
     }
 
     private function createOp(string $params = ""): Op_ai_placeWorker {
