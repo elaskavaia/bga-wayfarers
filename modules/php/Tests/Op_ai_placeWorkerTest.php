@@ -14,6 +14,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
     protected function setUp(): void {
         $this->game = new GameUT();
         $this->game->init();
+        $this->game->tokens->createTokens();
         // Setup AI color in game
         $this->game->_setCurrentPlayerId(PCOLOR_ID);
     }
@@ -169,5 +170,51 @@ final class Op_ai_placeWorkerTest extends TestCase {
 
         $this->assertTrue($result);
         // Action queuing is tested implicitly - if worker placement succeeds without error, action was queued and processed
+    }
+
+    private function addInfluenceOnCard(string $card, string $color = PCOLOR): string {
+        $infId = "influence_{$color}_1";
+        $this->game->tokens->db->moveToken($infId, $card);
+        return $infId;
+    }
+
+    public function testInfluenceCheckBeforePlacement(): void {
+        $this->addWorkerToSupply("green");
+        $folkCard = $this->addCardToMainarea("folk", 1);
+        $this->setPositionPriority(1);
+        $this->game->material->setRulesFor("action_folk_1", ["r" => "nop"]);
+
+        // Place player influence on the card
+        $this->addInfluenceOnCard($folkCard);
+
+        $op = $this->createOp("green");
+        $result = $op->auto();
+
+        $this->assertTrue($result);
+        // Worker should NOT be placed yet — ai_cardInteractChoice should be queued instead
+        $worker = $this->game->tokens->db->getTokenInfo("worker_green_1");
+        $this->assertEquals("tableau_" . self::AI_COLOR, $worker["location"]);
+
+        // ai_cardInteractChoice should be queued
+        $topOp = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($topOp);
+        $this->assertEquals("ai_cardInteractChoice", $topOp->getType());
+        $this->assertEquals($folkCard, $topOp->getDataField("card"));
+    }
+
+    public function testNoInfluenceSkipsChoice(): void {
+        $this->addWorkerToSupply("green");
+        $folkCard = $this->addCardToMainarea("folk", 1);
+        $this->setPositionPriority(1);
+        $this->game->material->setRulesFor("action_folk_1", ["r" => "nop"]);
+
+        // No influence on card
+        $op = $this->createOp("green");
+        $result = $op->auto();
+
+        $this->assertTrue($result);
+        // Worker should be placed directly
+        $worker = $this->game->tokens->db->getTokenInfo("worker_green_1");
+        $this->assertEquals($folkCard, $worker["location"]);
     }
 }

@@ -32,15 +32,22 @@ class Op_ai_pickWorker extends AiOperation {
     const WORKER_COLORS = ["green", "blue", "yellow"];
 
     /**
-     * Get available workers on cards, grouped by color
+     * Get available workers on cards, grouped by color.
+     * Filters out workers on denied cards.
      */
     function getAvailableWorkersByColor(): array {
         $workersByColor = [];
+        $denied = $this->getDataField("denied", []);
 
         // Get all public workers on cards
         $publicWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%");
 
         foreach ($publicWorkers as $key => $worker) {
+            // Filter out workers on denied cards
+            if (!empty($denied) && in_array($worker["location"], $denied)) {
+                continue;
+            }
+
             $color = getPart($key, 1);
 
             if (!isset($workersByColor[$color])) {
@@ -122,6 +129,19 @@ class Op_ai_pickWorker extends AiOperation {
         return null;
     }
 
+    /**
+     * Commit worker retrieval: handle influence and move worker to AI tableau.
+     */
+    function commitPick(string $workerKey, string $card): void {
+        $owner = $this->getOwner();
+
+        // Handle influence interaction (commit phase — influence return only, no player choice)
+        $this->queue("ai_cardInteract", $owner, ["card" => $card, "buy" => false]);
+
+        // Move worker to AI's tableau
+        $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
+    }
+
     public function isVoid(): bool {
         // Check if there are any workers available to pick
         return $this->selectWorker() === null;
@@ -132,23 +152,57 @@ class Op_ai_pickWorker extends AiOperation {
      */
     public function auto(): bool {
         $owner = $this->getOwner();
+
+        // If already confirmed (player allowed interaction), commit directly
+        $confirmedWorker = $this->getDataField("confirmed_worker");
+        $confirmedCard = $this->getDataField("confirmed_card");
+        if ($confirmedWorker && $confirmedCard) {
+            $this->commitPick($confirmedWorker, $confirmedCard);
+            return true;
+        }
+
         $workerKey = $this->selectWorker();
 
         if ($workerKey === null) {
-            $this->notifyMessage(clienttranslate('${player_name} cannot pick any worker'));
-            return true;
+            // If denied list is non-empty and no workers available, reset and retry
+            $denied = $this->getDataField("denied", []);
+            if (!empty($denied)) {
+                $this->withDataField("denied", []);
+                $workerKey = $this->selectWorker();
+            }
+            if ($workerKey === null) {
+                $this->notifyMessage(clienttranslate('${player_name} cannot pick any worker'));
+                return true;
+            }
         }
 
         // Get the card the worker is on
         $workerInfo = $this->game->tokens->db->getTokenInfo($workerKey);
         $card = $workerInfo["location"];
 
-        // Handle influence interaction if there's influence on the card
-        $this->queue("ai_cardInteract", $owner, ["card" => $card, "buy" => false]);
+        // Check for opponent influence before committing
+        $inf = $this->game->tokens->getTokensOfTypeInLocation("influence", $card);
+        $infKey = array_key_first($inf);
+        if ($infKey) {
+            $infOwner = getPart($infKey, 1);
+            if ($infOwner !== $owner) {
+                // Opponent influence found — ask player to allow or deny
+                $this->queue("ai_cardInteractChoice", $infOwner, [
+                    "card" => $card,
+                    "caller" => $this->getTypeFullExpr(),
+                    "caller_data" => [
+                        "denied" => $this->getDataField("denied", []),
+                        "buy" => false,
+                        "confirmed_worker" => $workerKey,
+                        "confirmed_card" => $card,
+                    ],
+                ]);
+                return true;
+            }
+        }
 
-        // Move worker to AI's tableau
-        $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
-
+        // No opponent influence — commit immediately
+        $this->commitPick($workerKey, $card);
         return true;
     }
 }

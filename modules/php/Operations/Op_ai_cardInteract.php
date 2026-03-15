@@ -14,12 +14,12 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\Games\wayfarers\OpCommon\AiOperation;
-
 use function Bga\Games\wayfarers\getPart;
 
 /**
- *  AI  will offer a  hunab player to get food or coin
+ * AI card interaction commit phase.
+ * Handles influence return and worker transfer after the player has allowed the interaction
+ * (or when no opponent influence exists). The allow/deny choice is handled by Op_ai_cardInteractChoice.
  */
 class Op_ai_cardInteract extends Op_cardInteract {
     public function auto(): bool {
@@ -29,10 +29,6 @@ class Op_ai_cardInteract extends Op_cardInteract {
 
         if ($inf) {
             $opp = getPart($inf, 1);
-            if (!$this->isOwnInfluence($inf)) {
-                // Offer opponent to get coin or food (they choose)
-                $this->queue("coin/food", $opp);
-            }
 
             // Return the influence token to the player's tableau (unless buy is false)
             if ($this->isBeingBought()) {

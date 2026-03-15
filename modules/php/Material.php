@@ -295,6 +295,10 @@ class Material {
         "type" => "ai_cardInteract",
         "name" => clienttranslate("AI Card Interaction"),
 ],
+    "Op_ai_cardInteractChoice" => [ 
+        "type" => "ai_cardInteractChoice",
+        "name" => clienttranslate("AI Card Interaction Choice"),
+],
     "Op_upgBlack" => [ 
         "type" => "upgBlack",
         "name" => clienttranslate("Acquire Space Upgrade"),

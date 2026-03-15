@@ -33,6 +33,7 @@ cardDraw|Draw and Pick Card
 cardInsp|Acquire Inspiration Card
 cardInteract|Card Interaction
 ai_cardInteract|AI Card Interaction
+ai_cardInteractChoice|AI Card Interaction Choice
 
 upgBlack|Acquire Space Upgrade
 upgBlue|Acquire Water Upgrade

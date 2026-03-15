@@ -17,6 +17,7 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\Games\wayfarers\OpCommon\AiOperation;
 
 use function Bga\Games\wayfarers\custom_array_rotate;
+use function Bga\Games\wayfarers\getPart;
 
 /**
  * AI Worker Placement
@@ -68,12 +69,23 @@ class Op_ai_placeWorker extends AiOperation {
 
     /**
      * Select which card to place the worker on using positional priority.
-     * Uses sum value of most recent scheme cards to determine position.
+     * Respects the denied list for denied cards.
      */
     function selectTargetCard(string $cardType): ?string {
         $cards = $this->getMainareaCards($cardType);
         if (empty($cards)) {
             return null;
+        }
+
+        // Filter out denied (denied) cards
+        $skip = $this->getDataField("denied", []);
+        if (!empty($skip)) {
+            $cards = array_diff_key($cards, array_flip($skip));
+            if (empty($cards)) {
+                // All cards denied — cannot fully deny, reset skip
+                $this->withDataField("denied", []);
+                $cards = $this->getMainareaCards($cardType);
+            }
         }
 
         $prio = $this->getPositionPriority();
@@ -82,6 +94,30 @@ class Op_ai_placeWorker extends AiOperation {
         $sorted = custom_array_rotate($cardKeys, $prio - 1, $dir);
 
         return $sorted[0];
+    }
+
+    /**
+     * Commit worker placement: handle influence, place worker, queue board action.
+     */
+    function commitPlacement(string $worker, string $targetCard, string $cardType): void {
+        $owner = $this->getOwner();
+
+        // Handle influence interaction (commit phase — influence return only, no player choice)
+        $this->queue("ai_cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
+
+        // Place the worker on the card
+        $state = (int) $this->game->tokens->db->getTokenState($targetCard);
+        $this->dbSetTokenLocation(
+            $worker,
+            $targetCard,
+            0,
+            clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos}'),
+            ["pos" => $state, "card_type" => $this->game->getTokenName($cardType)]
+        );
+
+        // Resolve the printed action of the space
+        $workerRule = $this->game->getRulesForAndAssert("action_{$cardType}_{$state}", "r", "");
+        $this->queue($workerRule);
     }
 
     public function isVoid(): bool {
@@ -109,6 +145,16 @@ class Op_ai_placeWorker extends AiOperation {
      */
     public function auto(): bool {
         $owner = $this->getOwner();
+
+        // If a card was already confirmed (player allowed interaction), commit directly
+        $confirmedCard = $this->getDataField("confirmed_card");
+        $confirmedWorker = $this->getDataField("confirmed_worker");
+        $confirmedCardType = $this->getDataField("confirmed_card_type");
+        if ($confirmedCard && $confirmedWorker && $confirmedCardType) {
+            $this->commitPlacement($confirmedWorker, $confirmedCard, $confirmedCardType);
+            return true;
+        }
+
         $colors = $this->getAllowedWorkerColors();
 
         foreach ($colors as $color) {
@@ -125,23 +171,30 @@ class Op_ai_placeWorker extends AiOperation {
                 continue;
             }
 
-            // Handle influence interaction if there's influence on the card
-            $this->queue("ai_cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
+            // Check for opponent influence before committing
+            $inf = $this->game->tokens->getTokensOfTypeInLocation("influence", $targetCard);
+            $infKey = array_key_first($inf);
+            if ($infKey) {
+                $infOwner = getPart($infKey, 1);
+                if ($infOwner !== $owner) {
+                    // Opponent influence found — ask player to allow or deny
+                    $this->queue("ai_cardInteractChoice", $infOwner, [
+                        "card" => $targetCard,
+                        "caller" => $this->getTypeFullExpr(),
+                        "caller_data" => [
+                            "denied" => $this->getDataField("denied", []),
+                            "buy" => false,
+                            "confirmed_card" => $targetCard,
+                            "confirmed_worker" => $worker,
+                            "confirmed_card_type" => $cardType,
+                        ],
+                    ]);
+                    return true;
+                }
+            }
 
-            // Place the worker on the card
-            $state = (int) $this->game->tokens->db->getTokenState($targetCard);
-            $this->dbSetTokenLocation(
-                $worker,
-                $targetCard,
-                0,
-                clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos}'),
-                ["pos" => $state, "card_type" => $this->game->getTokenName($cardType)]
-            );
-
-            // Resolve the printed action of the space
-            $workerRule = $this->game->getRulesForAndAssert("action_{$cardType}_{$state}", "r", "");
-            $this->queue($workerRule);
-
+            // No opponent influence — commit immediately
+            $this->commitPlacement($worker, $targetCard, $cardType);
             return true;
         }
 
