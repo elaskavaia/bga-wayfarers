@@ -71,7 +71,7 @@ class Op_ai_placeWorker extends AiOperation {
      * Select which card to place the worker on using positional priority.
      * Respects the denied list for denied cards.
      */
-    function selectTargetCard(string $cardType): ?string {
+    function selectTargetCard(string $cardType, string $workerColor = ""): ?string {
         $cards = $this->getMainareaCards($cardType);
         if (empty($cards)) {
             return null;
@@ -85,6 +85,17 @@ class Op_ai_placeWorker extends AiOperation {
                 // All cards denied — cannot fully deny, reset skip
                 $this->withDataField("denied", []);
                 $cards = $this->getMainareaCards($cardType);
+            }
+        }
+
+        // Filter out cards that already have a worker of the same color
+        if ($workerColor) {
+            $cards = array_filter($cards, function ($info, $cardKey) use ($workerColor) {
+                $workers = $this->game->tokens->getTokensOfTypeInLocation("worker_$workerColor", $cardKey);
+                return empty($workers);
+            }, ARRAY_FILTER_USE_BOTH);
+            if (empty($cards)) {
+                return null;
             }
         }
 
@@ -166,7 +177,7 @@ class Op_ai_placeWorker extends AiOperation {
             $cardType = self::COLOR_CARD_TYPE[$color] ?? null;
             $this->game->systemAssert("Invalid worker color $color", $cardType);
 
-            $targetCard = $this->selectTargetCard($cardType);
+            $targetCard = $this->selectTargetCard($cardType, $color);
             if ($targetCard === null) {
                 continue;
             }

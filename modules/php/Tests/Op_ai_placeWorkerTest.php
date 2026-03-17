@@ -202,6 +202,28 @@ final class Op_ai_placeWorkerTest extends TestCase {
         $this->assertEquals($folkCard, $topOp->getDataField("card"));
     }
 
+    public function testSkipsCardWithExistingSameColorWorker(): void {
+        $this->addWorkerToSupply("green");
+        // Two folk cards in mainarea
+        $card1 = $this->addCardToMainarea("folk", 1);
+        $card2 = "card_folk_2_1";
+        $this->game->tokens->db->moveToken($card2, "mainarea", 2);
+        $this->setPositionPriority(1);
+        $this->game->material->setRulesFor("action_folk_1", ["r" => "nop"]);
+        $this->game->material->setRulesFor("action_folk_2", ["r" => "nop"]);
+
+        // Place an existing green worker on card at position 1 (preferred by priority)
+        $this->game->tokens->db->moveToken("worker_green_3", $card1);
+
+        $op = $this->createOp("green");
+        $result = $op->auto();
+
+        $this->assertTrue($result);
+        // Worker should be placed on card2 (position 2) since card1 already has a green worker
+        $worker = $this->game->tokens->db->getTokenInfo("worker_green_1");
+        $this->assertEquals($card2, $worker["location"]);
+    }
+
     public function testNoInfluenceSkipsChoice(): void {
         $this->addWorkerToSupply("green");
         $folkCard = $this->addCardToMainarea("folk", 1);
