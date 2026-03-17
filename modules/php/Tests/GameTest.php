@@ -853,9 +853,8 @@ final class GameTest extends TestCase {
         $this->assertEquals(1, $vp);
 
         // Place 5 influence tokens in black guild
-        // evaluateTerm extracts "black" from "inf_black", so location is "black"
         for ($i = 1; $i <= 5; $i++) {
-            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_{$i}", "black");
+            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_{$i}", "guild_black");
         }
 
         // 1 + (5/2) = 1 + 2 = 3 VP (integer division)

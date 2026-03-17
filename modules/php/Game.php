@@ -932,7 +932,7 @@ class Game extends Base {
             return $this->countPlayerTags(getPart($x, 1), $owner);
         }
         if (str_starts_with($x, "inf_")) {
-            return $this->countGuildInfluence(getPart($x, 1), $owner);
+            return $this->countGuildInfluence("guild_" . getPart($x, 1), $owner);
         }
 
         if (str_starts_with($x, "win_")) {
