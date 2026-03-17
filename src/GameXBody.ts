@@ -395,35 +395,39 @@ class GameXBody extends GameMachine {
 
     // add second scoreSheet for AI
     if (this.isSolo() && this.gamedatas.aiEndScores) {
-      const aiEntries = [
-        { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
-        { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
-        { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
-        { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
-        { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
-        { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
-        { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
-      ];
-      const aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
-      const players = {};
-      players[this.AI_PLAYER_ID] = { ...aiPlayer, color: this.AI_COLOR_OVERRIDE };
-      this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet-ai`), {
-        animationsActive: () => this.gameAnimationsActive(),
-        playerNameWidth: 80,
-        playerNameHeight: 30,
-        entryLabelWidth: 220,
-        entryLabelHeight: 20,
-        classes: "score-sheet",
-        players,
-        entries: aiEntries,
-        scores: this.gamedatas.aiEndScores,
-        onScoreDisplayed: (property, playerId, score: number) => {
-          if (property === "total") {
-            this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
-          }
-        }
-      });
+      this.setupAIScoreSheet(this.gamedatas.aiEndScores);
     }
+  }
+  setupAIScoreSheet(scores: any) {
+    if (this.scoreSheetAI) return;
+    const aiEntries = [
+      { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
+      { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
+      { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
+      { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
+      { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
+      { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
+      { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
+    ];
+    const aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
+    const players = {};
+    players[this.AI_PLAYER_ID] = { ...aiPlayer, color: this.AI_COLOR_OVERRIDE };
+    this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet-ai`), {
+      animationsActive: () => this.gameAnimationsActive(),
+      playerNameWidth: 80,
+      playerNameHeight: 30,
+      entryLabelWidth: 220,
+      entryLabelHeight: 20,
+      classes: "score-sheet",
+      players,
+      entries: aiEntries,
+      scores,
+      onScoreDisplayed: (property, playerId, score: number) => {
+        if (property === "total") {
+          this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
+        }
+      }
+    });
   }
   onUpdateActionButtons_MultiPlayerTurnPrivate(opInfo: OpInfo) {
     // this.onEnteringState_PlayerTurn(opInfo);
@@ -988,8 +992,12 @@ class GameXBody extends GameMachine {
     await this.scoreSheet.setScores(args.endScores, {
       startBy: this.bga.players.getCurrentPlayerId()
     });
-    if (args.aiEndScores && this.scoreSheetAI) {
-      await this.scoreSheetAI.setScores(args.aiEndScores);
+    if (args.aiEndScores) {
+      if (!this.scoreSheetAI) {
+        this.setupAIScoreSheet(args.aiEndScores);
+      } else {
+        await this.scoreSheetAI.setScores(args.aiEndScores);
+      }
     }
   }
   /** @Override */

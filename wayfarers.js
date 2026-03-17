@@ -2116,35 +2116,41 @@ var GameXBody = /** @class */ (function (_super) {
         });
         // add second scoreSheet for AI
         if (this.isSolo() && this.gamedatas.aiEndScores) {
-            var aiEntries = [
-                { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
-                { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
-                { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
-                { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
-                { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
-                { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
-                { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
-            ];
-            var aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
-            var players = {};
-            players[this.AI_PLAYER_ID] = __assign(__assign({}, aiPlayer), { color: this.AI_COLOR_OVERRIDE });
-            this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById("game-score-sheet-ai"), {
-                animationsActive: function () { return _this.gameAnimationsActive(); },
-                playerNameWidth: 80,
-                playerNameHeight: 30,
-                entryLabelWidth: 220,
-                entryLabelHeight: 20,
-                classes: "score-sheet",
-                players: players,
-                entries: aiEntries,
-                scores: this.gamedatas.aiEndScores,
-                onScoreDisplayed: function (property, playerId, score) {
-                    if (property === "total") {
-                        _this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
-                    }
-                }
-            });
+            this.setupAIScoreSheet(this.gamedatas.aiEndScores);
         }
+    };
+    GameXBody.prototype.setupAIScoreSheet = function (scores) {
+        var _this = this;
+        if (this.scoreSheetAI)
+            return;
+        var aiEntries = [
+            { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
+            { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
+            { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
+            { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
+            { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
+            { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
+            { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
+        ];
+        var aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
+        var players = {};
+        players[this.AI_PLAYER_ID] = __assign(__assign({}, aiPlayer), { color: this.AI_COLOR_OVERRIDE });
+        this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById("game-score-sheet-ai"), {
+            animationsActive: function () { return _this.gameAnimationsActive(); },
+            playerNameWidth: 80,
+            playerNameHeight: 30,
+            entryLabelWidth: 220,
+            entryLabelHeight: 20,
+            classes: "score-sheet",
+            players: players,
+            entries: aiEntries,
+            scores: scores,
+            onScoreDisplayed: function (property, playerId, score) {
+                if (property === "total") {
+                    _this.bga.playerPanels.getScoreCounter(playerId).setValue(score);
+                }
+            }
+        });
     };
     GameXBody.prototype.onUpdateActionButtons_MultiPlayerTurnPrivate = function (opInfo) {
         // this.onEnteringState_PlayerTurn(opInfo);
@@ -2733,12 +2739,15 @@ var GameXBody = /** @class */ (function (_super) {
                             })];
                     case 1:
                         _a.sent();
-                        if (!(args.aiEndScores && this.scoreSheetAI)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, this.scoreSheetAI.setScores(args.aiEndScores)];
-                    case 2:
+                        if (!args.aiEndScores) return [3 /*break*/, 4];
+                        if (!!this.scoreSheetAI) return [3 /*break*/, 2];
+                        this.setupAIScoreSheet(args.aiEndScores);
+                        return [3 /*break*/, 4];
+                    case 2: return [4 /*yield*/, this.scoreSheetAI.setScores(args.aiEndScores)];
+                    case 3:
                         _a.sent();
-                        _a.label = 3;
-                    case 3: return [2 /*return*/];
+                        _a.label = 4;
+                    case 4: return [2 /*return*/];
                 }
             });
         });
