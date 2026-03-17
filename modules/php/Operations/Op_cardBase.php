@@ -143,6 +143,10 @@ abstract class Op_cardBase extends Op_acquireBase {
         return ["buttons" => false];
     }
     public function requireConfirmation() {
+        // When card is pre-selected from a draw, no confirmation needed
+        if ($this->getCard()) {
+            return false;
+        }
         return true;
     }
 
