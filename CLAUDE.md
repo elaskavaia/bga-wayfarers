@@ -25,6 +25,10 @@ Games rules as in misc/docs/RULES.md
 - To run a single test file: `APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --bootstrap ./modules/php/Tests/_autoload.php modules/php/Tests/<TestFile>.php`
 - Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository
 
+### Utilities
+
+- `php misc/other/gamelog2text.php <game.log.html>` - Convert BGA game log HTML to plain text. To get the HTML: in the browser replay page, open DevTools console and run `copy(document.getElementById('gamelogs').innerHTML)`, then paste into a file.
+
 ### Code Formatting
 
 - Prettier is configured with PHP plugin (see package.json)
