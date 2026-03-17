@@ -520,11 +520,11 @@ class Game extends Base {
      * @return array - [vistaCardKey => drRule] pairs for each triggered vista card
      */
     function getVistaTriggeredRules(string $playedItem, string $owner): array {
-        $tags = $this->getTagsSet($playedItem);
-
-        // Add implicit tags based on token type
+        // Folk cards don't provide tags — their "tags" field is tuck requirements, not actual tags
         if (str_starts_with($playedItem, "card_folk")) {
-            $tags["card_folk"] = 1;
+            $tags = ["card_folk" => 1];
+        } else {
+            $tags = $this->getTagsSet($playedItem);
         }
         if (str_starts_with($playedItem, "upg_")) {
             $tags["upg_any"] = 1;

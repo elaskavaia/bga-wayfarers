@@ -709,6 +709,17 @@ final class GameTest extends TestCase {
         $triggers = $this->game->getVistaTriggeredRules($playedFolk, PCOLOR);
         $this->assertArrayHasKey($folkVistaCard, $triggers, "CardFolk Vista should trigger on folk card");
 
+        // Test 4: Folk card tuck requirements do NOT count as tags for Vista triggering
+        // card_land_34: trig="Harbour", dr="infYellow/infMove" — Vista that triggers on Harbour tag
+        $harbourVistaCard = "card_land_34_1";
+        $this->game->tokens->db->moveToken($harbourVistaCard, "tableau_" . PCOLOR, -4);
+        // card_folk_116: tags="Harbour" — but this is a tuck requirement, not an actual tag
+        $folkWithHarbourReq = "card_folk_116_1";
+        $triggers = $this->game->getVistaTriggeredRules($folkWithHarbourReq, PCOLOR);
+        $this->assertArrayNotHasKey($harbourVistaCard, $triggers, "Harbour Vista should NOT trigger on folk card with Harbour tuck requirement");
+        // But the card_folk implicit tag should still trigger card_land_31 (trig=card_folk)
+        $this->assertArrayHasKey($folkVistaCard, $triggers, "CardFolk Vista should still trigger on folk card");
+
         // Test 5: Vista card does not trigger itself
         $newVistaCard = "card_land_25_1"; // trig="Vista", tags="Vista"
         $this->game->tokens->db->moveToken($newVistaCard, "tableau_" . PCOLOR, -5);
