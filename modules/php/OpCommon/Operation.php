@@ -669,6 +669,11 @@ abstract class Operation {
         return $this->skip() ?: $this->destroy();
     }
 
+    /** Operation is trivial if it requires no meaningful player decision and its order relative to other operations doesn't matter */
+    function isTrivial(): bool {
+        return false;
+    }
+
     /** Called on operation to see if we can skip this one */
     function canSkip() {
         return false;

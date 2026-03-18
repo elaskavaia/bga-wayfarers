@@ -40,39 +40,18 @@ class Op_journal extends Operation {
             $achived = false;
             $prereq = $this->game->getRulesFor($connector, "r", "");
 
-            if (!$prereq) {
-                $achived = false;
-            } elseif (str_starts_with($prereq, "Op_")) {
-                // Operations are costs (e.g., Op_n_infBlack, Op_n_infBlue,Op_n_infYellow)
-                $ops = explode(",", $prereq);
-                $achived = true;
-                $icons = [];
-                foreach ($ops as $op) {
-                    $op = trim($op);
-                    if (preg_match('/^Op_n_inf(\w+)$/', $op, $m)) {
-                        $color = lcfirst($m[1]);
-                        if ($this->game->countGuildInfluence("guild_$color", $owner) <= 0) {
-                            $achived = false;
-                        }
-                        $icons[] = "[wicon_inf_{$color}_pay]";
-                    } else {
-                        $this->game->systemAssert("unsupported operation $op");
-                    }
-                }
-                $name = implode("", $icons);
-            } else {
+            if (str_starts_with($prereq, "Op")) {
+                // Operations are costs (e.g., Op(n_infBlack), Op(n_infBlue,n_infYellow))
+                $op = $this->instanciateOperation(trim(substr($prereq, 2), "()"));
+                $achived = !$op->isVoid();
+                $name = $op->getIconicName();
+            } elseif ($prereq) {
                 $required = (int) $this->game->getRulesFor($connector, "gw", 1);
-                $count = $this->game->evaluateExpression($prereq, $owner);
-
-                if ($count >= $required) {
-                    $achived = true;
-                }
-                $givenName = $this->game->getRulesFor($connector, "name", "");
-                if ($givenName) {
-                    $name = $givenName;
-                } else {
+                $achived = $this->game->evaluateExpression($prereq, $owner) >= $required;
+                $name = $this->game->getRulesFor($connector, "name", "");
+                if (!$name) {
                     $icon = $this->game->getRulesFor($prereq, "type", "?");
-                    $name = "$required [$icon]"; // extact icon from prereq tag
+                    $name = "$required [$icon]";
                 }
             }
 
@@ -119,10 +98,8 @@ class Op_journal extends Operation {
         $newState = (int) getPart($selected, 1);
         $connector = $this->getConnectorId($currentState, $newState);
         $r = $this->game->getRulesFor($connector, "r", "");
-        if (str_starts_with($r, "Op_")) {
-            foreach (explode(",", $r) as $op) {
-                $this->queue(substr(trim($op), 3), $owner);
-            }
+        if (str_starts_with($r, "Op")) {
+            $this->queue(trim(substr($r, 2), "()"));
         }
         // Update marker state
         $this->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [

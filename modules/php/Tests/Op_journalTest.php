@@ -155,10 +155,10 @@ final class Op_journalTest extends TestCase {
     }
 
     public function testGetPossibleMovesWithOperationRequirement(): void {
-        // Setup: connection requires Op_n_infBlack (player must have black influence)
+        // Setup: connection requires Op(n_infBlack) (player must have black influence)
         $this->setMarkerPosition(40);
         $this->setupPosition(40, "50");
-        $this->setupConnection(40, 50, "Op_n_infBlack");
+        $this->setupConnection(40, 50, "Op(n_infBlack)");
 
         // Give player black influence (influence type is influence_{owner})
         $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_1", "guild_black", 0);
@@ -172,10 +172,10 @@ final class Op_journalTest extends TestCase {
     }
 
     public function testGetPossibleMovesWithOperationRequirementNotMet(): void {
-        // Setup: connection requires Op_n_infBlack but player has no black influence
+        // Setup: connection requires Op(n_infBlack) but player has no black influence
         $this->setMarkerPosition(40);
         $this->setupPosition(40, "50");
-        $this->setupConnection(40, 50, "Op_n_infBlack");
+        $this->setupConnection(40, 50, "Op(n_infBlack)");
 
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
@@ -294,10 +294,10 @@ final class Op_journalTest extends TestCase {
     }
 
     public function testResolveQueuesConnectorOperation(): void {
-        // Setup: connector has Op_n_infBlack requirement
+        // Setup: connector has Op(n_infBlack) requirement
         $this->setMarkerPosition(40);
         $this->setupPosition(40, "50");
-        $this->setupConnection(40, 50, "Op_n_infBlack");
+        $this->setupConnection(40, 50, "Op(n_infBlack)");
         $this->setupPosition(50, "60", "pickWorker"); // Position needs a reward operation
 
         // Give player black influence
@@ -492,16 +492,16 @@ final class Op_journalTest extends TestCase {
         $this->assertMatchesRegularExpression('/^\d+ \[wicon_\w+\]$/', $moves["jpos_20"]["name"]);
         $this->assertMatchesRegularExpression('/^\d+ \[wicon_\w+\]$/', $moves["jpos_23"]["name"]);
 
-        // Test position 40 which has Op_n_infBlack requirement
+        // Test position 40 which has Op(n_infBlack) requirement
         $this->setMarkerPosition(40);
         $op = $this->createOp();
         $moves = $op->getPossibleMoves();
 
         // Position 40 connects to 50 according to journal_material.csv
-        // 40->50 requires Op_n_infBlack
+        // 40->50 requires Op(n_infBlack)
         $this->assertArrayHasKey("jpos_50", $moves);
 
-        // Name should be [wicon_inf_black_pay] for Op_n_infBlack
+        // Name should be [wicon_inf_black_pay] for Op(n_infBlack)
         $this->assertEquals("[wicon_inf_black_pay]", $moves["jpos_50"]["name"]);
     }
 }

@@ -1367,14 +1367,11 @@ var GameMachine = /** @class */ (function (_super) {
         }
         if (opInfo.subtitle)
             this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
+        else if (opInfo.err) {
+            this.setSubPrompt(_("Error") + " " + this.getTr(opInfo.err, opInfo));
+        }
         else
             this.setSubPrompt(this.getReasonText(opInfo.data.reason));
-        if (opInfo.err) {
-            var button = this.bga.statusBar.addActionButton(this.getTr(opInfo.err, opInfo), function () { }, {
-                color: "alert",
-                id: "button_err"
-            });
-        }
         var multiselect = this.isMultiSelectArgs(opInfo);
         var sortedTargets = Object.keys(opInfo.info);
         sortedTargets.sort(function (a, b) { return opInfo.info[a].o - opInfo.info[b].o; });

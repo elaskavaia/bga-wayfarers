@@ -27,4 +27,7 @@ class Op_nop extends Operation {
         $this->notifyMessage(""); // empty message
         return;
     }
+    public function isTrivial(): bool {
+        return true;
+    }
 }

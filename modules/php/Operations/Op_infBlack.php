@@ -22,4 +22,8 @@ class Op_infBlack extends Op_infBase {
     public function getIconicName() {
         return "[wicon_inf_black]";
     }
+
+    public function isTrivial(): bool {
+        return true;
+    }
 }

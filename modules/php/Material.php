@@ -3418,7 +3418,7 @@ class Material {
         "location" => "mainboard_2",
         "num" => 40,
         "conn" => 50,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_43_50_0" => [ 
         "location" => "mainboard_2",
@@ -3438,7 +3438,7 @@ class Material {
         "location" => "mainboard_2",
         "num" => 47,
         "conn" => 55,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_50_60_0" => [ 
         "location" => "mainboard_2",
@@ -3577,7 +3577,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 90,
         "conn" => 102,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_90_103_0" => [ 
         "location" => "mainboard_3",
@@ -3597,7 +3597,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 95,
         "conn" => 106,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_95_107_0" => [ 
         "location" => "mainboard_3",
@@ -3725,7 +3725,7 @@ class Material {
         "location" => "mainboard_2",
         "num" => 40,
         "conn" => 50,
-        "r" => "Op_n_infBlue,Op_n_infYellow",
+        "r" => "Op(n_infBlue,n_infYellow)",
 ],
     "jconn_43_50_1" => [ 
         "location" => "mainboard_2",
@@ -3745,7 +3745,7 @@ class Material {
         "location" => "mainboard_2",
         "num" => 47,
         "conn" => 55,
-        "r" => "Op_n_infBlue,Op_n_infYellow",
+        "r" => "Op(n_infBlue,n_infYellow)",
 ],
     "jconn_50_60_1" => [ 
         "location" => "mainboard_2",
@@ -3849,7 +3849,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 80,
         "conn" => 90,
-        "r" => "Op_n_infBlue,Op_n_infBlack",
+        "r" => "Op(n_infBlue,n_infBlack)",
 ],
     "jconn_83_90_1" => [ 
         "location" => "mainboard_3",
@@ -3869,7 +3869,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 87,
         "conn" => 95,
-        "r" => "Op_n_infYellow,Op_n_infBlack",
+        "r" => "Op(n_infYellow,n_infBlack)",
 ],
     "jconn_90_100_1" => [ 
         "location" => "mainboard_3",
@@ -3882,7 +3882,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 90,
         "conn" => 102,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_90_103_1" => [ 
         "location" => "mainboard_3",
@@ -3902,7 +3902,7 @@ class Material {
         "location" => "mainboard_3",
         "num" => 95,
         "conn" => 106,
-        "r" => "Op_n_infBlack",
+        "r" => "Op(n_infBlack)",
 ],
     "jconn_95_107_1" => [ 
         "location" => "mainboard_3",

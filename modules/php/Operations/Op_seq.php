@@ -79,9 +79,18 @@ class Op_seq extends ComplexOperation {
         return parent::getPrompt();
     }
 
+    function getIconicName() {
+        $names = [];
+        foreach ($this->delegates as $sub) {
+            $names[] = $sub->getIconicName();
+        }
+        return implode(" ", $names);
+    }
+
     function getOpName() {
         return $this->getRecName(" ");
     }
+
 
     public function resolve(): void {
         if ($this->isRangedChoice()) {
@@ -92,6 +101,15 @@ class Op_seq extends ComplexOperation {
             $this->saveToDb();
             return;
         }
+    }
+
+    function isTrivial(): bool {
+        foreach ($this->delegates as $sub) {
+            if (!$sub->isTrivial()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function getOperator() {

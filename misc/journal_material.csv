@@ -71,10 +71,10 @@ num|conn|r|gw
 32|43|tag_Book|2
 36|43|tag_Stars|2
 36|47|tag_Observatory|2
-40|50|Op_n_infBlack
+40|50|Op(n_infBlack)
 43|50|tag_Planet|1
 43|55|tag_upg_yellow|2
-47|55|Op_n_infBlack
+47|55|Op(n_infBlack)
 50|60|tag_Harbour|3
 50|63|tag_upg_blue|2
 55|63|tag_Comet|3
@@ -95,10 +95,10 @@ num|conn|r|gw
 83|95|tag_Observatory|3
 87|95|tag_upg_any|7
 90|100|tag_Observatory|4
-90|102|Op_n_infBlack
+90|102|Op(n_infBlack)
 90|103|tag_Sea|4
 95|103|tag_Book|4
-95|106|Op_n_infBlack
+95|106|Op(n_infBlack)
 95|107|tag_Vista|4
 
 #Connection requirements side B
@@ -126,10 +126,10 @@ num|conn|r|gw
 36|43|tag_City|2
 36|47|tag_Comet|1
 
-40|50|Op_n_infBlue,Op_n_infYellow
+40|50|Op(n_infBlue,n_infYellow)
 43|50|tag_Sea|2
 43|55|tag_Vista|2
-47|55|Op_n_infBlue,Op_n_infYellow
+47|55|Op(n_infBlue,n_infYellow)
 
 50|60|tag_card_folk|3
 50|63|tag_upg_yellow|2
@@ -149,14 +149,14 @@ num|conn|r|gw
 76|83|tag_Harbour|4
 76|87|tag_Sea|3
 
-80|90|Op_n_infBlue,Op_n_infBlack
+80|90|Op(n_infBlue,n_infBlack)
 83|90|tag_card_folk|5
 83|95|tag_upg_any|7
-87|95|Op_n_infYellow,Op_n_infBlack
+87|95|Op(n_infYellow,n_infBlack)
 
 90|100|tag_Stars|5
-90|102|Op_n_infBlack
+90|102|Op(n_infBlack)
 90|103|tag_City|5
 95|103|tag_Harbour|5
-95|106|Op_n_infBlack
+95|106|Op(n_infBlack)
 95|107|tag_Comet|7

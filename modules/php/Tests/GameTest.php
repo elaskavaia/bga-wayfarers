@@ -1083,4 +1083,48 @@ final class GameTest extends TestCase {
         $tokenId = "card_space_1_$color";
         $this->assertArrayHasKey($tokenId, $tokens, "Token $tokenId should be in getAllDatas tokens");
     }
+
+    public function testIsTrivial_gain() {
+        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $this->assertTrue($op->isTrivial(), "Op_gain (coin) should be trivial");
+    }
+
+    public function testIsTrivial_seq_allTrivial() {
+        $op = $this->game->machine->instanciateOperation("coin,food", PCOLOR);
+        $this->assertTrue($op->isTrivial(), "Seq of trivial ops should be trivial");
+    }
+
+    public function testIsTrivial_seq_withNonTrivial() {
+        $op = $this->game->machine->instanciateOperation("coin,cardFolk", PCOLOR);
+        $this->assertFalse($op->isTrivial(), "Seq with non-trivial op should not be trivial");
+    }
+
+    public function testIsTrivial_or_singleOption() {
+        $op = $this->game->machine->instanciateOperation("coin/coin", PCOLOR);
+        // Both are trivial and identical, but it's still a choice between two non-void options
+        $this->assertFalse($op->isTrivial(), "Or with multiple non-void options should not be trivial");
+    }
+
+    public function testIsTrivial_or_allVoid() {
+        // Both options are void (no cards in mainarea and no deck), so there's no real choice
+        $op = $this->game->machine->instanciateOperation("cardLand/cardSpace", PCOLOR);
+        $this->assertTrue($op->isTrivial(), "Or with all void options should be trivial");
+    }
+
+    public function testGetIconicName_seq() {
+        $op = $this->game->machine->instanciateOperation("n_infYellow,n_infBlue", PCOLOR);
+        $name = $op->getIconicName();
+        $this->assertIsString($name, "Op_seq::getIconicName should return a string");
+        $this->assertStringContainsString("[wicon_inf_yellow_pay]", $name);
+        $this->assertStringContainsString("[wicon_inf_blue_pay]", $name);
+    }
+
+    public function testGetIconicName_or() {
+        $op = $this->game->machine->instanciateOperation("n_infYellow/n_infBlue", PCOLOR);
+        $name = $op->getIconicName();
+        $this->assertIsString($name, "Op_or::getIconicName should return a string");
+        $this->assertStringContainsString("[wicon_inf_yellow_pay]", $name);
+        $this->assertStringContainsString(" / ", $name);
+        $this->assertStringContainsString("[wicon_inf_blue_pay]", $name);
+    }
 }

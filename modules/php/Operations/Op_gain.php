@@ -67,4 +67,8 @@ class Op_gain extends CountableOperation {
         }
         return clienttranslate('${count} ${token_div}');
     }
+
+    public function isTrivial(): bool {
+        return true;
+    }
 }
