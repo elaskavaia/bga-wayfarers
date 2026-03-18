@@ -430,6 +430,34 @@ final class Op_journalTest extends TestCase {
         $this->assertEquals(Material::ERR_PREREQ, $moves["jpos_63"]["q"]);
     }
 
+    /**
+     * Test that spendInfBlack is queued after journal position bonus.
+     * Bug 3: If a player gains black influence from a position bonus or rest ability,
+     * they should be offered the option to spend it for extra journaling.
+     */
+    public function testSpendInfBlackQueuedAfterPositionBonus(): void {
+        // Setup: position 0 -> 10, position 10 gives infBlack as reward
+        $this->setMarkerPosition(0);
+        $this->setupPosition(0, "10");
+        $this->setupConnection(0, 10);
+        $this->setupPosition(10, "20", "infBlack"); // reward gives black influence
+
+        $op = $this->createOp();
+        $op->action_resolve([Operation::ARG_TARGET => "jpos_10"]);
+
+        // Check queued operations
+        $ops = $this->game->machine->db->getOperations();
+        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
+
+        // infBlack (position bonus) should be queued before spendInfBlack
+        $this->assertContains("infBlack", $opTypes, "Position bonus infBlack should be queued");
+        $this->assertContains("spendInfBlack", $opTypes, "spendInfBlack should be queued");
+
+        $bonusIdx = array_search("infBlack", $opTypes);
+        $spendIdx = array_search("spendInfBlack", $opTypes);
+        $this->assertLessThan($spendIdx, $bonusIdx, "Position bonus should be queued before spendInfBlack");
+    }
+
     public function testConnectionNamesFromActualMaterial(): void {
         // This test uses actual material data to verify names are correct
         // Names should either be custom names from material or [wicon_...] format
