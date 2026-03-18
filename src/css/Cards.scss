@@ -186,6 +186,13 @@
     .card_home_1 {
       visibility: hidden;
     }
+    .card_space_1 {
+      position: absolute !important;
+      right: 0%;
+      top: 8%;
+      bottom: unset;
+      background-image: unset;
+    }
 
     .card_slot {
       left: 33%;
@@ -226,6 +233,9 @@
 }
 .card_home_3 {
   background-position-x: 100%;
+}
+.card_space.card_space_1 {
+  background-image: unset;
 }
 .card_home_10 {
   background-image: unset;

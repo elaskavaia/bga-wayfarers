@@ -1,4 +1,4 @@
-num|r|vpexp|tags|tor|tovp|nom
+num|r|vpexp|tags|tor|tovp|nom|php
 #set _tr=nom
 #set create=1
 #set id=card_space_{num}
@@ -46,7 +46,10 @@ num|r|vpexp|tags|tor|tovp|nom
 #set ext=1
 # 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
 
-# Home card
-#set create=0
+# Space Home card
+#set create=4
+#set id=card_space_{num}
+#set type=card card_home card_space
+#set location=tableau_{COLOR}
 #set ext=
-1||min(tag_upg_any,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Capital Sky
+1||min(tag_upg_any,tag_card_folk)|Stars||1 VP per set of Basic upgrade and Townsfolk|Capital Sky|"state"=>1

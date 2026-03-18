@@ -2928,14 +2928,17 @@ class Material {
         "nom" => clienttranslate("Sun"),
 ],
 // # 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
-// # Home card
+// # Space Home card
     "card_space_1" => [ 
-        "create" => 0,
+        "create" => 4,
+        "type" => "card card_home card_space",
+        "location" => "tableau_{COLOR}",
         "num" => 1,
         "vpexp" => "min(tag_upg_any,tag_card_folk)",
         "tags" => "Stars",
         "tovp" => "1 VP per set of Basic upgrade and Townsfolk",
         "nom" => clienttranslate("Capital Sky"),
+        "state"=>1,
 ],
             /* --- gen php end cardspace_material --- */
 

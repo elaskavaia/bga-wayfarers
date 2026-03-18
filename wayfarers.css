@@ -222,6 +222,13 @@ html[data-theme=dark] .deck .counter {
 .tableau .pboard .card_home_1 {
   visibility: hidden;
 }
+.tableau .pboard .card_space_1 {
+  position: absolute !important;
+  right: 0%;
+  top: 8%;
+  bottom: unset;
+  background-image: unset;
+}
 .tableau .pboard .card_slot {
   left: 33%;
   height: 7%;
@@ -262,6 +269,10 @@ html[data-theme=dark] .deck .counter {
 
 .card_home_3 {
   background-position-x: 100%;
+}
+
+.card_space.card_space_1 {
+  background-image: unset;
 }
 
 .card_home_10 {
@@ -1229,8 +1240,10 @@ html[data-theme=dark] .deck .counter {
   width: 33%;
   height: 24%;
   z-index: 2;
+  pointer-events: none;
 }
 .breakroom > * {
+  pointer-events: auto;
   display: inline-block;
   vertical-align: top;
   margin-right: 3px;
@@ -2584,12 +2597,18 @@ html[data-theme=dark] .miniboard .guild_count {
 
 .tooltipcontainer .card_home {
   background-image: url(img/PlayerBoard-nb.png);
-  background-size: 300% auto;
-  background-position-y: 86%;
+  background-size: 304% auto;
+  background-position-y: 85%;
 }
 .tooltipcontainer .card_slot {
   aspect-ratio: 5/1;
   height: 50px;
+}
+.tooltipcontainer .card_space_1 {
+  background-image: url(img/PlayerBoard-nb.png);
+  background-size: 304% auto;
+  background-position-x: 100%;
+  background-position-y: 15%;
 }
 .tooltipcontainer .card_home_2 {
   background-position-x: 0%;

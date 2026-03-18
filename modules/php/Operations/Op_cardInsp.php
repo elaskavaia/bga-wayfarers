@@ -86,9 +86,7 @@ class Op_cardInsp extends Op_cardBase {
                 $availablePositions[$pos] = $cardKey;
             }
         }
-        if (!isset($occupiedByInsp[1])) {
-            $availablePositions[1] = "card_home";
-        }
+
         return $availablePositions;
     }
 

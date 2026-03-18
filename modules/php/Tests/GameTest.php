@@ -39,8 +39,8 @@ class GameUT extends Game {
         //$this->tokens = new TokensInMem($this);
         $this->xtable = [];
         $this->machine = new OpMachine(new MachineInMem($this, $this->xtable));
-        $this->_setCurrentPlayerId(10);
-        $this->_setPlayerBasicInfoFromColors([PCOLOR, BCOLOR]);
+        //$this->_setCurrentPlayerId(10);
+        $this->setPlayersNumber(2);
 
         $tokens = new TokensInMem($this);
         $this->tokens = new PGameTokens($this, $tokens);
@@ -68,10 +68,6 @@ class GameUT extends Game {
 
     function getMultiMachine() {
         return $this->multimachine;
-    }
-
-    function _getCurrentPlayerId() {
-        return $this->getCurrentPlayerId();
     }
 
     function fakeUserAction(Operation $op, $target = null) {
@@ -1061,5 +1057,30 @@ final class GameTest extends TestCase {
         // Coin should have increased by 1
         $after = (int) $this->game->tokens->db->getTokenState($trackerId);
         $this->assertEquals($before + 1, $after, "Coin tracker should increase by 1 after action_whatever");
+    }
+
+    public function testCreateTokens_HomeSpaceCard() {
+        $game = $this->game;
+        $game->tokens->createTokens();
+
+        // card_space_1 should be created for each player color
+        foreach ($game->getPlayerColors() as $color) {
+            $tokenId = "card_space_1_$color";
+            $tokenInfo = $game->tokens->db->getTokenInfo($tokenId);
+            $this->assertNotNull($tokenInfo, "Token $tokenId should exist after createTokens");
+            $this->assertEquals("tableau_$color", $tokenInfo["location"], "Token $tokenId should be in tableau_$color");
+        }
+    }
+
+    public function testGetAllDatas_HomeSpaceCard() {
+        $game = $this->game;
+        $game->tokens->createTokens();
+
+        $allDatas = $game->getAllDatas();
+        $tokens = $allDatas["tokens"];
+
+        $color = PCOLOR;
+        $tokenId = "card_space_1_$color";
+        $this->assertArrayHasKey($tokenId, $tokens, "Token $tokenId should be in getAllDatas tokens");
     }
 }

@@ -149,6 +149,15 @@ class TokensInMem extends DbTokens {
         return $tokens;
     }
 
+    function countTokensInLocations() {
+        $result = [];
+        foreach ($this->keyindex as $rec) {
+            $loc = $rec["location"];
+            $result[$loc] = ($result[$loc] ?? 0) + 1;
+        }
+        return $result;
+    }
+
     function shuffle($location) {
         $tokens = $this->getTokensOfTypeInLocation(null, $location);
         $keys = array_keys($tokens);

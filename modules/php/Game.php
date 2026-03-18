@@ -290,7 +290,7 @@ class Game extends Base {
         _ when the game starts
         _ when a player refreshes the game page (F5)
     */
-    protected function getAllDatas(): array {
+    public function getAllDatas(): array {
         $result = [];
         $result = parent::getAllDatas();
 
@@ -345,7 +345,7 @@ class Game extends Base {
         }
 
         // 10 columns total (0-10), map to 0-95%
-        return min(95, (int) ($maxColumn * 95 / 10));
+        return min(95, (int) (($maxColumn * 95) / 10));
     }
 
     function isEndOfGame() {
@@ -503,12 +503,6 @@ class Game extends Base {
             if (isset($tags[$tagName])) {
                 $count += $tags[$tagName];
             }
-        }
-
-        // Capital star (pre-printed)
-        $tags = $this->getTagsSet("card_space_1");
-        if (isset($tags[$tagName])) {
-            $count += $tags[$tagName];
         }
 
         return $count;
@@ -752,12 +746,6 @@ class Game extends Base {
             // 2. Space and Inspriration Cards VP
             $cards = $this->tokens->getTokensOfTypeInLocation("card_space", "tableau_$color");
             $inspCards = $this->tokens->getTokensOfTypeInLocation("card_insp", "tableau_$color");
-            // preprined space card
-            $cards["card_space_1_$color"] = [
-                "key" => "card_space_1_$color",
-                "location" => "tableau_$color",
-                "state" => 1,
-            ];
 
             foreach ($cards as $cardKey => $cardInfo) {
                 $vp = $this->countVpForSpaceCard($cardKey, $color);
