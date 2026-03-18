@@ -60,7 +60,8 @@ abstract class Op_n_infBase extends CountableOperation {
                 $tokenId,
                 "tableau_$owner",
                 0,
-                clienttranslate('${player_name} spends ${token_name} from ${place_from}')
+                clienttranslate('${player_name} spends ${token_name} from ${place_name}'),
+                ["place_name" => $this->getGuild()]
             );
             $i++;
         }
