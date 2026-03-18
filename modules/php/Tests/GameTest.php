@@ -487,6 +487,107 @@ final class GameTest extends TestCase {
     }
 
     /**
+     * Bug 4: Test hasPigeonLeftover — pigeon tile on column 4, die 4 on ship-requiring card.
+     * Pigeon should be available as leftover since ship requirement doesn't consume it.
+     */
+    public function testHasPigeonLeftover_PigeonTileNotConsumedByShipRequirement() {
+        $this->game();
+
+        // Give player 3 food
+        $this->game->tokens->dbSetTokenState("tracker_food_" . PCOLOR, 3);
+
+        // Put some water cards in the deck so deck option is available
+        $this->game->tokens->db->moveToken("card_water_41_1", "deck_water", 1);
+        $this->game->tokens->db->moveToken("card_water_42_1", "deck_water", 2);
+        $this->game->tokens->db->moveToken("card_water_43_1", "deck_water", 3);
+
+        // Place green pigeon tile (upg_green_34, w=1, r=pigeon) at column 4 (state = 3 + 0*6 + 1 = 4)
+        $this->game->tokens->db->moveToken("upg_green_34_1", "tableau_" . PCOLOR, 4);
+
+        // Place die with value 4 on card_home_3 (requires d=ship, r=2n_food:cardWater)
+        $die = "dice_" . PCOLOR . "_1";
+        $this->game->tokens->db->moveToken($die, "card_home_3_" . PCOLOR, 4);
+
+        // Queue the full expression as Op_placeDie would: 2n_food:cardWater with die and reason
+        $op = $this->game->machine->instanciateOperation("2n_food:cardWater", PCOLOR, [
+            "die" => $die,
+            "reason" => "card_home_3_" . PCOLOR,
+        ]);
+        $op->saveToDb(1, true);
+
+        // Dispatch — should auto-resolve 2n_food (pays 2 food), then stop at cardWater for player input
+        $top = $this->dispatch();
+        $this->assertEquals("cardWater", $top->getType(), "Should be cardWater waiting for player input");
+
+        // Food should be 1 after paying 2n_food
+        $food = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+        $this->assertEquals(1, $food, "Should have 1 food after paying 2n_food");
+
+        // Player chooses the deck
+        $top->action_resolve(["target" => "deck_water"]);
+
+        // Check that n_food was NOT queued (pigeon should cover the draw cost)
+        $ops = $this->game->machine->db->getOperations();
+        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
+        $this->assertNotContains("n_food", $opTypes, "Pigeon leftover should skip food payment for draw");
+
+        // Dispatch through cardDraw confirm + card selection
+        $wop = $this->dispatch();
+        $wop->action_resolve(["target" => "card_water_42_1"]);
+        $this->dispatch();
+
+        // Food should still be 1 — pigeon saved the draw cost
+        $food = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+        $this->assertEquals(1, $food, "Food should be 1 — paid 2 for action, pigeon saved draw cost");
+    }
+
+    /**
+     * Test hasPigeonLeftover — pigeon tile on column 4, die 4 on card requiring pigeon.
+     * Pigeon should NOT be leftover since it's consumed by the requirement.
+     */
+    public function testHasPigeonLeftover_PigeonConsumedByRequirement() {
+        $this->game();
+
+        // Place green pigeon tile at column 4
+        $this->game->tokens->db->moveToken("upg_green_34_1", "tableau_" . PCOLOR, 4);
+
+        // Create a card that requires pigeon
+        $cardKey = "card_land_test_1";
+        $this->game->material->setRulesFor($cardKey, ["d" => "pigeon"]);
+
+        $die = "dice_" . PCOLOR . "_1";
+        $this->game->tokens->db->moveToken($die, $cardKey, 4);
+
+        /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
+        $op = $this->game->machine->instanciateOperation("cardLand", PCOLOR, [
+            "die" => $die,
+            "reason" => $cardKey,
+        ]);
+
+        $result = $op->hasPigeonLeftover();
+        $this->assertFalse($result, "Pigeon should NOT be leftover — consumed by pigeon requirement");
+    }
+
+    /**
+     * Test hasPigeonLeftover — no pigeon tile in caravan at all.
+     */
+    public function testHasPigeonLeftover_NoPigeonTile() {
+        $this->game();
+
+        $die = "dice_" . PCOLOR . "_1";
+        $this->game->tokens->db->moveToken($die, "card_home_3_" . PCOLOR, 4);
+
+        /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
+        $op = $this->game->machine->instanciateOperation("cardWater", PCOLOR, [
+            "die" => $die,
+            "reason" => "card_home_3_" . PCOLOR,
+        ]);
+
+        $result = $op->hasPigeonLeftover();
+        $this->assertFalse($result, "No pigeon tile — pigeon should not be available");
+    }
+
+    /**
      * Test isInspirationGoalAchieved returns false when collect field is empty
      */
     public function testIsInspirationGoalAchieved_EmptyCollect() {
@@ -716,7 +817,11 @@ final class GameTest extends TestCase {
         // card_folk_116: tags="Harbour" — but this is a tuck requirement, not an actual tag
         $folkWithHarbourReq = "card_folk_116_1";
         $triggers = $this->game->getVistaTriggeredRules($folkWithHarbourReq, PCOLOR);
-        $this->assertArrayNotHasKey($harbourVistaCard, $triggers, "Harbour Vista should NOT trigger on folk card with Harbour tuck requirement");
+        $this->assertArrayNotHasKey(
+            $harbourVistaCard,
+            $triggers,
+            "Harbour Vista should NOT trigger on folk card with Harbour tuck requirement"
+        );
         // But the card_folk implicit tag should still trigger card_land_31 (trig=card_folk)
         $this->assertArrayHasKey($folkVistaCard, $triggers, "CardFolk Vista should still trigger on folk card");
 
