@@ -47,7 +47,7 @@ class TokensInMem extends DbTokens {
         self::checkState($state);
         self::checkKey($token_key);
         if (!array_key_exists($token_key, $this->keyindex)) {
-            echo "$token_key does not exists";
+            throw new Exception("$token_key does not exist");
         }
         $this->keyindex[$token_key]["state"] = $state;
         return $state;

@@ -32,6 +32,11 @@ class Op_cardWater extends Op_cardBase {
     }
 
     function getPossibleMoves() {
+        $cardSelected = $this->getCard();
+        if ($cardSelected) {
+            return [$cardSelected];
+        }
+
         // Get display cards from parent
         $res = parent::getPossibleMoves();
 

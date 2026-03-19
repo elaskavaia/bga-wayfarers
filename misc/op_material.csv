@@ -65,7 +65,7 @@ food|Gain Provision
 coin|Gain Silver
 
 
-#set class=Op_pay
+#set class=
 n_food|Pay Provision
 n_coin|Pay Silver
 

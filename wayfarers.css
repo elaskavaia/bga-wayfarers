@@ -2878,7 +2878,7 @@ html[data-theme=dark] .miniboard .guild_count {
 }
 
 button.bgabutton > * {
-  pointer-events: unset;
+  pointer-events: none;
 }
 
 .gg_selected,

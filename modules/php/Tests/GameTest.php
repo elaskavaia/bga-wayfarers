@@ -3,79 +3,13 @@
 declare(strict_types=1);
 namespace Bga\Games\wayfarers\Tests;
 
-use Bga\GameFramework\NotificationMessage;
-use Bga\GameFramework\Notify;
-use Bga\GameFramework\UserException;
-use Bga\Games\wayfarers\Common\PGameTokens;
-use Bga\Games\wayfarers\Game;
-use Bga\Games\wayfarers\OpCommon\Operation;
-use Bga\Games\wayfarers\OpCommon\OpMachine;
-use Bga\Games\wayfarers\StateConstants;
 use Bga\Games\wayfarers\States\GameDispatch;
 use PHPUnit\Framework\TestCase;
 
 use function Bga\Games\wayfarers\array_get;
 use function Bga\Games\wayfarers\getPart;
 use function Bga\Games\wayfarers\startsWith;
-use function Bga\Games\wayfarers\toJson;
 
-//       "player_colors" => ["ff0000", "ffcc02", "6cd0f6", "982fff"],
-define("PCOLOR", "6cd0f6");
-define("BCOLOR", "982fff");
-define("CCOLOR", "ff0000");
-define("ACOLOR", "ffffff"); // automa
-define("PCOLOR_ID", 10);
-
-class GameUT extends Game {
-    var $multimachine;
-    var $xtable;
-    var $gameap_number = 0;
-    var $var_colonies = 0;
-
-    function __construct() {
-        parent::__construct();
-        //$this->gamestate = new GameStateInMem();
-
-        //$this->tokens = new TokensInMem($this);
-        $this->xtable = [];
-        $this->machine = new OpMachine(new MachineInMem($this, $this->xtable));
-        //$this->_setCurrentPlayerId(10);
-        $this->setPlayersNumber(2);
-
-        $tokens = new TokensInMem($this);
-        $this->tokens = new PGameTokens($this, $tokens);
-    }
-
-    function setPlayersNumber(int $num) {
-        $allColors = [PCOLOR, BCOLOR, CCOLOR, "ef58a2"];
-        $colors = array_slice($allColors, 0, $num);
-        $this->_setPlayerBasicInfoFromColors($colors);
-    }
-
-    function getUserPreference(int $player_id, int $code): int {
-        return 0;
-    }
-
-    function init(int $x = 0) {
-        //$this->adjustedMaterial(true);
-        //$this->createTokens();
-        $this->gamestate->changeActivePlayer(10);
-        $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
-        return $this;
-    }
-
-    function clean_cache() {}
-
-    function getMultiMachine() {
-        return $this->multimachine;
-    }
-
-    function fakeUserAction(Operation $op, $target = null) {
-        return $op->action_resolve([Operation::ARG_TARGET => $target]);
-    }
-
-    // override/stub methods here that access db and stuff
-}
 
 final class GameTest extends TestCase {
     private GameUT $game;
@@ -122,7 +56,7 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "Op_")) {
                 continue;
             }
-            echo "testing op $key\n";
+            //echo "testing op $key\n";
             $this->subTestOp($key, $info);
             $tested[$key] = 1;
         }
@@ -144,30 +78,34 @@ final class GameTest extends TestCase {
             if (array_key_exists($key, $tested)) {
                 continue;
             }
-            echo "testing op $key\n";
+            //echo "testing op $key\n";
             $this->subTestOp($key, ["type" => $mne]);
         }
     }
 
     function subTestOp($key, $info = []) {
-        $type = array_get($info, "type", substr($key, 3));
-        $this->assertTrue(!!$type);
+        try {
+            $type = array_get($info, "type", substr($key, 3));
+            $this->assertTrue(!!$type, "empty type for $key");
 
-        /** @var Operation */
-        $op = $this->game->machine->instanciateOperation($type, PCOLOR);
+            /** @var Operation */
+            $op = $this->game->machine->instanciateOperation($type, PCOLOR);
 
-        $args = $op->getArgs();
-        $ttype = array_get($args, "ttype");
-        $this->assertTrue($ttype != "", "empty ttype for $key");
+            $args = $op->getArgs();
+            $ttype = array_get($args, "ttype");
+            $this->assertTrue($ttype != "", "empty ttype for $key");
 
-        $propt = array_get($args, "prompt");
-        if (isset($info["prompt"])) {
-            $this->assertEquals($info["prompt"], $propt, $type);
+            $propt = array_get($args, "prompt");
+            if (isset($info["prompt"])) {
+                $this->assertEquals($info["prompt"], $propt, "wrong prompt for $key");
+            }
+
+            $this->assertFalse(str_contains($op->getOpName(), "?"), "bad op name for $key: " . $op->getOpName());
+            $this->assertFalse($op->getOpName() == $op->getType(), "No name set for operation $key");
+            return $op;
+        } catch (\Exception $e) {
+            $this->fail("$key: " . $e->getMessage());
         }
-
-        $this->assertFalse(str_contains($op->getOpName(), "?"), $op->getOpName());
-        $this->assertFalse($op->getOpName() == $op->getType(), "No name set for operation $key");
-        return $op;
     }
 
     public function testAllDiceSpots() {
@@ -179,16 +117,18 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "card_")) {
                 continue;
             }
-            echo "testing dspot $key\n";
             $r = $info["d"] ?? "";
             if (!$r) {
                 continue;
             }
 
-            //$this->game->machine->instanciateOperation($r, PCOLOR);
-            $r = $info["dr"] ?? "";
-            $this->assertTrue($r != "", "empty dr for $key");
-            $this->game->machine->instanciateOperation($r, PCOLOR);
+            try {
+                $r = $info["dr"] ?? "";
+                $this->assertTrue($r != "", "empty dr for $key");
+                $this->game->machine->instanciateOperation($r, PCOLOR);
+            } catch (\Exception $e) {
+                $this->fail("$key dr=$r: " . $e->getMessage());
+            }
         }
     }
 
@@ -201,13 +141,16 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "card_")) {
                 continue;
             }
-            echo "testing insta $key\n";
             $r = $info["r"] ?? "";
             if (!$r) {
                 continue;
             }
 
-            $this->game->machine->instanciateOperation($r, PCOLOR);
+            try {
+                $this->game->machine->instanciateOperation($r, PCOLOR);
+            } catch (\Exception $e) {
+                $this->fail("$key r=$r: " . $e->getMessage());
+            }
         }
     }
 
@@ -220,11 +163,13 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "card_insp_")) {
                 continue;
             }
-            echo "testing insp card $key\n";
             $r = $info["collect"] ?? "";
             $this->assertTrue($r != "", "empty collect for $key");
-            echo "testing insp card expr $r\n";
-            $this->game->evaluateExpression($r, PCOLOR);
+            try {
+                $this->game->evaluateExpression($r, PCOLOR);
+            } catch (\Exception $e) {
+                $this->fail("$key collect=$r: " . $e->getMessage());
+            }
         }
     }
 
@@ -237,16 +182,19 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "card_space_")) {
                 continue;
             }
-            echo "testing card $key\n";
-            $r = $info["vpexp"] ?? "";
-            $this->assertTrue($r != "", "empty vpexp for $key");
-            $this->game->evaluateExpression((string) $r, PCOLOR);
-            $r = $info["r"] ?? "";
-            if ($r) {
-                $this->game->machine->instanciateOperation($r, PCOLOR);
+            try {
+                $r = $info["vpexp"] ?? "";
+                $this->assertTrue($r != "", "empty vpexp for $key");
+                $this->game->evaluateExpression((string) $r, PCOLOR);
+                $r = $info["r"] ?? "";
+                if ($r) {
+                    $this->game->machine->instanciateOperation($r, PCOLOR);
+                }
+                $r = $info["tags"] ?? "";
+                $this->assertTrue($r != "", "empty tags for $key");
+            } catch (\Exception $e) {
+                $this->fail("$key: " . $e->getMessage());
             }
-            $r = $info["tags"] ?? "";
-            $this->assertTrue($r != "", "empty tags for $key");
         }
     }
 
@@ -259,25 +207,31 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "card_folk_")) {
                 continue;
             }
-            echo "testing $key\n";
-            $r = $info["cost"] ?? "";
-            $this->assertTrue($r != "", "empty cost for $key");
+            try {
+                $r = $info["cost"] ?? "";
+                $this->assertTrue($r != "", "empty cost for $key");
 
-            $r = $info["dr"] ?? ($info["da"] ?? "");
-            $this->assertTrue($r != "", "empty dr for $key");
-            $this->game->machine->instanciateOperation($r, PCOLOR);
+                $r = $info["dr"] ?? ($info["da"] ?? "");
+                $this->assertTrue($r != "", "empty dr for $key");
+                $this->game->machine->instanciateOperation($r, PCOLOR);
+            } catch (\Exception $e) {
+                $this->fail("$key: " . $e->getMessage());
+            }
         }
     }
 
     function checkRules($ruleField, $key, $info, $canEmpty = false) {
         $r = $info[$ruleField] ?? "";
         if (!$canEmpty) {
-            $this->assertTrue($r != "", "empty rules for $key " . toJson($info));
+            $this->assertTrue($r != "", "empty $ruleField for $key");
         } else {
             return;
         }
-        $op = $this->game->machine->instanciateOperation($r, PCOLOR);
-        $this->assertTrue($op != null, "operation failed $r");
+        try {
+            $this->game->machine->instanciateOperation($r, PCOLOR);
+        } catch (\Exception $e) {
+            $this->fail("$key $ruleField=$r: " . $e->getMessage());
+        }
         return $r;
     }
 
@@ -293,7 +247,7 @@ final class GameTest extends TestCase {
             if (!startsWith($key, "aiboard_")) {
                 continue;
             }
-            echo "testing $key\n";
+            //echo "testing $key\n";
             $bnum = getPart($key, 1);
             $this->checkRules("t", $key, $info);
             $this->checkRules("r1", $key, $info);
@@ -691,9 +645,9 @@ final class GameTest extends TestCase {
         $cardKey = "card_insp_test_7";
         $this->game->material->setRulesFor($cardKey, ["collect" => "tracker_coin", "goal" => 5]);
 
-        // Set player's coin tracker to 6
+        // Create and set player's coin tracker to 6
         $trackerId = $this->game->tokens->getTrackerId(PCOLOR, "coin");
-        $this->game->tokens->db->setTokenState($trackerId, 6);
+        $this->game->tokens->db->moveToken($trackerId, "miniboard_" . PCOLOR, 6);
 
         $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
         $this->assertTrue($result, "Should return true when coin tracker (6) exceeds goal (5)");
@@ -987,7 +941,8 @@ final class GameTest extends TestCase {
      */
     public function testCountPlayerTags_AutomaCometUsesTracker(): void {
         $this->game->setPlayersNumber(1);
-        // Tracker starts at 0 → Comet count = 0
+        // Create tracker, starts at 0 → Comet count = 0
+        $this->game->tokens->db->moveToken("tracker_comet_" . ACOLOR, "tableau_" . ACOLOR, 0);
         $count = $this->game->countPlayerTags("Comet", ACOLOR);
         $this->assertEquals(0, $count, "Automa Comet should be 0 when tracker is at 0");
 
@@ -1043,6 +998,7 @@ final class GameTest extends TestCase {
      */
     public function testActionWhatever_ResolvesWithTarget(): void {
         $this->game();
+        $this->game->tokens->createTokens();
 
         // Instantiate a coin gain operation directly (bypass dispatch which auto-resolves single-choice ops)
         $op = $this->game->machine->instanciateOperation("coin", PCOLOR);

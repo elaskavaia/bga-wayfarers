@@ -70,6 +70,10 @@ class Op_infCard extends Op_infBase {
         return parent::getPossibleMoves();
     }
 
+    public function getIconicName() {
+        return "[wicon_infCard]";
+    }
+
     function canSkip() {
         if ($this->noValidTargets()) {
             return true;

@@ -15,6 +15,7 @@ final class Op_journalTest extends TestCase {
     protected function setUp(): void {
         $this->game = new GameUT();
         $this->game->init();
+        $this->game->tokens->createTokens();
     }
 
     private function createOp(): Op_journal {

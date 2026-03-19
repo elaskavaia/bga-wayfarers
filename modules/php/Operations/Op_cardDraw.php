@@ -23,10 +23,6 @@ use Bga\Games\wayfarers\OpCommon\CountableOperation;
  * The count prefix (e.g. 3cardDraw) determines how many cards to draw
  */
 class Op_cardDraw extends CountableOperation {
-    public function getArgType() {
-        return CountableOperation::TTYPE_TOKEN;
-    }
-
     function getDeckType(): string {
         return $this->getParam(0, "land");
     }
@@ -65,11 +61,7 @@ class Op_cardDraw extends CountableOperation {
         // Second phase: pick one card from hand
         $cards = $this->game->tokens->getTokensOfTypeInLocation("card_$deckType", $handLocation);
 
-        $res = [];
-        foreach ($cards as $card => $info) {
-            $res[$card] = ["q" => 0];
-        }
-        return $res;
+        return array_keys($cards);
     }
 
     function resolve(): void {

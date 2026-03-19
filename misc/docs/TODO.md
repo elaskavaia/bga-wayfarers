@@ -16,7 +16,8 @@
       [ ] So we give them a choce of townfolk, but since gain coin or food does no affect anything we can auto-resolve them first and move on to choices that matter
 
 - [ ] When journaling is possible to gain black inf while resolving tile effect - need to shedule blackInf indepennt of current count
-- [ ] Can recruit book/obs folk without spot for it (home_1 is already occupied)
+- [ ] Can recruit book/obs folk without spot/tag for it (home_1 is already occupied by pre-print)
+- [ ] Insp card reverse action slots
 
 ## SOLO AI
 

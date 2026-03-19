@@ -72,12 +72,7 @@ class Op_pay extends CountableOperation {
         return "\${count} x [wicon_$type]";
     }
 
-    public function getExtraArgs() {
-        $type = $this->getResType();
-        return parent::getExtraArgs() + ["token_div" => "[wicon_$type]"];
-    }
-
     public function getPrompt() {
-        return clienttranslate('Pay ${count} ${token_div}');
+        return clienttranslate('Pay ${count}');
     }
 }

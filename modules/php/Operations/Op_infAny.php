@@ -49,6 +49,10 @@ class Op_infAny extends Op_infBase {
         return $movable;
     }
 
+    public function getUiArgs() {
+        return ["buttons" => true];
+    }
+
     function canSkip() {
         $influence = $this->getInfluenceInPlayerSupply();
         if (count($influence) > 0) {

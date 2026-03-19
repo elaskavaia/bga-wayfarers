@@ -193,6 +193,8 @@ class Op_placeDie extends Op_acquireBase {
         // XXX player can chose order
         $r = $this->game->getRulesFor($cardId, "dr");
         $r = $this->applyFoodDiscount($r);
+        $op = $this->instanciateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]);
+        $op->checkVoid();
         $this->queue($r, $owner, ["die" => $selectedDie, "reason" => $cardId]);
     }
 

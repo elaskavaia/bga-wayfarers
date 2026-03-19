@@ -21,7 +21,7 @@ folk|3|upgGreen(free)|Base Upgrade
 folk|4|journal,food|Journal
 
 # Inspiration card worker actions (positions 1-4)
-insp|4|2food|Forage
-insp|3|food,infAny|Network
-insp|2|coin,reroll|Barter
-insp|1|2coin|Earn
+insp|1|2food|Forage
+insp|2|food,infAny|Network
+insp|3|coin,reroll|Barter
+insp|4|2coin|Earn

@@ -406,12 +406,10 @@ class Material {
         "name" => clienttranslate("Gain Silver"),
 ],
     "Op_n_food" => [ 
-        "class" => "Op_pay",
         "type" => "n_food",
         "name" => clienttranslate("Pay Provision"),
 ],
     "Op_n_coin" => [ 
-        "class" => "Op_pay",
         "type" => "n_coin",
         "name" => clienttranslate("Pay Silver"),
 ],
@@ -1777,11 +1775,11 @@ class Material {
         "create" => 1,
         "num" => 35,
         "r" => "reroll",
-        "dr" => "journal",
+        "dr" => "pickWorker",
         "tags" => "Vista",
         "trig" => "Observatory/Book",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain Journal"),
+        "todr" => clienttranslate("Gain Worker"),
 ],
     "card_land_36" => [ 
         "create" => 1,
@@ -2553,31 +2551,31 @@ class Material {
         "name" => clienttranslate("Journal"),
 ],
 // # Inspiration card worker actions (positions 1-4)
-    "action_insp_4" => [ 
+    "action_insp_1" => [ 
         "type" => "action",
         "ctype" => "insp",
-        "num" => 4,
+        "num" => 1,
         "r" => "2food",
         "name" => clienttranslate("Forage"),
-],
-    "action_insp_3" => [ 
-        "type" => "action",
-        "ctype" => "insp",
-        "num" => 3,
-        "r" => "food,infAny",
-        "name" => clienttranslate("Network"),
 ],
     "action_insp_2" => [ 
         "type" => "action",
         "ctype" => "insp",
         "num" => 2,
+        "r" => "food,infAny",
+        "name" => clienttranslate("Network"),
+],
+    "action_insp_3" => [ 
+        "type" => "action",
+        "ctype" => "insp",
+        "num" => 3,
         "r" => "coin,reroll",
         "name" => clienttranslate("Barter"),
 ],
-    "action_insp_1" => [ 
+    "action_insp_4" => [ 
         "type" => "action",
         "ctype" => "insp",
-        "num" => 1,
+        "num" => 4,
         "r" => "2coin",
         "name" => clienttranslate("Earn"),
 ],

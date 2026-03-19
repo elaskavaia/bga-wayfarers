@@ -29,7 +29,7 @@ class Op_cardFolk extends Op_cardBase {
         foreach ($allCards as $tcard => $info) {
             if (str_starts_with($tcard, "card_folk")) {
                 $occupiedStates[(int) $info["state"]] = true;
-            } else {
+            } elseif (!str_starts_with($tcard, "card_home_1_")) { // pre-printed folk occupies this
                 $cards[$tcard] = $info;
             }
         }

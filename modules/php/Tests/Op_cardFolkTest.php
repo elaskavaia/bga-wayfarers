@@ -14,6 +14,7 @@ final class Op_cardFolkTest extends TestCase {
     protected function setUp(): void {
         $this->game = new GameUT();
         $this->game->init();
+        $this->game->tokens->createTokens();
     }
 
     private function createOp(?string $card = null): Op_cardFolk {
@@ -228,6 +229,30 @@ final class Op_cardFolkTest extends TestCase {
         $this->assertArrayHasKey("card_folk_133", $moves);
         // Should have prereq error since all matching tableau cards are occupied
         $this->assertEquals(Material::ERR_COST, $moves["card_folk_133"]["q"]);
+    }
+
+    public function testCardHome1NotValidTuckTarget(): void {
+        // card_home_1 has tags "Book Observatory" but is occupied by pre-printed folk
+        // It should NOT be a valid tuck target
+        $this->setupFolkCardInMainArea("card_folk_141", "Book Observatory", 1);
+        $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
+
+        $op = $this->createOp();
+        $moves = $op->getPossibleMoves();
+
+        // Should have prereq error since card_home_1 is not a valid target
+        $this->assertArrayHasKey("card_folk_141", $moves);
+        $this->assertEquals(Material::ERR_PREREQ, $moves["card_folk_141"]["q"]);
+    }
+
+    public function testCardHome1NotValidTuckTargetWithCardSelected(): void {
+        // When card is selected, card_home_1 should not appear as a tuck option
+        $this->setupFolkCardInMainArea("card_folk_141", "Book Observatory", 1);
+
+        $op = $this->createOp("card_folk_141");
+        $moves = $op->getPossibleMoves();
+
+        $this->assertArrayNotHasKey("card_home_1_" . PCOLOR, $moves);
     }
 
     private function createFreeOp(?string $card = null): Op_cardFolk {

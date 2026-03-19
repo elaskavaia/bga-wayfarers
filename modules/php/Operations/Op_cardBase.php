@@ -19,10 +19,6 @@ use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 abstract class Op_cardBase extends Op_acquireBase {
-    public function getArgType() {
-        return Operation::TTYPE_TOKEN;
-    }
-
     public function auto(): bool {
         if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
             $this->queue("ai_" . $this->getType(), $this->game->getAutomaColor());
@@ -124,7 +120,6 @@ abstract class Op_cardBase extends Op_acquireBase {
         // Handle influence interaction if there's influence on the card
         $this->queue("cardInteract", $owner, ["card" => $card]);
 
-        $this->placeCard($card);
         // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
@@ -132,6 +127,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         }
         // Check if any Vista cards are triggered by this card
         $this->queueVistaTriggers($card);
+        $this->placeCard($card);
         return;
     }
 

@@ -13,10 +13,12 @@ final class Op_ai_infCardTest extends TestCase {
 
     protected function setUp(): void {
         $this->game = new GameUT();
-        $this->game->init();
+        $this->game->init(1);
+        $this->game->tokens->createTokens();
+        $this->game->setupSolo();
         // Setup AI color in game
         $this->game->_setCurrentPlayerId(PCOLOR_ID);
-        $this->game->setPlayersNumber(1);
+
         $this->inf = 0;
     }
 

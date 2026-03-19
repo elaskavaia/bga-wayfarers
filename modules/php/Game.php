@@ -361,7 +361,7 @@ class Game extends Base {
     //////////// Utility functions
     ////////////
 
-    function effect_incCount(string $color, string $type, int $inc = 1, string $reason, array $options = []) {
+    function effect_incCount(string $color, string $type, int $inc = 1, string $reason = "", array $options = []) {
         $message = array_get($options, "message", "*");
         unset($options["message"]);
 

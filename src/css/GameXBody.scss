@@ -109,7 +109,7 @@
 }
 
 button.bgabutton > * {
-  pointer-events: unset; // unset point event to inner elements
+  pointer-events: none; // prevent child tooltips; clicks pass through to button
 }
 
 .gg_selected,
