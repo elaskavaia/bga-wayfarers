@@ -17,7 +17,7 @@ worker_green|Green Worker|4|worker wooden|2|limbo|
 #player counters
 
 tracker_coin|Silver|1|tracker coin|4|miniboard_{COLOR}
-tracker_food|Provision|1|tracker food|4|miniboard_{COLOR}
+tracker_food|Provisions|1|tracker food|4|miniboard_{COLOR}
 marker|Player marker|1|marker wooden|4|tableau_{COLOR}
 influence|Influence|15|influence wooden|3|tableau_{COLOR}
 dice|Player die|5|dice wooden|3|tableau_{COLOR}
@@ -119,7 +119,7 @@ tag_upg_any|Any Upgrade||wicon_upg_any
 #reasons and assets
 caravanBonus|Caravan Placement Bonus
 coinDis|Silver Discount
-foodDis|Provision Discount
+foodDis|Provisions Discount
 vp|VP
 space|Space
 land|Land

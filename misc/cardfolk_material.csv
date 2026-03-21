@@ -3,25 +3,25 @@ num|cost|dr|tags|nom|da|tooltip
 #set create=1
 #set id=card_folk_{num}
 #set ext=1
-# 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
-# 115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
+# 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay Silver or Provisions: Retrieve a Worker and Refresh a Die
+# 115|2|food:2coin|Observatory|Wanderer||Pay Provisions: Gain 2 Silver
 #set ext=
 116|1||Harbour|Adventurer|ship|Ship
 117|0||Observatory|Astronomer|telescope|Telescope
-118|2|pickWorker/infCard|Vista|Champion||Pick a Worker or Place Influence on a Card
+118|2|pickWorker/infCard|Vista|Champion||Retrieve a Worker or Place Influence on a Card
 121|2||City|Envoy|camel,pigeon|Camel and Pigeon
 122|2||Harbour|Envoy|ship,pigeon|Ship and Pigeon
 123|2|coin|City|Farmer||Gain Silver
-124|2|food|City|Farmer||Gain Provision
+124|2|food|City|Farmer||Gain Provisions
 125|2|coin|Harbour|Fisherman||Gain Silver
-126|2|food|Harbour|Fisherman||Gain Provision
+126|2|food|Harbour|Fisherman||Gain Provisions
 130|0|2diceMod|Vista|Hunter||Modify Dice twice
 131|2|ship,ship|Harbour|Invader||Gain 2 Ships
-132|2|pickWorker/infCard|City Harbour|Mercenary||Pick a Worker or Place Influence on a Card
+132|2|pickWorker/infCard|City Harbour|Mercenary||Retrieve a Worker or Place Influence on a Card
 133|2|coin|Vista|Merchant||Gain Silver
 134|2|coin|Vista|Merchant||Gain Silver
-135|2|food|Vista|Merchant||Gain Provision
-136|2|food|Vista|Merchant||Gain Provision
+135|2|food|Vista|Merchant||Gain Provisions
+136|2|food|Vista|Merchant||Gain Provisions
 137|1||City Harbour|Messenger|pigeon|Pigeon
 138|1|infCard/infMove/diceMod|City Harbour|Rogue||Place Influence on a Card or Move Influence or Modify Dice
 139|1|infBlue/infMove|City Harbour|Scholar||Place an Influence in Blue Guild or Move Influence
@@ -38,15 +38,15 @@ num|cost|dr|tags|nom|da|tooltip
 
 #set rest=1
 
-119|1|food,infMove|Sea|Enforcer||Move Influence and Gain Provision
-120|1|food,infMove|Sea|Enforcer||Move Influence and Gain Provision
-127|3|food,coin|Sea|Guardian||Gain Provision and Gain Silver
+119|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
+120|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
+127|3|food,coin|Sea|Guardian||Gain Provisions and Gain Silver
 128|3|2coin|Sea|Guardian||Gain 2 Silver
-129|3|2food|Sea|Guardian||Gain 2 Provision
+129|3|2food|Sea|Guardian||Gain 2 Provisions
 146|1|infBlue/infMove|Sea|Translator||Place an Influence in Blue Guild or Move Influence
 147|1|infYellow/infMove|Sea|Translator||Place an Influence in Yellow Guild or Move Influence
 148|2|infBlack/infMove|Sea|Translator||Place an Influence in Black Guild or Move Influence
-151|0|pickWorker/infCard|Sea|Warrior||Pick a Worker or Move Influence
+151|0|pickWorker/infCard|Sea|Warrior||Retrieve a Worker or Place Influence on a Card
 
 
 # Home Townfolk card

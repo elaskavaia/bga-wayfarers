@@ -847,6 +847,14 @@ class GameXBody extends GameMachine {
         return;
       }
 
+      case "jtile": {
+        const num = getPart(tokenId, 1) ?? "";
+        if (!num) return;
+        tokenInfo.name = this.getTokenName("jtile");
+        tokenInfo.tooltip = this.ttSection(_("Bonus"), this.getTr(tokenInfo.tooltip));
+        return;
+      }
+
       case "dice": {
         const num = getPart(tokenId, 2) ?? "";
         if (!num) return;

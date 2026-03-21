@@ -1,4 +1,4 @@
-num|conn|r|gw
+num|conn|r|gw|tooltip
 #Journal nodes/positions
 #set id=jpos_{num}
 #set location=mainboard_1
@@ -37,16 +37,16 @@ num|conn|r|gw
 #Journal tiles
 #set id=jtile_{num}
 #set location=
-1||upgGreen(free)
-2||infYellow,infYellow
-3||infBlue,infBlue
-4||cardFolk(free)
-5||food,coin
-6||coin,coin
-7||pickWorker
-8||food,food
-9||infCard,infCard
-10||infYellow,infBlue
+1||upgGreen(free)||Gain a free Basic Upgrade Tile
+2||infYellow,infYellow||Place 2 Yellow Influence
+3||infBlue,infBlue||Place 2 Blue Influence
+4||cardFolk(free)||Gain a free Townsfolk Card
+5||food,coin||Gain Provisions and Silver
+6||coin,coin||Gain 2 Silver
+7||pickWorker||Retrieve a Worker
+8||food,food||Gain 2 Provisions
+9||infCard,infCard||Place 2 Influence on Cards
+10||infYellow,infBlue||Place 1 Yellow and 1 Blue Influence
 
 #Connection requirements side A
 #set id=jconn_{num}_{conn}_0

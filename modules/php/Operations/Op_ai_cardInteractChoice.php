@@ -20,8 +20,8 @@ use Bga\Games\wayfarers\OpCommon\Operation;
 /**
  * When the AI wants to interact with a card that has the human player's influence,
  * the player chooses:
- *   - Allow: gain 1 Silver or 1 Provision from the main supply
- *   - Deny: pay 1 Silver or 1 Provision to make the AI skip to the next card
+ *   - Allow: gain Silver or Provisions from the main supply
+ *   - Deny: pay Silver or Provisions to make the AI skip to the next card
  *
  * Data fields:
  *   - "card"        — the card the AI wants to interact with

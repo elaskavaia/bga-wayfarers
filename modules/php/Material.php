@@ -190,11 +190,11 @@ class Material {
 ],
             /* --- gen php end loc_material --- */
             /* --- gen php begin op_material --- */
+// #common ops
     "Op_nop" => [ 
         "type" => "nop",
         "name" => clienttranslate("None"),
 ],
-// #fake name
     "Op_barrier" => [ 
         "type" => "barrier",
         "name" => clienttranslate("None"),
@@ -230,6 +230,17 @@ class Material {
     "Op_paygain" => [ 
         "type" => "paygain",
         "name" => clienttranslate("Trade"),
+],
+// #game specific  ops
+    "Op_food" => [ 
+        "class" => "Op_gain",
+        "type" => "food",
+        "name" => clienttranslate("Gain Provisions"),
+],
+    "Op_coin" => [ 
+        "class" => "Op_gain",
+        "type" => "coin",
+        "name" => clienttranslate("Gain Silver"),
 ],
     "Op_turn" => [ 
         "type" => "turn",
@@ -289,35 +300,27 @@ class Material {
 ],
     "Op_cardInteract" => [ 
         "type" => "cardInteract",
-        "name" => clienttranslate("Card Interaction"),
-],
-    "Op_ai_cardInteract" => [ 
-        "type" => "ai_cardInteract",
-        "name" => clienttranslate("AI Card Interaction"),
-],
-    "Op_ai_cardInteractChoice" => [ 
-        "type" => "ai_cardInteractChoice",
-        "name" => clienttranslate("AI Card Interaction Choice"),
+        "name" => clienttranslate("Interact with Card"),
 ],
     "Op_upgBlack" => [ 
         "type" => "upgBlack",
-        "name" => clienttranslate("Acquire Space Upgrade"),
+        "name" => clienttranslate("Gain Space Upgrade Tile"),
 ],
     "Op_upgBlue" => [ 
         "type" => "upgBlue",
-        "name" => clienttranslate("Acquire Water Upgrade"),
+        "name" => clienttranslate("Gain Water Upgrade Tile"),
 ],
     "Op_upgGreen" => [ 
         "type" => "upgGreen",
-        "name" => clienttranslate("Acquire Basic Upgrade"),
+        "name" => clienttranslate("Gain Basic Upgrade Tile"),
 ],
     "Op_upgPink" => [ 
         "type" => "upgPink",
-        "name" => clienttranslate("Gain Special Upgrade"),
+        "name" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "Op_upgYellow" => [ 
         "type" => "upgYellow",
-        "name" => clienttranslate("Acquire Land Upgrade"),
+        "name" => clienttranslate("Gain Land Upgrade Tile"),
 ],
     "Op_journal" => [ 
         "type" => "journal",
@@ -325,47 +328,31 @@ class Material {
 ],
     "Op_pickWorker" => [ 
         "type" => "pickWorker",
-        "name" => clienttranslate("Pick a Worker"),
+        "name" => clienttranslate("Retrieve a Worker"),
 ],
     "Op_reroll" => [ 
         "type" => "reroll",
         "name" => clienttranslate("Refresh a Die"),
 ],
-    "Op_ship" => [ 
-        "type" => "ship",
-        "name" => clienttranslate("Ship"),
-],
-    "Op_camel" => [ 
-        "type" => "camel",
-        "name" => clienttranslate("Camel"),
-],
-    "Op_telescope" => [ 
-        "type" => "telescope",
-        "name" => clienttranslate("Telescope"),
-],
-    "Op_pigeon" => [ 
-        "type" => "pigeon",
-        "name" => clienttranslate("Pigeon"),
-],
     "Op_infAny" => [ 
         "type" => "infAny",
-        "name" => clienttranslate("Influence on any Guild"),
+        "name" => clienttranslate("Place Influence on any Guild"),
 ],
     "Op_infBlue" => [ 
         "type" => "infBlue",
-        "name" => clienttranslate("Influence on Blue"),
+        "name" => clienttranslate("Place Influence on Blue"),
 ],
     "Op_infYellow" => [ 
         "type" => "infYellow",
-        "name" => clienttranslate("Influence on Yellow"),
+        "name" => clienttranslate("Place Influence on Yellow"),
 ],
     "Op_infBlack" => [ 
         "type" => "infBlack",
-        "name" => clienttranslate("Influence on Black"),
+        "name" => clienttranslate("Place Influence on Black"),
 ],
     "Op_infCard" => [ 
         "type" => "infCard",
-        "name" => clienttranslate("Influence on Card"),
+        "name" => clienttranslate("Place Influence on Card"),
 ],
     "Op_infMove" => [ 
         "type" => "infMove",
@@ -389,25 +376,15 @@ class Material {
 ],
     "Op_jtile" => [ 
         "type" => "jtile",
-        "name" => clienttranslate("Journal Tile Bonus"),
+        "name" => clienttranslate("Gain Journal Tile Bonus"),
 ],
     "Op_pickGreen" => [ 
         "type" => "pickGreen",
-        "name" => clienttranslate("Pick Green Worker"),
-],
-    "Op_food" => [ 
-        "class" => "Op_gain",
-        "type" => "food",
-        "name" => clienttranslate("Gain Provision"),
-],
-    "Op_coin" => [ 
-        "class" => "Op_gain",
-        "type" => "coin",
-        "name" => clienttranslate("Gain Silver"),
+        "name" => clienttranslate("Retrieve Green Worker"),
 ],
     "Op_n_food" => [ 
         "type" => "n_food",
-        "name" => clienttranslate("Pay Provision"),
+        "name" => clienttranslate("Pay Provisions"),
 ],
     "Op_n_coin" => [ 
         "type" => "n_coin",
@@ -428,6 +405,23 @@ class Material {
     "Op_finalScoring" => [ 
         "type" => "finalScoring",
         "name" => clienttranslate("Final Scoring"),
+],
+// #Assets
+    "Op_ship" => [ 
+        "type" => "ship",
+        "name" => clienttranslate("Ship"),
+],
+    "Op_camel" => [ 
+        "type" => "camel",
+        "name" => clienttranslate("Camel"),
+],
+    "Op_telescope" => [ 
+        "type" => "telescope",
+        "name" => clienttranslate("Telescope"),
+],
+    "Op_pigeon" => [ 
+        "type" => "pigeon",
+        "name" => clienttranslate("Pigeon"),
 ],
 // #ai ops
     "Op_ai_turn" => [ 
@@ -465,11 +459,11 @@ class Material {
 ],
     "Op_ai_upgAny" => [ 
         "type" => "ai_upgAny",
-        "name" => clienttranslate("AI Acquire Upgrade Tile"),
+        "name" => clienttranslate("AI Gain Upgrade Tile"),
 ],
     "Op_ai_upgPink" => [ 
         "type" => "ai_upgPink",
-        "name" => clienttranslate("AI Acquire Pink Upgrade Tile"),
+        "name" => clienttranslate("AI Gain Pink Upgrade Tile"),
 ],
     "Op_ai_journal" => [ 
         "type" => "ai_journal",
@@ -489,7 +483,7 @@ class Material {
 ],
     "Op_ai_pickWorker" => [ 
         "type" => "ai_pickWorker",
-        "name" => clienttranslate("AI Pick Worker"),
+        "name" => clienttranslate("AI Retrieve Worker"),
 ],
     "Op_ai_infCard" => [ 
         "type" => "ai_infCard",
@@ -502,6 +496,14 @@ class Material {
     "Op_ai_comet" => [ 
         "type" => "ai_comet",
         "name" => clienttranslate("AI Comet Track"),
+],
+    "Op_ai_cardInteract" => [ 
+        "type" => "ai_cardInteract",
+        "name" => clienttranslate("AI Interact with Card"),
+],
+    "Op_ai_cardInteractChoice" => [ 
+        "type" => "ai_cardInteractChoice",
+        "name" => clienttranslate("AI Card Interaction Choice"),
 ],
             /* --- gen php end op_material --- */
             /* --- gen php begin token_material --- */
@@ -544,7 +546,7 @@ class Material {
         "location" => "miniboard_{COLOR}",
 ],
     "tracker_food" => [ 
-        "name" => clienttranslate("Provision"),
+        "name" => clienttranslate("Provisions"),
         "count" => 1,
         "type" => "tracker food",
         "create" => 4,
@@ -873,7 +875,7 @@ class Material {
         "name" => clienttranslate("Silver Discount"),
 ],
     "foodDis" => [ 
-        "name" => clienttranslate("Provision Discount"),
+        "name" => clienttranslate("Provisions Discount"),
 ],
     "vp" => [ 
         "name" => clienttranslate("VP"),
@@ -1076,7 +1078,7 @@ class Material {
         "d" => "telescope",
         "dr" => "(cardSpace/upgBlack)",
         "nom" => "Capital Observatory",
-        "todr" => "Acquire a Space Card or Space Upgrade",
+        "todr" => "Acquire a Space Card or Space Upgrade Tile",
 ],
     "card_home_11" => [ 
         "create" => 4,
@@ -1086,7 +1088,7 @@ class Material {
         "d" => "pigeon",
         "dr" => "(journal/(infAny,pickWorker))",
         "nom" => "Capital Library",
-        "todr" => "Journal or Piack a Worker and Gain any Influence",
+        "todr" => "Journal or Retrieve a Worker and Place Influence on any Guild",
 ],
     "card_home_12" => [ 
         "create" => 4,
@@ -1106,12 +1108,12 @@ class Material {
         "d" => "any",
         "dr" => "(upgGreen/2coin)",
         "nom" => "Capital Reserve",
-        "todr" => "Acquire a Basic Upgrade or Gain 2 Silver",
+        "todr" => "Gain a Basic Upgrade Tile or Gain 2 Silver",
 ],
             /* --- gen php end card_material --- */
             /* --- gen php begin cardfolk_material --- */
-// # 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay 1 Silver or 1 Provision: Pick a Worker and Refresh a Die
-// # 115|2|food:2coin|Observatory|Wanderer||Pay 1 Provision: Gain 2 Silver
+// # 114|1|(coin/food):(pickWorker,reroll)|Vista|Protector||Pay Silver or Provisions: Retrieve a Worker and Refresh a Die
+// # 115|2|food:2coin|Observatory|Wanderer||Pay Provisions: Gain 2 Silver
     "card_folk_116" => [ 
         "create" => 1,
         "num" => 116,
@@ -1137,7 +1139,7 @@ class Material {
         "dr" => "pickWorker/infCard",
         "tags" => "Vista",
         "nom" => clienttranslate("Champion"),
-        "tooltip" => clienttranslate("Pick a Worker or Place Influence on a Card"),
+        "tooltip" => clienttranslate("Retrieve a Worker or Place Influence on a Card"),
 ],
     "card_folk_121" => [ 
         "create" => 1,
@@ -1173,7 +1175,7 @@ class Material {
         "dr" => "food",
         "tags" => "City",
         "nom" => clienttranslate("Farmer"),
-        "tooltip" => clienttranslate("Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions"),
 ],
     "card_folk_125" => [ 
         "create" => 1,
@@ -1191,7 +1193,7 @@ class Material {
         "dr" => "food",
         "tags" => "Harbour",
         "nom" => clienttranslate("Fisherman"),
-        "tooltip" => clienttranslate("Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions"),
 ],
     "card_folk_130" => [ 
         "create" => 1,
@@ -1218,7 +1220,7 @@ class Material {
         "dr" => "pickWorker/infCard",
         "tags" => "City Harbour",
         "nom" => clienttranslate("Mercenary"),
-        "tooltip" => clienttranslate("Pick a Worker or Place Influence on a Card"),
+        "tooltip" => clienttranslate("Retrieve a Worker or Place Influence on a Card"),
 ],
     "card_folk_133" => [ 
         "create" => 1,
@@ -1245,7 +1247,7 @@ class Material {
         "dr" => "food",
         "tags" => "Vista",
         "nom" => clienttranslate("Merchant"),
-        "tooltip" => clienttranslate("Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions"),
 ],
     "card_folk_136" => [ 
         "create" => 1,
@@ -1254,7 +1256,7 @@ class Material {
         "dr" => "food",
         "tags" => "Vista",
         "nom" => clienttranslate("Merchant"),
-        "tooltip" => clienttranslate("Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions"),
 ],
     "card_folk_137" => [ 
         "create" => 1,
@@ -1363,7 +1365,7 @@ class Material {
         "dr" => "food,infMove",
         "tags" => "Sea",
         "nom" => clienttranslate("Enforcer"),
-        "tooltip" => clienttranslate("Move Influence and Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions and Move Influence"),
 ],
     "card_folk_120" => [ 
         "create" => 1,
@@ -1373,7 +1375,7 @@ class Material {
         "dr" => "food,infMove",
         "tags" => "Sea",
         "nom" => clienttranslate("Enforcer"),
-        "tooltip" => clienttranslate("Move Influence and Gain Provision"),
+        "tooltip" => clienttranslate("Gain Provisions and Move Influence"),
 ],
     "card_folk_127" => [ 
         "create" => 1,
@@ -1383,7 +1385,7 @@ class Material {
         "dr" => "food,coin",
         "tags" => "Sea",
         "nom" => clienttranslate("Guardian"),
-        "tooltip" => clienttranslate("Gain Provision and Gain Silver"),
+        "tooltip" => clienttranslate("Gain Provisions and Gain Silver"),
 ],
     "card_folk_128" => [ 
         "create" => 1,
@@ -1403,7 +1405,7 @@ class Material {
         "dr" => "2food",
         "tags" => "Sea",
         "nom" => clienttranslate("Guardian"),
-        "tooltip" => clienttranslate("Gain 2 Provision"),
+        "tooltip" => clienttranslate("Gain 2 Provisions"),
 ],
     "card_folk_146" => [ 
         "create" => 1,
@@ -1443,7 +1445,7 @@ class Material {
         "dr" => "pickWorker/infCard",
         "tags" => "Sea",
         "nom" => clienttranslate("Warrior"),
-        "tooltip" => clienttranslate("Pick a Worker or Move Influence"),
+        "tooltip" => clienttranslate("Retrieve a Worker or Place Influence on a Card"),
 ],
 // # Home Townfolk card
     "card_folk_1" => [ 
@@ -1467,8 +1469,8 @@ class Material {
         "d" => "camel",
         "dr" => "upgYellow/(infYellow,infYellow)",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Yellow influence"),
-        "todr" => clienttranslate("Acquire a Land upgrade or gain 2 Yellow influence"),
+        "tor" => clienttranslate("Place Yellow Influence"),
+        "todr" => clienttranslate("Gain a Land Upgrade Tile or place 2 Yellow Influence"),
 ],
     "card_land_2" => [ 
         "create" => 1,
@@ -1477,8 +1479,8 @@ class Material {
         "d" => "camel",
         "dr" => "upgYellow/(infYellow,infYellow)",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Yellow influence"),
-        "todr" => clienttranslate("Acquire a Land upgrade or gain 2 Yellow influence"),
+        "tor" => clienttranslate("Place Yellow Influence"),
+        "todr" => clienttranslate("Gain a Land Upgrade Tile or place 2 Yellow Influence"),
 ],
     "card_land_3" => [ 
         "create" => 1,
@@ -1487,8 +1489,8 @@ class Material {
         "d" => "camel",
         "dr" => "upgGreen,food",
         "tags" => "City",
-        "tor" => clienttranslate("Acquire a free Basic upgrade"),
-        "todr" => clienttranslate("Acquire a Basic upgrade and gain 1 Provision"),
+        "tor" => clienttranslate("Gain a free Basic Upgrade Tile"),
+        "todr" => clienttranslate("Gain a Basic Upgrade Tile and gain Provisions"),
 ],
     "card_land_4" => [ 
         "create" => 1,
@@ -1497,8 +1499,8 @@ class Material {
         "d" => "camel",
         "dr" => "upgGreen,infAny",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Influence on any guild"),
-        "todr" => clienttranslate("Acquire a Basic upgrade and gain Influence on any guild"),
+        "tor" => clienttranslate("Place Influence on any Guild"),
+        "todr" => clienttranslate("Gain a Basic Upgrade Tile and place Influence on any Guild"),
 ],
     "card_land_5" => [ 
         "create" => 1,
@@ -1507,8 +1509,8 @@ class Material {
         "d" => "camel",
         "dr" => "2n_food:cardLand,pickWorker",
         "tags" => "City",
-        "tor" => clienttranslate("Pick a Worker"),
-        "todr" => clienttranslate("Pay 2 Provisions to acquire a Land card, then pick a Worker"),
+        "tor" => clienttranslate("Retrieve a Worker"),
+        "todr" => clienttranslate("Pay 2 Provisions to acquire a Land card and retrieve a Worker"),
 ],
     "card_land_6" => [ 
         "create" => 1,
@@ -1517,8 +1519,8 @@ class Material {
         "d" => "camel",
         "dr" => "2n_food:cardLand,infYellow",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Yellow influence"),
-        "todr" => clienttranslate("Pay 2 Provisions to acquire a Land card, then gain Yellow influence"),
+        "tor" => clienttranslate("Place Yellow Influence"),
+        "todr" => clienttranslate("Pay 2 Provisions to acquire a Land card and place Yellow Influence"),
 ],
     "card_land_7" => [ 
         "create" => 1,
@@ -1527,8 +1529,8 @@ class Material {
         "d" => "camel",
         "dr" => "cardFolk,infBlue",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Blue influence"),
-        "todr" => clienttranslate("Acquire a Townsfolk card and gain Blue influence"),
+        "tor" => clienttranslate("Place Blue Influence"),
+        "todr" => clienttranslate("Acquire a Townsfolk card and place Blue Influence"),
 ],
     "card_land_8" => [ 
         "create" => 1,
@@ -1537,8 +1539,8 @@ class Material {
         "d" => "camel",
         "dr" => "cardFolk,infCard",
         "tags" => "City",
-        "tor" => clienttranslate("Gain Influence on any card"),
-        "todr" => clienttranslate("Acquire a Townsfolk card and gain Influence on any card"),
+        "tor" => clienttranslate("Place Influence on a Card"),
+        "todr" => clienttranslate("Acquire a Townsfolk card and place Influence on a Card"),
 ],
     "card_land_9" => [ 
         "create" => 1,
@@ -1546,7 +1548,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "cardSpace,infBlue",
         "tags" => "City Observatory",
-        "tor" => clienttranslate("Acquire a Space card and gain Blue influence"),
+        "tor" => clienttranslate("Acquire a Space card and place Blue Influence"),
 ],
     "card_land_10" => [ 
         "create" => 1,
@@ -1554,7 +1556,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "cardSpace,infYellow",
         "tags" => "City Observatory",
-        "todr" => clienttranslate("Acquire a Space card and gain Yellow influence"),
+        "todr" => clienttranslate("Acquire a Space card and place Yellow Influence"),
 ],
     "card_land_11" => [ 
         "create" => 1,
@@ -1562,7 +1564,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "upgBlack/(infBlack,infBlack)",
         "tags" => "City Observatory",
-        "todr" => clienttranslate("Acquire a Space upgrade or gain 2 Black influence"),
+        "todr" => clienttranslate("Gain a Space Upgrade Tile or place 2 Black Influence"),
 ],
     "card_land_12" => [ 
         "create" => 1,
@@ -1570,7 +1572,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "upgBlack/(infBlack,infBlack)",
         "tags" => "City Observatory",
-        "todr" => clienttranslate("Acquire a Space upgrade or gain 2 Black influence"),
+        "todr" => clienttranslate("Gain a Space Upgrade Tile or place 2 Black Influence"),
 ],
     "card_land_13" => [ 
         "create" => 1,
@@ -1578,7 +1580,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "cardSpace,infBlack",
         "tags" => "City Observatory",
-        "todr" => clienttranslate("Acquire a Space card and gain Black influence"),
+        "todr" => clienttranslate("Acquire a Space card and place Black Influence"),
 ],
     "card_land_14" => [ 
         "create" => 1,
@@ -1595,7 +1597,7 @@ class Material {
         "d" => "camel",
         "dr" => "cardFolk,journal",
         "tags" => "City Book",
-        "tor" => clienttranslate("Gain Influence on any guild"),
+        "tor" => clienttranslate("Place Influence on any Guild"),
         "todr" => clienttranslate("Acquire a Townsfolk card and gain Journal"),
 ],
     "card_land_16" => [ 
@@ -1604,7 +1606,7 @@ class Material {
         "d" => "pigeon",
         "dr" => "infYellow,journal",
         "tags" => "City Book",
-        "todr" => clienttranslate("Gain Yellow influence and Journal"),
+        "todr" => clienttranslate("Place Yellow Influence and Journal"),
 ],
     "card_land_17" => [ 
         "create" => 1,
@@ -1612,7 +1614,7 @@ class Material {
         "d" => "pigeon",
         "dr" => "infBlue,journal",
         "tags" => "City Book",
-        "todr" => clienttranslate("Gain Blue influence and Journal"),
+        "todr" => clienttranslate("Place Blue Influence and Journal"),
 ],
     "card_land_18" => [ 
         "create" => 1,
@@ -1620,7 +1622,7 @@ class Material {
         "d" => "telescope,pigeon",
         "dr" => "infBlack,journal",
         "tags" => "City Book Observatory",
-        "todr" => clienttranslate("Gain Black influence and Journal"),
+        "todr" => clienttranslate("Place Black Influence and Journal"),
 ],
 // # Row 4-6: Vista (19-37)
     "card_land_19" => [ 
@@ -1630,8 +1632,8 @@ class Material {
         "dr" => "infCard",
         "tags" => "Vista",
         "trig" => "Stars",
-        "tor" => clienttranslate("Gain 2 Influence on any card"),
-        "todr" => clienttranslate("Gain Influence on any card"),
+        "tor" => clienttranslate("Place 2 Influence on a Card"),
+        "todr" => clienttranslate("Place Influence on a Card"),
 ],
     "card_land_20" => [ 
         "create" => 1,
@@ -1640,8 +1642,8 @@ class Material {
         "dr" => "food",
         "tags" => "Vista",
         "trig" => "Stars",
-        "tor" => clienttranslate("Gain 1 Silver"),
-        "todr" => clienttranslate("Gain 1 Provision"),
+        "tor" => clienttranslate("Gain Silver"),
+        "todr" => clienttranslate("Gain Provisions"),
 ],
     "card_land_21" => [ 
         "create" => 1,
@@ -1650,8 +1652,8 @@ class Material {
         "dr" => "coin",
         "tags" => "Vista",
         "trig" => "Sea",
-        "tor" => clienttranslate("Gain 1 Silver"),
-        "todr" => clienttranslate("Gain 1 Silver"),
+        "tor" => clienttranslate("Gain Silver"),
+        "todr" => clienttranslate("Gain Silver"),
 ],
     "card_land_22" => [ 
         "create" => 1,
@@ -1660,8 +1662,8 @@ class Material {
         "dr" => "infBlue/infMove",
         "tags" => "Vista",
         "trig" => "Sea",
-        "tor" => clienttranslate("Gain Blue influence"),
-        "todr" => clienttranslate("Gain Blue influence or move Influence"),
+        "tor" => clienttranslate("Place Blue Influence"),
+        "todr" => clienttranslate("Place Blue Influence or move Influence"),
 ],
     "card_land_23" => [ 
         "create" => 1,
@@ -1670,8 +1672,8 @@ class Material {
         "dr" => "coin/diceMod",
         "tags" => "Vista",
         "trig" => "Comet",
-        "tor" => clienttranslate("Acquire a free Basic upgrade"),
-        "todr" => clienttranslate("Gain 1 Silver or modify dice by +/- 1"),
+        "tor" => clienttranslate("Gain a free Basic Upgrade Tile"),
+        "todr" => clienttranslate("Gain Silver or modify dice by +/- 1"),
 ],
     "card_land_24" => [ 
         "create" => 1,
@@ -1680,8 +1682,8 @@ class Material {
         "dr" => "food/infMove",
         "tags" => "Vista",
         "trig" => "Comet",
-        "tor" => clienttranslate("Acquire a free Basic upgrade"),
-        "todr" => clienttranslate("Gain 1 Provision or move Influence"),
+        "tor" => clienttranslate("Gain a free Basic Upgrade Tile"),
+        "todr" => clienttranslate("Gain Provisions or move Influence"),
 ],
     "card_land_25" => [ 
         "create" => 1,
@@ -1691,7 +1693,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Vista",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain 1 Silver"),
+        "todr" => clienttranslate("Gain Silver"),
 ],
     "card_land_26" => [ 
         "create" => 1,
@@ -1701,7 +1703,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Vista",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain Blue influence or move Influence"),
+        "todr" => clienttranslate("Place Blue Influence or move Influence"),
 ],
     "card_land_27" => [ 
         "create" => 1,
@@ -1711,7 +1713,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Planet/Sun/Moon",
         "tor" => clienttranslate("Gain 2 Silver"),
-        "todr" => clienttranslate("Gain 1 Provision"),
+        "todr" => clienttranslate("Gain Provisions"),
 ],
     "card_land_28" => [ 
         "create" => 1,
@@ -1721,7 +1723,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Planet/Sun/Moon",
         "tor" => clienttranslate("Gain 2 Silver"),
-        "todr" => clienttranslate("Pick a Worker"),
+        "todr" => clienttranslate("Retrieve a Worker"),
 ],
     "card_land_29" => [ 
         "create" => 1,
@@ -1731,7 +1733,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "City",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain 1 Silver"),
+        "todr" => clienttranslate("Gain Silver"),
 ],
     "card_land_30" => [ 
         "create" => 1,
@@ -1741,7 +1743,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "City",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain Yellow influence or move Influence"),
+        "todr" => clienttranslate("Place Yellow Influence or move Influence"),
 ],
     "card_land_31" => [ 
         "create" => 1,
@@ -1760,8 +1762,8 @@ class Material {
         "dr" => "infCard",
         "tags" => "Vista",
         "trig" => "card_folk",
-        "tor" => clienttranslate("Gain Influence on any card"),
-        "todr" => clienttranslate("Gain Influence on any card"),
+        "tor" => clienttranslate("Place Influence on a Card"),
+        "todr" => clienttranslate("Place Influence on a Card"),
 ],
     "card_land_33" => [ 
         "create" => 1,
@@ -1770,8 +1772,8 @@ class Material {
         "dr" => "coin",
         "tags" => "Vista",
         "trig" => "Harbour",
-        "tor" => clienttranslate("Gain 1 Silver"),
-        "todr" => clienttranslate("Gain 1 Silver"),
+        "tor" => clienttranslate("Gain Silver"),
+        "todr" => clienttranslate("Gain Silver"),
 ],
     "card_land_34" => [ 
         "create" => 1,
@@ -1780,8 +1782,8 @@ class Material {
         "dr" => "infYellow/infMove",
         "tags" => "Vista",
         "trig" => "Harbour",
-        "tor" => clienttranslate("Gain Yellow influence"),
-        "todr" => clienttranslate("Gain Yellow influence or move Influence"),
+        "tor" => clienttranslate("Place Yellow Influence"),
+        "todr" => clienttranslate("Place Yellow Influence or move Influence"),
 ],
     "card_land_35" => [ 
         "create" => 1,
@@ -1791,7 +1793,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Observatory/Book",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain Worker"),
+        "todr" => clienttranslate("Retrieve a Worker"),
 ],
     "card_land_36" => [ 
         "create" => 1,
@@ -1801,7 +1803,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Observatory/Book",
         "tor" => clienttranslate("Refresh a die"),
-        "todr" => clienttranslate("Gain 1 Provision or 1 Silver"),
+        "todr" => clienttranslate("Gain Provisions or gain Silver"),
 ],
             /* --- gen php end cardland_material --- */
             /* --- gen php begin cardwater_material --- */
@@ -1816,7 +1818,7 @@ class Material {
         "tags" => "Harbour Book",
         "c1" => "__x_",
         "c2" => "bx_x",
-        "todr" => clienttranslate("Gain 1 Provision and Journal"),
+        "todr" => clienttranslate("Gain Provisions and Journal"),
 ],
     "card_water_42" => [ 
         "create" => 1,
@@ -1826,7 +1828,7 @@ class Material {
         "tags" => "Harbour Book",
         "c1" => "__x_",
         "c2" => "u_xx",
-        "todr" => clienttranslate("Gain 1 Silver and Journal"),
+        "todr" => clienttranslate("Gain Silver and Journal"),
 ],
     "card_water_43" => [ 
         "create" => 1,
@@ -1836,7 +1838,7 @@ class Material {
         "tags" => "Harbour Book",
         "c1" => "x__x",
         "c2" => "yxxx",
-        "todr" => clienttranslate("Gain Influence on any card and Journal"),
+        "todr" => clienttranslate("Place Influence on a Card and Journal"),
 ],
     "card_water_44" => [ 
         "create" => 1,
@@ -1846,7 +1848,7 @@ class Material {
         "tags" => "Harbour Book",
         "c1" => "_xx_",
         "c2" => "yx__",
-        "todr" => clienttranslate("Pay 1 Provision to acquire a Water card"),
+        "todr" => clienttranslate("Pay Provisions to acquire a Water card"),
 ],
     "card_water_45" => [ 
         "create" => 1,
@@ -1856,7 +1858,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_x_x",
         "c2" => "ux_x",
-        "todr" => clienttranslate("Pay 2 Provisions to acquire a Water card, then gain Silver"),
+        "todr" => clienttranslate("Pay 2 Provisions to acquire a Water card and gain Silver"),
 ],
     "card_water_46" => [ 
         "create" => 1,
@@ -1866,7 +1868,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_x_x",
         "c2" => "__xx",
-        "todr" => clienttranslate("Pay 2 Provisions to acquire a Water card, then pick a Worker"),
+        "todr" => clienttranslate("Pay 2 Provisions to acquire a Water card and retrieve a Worker"),
 ],
     "card_water_47" => [ 
         "create" => 1,
@@ -1876,7 +1878,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "xx__",
         "c2" => "u_x_",
-        "todr" => clienttranslate("Acquire a Water upgrade or gain 2 Blue influence"),
+        "todr" => clienttranslate("Gain a Water Upgrade Tile or place 2 Blue Influence"),
 ],
     "card_water_48" => [ 
         "create" => 1,
@@ -1886,7 +1888,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "__xx",
         "c2" => "yx__",
-        "todr" => clienttranslate("Acquire a Water upgrade or gain 2 Blue influence"),
+        "todr" => clienttranslate("Gain a Water Upgrade Tile or place 2 Blue Influence"),
 ],
     "card_water_49" => [ 
         "create" => 1,
@@ -1896,7 +1898,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_xx_",
         "c2" => "uxx_",
-        "todr" => clienttranslate("Refresh a die, modify dice by +/- 1, then gain 1 Provision"),
+        "todr" => clienttranslate("Refresh a die, modify dice by +/- 1 and gain Provisions"),
 ],
     "card_water_50" => [ 
         "create" => 1,
@@ -1906,7 +1908,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "__xx",
         "c2" => "u__x",
-        "todr" => clienttranslate("Pick a Worker, refresh a die, then gain Influence on any card"),
+        "todr" => clienttranslate("Retrieve a Worker, refresh a die and place Influence on a Card"),
 ],
     "card_water_51" => [ 
         "create" => 1,
@@ -1916,7 +1918,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "xx__",
         "c2" => "__xx",
-        "todr" => clienttranslate("Gain Yellow influence, Black influence, and 1 Silver"),
+        "todr" => clienttranslate("Place Yellow and Black Influence and gain Silver"),
 ],
     "card_water_52" => [ 
         "create" => 1,
@@ -1926,7 +1928,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "x_x_",
         "c2" => "yx__",
-        "todr" => clienttranslate("Gain Blue influence, Black influence, and 1 Provision"),
+        "todr" => clienttranslate("Place Blue and Black Influence and gain Provisions"),
 ],
     "card_water_53" => [ 
         "create" => 1,
@@ -1946,7 +1948,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_x_x",
         "c2" => "_xx_",
-        "todr" => clienttranslate("Acquire a Townsfolk card and gain Provision"),
+        "todr" => clienttranslate("Acquire a Townsfolk card and gain Provisions"),
 ],
     "card_water_55" => [ 
         "create" => 1,
@@ -1976,7 +1978,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_x_x",
         "c2" => "bxxx",
-        "todr" => clienttranslate("Gain Influence on any card and gain 2 Silver"),
+        "todr" => clienttranslate("Place Influence on a Card and gain 2 Silver"),
 ],
     "card_water_58" => [ 
         "create" => 1,
@@ -1986,7 +1988,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "xx__",
         "c2" => "_x_x",
-        "todr" => clienttranslate("Pick a Worker and gain 2 Provisions"),
+        "todr" => clienttranslate("Retrieve a Worker and gain 2 Provisions"),
 ],
     "card_water_59" => [ 
         "create" => 1,
@@ -1995,7 +1997,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_x__",
         "c2" => "bxxx",
-        "tor" => clienttranslate("Gain Black influence, 1 Silver, 1 Provision, and Influence on any card"),
+        "tor" => clienttranslate("Place Black Influence, gain Silver and Provisions, and place Influence on a Card"),
 ],
     "card_water_60" => [ 
         "create" => 1,
@@ -2013,7 +2015,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "___x",
         "c2" => "u___",
-        "tor" => clienttranslate("Acquire a free Space upgrade"),
+        "tor" => clienttranslate("Gain a free Space Upgrade Tile"),
 ],
     "card_water_62" => [ 
         "create" => 1,
@@ -2022,7 +2024,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "x__x",
         "c2" => "b_x_",
-        "tor" => clienttranslate("Acquire a free Basic upgrade and modify dice by +/- 1"),
+        "tor" => clienttranslate("Gain a free Basic Upgrade Tile and modify dice by +/- 1"),
 ],
     "card_water_63" => [ 
         "create" => 1,
@@ -2031,7 +2033,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_x__",
         "c2" => "_x__",
-        "tor" => clienttranslate("Acquire a free Land upgrade"),
+        "tor" => clienttranslate("Gain a free Land Upgrade Tile"),
 ],
     "card_water_64" => [ 
         "create" => 1,
@@ -2040,7 +2042,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "__x_",
         "c2" => "__x_",
-        "tor" => clienttranslate("Acquire a free Water upgrade"),
+        "tor" => clienttranslate("Gain a free Water Upgrade Tile"),
 ],
     "card_water_65" => [ 
         "create" => 1,
@@ -2085,7 +2087,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_x__",
         "c2" => "_x_x",
-        "tor" => clienttranslate("Gain Black influence and Journal"),
+        "tor" => clienttranslate("Place Black Influence and Journal"),
 ],
     "card_water_70" => [ 
         "create" => 1,
@@ -2094,7 +2096,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "__x_",
         "c2" => "ux__",
-        "tor" => clienttranslate("Gain Journal"),
+        "tor" => clienttranslate("Journal"),
 ],
     "card_water_71" => [ 
         "create" => 1,
@@ -2103,7 +2105,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "x__x",
         "c2" => "y__x",
-        "tor" => clienttranslate("Pick a Worker and refresh a die"),
+        "tor" => clienttranslate("Retrieve a Worker and refresh a die"),
 ],
     "card_water_72" => [ 
         "create" => 1,
@@ -2112,7 +2114,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_x__",
         "c2" => "b___",
-        "tor" => clienttranslate("Pick 2 Workers"),
+        "tor" => clienttranslate("Retrieve 2 Workers"),
 ],
     "card_water_73" => [ 
         "create" => 1,
@@ -2121,7 +2123,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_xx_",
         "c2" => "_x_x",
-        "tor" => clienttranslate("Gain 2 Influence on any card or move 2 Influence"),
+        "tor" => clienttranslate("Place 2 Influence on a Card or move 2 Influence"),
 ],
     "card_water_74" => [ 
         "create" => 1,
@@ -2130,7 +2132,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "__x_",
         "c2" => "yx_x",
-        "tor" => clienttranslate("Gain 2 Blue influence"),
+        "tor" => clienttranslate("Place 2 Blue Influence"),
 ],
     "card_water_75" => [ 
         "create" => 1,
@@ -2139,7 +2141,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "_x__",
         "c2" => "u_xx",
-        "tor" => clienttranslate("Gain 2 Yellow influence"),
+        "tor" => clienttranslate("Place 2 Yellow Influence"),
 ],
     "card_water_76" => [ 
         "create" => 1,
@@ -2148,7 +2150,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "___x",
         "c2" => "_xx_",
-        "tor" => clienttranslate("Gain 2 Black influence"),
+        "tor" => clienttranslate("Place 2 Black Influence"),
 ],
             /* --- gen php end cardwater_material --- */
 
@@ -2687,7 +2689,7 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Gain Provision",
+        "tor" => "Gain Provisions",
         "tovp" => "1 VP + 1 VP per Planet tag",
         "nom" => clienttranslate("Mars"),
 ],
@@ -2780,7 +2782,7 @@ class Material {
         "r" => "infBlack,infMove",
         "vpexp" => "1+(inf_black/2)",
         "tags" => "Stars",
-        "tor" => "Place an Influence in Black Guild, then move any influence",
+        "tor" => "Place an Influence in Black Guild and move any Influence",
         "tovp" => "1 VP + 1 VP per 2 influence on Black Guild",
         "nom" => clienttranslate("Shadow Guide"),
 ],
@@ -2790,7 +2792,7 @@ class Material {
         "r" => "infBlue,infMove",
         "vpexp" => "1+(inf_blue/2)",
         "tags" => "Stars",
-        "tor" => "Place an Influence in Blue Guild, then move any influence",
+        "tor" => "Place an Influence in Blue Guild and move any Influence",
         "tovp" => "1 VP + 1 VP per 2 influence on Blue Guild",
         "nom" => clienttranslate("Tide Navigator"),
 ],
@@ -2800,7 +2802,7 @@ class Material {
         "r" => "infYellow,infMove",
         "vpexp" => "1+(inf_yellow/2)",
         "tags" => "Stars",
-        "tor" => "Place an Influence in Yellow Guild, then move any influence",
+        "tor" => "Place an Influence in Yellow Guild and move any Influence",
         "tovp" => "1 VP + 1 VP per 2 influence on Yellow Guild",
         "nom" => clienttranslate("Path Finder"),
 ],
@@ -2810,7 +2812,7 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Book",
         "tags" => "Stars",
-        "tor" => "Gain Provision",
+        "tor" => "Gain Provisions",
         "tovp" => "1 VP + 1 VP per Book tag",
         "nom" => clienttranslate("Scholar's Star"),
 ],
@@ -2820,7 +2822,7 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Observatory",
         "tags" => "Stars",
-        "tor" => "Gain Provision",
+        "tor" => "Gain Provisions",
         "tovp" => "1 VP + 1 VP per Observatory tag",
         "nom" => clienttranslate("Observer's Eye"),
 ],
@@ -3272,42 +3274,52 @@ class Material {
     "jtile_1" => [ 
         "num" => 1,
         "r" => "upgGreen(free)",
+        "tooltip" => clienttranslate("Gain a free Basic Upgrade Tile"),
 ],
     "jtile_2" => [ 
         "num" => 2,
         "r" => "infYellow,infYellow",
+        "tooltip" => clienttranslate("Place 2 Yellow Influence"),
 ],
     "jtile_3" => [ 
         "num" => 3,
         "r" => "infBlue,infBlue",
+        "tooltip" => clienttranslate("Place 2 Blue Influence"),
 ],
     "jtile_4" => [ 
         "num" => 4,
         "r" => "cardFolk(free)",
+        "tooltip" => clienttranslate("Gain a free Townsfolk Card"),
 ],
     "jtile_5" => [ 
         "num" => 5,
         "r" => "food,coin",
+        "tooltip" => clienttranslate("Gain Provisions and Silver"),
 ],
     "jtile_6" => [ 
         "num" => 6,
         "r" => "coin,coin",
+        "tooltip" => clienttranslate("Gain 2 Silver"),
 ],
     "jtile_7" => [ 
         "num" => 7,
         "r" => "pickWorker",
+        "tooltip" => clienttranslate("Retrieve a Worker"),
 ],
     "jtile_8" => [ 
         "num" => 8,
         "r" => "food,food",
+        "tooltip" => clienttranslate("Gain 2 Provisions"),
 ],
     "jtile_9" => [ 
         "num" => 9,
         "r" => "infCard,infCard",
+        "tooltip" => clienttranslate("Place 2 Influence on Cards"),
 ],
     "jtile_10" => [ 
         "num" => 10,
         "r" => "infYellow,infBlue",
+        "tooltip" => clienttranslate("Place 1 Yellow and 1 Blue Influence"),
 ],
 // #Connection requirements side A
     "jconn_0_10_0" => [ 

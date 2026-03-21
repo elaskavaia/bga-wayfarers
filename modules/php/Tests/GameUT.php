@@ -59,6 +59,13 @@ class GameUT extends Game {
     }
 
     static function format_string_recursive($line, $keymap) {
+        if (is_array($line)) {
+            $log = $line["log"] ?? "";
+            if ($log) {
+                return self::format_string_recursive($log, $line["args"] ?? []);
+            }
+            return "??";
+        }
         foreach ($keymap as $key => $value) {
             if (is_array($value)) {
                 $log = $value["log"] ?? "";

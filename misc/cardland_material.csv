@@ -4,44 +4,44 @@ num|r|d|dr|tags|trig|tor|todr
 #set _tr=tor
 #set _tr=todr
 # Row 1-3: City (1-18)
-1|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
-2|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Gain Yellow influence|Acquire a Land upgrade or gain 2 Yellow influence
-3|upgGreen(free)|camel|upgGreen,food|City||Acquire a free Basic upgrade|Acquire a Basic upgrade and gain 1 Provision
-4|infAny|camel|upgGreen,infAny|City||Gain Influence on any guild|Acquire a Basic upgrade and gain Influence on any guild
-5|pickWorker|camel|2n_food:cardLand,pickWorker|City||Pick a Worker|Pay 2 Provisions to acquire a Land card, then pick a Worker
-6|infYellow|camel|2n_food:cardLand,infYellow|City||Gain Yellow influence|Pay 2 Provisions to acquire a Land card, then gain Yellow influence
-7|infBlue|camel|cardFolk,infBlue|City||Gain Blue influence|Acquire a Townsfolk card and gain Blue influence
-8|infCard|camel|cardFolk,infCard|City||Gain Influence on any card|Acquire a Townsfolk card and gain Influence on any card
-9||telescope,camel|cardSpace,infBlue|City Observatory||Acquire a Space card and gain Blue influence
-10||telescope,camel|cardSpace,infYellow|City Observatory|||Acquire a Space card and gain Yellow influence
-11||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
-12||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Acquire a Space upgrade or gain 2 Black influence
-13||telescope,camel|cardSpace,infBlack|City Observatory|||Acquire a Space card and gain Black influence
+1|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Place Yellow Influence|Gain a Land Upgrade Tile or place 2 Yellow Influence
+2|infYellow|camel|upgYellow/(infYellow,infYellow)|City||Place Yellow Influence|Gain a Land Upgrade Tile or place 2 Yellow Influence
+3|upgGreen(free)|camel|upgGreen,food|City||Gain a free Basic Upgrade Tile|Gain a Basic Upgrade Tile and gain Provisions
+4|infAny|camel|upgGreen,infAny|City||Place Influence on any Guild|Gain a Basic Upgrade Tile and place Influence on any Guild
+5|pickWorker|camel|2n_food:cardLand,pickWorker|City||Retrieve a Worker|Pay 2 Provisions to acquire a Land card and retrieve a Worker
+6|infYellow|camel|2n_food:cardLand,infYellow|City||Place Yellow Influence|Pay 2 Provisions to acquire a Land card and place Yellow Influence
+7|infBlue|camel|cardFolk,infBlue|City||Place Blue Influence|Acquire a Townsfolk card and place Blue Influence
+8|infCard|camel|cardFolk,infCard|City||Place Influence on a Card|Acquire a Townsfolk card and place Influence on a Card
+9||telescope,camel|cardSpace,infBlue|City Observatory||Acquire a Space card and place Blue Influence
+10||telescope,camel|cardSpace,infYellow|City Observatory|||Acquire a Space card and place Yellow Influence
+11||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Gain a Space Upgrade Tile or place 2 Black Influence
+12||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Gain a Space Upgrade Tile or place 2 Black Influence
+13||telescope,camel|cardSpace,infBlack|City Observatory|||Acquire a Space card and place Black Influence
 14||telescope,camel|cardSpace(dis)|City Observatory|||Acquire a discounted Space card
-15|infAny|camel|cardFolk,journal|City Book||Gain Influence on any guild|Acquire a Townsfolk card and gain Journal
-16||pigeon|infYellow,journal|City Book|||Gain Yellow influence and Journal
-17||pigeon|infBlue,journal|City Book|||Gain Blue influence and Journal
-18||telescope,pigeon|infBlack,journal|City Book Observatory|||Gain Black influence and Journal
+15|infAny|camel|cardFolk,journal|City Book||Place Influence on any Guild|Acquire a Townsfolk card and gain Journal
+16||pigeon|infYellow,journal|City Book|||Place Yellow Influence and Journal
+17||pigeon|infBlue,journal|City Book|||Place Blue Influence and Journal
+18||telescope,pigeon|infBlack,journal|City Book Observatory|||Place Black Influence and Journal
 # Row 4-6: Vista (19-37)
-19|infCard,infCard||infCard|Vista|Stars|Gain 2 Influence on any card|Gain Influence on any card
-20|coin||food|Vista|Stars|Gain 1 Silver|Gain 1 Provision
-21|coin||coin|Vista|Sea|Gain 1 Silver|Gain 1 Silver
-22|infBlue||infBlue/infMove|Vista|Sea|Gain Blue influence|Gain Blue influence or move Influence
-23|upgGreen(free)||coin/diceMod|Vista|Comet|Acquire a free Basic upgrade|Gain 1 Silver or modify dice by +/- 1
-24|upgGreen(free)||food/infMove|Vista|Comet|Acquire a free Basic upgrade|Gain 1 Provision or move Influence
-25|reroll||coin|Vista|Vista|Refresh a die|Gain 1 Silver
-26|reroll||infBlue/infMove|Vista|Vista|Refresh a die|Gain Blue influence or move Influence
-27|2coin||food|Vista|Planet/Sun/Moon|Gain 2 Silver|Gain 1 Provision
-28|2coin||pickWorker|Vista|Planet/Sun/Moon|Gain 2 Silver|Pick a Worker
-29|reroll||coin|Vista|City|Refresh a die|Gain 1 Silver
-30|reroll||infYellow/infMove|Vista|City|Refresh a die|Gain Yellow influence or move Influence
+19|infCard,infCard||infCard|Vista|Stars|Place 2 Influence on a Card|Place Influence on a Card
+20|coin||food|Vista|Stars|Gain Silver|Gain Provisions
+21|coin||coin|Vista|Sea|Gain Silver|Gain Silver
+22|infBlue||infBlue/infMove|Vista|Sea|Place Blue Influence|Place Blue Influence or move Influence
+23|upgGreen(free)||coin/diceMod|Vista|Comet|Gain a free Basic Upgrade Tile|Gain Silver or modify dice by +/- 1
+24|upgGreen(free)||food/infMove|Vista|Comet|Gain a free Basic Upgrade Tile|Gain Provisions or move Influence
+25|reroll||coin|Vista|Vista|Refresh a die|Gain Silver
+26|reroll||infBlue/infMove|Vista|Vista|Refresh a die|Place Blue Influence or move Influence
+27|2coin||food|Vista|Planet/Sun/Moon|Gain 2 Silver|Gain Provisions
+28|2coin||pickWorker|Vista|Planet/Sun/Moon|Gain 2 Silver|Retrieve a Worker
+29|reroll||coin|Vista|City|Refresh a die|Gain Silver
+30|reroll||infYellow/infMove|Vista|City|Refresh a die|Place Yellow Influence or move Influence
 31|2coin||diceMod,infMove|Vista|card_folk|Gain 2 Silver|Modify dice by +/- 1 and move Influence
-32|infCard||infCard|Vista|card_folk|Gain Influence on any card|Gain Influence on any card
-33|coin||coin|Vista|Harbour|Gain 1 Silver|Gain 1 Silver
-34|infYellow||infYellow/infMove|Vista|Harbour|Gain Yellow influence|Gain Yellow influence or move Influence
-35|reroll||pickWorker|Vista|Observatory/Book|Refresh a die|Gain Worker
-36|reroll||food/coin|Vista|Observatory/Book|Refresh a die|Gain 1 Provision or 1 Silver
+32|infCard||infCard|Vista|card_folk|Place Influence on a Card|Place Influence on a Card
+33|coin||coin|Vista|Harbour|Gain Silver|Gain Silver
+34|infYellow||infYellow/infMove|Vista|Harbour|Place Yellow Influence|Place Yellow Influence or move Influence
+35|reroll||pickWorker|Vista|Observatory/Book|Refresh a die|Retrieve a Worker
+36|reroll||food/coin|Vista|Observatory/Book|Refresh a die|Gain Provisions or gain Silver
 # Row 7: City (38)
 #set ext=1
-# 37|coin||food|Vista|upg_any|Gain 1 Silver|Gain 1 Provision
-# 38||camel,pigeon|2n_food:cardLand,journal|City Book|||Pay 2 Provisions to acquire a Land card, then gain Journal
+# 37|coin||food|Vista|upg_any|Gain Silver|Gain Provisions
+# 38||camel,pigeon|2n_food:cardLand,journal|City Book|||Pay 2 Provisions to acquire a Land card and gain Journal

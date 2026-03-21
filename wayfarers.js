@@ -2424,7 +2424,7 @@ var GameXBody = /** @class */ (function (_super) {
         return gameui.bgaAnimationsActive() && !this.inSetup;
     };
     GameXBody.prototype.updateTokenDisplayInfo = function (tokenInfo) {
-        var _a, _b, _c, _d;
+        var _a, _b, _c, _d, _e;
         // override to generate dynamic tooltips and such
         var mainType = tokenInfo.mainType;
         var token = $(tokenInfo.tokenId);
@@ -2569,8 +2569,16 @@ var GameXBody = /** @class */ (function (_super) {
                     tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
                 return;
             }
+            case "jtile": {
+                var num = (_d = getPart(tokenId, 1)) !== null && _d !== void 0 ? _d : "";
+                if (!num)
+                    return;
+                tokenInfo.name = this.getTokenName("jtile");
+                tokenInfo.tooltip = this.ttSection(_("Bonus"), this.getTr(tokenInfo.tooltip));
+                return;
+            }
             case "dice": {
-                var num = (_d = getPart(tokenId, 2)) !== null && _d !== void 0 ? _d : "";
+                var num = (_e = getPart(tokenId, 2)) !== null && _e !== void 0 ? _e : "";
                 if (!num)
                     return;
                 // const color = getPart(tokenId, 1);

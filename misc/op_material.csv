@@ -1,11 +1,11 @@
 type|name|php
 #set id=Op_{type}
 
+
+
 #set class=
-
-
+#common ops
 nop|None
-#fake name
 barrier|None
 savepoint|None
 or|Choice
@@ -16,7 +16,13 @@ gain|Gain
 pay|Pay
 paygain|Trade
 
+#game specific  ops
 
+#set class=Op_gain
+food|Gain Provisions
+coin|Gain Silver
+
+#set class=
 turn|Turn
 turnconf|Confirm Turn
 rest|Rest
@@ -31,42 +37,35 @@ cardWater|Acquire Water Card
 cardLand|Acquire Land Card
 cardDraw|Draw and Pick Card
 cardInsp|Acquire Inspiration Card
-cardInteract|Card Interaction
-ai_cardInteract|AI Card Interaction
-ai_cardInteractChoice|AI Card Interaction Choice
+cardInteract|Interact with Card
 
-upgBlack|Acquire Space Upgrade
-upgBlue|Acquire Water Upgrade
-upgGreen|Acquire Basic Upgrade
-upgPink|Gain Special Upgrade
-upgYellow|Acquire Land Upgrade
+
+upgBlack|Gain Space Upgrade Tile
+upgBlue|Gain Water Upgrade Tile
+upgGreen|Gain Basic Upgrade Tile
+upgPink|Gain Special Upgrade Tile
+upgYellow|Gain Land Upgrade Tile
 journal|Journal
-pickWorker|Pick a Worker
+pickWorker|Retrieve a Worker
 reroll|Refresh a Die
-ship|Ship
-camel|Camel
-telescope|Telescope
-pigeon|Pigeon
-infAny|Influence on any Guild
-infBlue|Influence on Blue
-infYellow|Influence on Yellow
-infBlack|Influence on Black
-infCard|Influence on Card
+
+infAny|Place Influence on any Guild
+infBlue|Place Influence on Blue
+infYellow|Place Influence on Yellow
+infBlack|Place Influence on Black
+infCard|Place Influence on Card
 infMove|Move Influence
 diceMod|Modify Dice by +/- 1
 dicePlus|Modify Dice by +1
 diceMinus|Modify Dice by -1
 newDie|Gain Die
-jtile|Journal Tile Bonus
-pickGreen|Pick Green Worker
+jtile|Gain Journal Tile Bonus
+pickGreen|Retrieve Green Worker
 
-#set class=Op_gain
-food|Gain Provision
-coin|Gain Silver
 
 
 #set class=
-n_food|Pay Provision
+n_food|Pay Provisions
 n_coin|Pay Silver
 
 #set class=
@@ -74,6 +73,12 @@ n_infBlue|Pay Blue Influence
 n_infYellow|Pay Yellow Influence
 n_infBlack|Pay Black Influence
 finalScoring|Final Scoring
+
+#Assets
+ship|Ship
+camel|Camel
+telescope|Telescope
+pigeon|Pigeon
 
 #ai ops
 ai_turn|AI Turn
@@ -85,14 +90,17 @@ ai_cardSpace|AI Acquire Space Card
 ai_cardFolk|AI Acquire Townsfolk Card
 ai_cardInsp|AI Acquire Inspiration Card
 
+
 #set class=
-ai_upgAny|AI Acquire Upgrade Tile
-ai_upgPink|AI Acquire Pink Upgrade Tile
+ai_upgAny|AI Gain Upgrade Tile
+ai_upgPink|AI Gain Pink Upgrade Tile
 ai_journal|AI Journal
 ai_shuffle|AI Shuffle
 ai_res|AI Resource Track
 ai_placeWorker|AI Place Worker
-ai_pickWorker|AI Pick Worker
+ai_pickWorker|AI Retrieve Worker
 ai_infCard|AI Influence on Card
 ai_focusAction|AI Focus Action
 ai_comet|AI Comet Track
+ai_cardInteract|AI Interact with Card
+ai_cardInteractChoice|AI Card Interaction Choice

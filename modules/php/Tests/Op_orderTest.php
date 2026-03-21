@@ -108,7 +108,7 @@ final class Op_orderTest extends TestCase {
         $op = $this->game->machine->instanciateOperation("coin+food", PCOLOR);
         $opName = $op->getOpName();
         $flat = is_array($opName) ? GameUT::format_string_recursive($opName["log"], $opName["args"]) : $opName;
-        $this->assertEquals("Gain Silver + Gain Provision", $flat);
+        $this->assertEquals("Gain Silver + Gain Provisions", $flat);
     }
 
     public function testGetIconicName_DiffersFromOpName(): void {
