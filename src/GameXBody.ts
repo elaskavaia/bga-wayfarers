@@ -510,7 +510,7 @@ class GameXBody extends GameMachine {
       } else if (location.startsWith("tableau")) {
         const color = getPart(location, 1);
         let x = tokenInfo.state;
-        if (cardType == "home" || x == 1 || x == -1) {
+        if (cardType == "home" || tokenId.startsWith("card_folk_1_") || x == 1 || x == -1) {
           result.location = `pboard_${color}`;
           return result;
         }

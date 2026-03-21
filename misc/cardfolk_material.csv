@@ -47,3 +47,12 @@ num|cost|dr|tags|nom|da|tooltip
 147|1|infYellow/infMove|Sea|Translator||Place an Influence in Yellow Guild or Move Influence
 148|2|infBlack/infMove|Sea|Translator||Place an Influence in Black Guild or Move Influence
 151|0|pickWorker/infCard|Sea|Warrior||Pick a Worker or Move Influence
+
+
+# Home Townfolk card
+#set create=4
+#set id=card_folk_{num}
+#set type=card card_home card_folk card_slot
+#set location=tableau_{COLOR}
+#set ext=
+1|0|coin,journal||Capital Townsfolk||Gain Silver and Journal

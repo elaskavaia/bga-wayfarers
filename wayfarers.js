@@ -2233,7 +2233,7 @@ var GameXBody = /** @class */ (function (_super) {
             else if (location.startsWith("tableau")) {
                 var color = getPart(location, 1);
                 var x = tokenInfo.state;
-                if (cardType == "home" || x == 1 || x == -1) {
+                if (cardType == "home" || tokenId.startsWith("card_folk_1_") || x == 1 || x == -1) {
                     result.location = "pboard_".concat(color);
                     return result;
                 }

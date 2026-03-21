@@ -178,10 +178,15 @@
     .card[data-state="1"] {
       right: 0%;
     }
-    .card_folk_1 {
+    .card_slot {
       left: 33%;
+      height: 7%;
+    }
+    .card_folk_1 {
       bottom: 0%;
-      position: absolute !important;
+      height: 9%;
+      background-image: unset;
+      aspect-ratio: 3;
     }
     .card_home_1 {
       visibility: hidden;
@@ -194,10 +199,6 @@
       background-image: unset;
     }
 
-    .card_slot {
-      left: 33%;
-      height: 7%;
-    }
     .card_home_10 {
       bottom: 29.5%;
     }
@@ -245,7 +246,7 @@
 }
 .card_slot {
   background-image: unset;
-  aspect-ratio: 5 / 1;
+  aspect-ratio: 3.8;
   height: calc(v.$cardHeight / 6.4);
 }
 

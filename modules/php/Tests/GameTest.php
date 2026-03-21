@@ -10,7 +10,6 @@ use function Bga\Games\wayfarers\array_get;
 use function Bga\Games\wayfarers\getPart;
 use function Bga\Games\wayfarers\startsWith;
 
-
 final class GameTest extends TestCase {
     private GameUT $game;
     function dispatchOneStep($done = null) {
@@ -662,12 +661,13 @@ final class GameTest extends TestCase {
         $cardKey = "card_insp_test_8";
         $this->game->material->setRulesFor($cardKey, ["collect" => "tag_card_folk", "goal" => 3]);
 
-        // Add 2 folk cards (plus 1 pre-printed = 3 total)
+        // Add 3 folk cards
         $this->game->tokens->db->moveToken("card_folk_1_1", "tableau_" . PCOLOR);
         $this->game->tokens->db->moveToken("card_folk_2_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_folk_3_1", "tableau_" . PCOLOR);
 
         $result = $this->game->isInspirationGoalAchieved($cardKey, PCOLOR);
-        $this->assertTrue($result, "Should return true when folk count (3 with pre-printed) meets goal (3)");
+        $this->assertTrue($result, "Should return true when folk count (3) meets goal (3)");
     }
 
     /**
@@ -1082,5 +1082,31 @@ final class GameTest extends TestCase {
         $this->assertStringContainsString("[wicon_inf_yellow_pay]", $name);
         $this->assertStringContainsString(" / ", $name);
         $this->assertStringContainsString("[wicon_inf_blue_pay]", $name);
+    }
+
+    public function testRestQueuesJournalAndCoin() {
+        $this->game->tokens->createTokens();
+
+        // Move all dice out of supply so isGoodRest() returns true (0-1 dice in supply)
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
+        foreach (array_keys($dice) as $dieKey) {
+            $this->game->tokens->db->moveToken($dieKey, "limbo");
+        }
+
+        /** @var \Bga\Games\wayfarers\Operations\Op_rest */
+        $op = $this->game->machine->instanciateOperation("rest", PCOLOR);
+        $op->resolve();
+
+        $ops = $this->game->machine->db->getOperations();
+        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
+        $ops = implode(" ", $opTypes);
+
+        $this->assertStringContainsString("journal", $ops, "Rest should queue journal (from Capital Townsfolk)");
+    }
+
+    public function testEvaluateExpression_FolkCountDefaultTableau() {
+        $this->game->tokens->createTokens();
+        $count = $this->game->evaluateExpression("tag_card_folk", PCOLOR);
+        $this->assertEquals(1, $count, "Default tableau should have 1 folk card (Capital Townsfolk)");
     }
 }

@@ -909,7 +909,7 @@ class Game extends Base {
             $tokens = $this->tokens->getTokensOfTypeInLocation("card_$ttype", "tableau_$owner");
 
             $plus = 0;
-            if ($ttype === "folk" || $ttype == "land" || $ttype == "water" || $ttype == "star") {
+            if ($ttype == "land" || $ttype == "water" || $ttype == "star") {
                 $plus = 1; // player starts with 1 of other pre-printed cards
             }
             return count($tokens) + $plus;

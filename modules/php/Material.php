@@ -1445,6 +1445,18 @@ class Material {
         "nom" => clienttranslate("Warrior"),
         "tooltip" => clienttranslate("Pick a Worker or Move Influence"),
 ],
+// # Home Townfolk card
+    "card_folk_1" => [ 
+        "create" => 4,
+        "rest" => 1,
+        "type" => "card card_home card_folk card_slot",
+        "location" => "tableau_{COLOR}",
+        "num" => 1,
+        "cost" => 0,
+        "dr" => "coin,journal",
+        "nom" => clienttranslate("Capital Townsfolk"),
+        "tooltip" => clienttranslate("Gain Silver and Journal"),
+],
             /* --- gen php end cardfolk_material --- */
             /* --- gen php begin cardland_material --- */
 // # Row 1-3: City (1-18)

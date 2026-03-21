@@ -82,20 +82,21 @@ final class Op_cardFolkTest extends TestCase {
     }
 
     public function testGetPossibleMovesWithCardSelected(): void {
-        // Setup: tableau cards
-        $this->setupTableauCard("card_space_1", "Vista");
-        $this->setupTableauCard("card_space_2", "Observatory");
-        // Setup: the selected folk card with "Vista" tag
-        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
+        // card_land_20: tags="Vista Stars" (real Vista land card)
+        $this->game->tokens->db->moveToken("card_land_20", "tableau_" . PCOLOR, 2);
+        // card_land_9: tags="City Observatory" (non-Vista land card)
+        $this->game->tokens->db->moveToken("card_land_9", "tableau_" . PCOLOR, 3);
+        // card_folk_133: tags="Vista", cost=2 (real Vista folk card)
+        $this->game->tokens->db->moveToken("card_folk_133", "mainarea");
 
         $op = $this->createOp("card_folk_133");
         $moves = $op->getPossibleMoves();
 
-        // Should only show matching tableau card
-        $this->assertArrayHasKey("card_space_1", $moves);
-        $this->assertEquals(Material::RET_OK, $moves["card_space_1"]["q"]);
+        // Should only show matching tableau card (Vista)
+        $this->assertArrayHasKey("card_land_20", $moves);
+        $this->assertEquals(Material::RET_OK, $moves["card_land_20"]["q"]);
         // Non-matching card should not be in the result
-        $this->assertArrayNotHasKey("card_space_2", $moves);
+        $this->assertArrayNotHasKey("card_land_9", $moves);
     }
 
     public function testHasMatchingTagsWithMatch(): void {

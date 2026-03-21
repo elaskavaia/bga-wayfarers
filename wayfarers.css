@@ -214,10 +214,15 @@ html[data-theme=dark] .deck .counter {
 .tableau .pboard .card[data-state="1"] {
   right: 0%;
 }
-.tableau .pboard .card_folk_1 {
+.tableau .pboard .card_slot {
   left: 33%;
+  height: 7%;
+}
+.tableau .pboard .card_folk_1 {
   bottom: 0%;
-  position: absolute !important;
+  height: 9%;
+  background-image: unset;
+  aspect-ratio: 3;
 }
 .tableau .pboard .card_home_1 {
   visibility: hidden;
@@ -228,10 +233,6 @@ html[data-theme=dark] .deck .counter {
   top: 8%;
   bottom: unset;
   background-image: unset;
-}
-.tableau .pboard .card_slot {
-  left: 33%;
-  height: 7%;
 }
 .tableau .pboard .card_home_10 {
   bottom: 29.5%;
@@ -285,7 +286,7 @@ html[data-theme=dark] .deck .counter {
 
 .card_slot {
   background-image: unset;
-  aspect-ratio: 5/1;
+  aspect-ratio: 3.8;
   height: 31.25px;
 }
 
@@ -2638,6 +2639,7 @@ html[data-theme=dark] .miniboard .guild_count {
 .tooltipcontainer .card_folk_1 {
   background-position-x: 50%;
   background-position-y: 100%;
+  aspect-ratio: 3;
 }
 
 .aida-avatar {
