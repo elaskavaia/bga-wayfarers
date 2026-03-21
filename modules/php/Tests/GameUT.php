@@ -43,10 +43,6 @@ class GameUT extends Game {
         $this->_setPlayerBasicInfoFromColors($colors);
     }
 
-    function getUserPreference(int $player_id, int $code): int {
-        return 0;
-    }
-
     function init(int $numPlayers = 0) {
         //$this->adjustedMaterial(true);
         if ($numPlayers > 0) {
@@ -58,14 +54,24 @@ class GameUT extends Game {
         return $this;
     }
 
-    function clean_cache() {}
-
-    function getMultiMachine() {
-        return $this->multimachine;
-    }
-
     function fakeUserAction(Operation $op, $target = null) {
         return $op->action_resolve([Operation::ARG_TARGET => $target]);
+    }
+
+    static function format_string_recursive($line, $keymap) {
+        foreach ($keymap as $key => $value) {
+            if (is_array($value)) {
+                $log = $value["log"] ?? "";
+                if ($log) {
+                    $value = self::format_string_recursive($log, $value["args"] ?? []);
+                } else {
+                    $value = "??";
+                }
+            }
+            $line = str_replace('${' . $key . "}", (string) $value, $line);
+        }
+
+        return $line;
     }
 
     // override/stub methods here that access db and stuff

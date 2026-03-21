@@ -88,7 +88,7 @@ class Op_seq extends ComplexOperation {
     }
 
     function getOpName() {
-        return $this->getRecName(" ");
+        return $this->getRecName(", ");
     }
 
 

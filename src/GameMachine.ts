@@ -116,7 +116,7 @@ class GameMachine extends Game1Tokens {
         altNode = this.replicateTargetOnToolbar(target, paramInfo);
       }
 
-      if (!altNode && (opInfo.ui.buttons || !div)) {
+      if (!altNode && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
         altNode = this.createTargetButton(target, paramInfo);
       }
 

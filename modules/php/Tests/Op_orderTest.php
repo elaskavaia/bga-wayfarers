@@ -61,13 +61,61 @@ final class Op_orderTest extends TestCase {
     public function testAutoStripsTrivial_KeepsNonTrivial(): void {
         // coin (trivial) + infMove (non-trivial) + food (trivial) + cardFolk (non-trivial)
         $op = $this->game->machine->instanciateOperation("coin+infMove+food+cardFolk", PCOLOR);
-        $result = $op->auto();
-        $this->assertFalse($result, "Should not auto-resolve with 2 non-trivial delegates");
+        $op->saveToDb(1, true);
+        $this->game->machine->dispatchAll();
 
-        // Trivial ones should be queued
+        // Order should remain on stack with only non-trivial delegates
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertInstanceOf(Op_order::class, $top, "Order should remain on stack");
+        $this->assertEquals("infMove+cardFolk", $top->getTypeFullExpr(), "Should have 2 non-trivial delegates remaining");
+    }
+
+    public function testAutoResolves_SingleSeqDelegate(): void {
+        // Simulate what Op_rest does: order with a single seq delegate (coin,food)
+        /** @var Op_order */
+        $op = $this->game->machine->instanciateOperation("order", PCOLOR);
+        $op->withDelegate($this->game->machine->instanciateOperation("coin,food", PCOLOR));
+        $op->saveToDb(1, true);
+
+        // Dispatch and check that coin and food each resolve exactly once
+        $coinBefore = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $foodBefore = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+        $this->game->machine->dispatchAll();
+        $coinAfter = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $foodAfter = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+
+        $this->assertEquals($coinBefore + 1, $coinAfter, "Coin should be gained exactly once");
+        $this->assertEquals($foodBefore + 1, $foodAfter, "Food should be gained exactly once");
+
+        // No operations should remain
         $ops = $this->game->machine->db->getOperations();
-        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
-        $this->assertContains("coin", $opTypes, "Trivial coin should be queued");
-        $this->assertContains("food", $opTypes, "Trivial food should be queued");
+        $this->assertEmpty($ops, "All operations should be resolved");
+    }
+
+    public function testCountIsOne(): void {
+        $op = $this->game->machine->instanciateOperation("coin+food", PCOLOR);
+        $this->assertEquals(1, $op->getCount(), "Op_order count should be 1");
+        $this->assertEquals(1, $op->getMinCount(), "Op_order minCount should be 1");
+    }
+
+    public function testGetIconicName_CoinFood(): void {
+        $op = $this->game->machine->instanciateOperation("coin+food", PCOLOR);
+        $iconicName = $op->getIconicName();
+        $this->assertEquals("[wicon_coin] [wicon_food]", $iconicName);
+    }
+
+    public function testGetOpName_NoIconMarkup(): void {
+        $op = $this->game->machine->instanciateOperation("coin+food", PCOLOR);
+        $opName = $op->getOpName();
+        $flat = is_array($opName) ? GameUT::format_string_recursive($opName["log"], $opName["args"]) : $opName;
+        $this->assertEquals("Gain Silver + Gain Provision", $flat);
+    }
+
+    public function testGetIconicName_DiffersFromOpName(): void {
+        $op = $this->game->machine->instanciateOperation("infMove+cardFolk", PCOLOR);
+        $opName = $op->getOpName();
+        $flatOpName = is_array($opName) ? GameUT::format_string_recursive($opName["log"], $opName["args"]) : $opName;
+        $iconicName = $op->getIconicName();
+        $this->assertNotEquals($flatOpName, $iconicName, "Iconic name and OpName should differ for composite operations");
     }
 }

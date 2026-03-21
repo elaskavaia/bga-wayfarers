@@ -109,7 +109,7 @@ abstract class ComplexOperation extends CountableOperation {
         return false;
     }
 
-    function getRecName($join) {
+    function getRecName(string $join) {
         $args = [];
         $pars = [];
         if (count($this->delegates) == 0) {
@@ -117,7 +117,7 @@ abstract class ComplexOperation extends CountableOperation {
         }
         foreach ($this->delegates as $i => $sub) {
             $pars[] = "p$i";
-            $args["p$i"] = ["log" => $sub->getIconicName(), "args" => $sub->getExtraArgs()];
+            $args["p$i"] = ["log" => $sub->getOpName(), "args" => $sub->getExtraArgs()];
         }
         $log = implode(
             $join,

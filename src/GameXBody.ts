@@ -1003,6 +1003,18 @@ class GameXBody extends GameMachine {
   /** @Override */
   bgaFormatText(log: string, args: any) {
     try {
+      // Process square bracket syntax [tokenId]
+      if (log && log.includes("[")) {
+        args.processed = true;
+        log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
+          try {
+            return this.getTokenPresentaton(keyExpr, keyExpr, args) ?? match;
+          } catch (e) {
+            console.error(`Failed to get token presentation for [${keyExpr}]`, e);
+            return match; // Return original if error
+          }
+        });
+      }
       if (log && args && !args.processed && log.includes("$")) {
         args.processed = true;
 
@@ -1027,22 +1039,11 @@ class GameXBody extends GameMachine {
         const res = super.bgaFormatText(log, args);
         log = res.log;
         args = res.args;
-      }
-
-      // Process square bracket syntax [tokenId]
-      if (log && log.includes("[")) {
-        log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
-          try {
-            return this.getTokenPresentaton(keyExpr, keyExpr, args) ?? match;
-          } catch (e) {
-            console.error(`Failed to get token presentation for [${keyExpr}]`, e);
-            return match; // Return original if error
-          }
-        });
+        return { log, args };
       }
     } catch (e) {
       console.error(log, args, "Exception thrown", e.stack);
     }
-    return { log, args };
+    return { log, args: {} }; // no args - to prevent framework doing nasty stuff
   }
 }

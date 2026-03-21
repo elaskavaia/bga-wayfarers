@@ -230,6 +230,10 @@ abstract class Operation {
         $this->game->machine->insert($type, $owner, $data, $this->queueRank);
         //$this->game->debugConsole("queue $type");
     }
+    function queueOp(Operation $op) {
+        $op->saveToDb($this->queueRank, true);
+        $this->queueRank++;
+    }
 
     /**
      * wrapper for dbSetTokenLocation to pass proper player that owns the action
@@ -431,6 +435,7 @@ abstract class Operation {
     function getOpName() {
         return $this->game->getTokenName($this->getOpId(), $this->getType());
     }
+
     private function extractPossibleMoves(array &$res, array $details) {
         $targets = [];
         $error = "";

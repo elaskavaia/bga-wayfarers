@@ -24,25 +24,30 @@ use Bga\Games\wayfarers\OpCommon\ComplexOperation;
 
 class Op_order extends ComplexOperation {
     public function auto(): bool {
+        $this->game->systemAssert("Op_order does not support counts", $this->getCount() == 1 && $this->getMinCount() == 1);
         // Auto-queue trivial delegates (order doesn't matter for them)
+        $modified = false;
         foreach ($this->delegates as $i => $sub) {
             if ($sub->isTrivial()) {
-                $this->queue($sub->getTypeFullExpr(), $sub->getOwner(), $sub->getDataForDb());
+                $this->queueOp($sub);
                 unset($this->delegates[$i]);
+                $modified = true;
             }
         }
-        $this->delegates = array_values($this->delegates);
 
         // If 0 or 1 non-trivial delegates remain, queue and auto-resolve
         if (count($this->delegates) <= 1) {
             foreach ($this->delegates as $sub) {
-                $this->queue($sub->getTypeFullExpr(), $sub->getOwner(), $sub->getDataForDb());
+                $this->queueOp($sub);
             }
             return true;
         }
 
-        // 2+ non-trivial delegates: save updated operation to DB and prompt player
-        $this->saveToDb($this->queueRank, true);
+        if ($modified) {
+            $this->queueOp($this);
+            return true;
+        }
+
         return false;
     }
 
@@ -51,15 +56,14 @@ class Op_order extends ComplexOperation {
         $target = $this->getCheckedArg();
         foreach ($this->delegates as $i => $arg) {
             if ("choice_$i" == $target) {
-                $this->queue($arg->getTypeFullExpr(), $arg->getOwner(), $arg->getDataForDb());
+                $this->queueOp($arg);
                 $arg->destroy();
                 unset($this->delegates[$i]);
                 break;
             }
         }
         if (count($this->delegates) > 0) {
-            $this->queueRank++;
-            $this->saveToDb($this->queueRank, true);
+            $this->queueOp($this);
         }
 
         return;
@@ -81,6 +85,14 @@ class Op_order extends ComplexOperation {
     }
     function getOperator() {
         return "+";
+    }
+
+    function getIconicName() {
+        $names = [];
+        foreach ($this->delegates as $sub) {
+            $names[] = $sub->getIconicName();
+        }
+        return implode(" ", $names);
     }
 
     function getOpName() {

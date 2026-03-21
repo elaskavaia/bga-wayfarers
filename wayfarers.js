@@ -1400,7 +1400,7 @@ var GameMachine = /** @class */ (function (_super) {
             if (opInfo.ui.imagebuttons == true) {
                 altNode = this.replicateTargetOnToolbar(target, paramInfo);
             }
-            if (!altNode && (opInfo.ui.buttons || !div)) {
+            if (!altNode && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
                 altNode = this.createTargetButton(target, paramInfo);
             }
             if (!altNode)
@@ -2753,6 +2753,20 @@ var GameXBody = /** @class */ (function (_super) {
     GameXBody.prototype.bgaFormatText = function (log, args) {
         var _this = this;
         try {
+            // Process square bracket syntax [tokenId]
+            if (log && log.includes("[")) {
+                args.processed = true;
+                log = log.replace(/\[([^\]]+)\]/g, function (match, keyExpr) {
+                    var _a;
+                    try {
+                        return (_a = _this.getTokenPresentaton(keyExpr, keyExpr, args)) !== null && _a !== void 0 ? _a : match;
+                    }
+                    catch (e) {
+                        console.error("Failed to get token presentation for [".concat(keyExpr, "]"), e);
+                        return match; // Return original if error
+                    }
+                });
+            }
             if (log && args && !args.processed && log.includes("$")) {
                 args.processed = true;
                 if (!args.player_id) {
@@ -2776,25 +2790,13 @@ var GameXBody = /** @class */ (function (_super) {
                 var res = _super.prototype.bgaFormatText.call(this, log, args);
                 log = res.log;
                 args = res.args;
-            }
-            // Process square bracket syntax [tokenId]
-            if (log && log.includes("[")) {
-                log = log.replace(/\[([^\]]+)\]/g, function (match, keyExpr) {
-                    var _a;
-                    try {
-                        return (_a = _this.getTokenPresentaton(keyExpr, keyExpr, args)) !== null && _a !== void 0 ? _a : match;
-                    }
-                    catch (e) {
-                        console.error("Failed to get token presentation for [".concat(keyExpr, "]"), e);
-                        return match; // Return original if error
-                    }
-                });
+                return { log: log, args: args };
             }
         }
         catch (e) {
             console.error(log, args, "Exception thrown", e.stack);
         }
-        return { log: log, args: args };
+        return { log: log, args: {} }; // no args - to prevent framework doing nasty stuff
     };
     return GameXBody;
 }(GameMachine));

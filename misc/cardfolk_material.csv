@@ -38,8 +38,8 @@ num|cost|dr|tags|nom|da|tooltip
 
 #set rest=1
 
-119|1|infMove,food|Sea|Enforcer||Move Influence and Gain Provision
-120|1|infMove,food|Sea|Enforcer||Move Influence and Gain Provision
+119|1|food,infMove|Sea|Enforcer||Move Influence and Gain Provision
+120|1|food,infMove|Sea|Enforcer||Move Influence and Gain Provision
 127|3|food,coin|Sea|Guardian||Gain Provision and Gain Silver
 128|3|2coin|Sea|Guardian||Gain 2 Silver
 129|3|2food|Sea|Guardian||Gain 2 Provision

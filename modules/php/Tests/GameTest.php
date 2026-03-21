@@ -3,6 +3,10 @@
 declare(strict_types=1);
 namespace Bga\Games\wayfarers\Tests;
 
+use Bga\Games\wayfarers\Operations\Op_gain;
+use Bga\Games\wayfarers\Operations\Op_journal;
+use Bga\Games\wayfarers\Operations\Op_order;
+use Bga\Games\wayfarers\Operations\Op_seq;
 use Bga\Games\wayfarers\States\GameDispatch;
 use PHPUnit\Framework\TestCase;
 
@@ -99,8 +103,12 @@ final class GameTest extends TestCase {
                 $this->assertEquals($info["prompt"], $propt, "wrong prompt for $key");
             }
 
-            $this->assertFalse(str_contains($op->getOpName(), "?"), "bad op name for $key: " . $op->getOpName());
-            $this->assertFalse($op->getOpName() == $op->getType(), "No name set for operation $key");
+            $opName = $op->getOpName();
+            $flatName = is_array($opName) ? GameUT::format_string_recursive($opName["log"], $opName["args"]) : $opName;
+            $this->assertFalse(str_contains($flatName, "?"), "bad op name for $key: $flatName");
+            $this->assertFalse($flatName == $op->getType(), "No name set for operation $key");
+            $this->assertStringNotContainsString("wicon", $flatName, "OpName should not contain icon markup for $key: $flatName");
+
             return $op;
         } catch (\Exception $e) {
             $this->fail("$key: " . $e->getMessage());
@@ -1093,21 +1101,20 @@ final class GameTest extends TestCase {
             $this->game->tokens->db->moveToken($dieKey, "limbo");
         }
 
-        /** @var \Bga\Games\wayfarers\Operations\Op_rest */
-        $op = $this->game->machine->instanciateOperation("rest", PCOLOR);
-        $op->resolve();
+        $this->game->machine->queue("rest", PCOLOR);
 
-        $ops = $this->game->machine->db->getOperations();
-        $firstOp = reset($ops);
-
-        // With single rest card (Capital Townsfolk dr=coin,journal), it's stored as a seq
-        $this->assertEquals("seq", $firstOp["type"], "Rest should queue rest abilities as seq (coin,journal)");
-
-        // Verify the seq contains coin and journal as delegates
-        $data = is_string($firstOp["data"]) ? json_decode($firstOp["data"], true) : $firstOp["data"];
-        $argTypes = array_map(fn($a) => $a["type"], $data["args"]);
-        $this->assertContains("coin", $argTypes, "Rest abilities should include coin");
-        $this->assertContains("journal", $argTypes, "Rest abilities should include journal");
+        // Dispatch to auto-resolve and verify coin gained exactly once
+        $coinBefore = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $top = $this->dispatchOneStep();
+        $this->assertTrue($top instanceof Op_order, $top::class);
+        $top = $this->dispatchOneStep();
+        $this->assertTrue($top instanceof Op_seq, $top::class);
+        $top = $this->dispatchOneStep();
+        $this->assertTrue($top instanceof Op_gain, $top::class);
+        $top = $this->dispatchOneStep();
+        $this->assertTrue($top instanceof Op_journal, $top::class);
+        $coinAfter = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $this->assertEquals($coinBefore + 1, $coinAfter, "Rest ability should gain coin exactly once");
     }
 
     public function testEvaluateExpression_FolkCountDefaultTableau() {

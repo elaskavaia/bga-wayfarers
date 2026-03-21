@@ -75,18 +75,15 @@ class Op_rest extends Operation {
         // Queue resting abilities if eligible (0-1 dice in supply before rest)
         if ($activateRestingAbilities) {
             $restCards = $this->getRestAbilityCards();
-            $drList = [];
-            foreach (array_keys($restCards) as $cardKey) {
-                $dr = $this->game->getRulesForAndAssert($cardKey, "dr", "");
-                if ($dr) {
-                    $drList[] = "($dr)";
+            if (count($restCards)) {
+                /** @var Op_order $op */
+                $op = $this->instanciateOperation("order", $owner);
+                foreach (array_keys($restCards) as $cardId) {
+                    $dr = $this->game->getRulesForAndAssert($cardId, "dr", "");
+                    $op->withDelegate($this->instanciateOperation($dr, $owner, ["reason" => $cardId]));
                 }
-            }
-            if (count($drList) > 0) {
-                $expr = implode("+", $drList);
-                $op = $this->game->machine->instanciateOperation($expr, $owner);
-                $op->saveToDb($this->queueRank);
-                $this->queueRank++;
+
+                $this->queueOp($op);
             }
         }
 

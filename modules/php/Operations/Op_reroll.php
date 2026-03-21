@@ -52,7 +52,7 @@ class Op_reroll extends Operation {
             if ($this->getConfirmed()) {
                 return [$dieKey];
             }
-            $res[$dieKey] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll")];
+            $res[$dieKey] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll"), "buttons" => true];
             return $res;
         }
 
