@@ -24,12 +24,12 @@ num|cost|dr|tags|nom|da|tooltip
 136|2|food|Vista|Merchant||Gain Provisions
 137|1||City Harbour|Messenger|pigeon|Pigeon
 138|1|infCard/infMove/diceMod|City Harbour|Rogue||Place Influence on a Card or Move Influence or Modify Dice
-139|1|infBlue/infMove|City Harbour|Scholar||Place an Influence in Blue Guild or Move Influence
-140|1|infYellow/infMove|City Harbour|Scholar||Place an Influence in Yellow Guild or Move Influence
-141|2|infBlack/infMove|Book Observatory|Scholar||Place an Influence in Black Guild or Move Influence
-142|1|infBlue/infMove|Book Observatory|Scribe||Place an Influence in Blue Guild or Move Influence
-143|1|infYellow/infMove|Book Observatory|Scribe||Place an Influence in Yellow Guild or Move Influence
-144|2|infBlack/infMove|Vista|Scribe||Place an Influence in Black Guild or Move Influence
+139|1|infBlue/infMove|City Harbour|Scholar||Place Influence on Blue Guild or Move Influence
+140|1|infYellow/infMove|City Harbour|Scholar||Place Influence on Yellow Guild or Move Influence
+141|2|infBlack/infMove|Book Observatory|Scholar||Place Influence on Black Guild or Move Influence
+142|1|infBlue/infMove|Book Observatory|Scribe||Place Influence on Blue Guild or Move Influence
+143|1|infYellow/infMove|Book Observatory|Scribe||Place Influence on Yellow Guild or Move Influence
+144|2|infBlack/infMove|Vista|Scribe||Place Influence on Black Guild or Move Influence
 145|2||City|Stargazer|telescope,camel|Telescope, Camel
 
 149|1||City|Vagrant|camel|Camel
@@ -40,12 +40,12 @@ num|cost|dr|tags|nom|da|tooltip
 
 119|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
 120|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
-127|3|food,coin|Sea|Guardian||Gain Provisions and Gain Silver
+127|3|food,coin|Sea|Guardian||Gain Provisions and Silver
 128|3|2coin|Sea|Guardian||Gain 2 Silver
 129|3|2food|Sea|Guardian||Gain 2 Provisions
-146|1|infBlue/infMove|Sea|Translator||Place an Influence in Blue Guild or Move Influence
-147|1|infYellow/infMove|Sea|Translator||Place an Influence in Yellow Guild or Move Influence
-148|2|infBlack/infMove|Sea|Translator||Place an Influence in Black Guild or Move Influence
+146|1|infBlue/infMove|Sea|Translator||Place Influence on Blue Guild or Move Influence
+147|1|infYellow/infMove|Sea|Translator||Place Influence on Yellow Guild or Move Influence
+148|2|infBlack/infMove|Sea|Translator||Place Influence on Black Guild or Move Influence
 151|0|pickWorker/infCard|Sea|Warrior||Retrieve a Worker or Place Influence on a Card
 
 

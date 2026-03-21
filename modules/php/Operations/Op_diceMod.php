@@ -16,13 +16,13 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
-use Bga\Games\wayfarers\OpCommon\Operation;
+use Bga\Games\wayfarers\OpCommon\CountableOperation;
 
-class Op_diceMod extends Operation {
+class Op_diceMod extends CountableOperation {
     public function auto(): bool {
         if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
             // AI  gets infCard instead of dice mod
-            $this->queue("infCard", $this->game->getAutomaColor());
+            $this->queue($this->getCount() . "infCard", $this->game->getAutomaColor());
             return true;
         }
         return parent::auto();
@@ -106,6 +106,14 @@ class Op_diceMod extends Operation {
         $newValue = $direction == "up" ? $currentValue + 1 : $currentValue - 1;
 
         $this->dbSetTokenState($dieKey, $newValue, clienttranslate('${player_name} sets ${token_name} to ${new_state}'));
+        $count = $this->getCount();
+        if ($count <= 1) {
+            return;
+        }
+        // requeue itself with count-1
+        $this->incMinCount(-1);
+        $this->incCount(-1);
+        $this->queueOp($this);
     }
 
     function getPrompt() {
@@ -113,6 +121,7 @@ class Op_diceMod extends Operation {
     }
 
     public function getIconicName() {
-        return "[wicon_dice_mod]";
+        $count = $this->getCount();
+        return str_repeat("[wicon_dice_mod]", $count);
     }
 }

@@ -51,6 +51,12 @@ final class OperationTest extends TestCase {
         $this->assertStringNotContainsString("wicon", $flat, "Simple OpName should not contain icon markup: $flat");
     }
 
+    public function testCounted_GetOpName(): void {
+        $op = $this->game->machine->instanciateOperation("2coin", PCOLOR);
+        $flat = $this->resolveName($op->getOpName());
+        $this->assertEquals("Gain Silver x 2", $flat);
+    }
+
     public function testSimple_GetIconicName_HasIconMarkup(): void {
         $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
         $iconicName = $op->getIconicName();

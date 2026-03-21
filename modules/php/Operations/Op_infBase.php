@@ -93,7 +93,7 @@ abstract class Op_infBase extends CountableOperation {
         if ($this->getCount() > 1) {
             $this->incMinCount(-1);
             $this->incCount(-1);
-            $this->saveToDb(1, true);
+            $this->queueOp($this);
         }
     }
 

@@ -6,43 +6,43 @@ num|r|vpexp|tags|tor|tovp|nom|php
 # Comets
 77|journal|win_Comet?4:3|Comet|Journal|If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP|Chronicler's Comet
 78|journal|win_Comet?4:3|Comet|Journal|If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP|Chronicler's Comet
-79|reroll|win_Comet?4:2|Comet Comet|Refresh a Die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
-80|reroll|win_Comet?4:2|Comet Comet|Refresh a Die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
-81|reroll|win_Comet?4:2|Comet Comet|Refresh a Die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
+79|reroll|win_Comet?4:2|Comet Comet|Refresh a die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
+80|reroll|win_Comet?4:2|Comet Comet|Refresh a die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
+81|reroll|win_Comet?4:2|Comet Comet|Refresh a die|If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP|Blazing Trail
 82||win_Comet?4:1|Comet Comet Comet||If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP|Great Omen
 83||win_Comet?4:1|Comet Comet Comet||If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP|Great Omen
 84||win_Comet?4:1|Comet Comet Comet||If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP|Great Omen
 # Planets
-86|infYellow|1+tag_Planet|Planet|Place an Influence in Yellow Guild|1 VP + 1 VP per Planet tag|Jupiter
+86|infYellow|1+tag_Planet|Planet|Place Influence on Yellow Guild|1 VP + 1 VP per Planet tag|Jupiter
 87|food|1+tag_Planet|Planet|Gain Provisions|1 VP + 1 VP per Planet tag|Mars
 88|infCard|1+tag_Planet|Planet|Place Influence on a Card|1 VP + 1 VP per Planet tag|Mercury
-89|infBlack|1+tag_Planet|Planet|Place an Influence in Black Guild|1 VP + 1 VP per Planet tag|Saturn
-90|infBlue|1+tag_Planet|Planet|Place an Influence in Blue Guild|1 VP + 1 VP per Planet tag|Venus
+89|infBlack|1+tag_Planet|Planet|Place Influence on Black Guild|1 VP + 1 VP per Planet tag|Saturn
+90|infBlue|1+tag_Planet|Planet|Place Influence on Blue Guild|1 VP + 1 VP per Planet tag|Venus
 # Stars
 91|infCard|min(tag_Planet,tag_Comet,tag_Stars)*3|Stars|Place Influence on a Card|3 VP per set of Planet, Comet, and Stars tags|Celestial Triad
 92||tag_City|Stars||1 VP per City tag|City Light
 93||tag_City|Stars||1 VP per City tag|City Light
 94||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
 95||tag_Harbour|Stars||1 VP per Harbour tag|Harbor Beacon
-96|cardInsp|tag_card_insp|Stars|Acquire Inspiration Card|1 VP per Inspiration card|Muse's Light
-97|infBlack,infMove|1+(inf_black/2)|Stars|Place an Influence in Black Guild and move any Influence|1 VP + 1 VP per 2 influence on Black Guild|Shadow Guide
-98|infBlue,infMove|1+(inf_blue/2)|Stars|Place an Influence in Blue Guild and move any Influence|1 VP + 1 VP per 2 influence on Blue Guild|Tide Navigator
-99|infYellow,infMove|1+(inf_yellow/2)|Stars|Place an Influence in Yellow Guild and move any Influence|1 VP + 1 VP per 2 influence on Yellow Guild|Path Finder
+96|cardInsp|tag_card_insp|Stars|Acquire an Inspiration card|1 VP per Inspiration card|Muse's Light
+97|infBlack,infMove|1+(inf_black/2)|Stars|Place Influence on Black Guild and move Influence|1 VP + 1 VP per 2 influence on Black Guild|Shadow Guide
+98|infBlue,infMove|1+(inf_blue/2)|Stars|Place Influence on Blue Guild and move Influence|1 VP + 1 VP per 2 influence on Blue Guild|Tide Navigator
+99|infYellow,infMove|1+(inf_yellow/2)|Stars|Place Influence on Yellow Guild and move Influence|1 VP + 1 VP per 2 influence on Yellow Guild|Path Finder
 100|food|1+tag_Book|Stars|Gain Provisions|1 VP + 1 VP per Book tag|Scholar's Star
 101|food|1+tag_Observatory|Stars|Gain Provisions|1 VP + 1 VP per Observatory tag|Observer's Eye
 102||tag_Sea|Stars||1 VP per Open Water tag|Ocean Star
 103||tag_Sea|Stars||1 VP per Open Water tag|Ocean Star
-104|cardFolk(free)|min(tag_card_folk,tag_card_space,tag_card_land,tag_card_water)|Stars|Acquire Townsfolk card (free)|1 VP per set of Townsfolk, Space, Land, and Water cards|Collector's Star
+104|cardFolk(free)|min(tag_card_folk,tag_card_space,tag_card_land,tag_card_water)|Stars|Acquire a free Townsfolk card|1 VP per set of Townsfolk, Space, Land, and Water cards|Collector's Star
 105|infCard|tag_Stars|Stars|Place Influence on a Card|1 VP per Stars tag|Constellation
-106|infBlack|1+tag_upg_black|Stars|Place an Influence in Black Guild|1 VP + 1 VP per Space upgrade tile|Night Compass
-107|infBlue|1+tag_upg_blue|Stars|Place an Influence in Blue Guild|1 VP + 1 VP per Water upgrade tile|Sea Compass
-108|cardFolk(free)|1+tag_upg_green|Stars|Acquire Townsfolk card (free)|1 VP + 1 VP per Basic upgrade tile|Land Guide
-109|infYellow|1+tag_upg_yellow|Stars|Place an Influence in Yellow Guild|1 VP + 1 VP per Land upgrade tile|Earth Compass
+106|infBlack|1+tag_upg_black|Stars|Place Influence on Black Guild|1 VP + 1 VP per Space upgrade tile|Night Compass
+107|infBlue|1+tag_upg_blue|Stars|Place Influence on Blue Guild|1 VP + 1 VP per Water upgrade tile|Sea Compass
+108|cardFolk(free)|1+tag_upg_green|Stars|Acquire a free Townsfolk card|1 VP + 1 VP per Basic upgrade tile|Land Guide
+109|infYellow|1+tag_upg_yellow|Stars|Place Influence on Yellow Guild|1 VP + 1 VP per Land upgrade tile|Earth Compass
 110||tag_Vista|Stars||1 VP per Vista tag|Vista Gleam
 111||tag_Vista|Stars||1 VP per Vista tag|Vista Gleam
 #Moon and Sun
-85|infBlue|tag_Sun?7:3|Moon|Place an Influence in Blue Guild|If you have a Sun tag: 7 VP, otherwise 3 VP|Moon
-112|infYellow|tag_Moon?7:3|Sun|Place an Influence in Yellow Guild|If you have a Moon tag: 7 VP, otherwise 3 VP|Sun
+85|infBlue|tag_Sun?7:3|Moon|Place Influence on Blue Guild|If you have a Sun tag: 7 VP, otherwise 3 VP|Moon
+112|infYellow|tag_Moon?7:3|Sun|Place Influence on Yellow Guild|If you have a Moon tag: 7 VP, otherwise 3 VP|Sun
 #set ext=1
 # 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
 

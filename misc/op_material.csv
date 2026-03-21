@@ -50,9 +50,9 @@ pickWorker|Retrieve a Worker
 reroll|Refresh a Die
 
 infAny|Place Influence on any Guild
-infBlue|Place Influence on Blue
-infYellow|Place Influence on Yellow
-infBlack|Place Influence on Black
+infBlue|Place Influence on Blue Guild
+infYellow|Place Influence on Yellow Guild
+infBlack|Place Influence on Black Guild
 infCard|Place Influence on Card
 infMove|Move Influence
 diceMod|Modify Dice by +/- 1

@@ -43,6 +43,15 @@ abstract class CountableOperation extends Operation {
         return $res;
     }
 
+    function getOpName() {
+        $name = parent::getOpName();
+        $count = $this->getCount();
+        if ($count > 1) {
+            return ["log" => clienttranslate('${name} x ${count}'), "args" => ["name" => $name, "count" => $count]];
+        }
+        return $name;
+    }
+
     function getIconicName() {
         if ($this->getCount() == 1) {
             return '${name}';
