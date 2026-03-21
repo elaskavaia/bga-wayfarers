@@ -57,15 +57,17 @@ class Op_gain extends CountableOperation {
     }
 
     function getIconicName() {
+        $type = $this->getType();
+        $icon = "[wicon_$type]";
         $count = $this->getCount();
         if ($count == 1) {
-            return '${token_div}';
+            return $icon;
         } elseif ($count == 2) {
-            return '${token_div} ${token_div}';
+            return "$icon $icon";
         } elseif ($count == 3) {
-            return '${token_div} ${token_div} ${token_div}';
+            return "$icon $icon $icon";
         }
-        return clienttranslate('${count} ${token_div}');
+        return "{$count} $icon";
     }
 
     public function isTrivial(): bool {

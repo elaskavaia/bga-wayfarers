@@ -1214,6 +1214,24 @@ class Game extends Base {
         //$this->warn($info . ": " . toJson($args));
     }
 
+    function debug_folkN() {
+        $n = 3;
+        // Non-trivial rest folk cards (Sea folk with rest=1)
+        $restFolk = ["card_folk_119", "card_folk_146", "card_folk_151"];
+        // Remove current folk cards from mainarea
+        $current = $this->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
+        $i = 0;
+        foreach (array_keys($current) as $key) {
+            if ($i >= $n) {
+                break;
+            }
+            $this->tokens->dbSetTokenLocation($key, "limbo", 0, "*");
+            $this->tokens->dbSetTokenLocation($restFolk[$i], "mainarea", $i + 1, "*");
+            $i++;
+        }
+        $this->notify->all("message", "Swapped $i mainarea folk cards with rest folk", []);
+    }
+
     function debug_eval(string $x) {
         $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
         $v = $this->evaluateExpression($x, $color);

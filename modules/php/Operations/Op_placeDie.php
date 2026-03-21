@@ -185,9 +185,12 @@ class Op_placeDie extends Op_acquireBase {
         // Check for folk card tucked under this card (same state) and activate its ability
         $folkCard = $this->getTuckedFolk($cardId);
         if ($folkCard) {
-            $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
-            if ($folkRule) {
-                $this->queue($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]);
+            $isRestOnly = $this->game->getRulesFor($folkCard, "rest", 0);
+            if (!$isRestOnly) {
+                $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
+                if ($folkRule) {
+                    $this->queue($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]);
+                }
             }
         }
         // XXX player can chose order

@@ -103,8 +103,11 @@ abstract class Op_acquireBase extends Operation {
             // Trigger folk card tucked under this Vista card
             $folkCard = $this->getTuckedFolk($vistaCard);
             if ($folkCard) {
-                $folkRule = $this->game->getRulesFor($folkCard, "dr", "abort");
-                $this->queue($folkRule, $owner, ["reason" => $folkCard]);
+                $isRestOnly = $this->game->getRulesFor($folkCard, "rest", 0);
+                if (!$isRestOnly) {
+                    $folkRule = $this->game->getRulesFor($folkCard, "dr", "abort");
+                    $this->queue($folkRule, $owner, ["reason" => $folkCard]);
+                }
             }
             $this->queue($dr, $owner, ["reason" => $vistaCard]);
         }

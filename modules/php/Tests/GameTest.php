@@ -1084,7 +1084,7 @@ final class GameTest extends TestCase {
         $this->assertStringContainsString("[wicon_inf_blue_pay]", $name);
     }
 
-    public function testRestQueuesJournalAndCoin() {
+    public function testRestQueuesRestAbilities() {
         $this->game->tokens->createTokens();
 
         // Move all dice out of supply so isGoodRest() returns true (0-1 dice in supply)
@@ -1098,10 +1098,16 @@ final class GameTest extends TestCase {
         $op->resolve();
 
         $ops = $this->game->machine->db->getOperations();
-        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
-        $ops = implode(" ", $opTypes);
+        $firstOp = reset($ops);
 
-        $this->assertStringContainsString("journal", $ops, "Rest should queue journal (from Capital Townsfolk)");
+        // With single rest card (Capital Townsfolk dr=coin,journal), it's stored as a seq
+        $this->assertEquals("seq", $firstOp["type"], "Rest should queue rest abilities as seq (coin,journal)");
+
+        // Verify the seq contains coin and journal as delegates
+        $data = is_string($firstOp["data"]) ? json_decode($firstOp["data"], true) : $firstOp["data"];
+        $argTypes = array_map(fn($a) => $a["type"], $data["args"]);
+        $this->assertContains("coin", $argTypes, "Rest abilities should include coin");
+        $this->assertContains("journal", $argTypes, "Rest abilities should include journal");
     }
 
     public function testEvaluateExpression_FolkCountDefaultTableau() {
