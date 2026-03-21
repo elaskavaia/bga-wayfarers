@@ -49,16 +49,15 @@ class Op_reroll extends Operation {
     function getPossibleMoves() {
         $dieKey = $this->getDie();
         if ($dieKey) {
-            $res["confirm"] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll")];
+            if ($this->getConfirmed()) {
+                return [$dieKey];
+            }
+            $res[$dieKey] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll")];
             return $res;
         }
 
         $dice = $this->getAllDice();
-        $res = [];
-        foreach ($dice as $key => $die) {
-            $res[$key] = ["q" => Material::RET_OK];
-        }
-        return $res;
+        return array_keys($dice);
     }
 
     public function getSkipName() {
@@ -86,11 +85,18 @@ class Op_reroll extends Operation {
         );
     }
     public function canSkip() {
+        if ($this->getConfirmed()) {
+            return false;
+        }
         return true;
     }
 
     function getDie() {
         return $this->getDataField("die", null);
+    }
+
+    function getConfirmed() {
+        return $this->getDataField("confirmed", null);
     }
 
     function getDieValue(): int {

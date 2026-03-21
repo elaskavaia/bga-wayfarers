@@ -83,14 +83,7 @@ class Op_rest extends Operation {
 
         // Move all placed dice back to player's tableau and roll them
         foreach ($placedDice as $dieKey => $dieInfo) {
-            // Roll the die (random value 1-6)
-            $newValue = bga_rand(1, 6);
-            $this->dbSetTokenLocation(
-                $dieKey,
-                "tableau_$owner",
-                $newValue,
-                clienttranslate('${player_name} rolls ${token_name} to ${new_state}')
-            );
+            $this->queue("reroll", $owner, ["die" => $dieKey, "confirmed" => true]);
         }
 
         // Also reroll dice that were already in supply (optional per rules)
