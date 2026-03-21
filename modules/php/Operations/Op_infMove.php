@@ -68,7 +68,8 @@ class Op_infMove extends Operation {
             $move["token_id"],
             $move["to"],
             0,
-            clienttranslate('${player_name} moves ${token_name} from ${place_from} to ${place_name}')
+            clienttranslate('${player_name} moves ${token_name} from ${place_from_name} to ${place_name}'),
+            ["place_from_name" => $this->game->getTokenName($move["from"])]
         );
     }
 
