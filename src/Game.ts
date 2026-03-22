@@ -9,14 +9,48 @@
  *
  */
 
-/** Game class. Its Call XBody to be last in alphabetical order */
-class GameXBody extends GameMachine {
+import { getPart, NotificationMessage, placeHtml } from "./Game0Basics";
+import { Token, TokenMoveInfo, AnimArgs, TokenDisplayInfo } from "./Game1Tokens";
+import { GameMachine, OpInfo, ParamInfo } from "./GameMachine";
+import { BgaScoreSheet } from "./libs";
+
+class PlayerTurn {
+  private game: Game;
+  private bga: Bga;
+
+  constructor(game: Game, bga: Bga) {
+    this.game = game;
+    this.bga = bga;
+  }
+
+  onEnteringState(args: any, isCurrentPlayerActive: boolean) {
+    if (args._private) this.game.onEnteringState_PlayerTurn(args._private);
+    else this.game.onEnteringState_PlayerTurn(args);
+  }
+
+  // onLeavingState(args: any, isCurrentPlayerActive: boolean) {
+  //   this.game.onLeavingState("PlayerTurn", args);
+  // }
+
+  onPlayerActivationChange(args: any, isCurrentPlayerActive: boolean) {}
+}
+
+export class Game extends GameMachine {
+  private playerTurn: PlayerTurn;
   private scoreSheet: any;
   private scoreSheetAI: any;
   private inSetup = true;
   private boardLayout: string = "scale";
   private AI_PLAYER_ID = 1;
   private AI_COLOR_OVERRIDE = "982fff";
+
+  constructor(bga: Bga) {
+    super(bga);
+    console.log("wayfarers constructor");
+
+    this.playerTurn = new PlayerTurn(this, bga);
+    this.bga.states.register("PlayerTurn", this.playerTurn);
+  }
 
   readonly gameTemplate = `
 <div id="thething">
@@ -185,7 +219,7 @@ class GameXBody extends GameMachine {
       parent
     );
 
-    const boardNum = parseInt(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? "1");
+    const boardNum = Number(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? 1);
     $(`caravan_${pcolor}`)
       .querySelectorAll(".ccell")
       .forEach((node: HTMLElement) => {
@@ -233,7 +267,7 @@ class GameXBody extends GameMachine {
         caravanCells += `<div id='ccell_${pos}_${pcolor}' class='ccell' data-pos='${pos}' data-x='${x}' data-y='${y}'></div>`;
       }
     }
-    const boardNum = -parseInt(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? "-1");
+    const boardNum = -Number(this.gamedatas.tokens[`pboard_${pcolor}`]?.state ?? -1);
     placeHtml(
       `
       <div id='tableau_${pcolor}' class='tableau' data-player-name='${playerInfo.name}' style='--player-color: #${realcolor}'>
@@ -441,6 +475,7 @@ class GameXBody extends GameMachine {
     this.onEnteringState_PlayerTurn(opInfo);
   }
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
+    console.log("onEnteringState_PlayerTurn", opInfo);
     super.onEnteringState_PlayerTurn(opInfo);
     switch (opInfo.type) {
       case "turn":
@@ -459,8 +494,8 @@ class GameXBody extends GameMachine {
     }
   }
 
-  onLeavingState(stateName: string): void {
-    super.onLeavingState(stateName);
+  onLeavingState(stateName: string, args: any): void {
+    super.onLeavingState(stateName, args);
     const opInfo = this.opInfo;
 
     if (opInfo?.ui?.replicate) {
@@ -970,21 +1005,29 @@ class GameXBody extends GameMachine {
       minDurationNoText: 1,
 
       logger: console.log, // show notif debug informations on console. Could be console.warn or any custom debug function (default null = no logs)
-      //handlers: [this, this.tokens],
+      handlers: [this],
       onStart: (notifName, msg, args) => {
         if (msg) this.setSubPrompt(msg, args);
       }
       // onEnd: (notifName, msg, args) => this.setSubPrompt("", args)
     });
   }
+  // Re-declare parent notif_ methods so setupPromiseNotifications discovers them
+  async notif_tokenMoved(args: any) { return super.notif_tokenMoved(args); }
+  async notif_counter(args: any) { return super.notif_counter(args); }
+  async notif_animate(args: any) { return super.notif_animate(args); }
+  notif_log(args: any) { return super.notif_log(args); }
+  notif_message_warning(notif: Notif) { return super.notif_message_warning(notif); }
+  notif_message_info(notif: Notif) { return super.notif_message_info(notif); }
+
   async notif_message(args: any) {
     //console.log("notif", args);
-    return this.wait(1);
+    return gameui.wait(1);
   }
 
   async notif_undoMove(args: any) {
     console.log("notif", args);
-    return this.wait(1);
+    return gameui.wait(1);
   }
 
   async notif_lastTurn(args: any) {
@@ -1009,10 +1052,19 @@ class GameXBody extends GameMachine {
     }
   }
   /** @Override */
-  bgaFormatText(log: string, args: any) {
+  bgaFormatText(log: string | NotificationMessage, args: any) {
+    if (!log) return { log: "", args: [] };
     try {
+      if (typeof log !== "string") {
+        console.trace("Non-string log message", log, args);
+        if ((log as any).log) {
+          return this.bgaFormatText(log.log, log.args);
+        }
+
+        return { log: "?", args: [] };
+      }
       // Process square bracket syntax [tokenId]
-      if (log && log.includes("[")) {
+      if (log.includes("[")) {
         args.processed = true;
         log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
           try {
@@ -1023,7 +1075,7 @@ class GameXBody extends GameMachine {
           }
         });
       }
-      if (log && args && !args.processed && log.includes("$")) {
+      if (args && !args.processed && log.includes("$")) {
         args.processed = true;
 
         if (!args.player_id) {

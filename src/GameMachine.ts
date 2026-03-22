@@ -1,7 +1,7 @@
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * GalacticCruise implementation : © Alena Laskavaia <laskava@gmail.com>
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
@@ -9,7 +9,10 @@
  *
  */
 
-interface UiOptions {
+import { Game1Tokens } from "./Game1Tokens";
+import type { NotificationMessage } from "./Game0Basics";
+
+export interface UiOptions {
   buttons?: boolean;
   replicate?: boolean;
   imagebuttons?: boolean;
@@ -17,7 +20,7 @@ interface UiOptions {
   undo?: boolean;
   color?: string; // buton color fallback
 }
-interface ParamInfo extends UiOptions {
+export interface ParamInfo extends UiOptions {
   q: number; // error code
   max?: number; // max count for this param
 
@@ -36,11 +39,11 @@ interface ParamInfo extends UiOptions {
   info?: ParamInfoArray; // param info for next argument
 }
 
-interface ParamInfoArray {
+export interface ParamInfoArray {
   [key: string]: ParamInfo;
 }
 
-interface OpInfo {
+export interface OpInfo {
   id: number;
   type: string; // operation type
   owner: string; // operation owner (color)
@@ -64,7 +67,7 @@ interface OpInfo {
 }
 
 /**  Generic processing related to Operation Machine */
-class GameMachine extends Game1Tokens {
+export class GameMachine extends Game1Tokens {
   opInfo: OpInfo;
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
     if (!this.bga.players.isCurrentPlayerActive()) {
@@ -251,8 +254,8 @@ class GameMachine extends Game1Tokens {
     return args.ttype == "token_count";
   }
 
-  onLeavingState(stateName: string): void {
-    super.onLeavingState(stateName);
+  onLeavingState(stateName: string, args: any): void {
+    super.onLeavingState(stateName, args);
     $("button_undo")?.remove();
   }
 

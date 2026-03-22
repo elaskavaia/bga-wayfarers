@@ -6,9 +6,12 @@
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
+ *
  */
 
-class LaAnimations {
+import { placeHtml, StringProperties } from "./Game0Basics";
+
+export class LaAnimations {
   public defaultAnimationDuration: number = 500;
   phantomMove(
     mobileId: ElementOrId,
@@ -160,6 +163,112 @@ class LaAnimations {
     clone.style.transitionDuration = undefined;
 
     return clone;
+  }
+
+  /**
+   * Pulse an element: scale up then back to normal size.
+   * If called again while already pulsing, queues the next pulse after the current one.
+   */
+  pulse(targetId: ElementOrId, scale: number = 2, duration: number = 400) {
+    const node = $(targetId) as HTMLElement;
+    if (!node) return;
+    const pending = Number(node.dataset.pulseQueue || 0);
+    if (pending > 0) {
+      node.dataset.pulseQueue = String(pending + 1);
+      return;
+    }
+    node.dataset.pulseQueue = "1";
+    this.doPulse(node, scale, duration);
+  }
+
+  private doPulse(node: HTMLElement, scale: number, duration: number) {
+    const half = duration / 2;
+    node.style.transitionDuration = half + "ms";
+    node.style.transitionProperty = "transform";
+    node.style.transitionTimingFunction = "ease-out";
+    node.offsetHeight;
+    node.style.transform = `scale(${scale})`;
+    setTimeout(() => {
+      node.style.transitionTimingFunction = "ease-in";
+      node.style.transform = "";
+      setTimeout(() => {
+        const remaining = Number(node.dataset.pulseQueue || 0) - 1;
+        if (remaining > 0) {
+          node.dataset.pulseQueue = String(remaining);
+          this.doPulse(node, scale, duration);
+        } else {
+          delete node.dataset.pulseQueue;
+          node.style.removeProperty("transition-duration");
+          node.style.removeProperty("transition-property");
+          node.style.removeProperty("transition-timing-function");
+        }
+      }, half);
+    }, half);
+  }
+
+  /**
+   * Clone an element, position it over a target, then float up and fade out.
+   * The original element is not affected.
+   */
+  evaporate(mobileId: ElementOrId, targetId: ElementOrId, duration?: number) {
+    const mobileNode = $(mobileId) as HTMLElement;
+    const targetNode = $(targetId) as HTMLElement;
+    if (!mobileNode || !targetNode) return;
+    if (duration === undefined) duration = 1200;
+
+    // Project a clone of the target to get its position on oversurface
+    const targetClone = this.projectOnto(targetNode, "_evap_dest");
+    const targetLeft = targetClone.style.left;
+    const targetTop = targetClone.style.top;
+    targetClone.remove();
+
+    // Project a clone of the mobile onto oversurface
+    const clone = this.projectOnto(mobileNode, "_evap");
+    // Reposition clone over the target (centered horizontally, above vertically)
+    clone.style.left = targetLeft;
+    clone.style.top = targetTop;
+    clone.style.pointerEvents = "none";
+    clone.offsetHeight; // force reflow
+
+    // Animate: float up + fade out
+    clone.style.transitionDuration = duration + "ms";
+    clone.style.transitionProperty = "opacity, transform";
+    clone.style.transitionTimingFunction = "ease-out";
+    clone.offsetHeight; // force reflow
+    clone.style.opacity = "0";
+    clone.style.transform = (clone.style.transform || "") + " translateY(-60px) scale(1.3)";
+
+    setTimeout(() => clone.remove(), duration);
+  }
+
+  /**
+   * Shrink and fade an element in place.
+   * The element is hidden (opacity 0) during the animation; a clone performs the visual effect.
+   */
+  shrinkAndFade(mobileId: ElementOrId, duration?: number): Promise<void> {
+    const mobileNode = $(mobileId) as HTMLElement;
+    if (!mobileNode) return Promise.resolve();
+    if (duration === undefined) duration = 600;
+
+    const clone = this.projectOnto(mobileNode, "_shrink");
+    clone.style.pointerEvents = "none";
+    mobileNode.style.opacity = "0";
+    clone.offsetHeight; // force reflow
+
+    clone.style.transitionDuration = duration + "ms";
+    clone.style.transitionProperty = "opacity, transform";
+    clone.style.transitionTimingFunction = "ease-in";
+    clone.offsetHeight; // force reflow
+    clone.style.opacity = "0";
+    clone.style.transform = (clone.style.transform || "") + " scale(0)";
+
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        clone.remove();
+        mobileNode.style.removeProperty("opacity");
+        resolve();
+      }, duration);
+    });
   }
 
   cardFlip(mobileId: ElementOrId, newState: string, duration?: number, onEnd?: (node?: HTMLElement) => void) {

@@ -6,40 +6,47 @@
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
+ *
  */
+
+import { Game0Basics, NotificationMessage, placeHtml, getPart, getParentParts, StringProperties } from "./Game0Basics";
+import { LaAnimations } from "./LaAnimations";
+import { BgaAnimations } from "./libs";
 
 /**
  * Interface that mimics token datatabase object
  */
-interface Token {
+export interface Token {
   key: string;
   location: string;
   state: number;
 }
 
-interface TokenDisplayInfo {
+export interface TokenDisplayInfo {
   key: string; // token id
   tokenId: string; // original id of html node
   typeKey: string; // this is key in token_types structure
   mainType: string; // first type
   imageTypes: string; // all classes
+  imageData?: Record<string, string>; // data-* attributes for tooltip image
   name?: string | NotificationMessage;
   tooltip?: string | NotificationMessage;
   showtooltip?: boolean;
   [key: string]: any;
 }
 
-interface TokenMoveInfo extends Token {
+export interface TokenMoveInfo extends Token {
   onStart?: (node: Element) => Promise<void> | void;
   onEnd?: (node: Element) => void;
   onClick?: (event?: any) => void;
   animtime?: number;
+  noa?: boolean;
   nop?: boolean;
   place_from?: string;
   inc?: number;
 }
 
-interface AnimArgs {
+export interface AnimArgs {
   duration?: number;
   noa?: boolean;
   nop?: boolean;
@@ -47,11 +54,10 @@ interface AnimArgs {
   delay?: number;
   place_from?: string;
   inc?: number;
+  anim_target?: string;
 }
 
-type StringProperties = { [key: string]: string };
-
-class Game1Tokens extends Game0Basics {
+export class Game1Tokens extends Game0Basics {
   CON: { [key: string]: string }; // constants from php
   original_click_id: any;
   globlog: number = 1;
@@ -99,14 +105,14 @@ class Game1Tokens extends Game0Basics {
     this.updateCountersSafe(this.gamedatas.counters);
   }
 
-  onLeavingState(stateName: string): void {
+  onLeavingState(stateName: string, args: any): void {
     console.log("onLeavingState: " + stateName);
     //this.disconnectAllTemp();
     this.removeAllClasses(this.classActiveSlot, this.classActiveSlotHidden);
-    if (!this.on_client_state) {
+    if (!gameui.on_client_state) {
       this.removeAllClasses(this.classSelected, this.classSelectedAlt);
     }
-    super.onLeavingState(stateName);
+    //super.onLeavingState(stateName);
   }
 
   cancelLocalStateEffects() {
@@ -260,6 +266,7 @@ class Game1Tokens extends Game0Basics {
     const classes = displayInfo.imageTypes.split(/  */);
     tokenNode.classList.add(...classes);
     if (displayInfo.name) tokenNode.dataset.name = this.getTr(displayInfo.name);
+    if (displayInfo.tc) tokenNode.dataset.tc = displayInfo.tc;
     this.addListenerWithGuard(tokenNode, placeInfo.onClick);
   }
 
@@ -348,8 +355,8 @@ class Game1Tokens extends Game0Basics {
   async placeTokenServer(tokenId: string, location: string, state?: number, args?: any) {
     const tokenInfo = this.setTokenInfo(tokenId, location, state, true, args);
     await this.placeToken(tokenId, tokenInfo, args);
-    this.updateTooltip(tokenId);
-    this.updateTooltip(tokenInfo.location);
+    this.updateTooltip(tokenId, undefined, { force: true });
+    this.updateTooltip(tokenInfo.location, undefined, { force: true });
   }
 
   prapareToken(tokenId: string, tokenDbInfo?: Token, args: AnimArgs = {}) {
@@ -412,7 +419,7 @@ class Game1Tokens extends Game0Basics {
       const tokenNode = $(tokenId);
       let animTime = placeInfo.animtime ?? this.defaultAnimationDuration;
 
-      if (this.game.bgaAnimationsActive() == false || args.noa || placeInfo.animtime === 0 || !tokenNode.parentNode) {
+      if (this.game.bgaAnimationsActive() == false || args.noa || placeInfo.noa || placeInfo.animtime === 0 || !tokenNode.parentNode) {
         animTime = 0;
       }
 
@@ -428,7 +435,7 @@ class Game1Tokens extends Game0Basics {
     }
   }
 
-  updateTooltip(tokenId: string, attachTo?: ElementOrId, delay?: number) {
+  updateTooltip(tokenId: string, attachTo?: ElementOrId, options: { delay?: number; force?: boolean } = {}) {
     if (attachTo === undefined) {
       attachTo = tokenId;
     }
@@ -444,7 +451,7 @@ class Game1Tokens extends Game0Basics {
       console.error("cannot calc tooltip" + tokenId);
       return;
     }
-    var tokenInfo = this.getTokenDisplayInfo(tokenId);
+    var tokenInfo = this.getTokenDisplayInfo(tokenId, options.force);
     if (tokenInfo.name) {
       attachNode.dataset.name = this.game.getTr(tokenInfo.name);
     }
@@ -468,7 +475,7 @@ class Game1Tokens extends Game0Basics {
       if (attachNode.id != tokenId) attachNode.dataset.tt = tokenId; // id of token that provides the tooltip
 
       //console.log("addTooltipHtml", attachNode.id);
-      this.game.addTooltipHtml(attachNode.id, main, delay ?? this.game.defaultTooltipDelay);
+      this.game.addTooltipHtml(attachNode.id, main, options.delay ?? this.game.defaultTooltipDelay);
       attachNode.removeAttribute("title"); // unset title so both title and tooltip do not show up
 
       this.handleStackedTooltips(attachNode);
@@ -491,7 +498,7 @@ class Game1Tokens extends Game0Basics {
   }
 
   getTooltipHtmlForTokenInfo(tokenInfo: TokenDisplayInfo) {
-    return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes, tokenInfo.reverseImageTypes);
+    return this.getTooltipHtml(tokenInfo.name, tokenInfo.tooltip, tokenInfo.imageTypes, tokenInfo.reverseImageTypes, tokenInfo.imageData);
   }
 
   getTokenName(tokenId: string, force: boolean = true): string {
@@ -508,7 +515,8 @@ class Game1Tokens extends Game0Basics {
     name: string | NotificationMessage,
     message: string | NotificationMessage,
     imgTypes: string = "",
-    reverseImgTypes: string = ""
+    reverseImgTypes: string = "",
+    imageData?: Record<string, string>
   ) {
     if (name == null || message == "-") return "";
     if (!message) message = "";
@@ -523,7 +531,12 @@ class Game1Tokens extends Game0Basics {
           <div class='tooltipimage ${reverseImgTypes}'></div>
         `;
       } else {
-        divImg = `<div class='tooltipimage ${imgTypes}'></div>`;
+        const dataAttrs = imageData
+          ? Object.entries(imageData)
+              .map(([k, v]) => `data-${k}="${v}"`)
+              .join(" ")
+          : "";
+        divImg = `<div class='tooltipimage ${imgTypes}' ${dataAttrs}></div>`;
       }
       var itypes = imgTypes.split(" ");
       for (var i = 0; i < itypes.length; i++) {
@@ -551,9 +564,13 @@ class Game1Tokens extends Game0Basics {
     </div>`;
   }
 
-  getTokenInfoState(tokenId: string) {
+  getTokenState(tokenId: string) {
     var tokenInfo = this.gamedatas.tokens[tokenId];
-    return parseInt(tokenInfo.state);
+    return Number(tokenInfo?.state);
+  }
+  getTokenLocation(tokenId: string) {
+    var tokenInfo = this.gamedatas.tokens[tokenId];
+    return tokenInfo?.location;
   }
 
   getAllRules(tokenId: string) {
@@ -649,11 +666,18 @@ class Game1Tokens extends Game0Basics {
   getTokenPresentaton(type: string, tokenKey: string, args: any = {}): string {
     if (type.includes("_div")) return this.createTokenImage(tokenKey);
     if (tokenKey.includes("wicon")) return this.createTokenImage(tokenKey);
-    return this.getTokenName(tokenKey); // just a name for now
+    return this.getTokenName(tokenKey);
   }
   // override to generate dynamic tooltips and such
   updateTokenDisplayInfo(tokenDisplayInfo: TokenDisplayInfo) {}
 
+  ttSection(prefix: string, text: string) {
+    if (prefix) return `<p><b>${prefix}</b>: ${text}</p>`;
+    else return `<p>${text}</p>`;
+  }
+  iiSection(text: string) {
+    return `<p><i>${text}</i></p>`;
+  }
   createTokenImage(tokenId: string, state: number = 0) {
     const div = document.createElement("div");
     div.id = tokenId + "_tt_" + this.globlog++;
@@ -676,6 +700,7 @@ class Game1Tokens extends Game0Basics {
   bgaFormatText(log: string, args: any) {
     try {
       if (log && args) {
+        // if adding key here and it ends with _name make sure also exclude from rtr in dbSetTokenLocation
         var keys = [
           "token_name",
           "token2_name",
@@ -706,9 +731,6 @@ class Game1Tokens extends Game0Basics {
             if (res) args[key] = res;
             continue;
           }
-          if (typeof arg_value == "string" && this.isMarkedForTranslation(key, args)) {
-            continue;
-          }
           var res = this.getTokenPresentaton(key, arg_value, args);
           if (res) args[key] = res;
         }
@@ -729,17 +751,17 @@ class Game1Tokens extends Game0Basics {
   ) {
     if (!$(token)) console.error(`token not found for ${token}`);
     if ($(token)?.parentNode == $(finalPlace)) return;
-    if (this.game.bgaAnimationsActive() == false) {
+    if (gameui.bgaAnimationsActive() == false) {
       duration = 0;
       delay = 0;
     }
-    if (delay) await this.wait(delay);
+    if (delay) await gameui.wait(delay);
     this.animationLa.phantomMove(token, finalPlace, duration, mobileStyle, onEnd);
-    return this.wait(duration);
+    return gameui.wait(duration);
   }
 
   async notif_animate(args: any) {
-    return this.game.wait(args.time ?? 1);
+    return gameui.wait(args.time ?? 1);
   }
 
   async notif_tokenMovedAsync(args: any) {
@@ -790,13 +812,13 @@ player_name (only for PlayerCounter)
       const node = $(name);
       if (node && this.gamedatas.tokens[name]) {
         args.nop = true; // no move animation
-        return Promise.all([this.placeTokenServer(name, this.gamedatas.tokens[name].location, value, args), this.game.wait(500)]);
+        return Promise.all([this.placeTokenServer(name, this.gamedatas.tokens[name].location, value, args), gameui.wait(500)]);
       } else if (node) {
         node.dataset.state = value;
       }
     } catch (ex) {
       console.error("Cannot update " + args.counter_name, ex, ex.stack);
     }
-    return this.game.wait(500);
+    return gameui.wait(500);
   }
 }

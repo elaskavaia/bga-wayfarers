@@ -8,7 +8,11 @@
  * -----
  */
 
-class HelpMode {
+import { Game0Basics } from "./Game0Basics";
+
+declare const dijit: any;
+
+export class HelpMode {
   _helpMode: boolean = false; // help mode where tooltip shown instead of click action
   _displayedTooltip: any = null; // used in help mode
   constructor(private game: Game0Basics) {}
@@ -29,7 +33,7 @@ class HelpMode {
     $("ebd-body").classList.add("help-mode");
     this._displayedTooltip = null;
     document.body.addEventListener("click", this.closeHelpHandler);
-    this.game.statusBar.setTitle(_("HELP MODE Activated. Click on game elements to get tooltips"));
+    this.game.bga.statusBar.setTitle(_("HELP MODE Activated. Click on game elements to get tooltips"));
     $("generalactions").replaceChildren();
     this.game.addCancelButton(undefined, () => this.deactivateHelpMode());
 
@@ -48,7 +52,7 @@ class HelpMode {
     document.querySelectorAll(".withtooltip").forEach((node) => {
       node.removeEventListener("click", this.helpModeHandler, false);
     });
-    this.game.on_client_state = true;
+    (gameui as any).on_client_state = true;
     this.game.cancelLocalStateEffects();
   }
 
@@ -70,9 +74,9 @@ class HelpMode {
 
   showHelp(id: string, force?: boolean) {
     if (!force) if (!this._helpMode) return false;
-    if (this.game.tooltips[id]) {
+    if ((gameui as any).tooltips[id]) {
       dijit.hideTooltip(id);
-      var html = this.game.tooltips[id].getContent($(id));
+      var html = (gameui as any).tooltips[id].getContent($(id));
       this._displayedTooltip = this.game.showPopin(html, "current_tooltip");
       return true;
     }

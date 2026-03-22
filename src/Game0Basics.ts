@@ -1,76 +1,51 @@
 /**
  *------
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
- * GalacticCruise implementation : © Alena Laskavaia <laskava@gmail.com>
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
  *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
  *
  */
-// @ts-ignore
-GameGui = /** @class */ (function () {
-  function GameGui() {}
-  return GameGui;
-})();
 
 /** Class that extends default bga core game class with more functionality
  */
-
-class Game0Basics extends GameGui<any> {
+export type StringProperties = { [key: string]: string };
+export class Game0Basics {
   player_color: string;
   defaultTooltipDelay: number = 800;
+  public gamedatas!: CustomGamedatas;
+  public bga: Bga;
 
-  constructor() {
-    super();
-    console.log("game constructor");
+  // proxies for GameGui properties/methods accessed via gameui
+  get player_id() {
+    return gameui.player_id;
   }
 
-  // state hooks
+  format_string_recursive(log: string, args: any): string {
+    return gameui.format_string_recursive(log, args);
+  }
+
+  addTooltipHtml(nodeId: string, html: string, delay?: number): void {
+    gameui.addTooltipHtml(nodeId, html, delay);
+  }
+
+  bgaAnimationsActive(): boolean {
+    return gameui.bgaAnimationsActive();
+  }
+
+  constructor(bga: Bga) {
+    console.log("game constructor");
+    this.bga = bga;
+  }
+
   setup(gamedatas: any) {
+    this.gamedatas = gamedatas;
     console.log("Starting game setup", gamedatas);
     const first_player_id = Object.keys(gamedatas.players)[0];
     if (!this.bga.players.isCurrentPlayerSpectator()) this.player_color = gamedatas.players[this.player_id].color;
     else this.player_color = gamedatas.players[first_player_id].color;
-  }
-
-  onEnteringState(stateName: string, eargs: { args: any }) {
-    console.log("onEnteringState", stateName, eargs, this.debugStateInfo());
-
-    // Call appropriate method
-    const args = eargs?.args; // this method has extra wrapper for args for some reason
-    this.callfn("onEnteringState_before", args);
-    const methodName = "onEnteringState_" + stateName;
-
-    // Call appropriate method
-    const privates = args._private;
-    let nargs = args;
-    if (privates) {
-      nargs = { ...nargs, ...privates };
-      delete nargs._private;
-    }
-
-    this.callfn(methodName, nargs);
-  }
-
-  onLeavingState(stateName: string) {
-    //console.log("onLeavingState", stateName, this.debugStateInfo());
-
-    const methodName = "onLeavingState_" + stateName;
-    this.callfn(methodName, {});
-  }
-
-  onUpdateActionButtons(stateName: string, args: any) {
-    // Call appropriate method
-    console.log("onUpdateActionButtons", stateName, this.debugStateInfo());
-    const privates = args._private;
-    let nargs = args;
-    if (privates) {
-      nargs = { ...nargs, ...privates };
-      delete nargs._private;
-    }
-
-    this.callfn("onUpdateActionButtons_" + stateName, nargs);
   }
 
   // utils
@@ -95,41 +70,9 @@ class Game0Basics extends GameGui<any> {
   cancelLocalStateEffects() {
     //console.log(this.last_server_state);
 
-    if (this.on_client_state) this.restoreServerGameState();
+    if (gameui.on_client_state) gameui.restoreServerGameState();
 
-    this.updatePageTitle(this.gamedatas.gamestate);
-  }
-
-  /**
-   * Function overriden to prevent format error on reset
-   * @Override
-   * @param state
-   * @returns
-   */
-  updatePageTitle(state = null) {
-    //debugger;
-    //console.log("updatePageTitle", state);
-    if ((this as any).prevent_error_rentry === undefined) (this as any).prevent_error_rentry = 11; // XXX hack to prevent popin up formatter error
-    try {
-      return this.inherited(arguments);
-    } catch (e) {
-      console.error("updatePageTitle", e);
-    } finally {
-      (this as any).prevent_error_rentry = undefined;
-    }
-  }
-  /**
-   * Function overriden to prevent interface lock of other player
-   * @Override
-   * @param state
-   * @returns
-   */
-  onLockInterface(lock) {
-    if (lock.status == "queued") {
-      // hack: do not hide the buttons when locking call comes from another player
-    } else {
-      this.inherited(arguments);
-    }
+    gameui.updatePageTitle();
   }
 
   destroyDivOtherCopies(id: string) {
@@ -201,35 +144,8 @@ class Game0Basics extends GameGui<any> {
     if (!nodeId) return;
     //console.log("removeTooltip", nodeId);
     $(nodeId)?.classList.remove("withtooltip");
-    this.inherited(arguments);
-    delete this.tooltips[nodeId];
-  }
-  /**
-   * setClientState and defines handler for onUpdateActionButtons and onToken for specific client state only
-   * the setClientState will be called asyncroniously
-   * @param name - state name i.e. client_foo
-   * @param onUpdate - onUpdateActionButtons handler
-   * @param onToken - onToken handler
-   * @param args - args passes to setClientState
-   */
-  setClientStateUpdOn(name: string, onUpdate: (args: any) => void, onToken: (id: string) => void, args?: any) {
-    this[`onUpdateActionButtons_${name}`] = onUpdate;
-    if (onToken) this[`onToken_${name}`] = onToken;
-    setTimeout(() => this.setClientState(name, args), 1);
-  }
-
-  debugStateInfo() {
-    let replayMode = false;
-    if (typeof g_replayFrom != "undefined") {
-      replayMode = true;
-    }
-
-    const res = {
-      isCurrentPlayerActive: gameui.bga.players.isCurrentPlayerActive(),
-      animationsActive: gameui.bgaAnimationsActive(),
-      replayMode: replayMode
-    };
-    return res;
+    gameui.removeTooltip(nodeId);
+    delete (gameui as any).tooltips[nodeId]; // HACK: removeTooltip leaking this entry, removing manually
   }
 
   callfn(methodName: string, ...args: any) {
@@ -240,16 +156,12 @@ class Game0Basics extends GameGui<any> {
     return undefined;
   }
   /** @Override onScriptError from gameui */
-  onScriptError(msg: any, url, linenumber) {
+  onScriptError(msg: any, url: any, linenumber: any) {
     if ((gameui as any).page_is_unloading) {
       // Don't report errors during page unloading
       return;
     }
-    // In anycase, report these errors in the console
     console.error(msg);
-    // cannot call super - dojo still have to used here
-    //super.onScriptError(msg, url, linenumber);
-    return this.inherited(arguments);
   }
 
   divYou() {
@@ -291,14 +203,14 @@ class Game0Basics extends GameGui<any> {
 
     if ((name as any).log !== undefined) {
       const notif = name as NotificationMessage;
-      const log = this.format_string_recursive(this.clienttranslate_string(notif.log), notif.args);
+      const log = this.format_string_recursive((gameui as any).clienttranslate_string(notif.log), notif.args);
       return log;
     }
     if (typeof name !== "string") return name.toString();
 
     //if (name.includes("$"))
     {
-      const log = this.format_string_recursive(this.clienttranslate_string(name) as string, args);
+      const log = this.format_string_recursive((gameui as any).clienttranslate_string(name) as string, args);
       return log;
     }
 
@@ -329,8 +241,7 @@ class Game0Basics extends GameGui<any> {
     // override
   }
 
-  addMoveToLog(log_id: number, move_id) {
-    this.inherited(arguments);
+  addMoveToLog(log_id: number, move_id: number) {
     if (move_id) this.lastMoveId = move_id;
     if (this.prevLogId + 1 < log_id) {
       // we skip over some logs, but we need to look at them also
@@ -352,7 +263,7 @@ class Game0Basics extends GameGui<any> {
       const lognode = $("log_" + log_id);
       lognode.appendChild(tsnode);
 
-      tsnode.setAttribute("data-move-id", move_id);
+      tsnode.setAttribute("data-move-id", String(move_id));
     }
     this.prevLogId = log_id;
   }
@@ -373,20 +284,20 @@ class Game0Basics extends GameGui<any> {
   }
 
   notif_message_warning(notif: Notif) {
-    if (this.bgaAnimationsActive()) {
+    if (gameui.bgaAnimationsActive()) {
       var message = this.format_string_recursive(notif.log, notif.args);
       this.bga.dialogs.showMessage(_("Warning:") + " " + message, "info");
     }
   }
 
   notif_message_info(notif: Notif) {
-    if (this.bgaAnimationsActive()) {
+    if (gameui.bgaAnimationsActive()) {
       var message = this.format_string_recursive(notif.log, notif.args);
       this.bga.dialogs.showMessage(_("Announcement:") + " " + message, "info");
     }
   }
 }
-interface NotificationMessage {
+export interface NotificationMessage {
   log: string;
   args?: {
     [key: string]: any;
@@ -394,19 +305,19 @@ interface NotificationMessage {
 }
 
 /** This is essentically dojo.place but without dojo */
-function placeHtml(html: string, parent: ElementOrId, how: InsertPosition = "beforeend") {
+export function placeHtml(html: string, parent: ElementOrId, how: InsertPosition = "beforeend") {
   $(parent).insertAdjacentHTML(how, html);
 }
-function getIntPart(word, i) {
+export function getIntPart(word: string, i: number) {
   return parseInt(getPart(word, i));
 }
-function getPart(word: string, i: number) {
+export function getPart(word: string, i: number) {
   var arr = word.split("_");
   if (i < 0) i = arr.length + i;
   if (arr.length <= i) return "";
   return arr[i];
 }
-function getFirstParts(word, count) {
+export function getFirstParts(word: string, count: number) {
   var arr = word.split("_");
   var res = arr[0];
   for (var i = 1; i < arr.length && i < count; i++) {
@@ -414,7 +325,7 @@ function getFirstParts(word, count) {
   }
   return res;
 }
-function getParentParts(word) {
+export function getParentParts(word: string) {
   var arr = word.split("_");
   if (arr.length <= 1) return "";
   return getFirstParts(word, arr.length - 1);
