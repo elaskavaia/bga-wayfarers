@@ -30,17 +30,11 @@ final class Op_orderTest extends TestCase {
         $this->assertContains("food", $opTypes);
     }
 
-    public function testAutoResolves_SingleDelegate(): void {
-        // Single non-trivial delegate — no choice needed
+    public function testAutoDoesNotResolve_MixedTrivialAndNonTrivial(): void {
+        // cardFolk (non-trivial) + coin (trivial) — user should choose order for all
         $op = $this->game->machine->instanciateOperation("cardFolk+coin", PCOLOR);
-        // coin is trivial, cardFolk is not — after stripping trivial, only 1 remains
         $result = $op->auto();
-        $this->assertTrue($result, "Op_order should auto-resolve when only 1 non-trivial delegate remains");
-
-        $ops = $this->game->machine->db->getOperations();
-        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
-        $this->assertContains("coin", $opTypes, "Trivial delegate should be queued");
-        $this->assertContains("cardFolk", $opTypes, "Remaining delegate should be queued");
+        $this->assertFalse($result, "Op_order should not auto-resolve when mix of trivial and non-trivial delegates");
     }
 
     public function testAutoDoesNotResolve_MultipleNonTrivial(): void {
@@ -58,16 +52,13 @@ final class Op_orderTest extends TestCase {
         $this->assertTrue($result, "Op_order with no delegates should auto-resolve");
     }
 
-    public function testAutoStripsTrivial_KeepsNonTrivial(): void {
+    public function testAutoDoesNotResolve_MixedMultiple(): void {
         // coin (trivial) + infMove (non-trivial) + food (trivial) + cardFolk (non-trivial)
+        // All delegates should be kept for user ordering
         $op = $this->game->machine->instanciateOperation("coin+infMove+food+cardFolk", PCOLOR);
-        $op->saveToDb(1, true);
-        $this->game->machine->dispatchAll();
-
-        // Order should remain on stack with only non-trivial delegates
-        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
-        $this->assertInstanceOf(Op_order::class, $top, "Order should remain on stack");
-        $this->assertEquals("infMove+cardFolk", $top->getTypeFullExpr(), "Should have 2 non-trivial delegates remaining");
+        $result = $op->auto();
+        $this->assertFalse($result, "Op_order should not auto-resolve with mixed trivial/non-trivial delegates");
+        $this->assertEquals("coin+infMove+food+cardFolk", $op->getTypeFullExpr(), "All delegates should remain");
     }
 
     public function testAutoResolves_SingleSeqDelegate(): void {
@@ -90,6 +81,27 @@ final class Op_orderTest extends TestCase {
         // No operations should remain
         $ops = $this->game->machine->db->getOperations();
         $this->assertEmpty($ops, "All operations should be resolved");
+    }
+
+    public function testIsTrivial_AllTrivialDelegates(): void {
+        $op = $this->game->machine->instanciateOperation("coin+food", PCOLOR);
+        $this->assertTrue($op->isTrivial(), "Op_order with all trivial delegates should be trivial");
+    }
+
+    public function testIsTrivial_NoDelegates(): void {
+        /** @var Op_order */
+        $op = $this->game->machine->instanciateOperation("order", PCOLOR);
+        $this->assertTrue($op->isTrivial(), "Op_order with no delegates should be trivial");
+    }
+
+    public function testIsTrivial_OneNonTrivial(): void {
+        $op = $this->game->machine->instanciateOperation("coin+cardFolk", PCOLOR);
+        $this->assertFalse($op->isTrivial(), "Op_order with a non-trivial delegate should not be trivial");
+    }
+
+    public function testIsTrivial_AllNonTrivial(): void {
+        $op = $this->game->machine->instanciateOperation("infMove+cardFolk", PCOLOR);
+        $this->assertFalse($op->isTrivial(), "Op_order with all non-trivial delegates should not be trivial");
     }
 
     public function testCountIsOne(): void {

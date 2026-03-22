@@ -26,29 +26,24 @@ class Op_order extends ComplexOperation {
     public function auto(): bool {
         $this->game->systemAssert("Op_order does not support counts", $this->getCount() == 1 && $this->getMinCount() == 1);
         // Auto-queue trivial delegates (order doesn't matter for them)
-        $modified = false;
-        foreach ($this->delegates as $i => $sub) {
-            if ($sub->isTrivial()) {
-                $this->queueOp($sub);
-                unset($this->delegates[$i]);
-                $modified = true;
-            }
-        }
-
-        // If 0 or 1 non-trivial delegates remain, queue and auto-resolve
-        if (count($this->delegates) <= 1) {
+        // If 0 or 1 delegates, queue and auto-resolve
+        if ($this->isTrivial() || count($this->delegates) <= 1) {
             foreach ($this->delegates as $sub) {
                 $this->queueOp($sub);
             }
             return true;
         }
 
-        if ($modified) {
-            $this->queueOp($this);
-            return true;
-        }
-
         return false;
+    }
+
+    function isTrivial(): bool {
+        foreach ($this->delegates as $sub) {
+            if (!$sub->isTrivial()) {
+                return false;
+            }
+        }
+        return true;
     }
 
     function resolve(): void {
