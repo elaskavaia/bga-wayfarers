@@ -9,7 +9,7 @@
  *
  */
 
-const BgaAnimations = (await globalThis.importEsmLib("bga-animations", "1.x")) as { Manager: typeof AnimationManager };
-const BgaScoreSheet = (await globalThis.importEsmLib("bga-score-sheet", "1.x")) as { ScoreSheet: typeof ScoreSheet };
+const BgaAnimations = (await importEsmLib("bga-animations", "1.x")) as { Manager: typeof AnimationManager };
+const BgaScoreSheet = (await importEsmLib("bga-score-sheet", "1.x")) as { ScoreSheet: typeof ScoreSheet };
 
 export { BgaAnimations, BgaScoreSheet };
