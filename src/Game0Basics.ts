@@ -36,7 +36,7 @@ export class Game0Basics {
   }
 
   constructor(bga: Bga) {
-    console.log("game constructor");
+    //console.log("game constructor");
     this.bga = bga;
   }
 

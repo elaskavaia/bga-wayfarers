@@ -11,7 +11,8 @@
     "watch": "npm run watch:ts && npm run watch:scss",
     "build": "npm run build:ts && npm run build:scss && npm run genmat",
     "genmat": "php8.4 misc/other/genmat.php misc/*.csv",
-    "tests": "APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./modules/php/Tests/_autoload.php  --colors=always modules/php/Tests"
+    "tests": "APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./modules/php/Tests/_autoload.php  --colors=always modules/php/Tests",
+    "jstests": "TS_NODE_PROJECT=src/tests/tsconfig.json mocha -r ts-node/register -r src/tests/setup.ts src/tests/**/*.spec.ts"
   },
   "author": "Alena Laskavaia",
   "license": "EPL2.0",
@@ -19,6 +20,7 @@
     "@prettier/plugin-php": "^0.22",
     "@rollup/plugin-typescript": "^12.3.0",
     "@types/chai": "^4.x.x",
+    "@types/jsdom": "^28.0.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "^10.9.2",
     "@types/sinon": "^10.x.x",

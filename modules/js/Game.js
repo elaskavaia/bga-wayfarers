@@ -26,7 +26,7 @@ class Game0Basics {
         this.defaultTooltipDelay = 800;
         this.lastMoveId = 0;
         this.prevLogId = 0;
-        console.log("game constructor");
+        //console.log("game constructor");
         this.bga = bga;
     }
     setup(gamedatas) {
@@ -638,8 +638,8 @@ function setStyleAttributes(element, attrs) {
  * -----
  *
  */
-const BgaAnimations = (await globalThis.importEsmLib("bga-animations", "1.x"));
-const BgaScoreSheet = (await globalThis.importEsmLib("bga-score-sheet", "1.x"));
+const BgaAnimations = (await importEsmLib("bga-animations", "1.x"));
+const BgaScoreSheet = (await importEsmLib("bga-score-sheet", "1.x"));
 
 /**
  *------
@@ -1964,7 +1964,7 @@ class Game extends GameMachine {
                 this.applyScale(node, min);
             });
         };
-        console.log("wayfarers constructor");
+        //console.log("wayfarers constructor");
         this.playerTurn = new PlayerTurn(this, bga);
         this.bga.states.register("PlayerTurn", this.playerTurn);
     }
@@ -2793,12 +2793,24 @@ class Game extends GameMachine {
         });
     }
     // Re-declare parent notif_ methods so setupPromiseNotifications discovers them
-    async notif_tokenMoved(args) { return super.notif_tokenMoved(args); }
-    async notif_counter(args) { return super.notif_counter(args); }
-    async notif_animate(args) { return super.notif_animate(args); }
-    notif_log(args) { return super.notif_log(args); }
-    notif_message_warning(notif) { return super.notif_message_warning(notif); }
-    notif_message_info(notif) { return super.notif_message_info(notif); }
+    async notif_tokenMoved(args) {
+        return super.notif_tokenMoved(args);
+    }
+    async notif_counter(args) {
+        return super.notif_counter(args);
+    }
+    async notif_animate(args) {
+        return super.notif_animate(args);
+    }
+    notif_log(args) {
+        return super.notif_log(args);
+    }
+    notif_message_warning(notif) {
+        return super.notif_message_warning(notif);
+    }
+    notif_message_info(notif) {
+        return super.notif_message_info(notif);
+    }
     async notif_message(args) {
         //console.log("notif", args);
         return gameui.wait(1);
@@ -2834,7 +2846,7 @@ class Game extends GameMachine {
             return { log: "", args: [] };
         try {
             if (typeof log !== "string") {
-                console.trace("Non-string log message", log, args);
+                //console.trace("Non-string log message", log, args);
                 if (log.log) {
                     return this.bgaFormatText(log.log, log.args);
                 }

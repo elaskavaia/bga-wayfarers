@@ -46,7 +46,7 @@ export class Game extends GameMachine {
 
   constructor(bga: Bga) {
     super(bga);
-    console.log("wayfarers constructor");
+    //console.log("wayfarers constructor");
 
     this.playerTurn = new PlayerTurn(this, bga);
     this.bga.states.register("PlayerTurn", this.playerTurn);
@@ -1013,12 +1013,24 @@ export class Game extends GameMachine {
     });
   }
   // Re-declare parent notif_ methods so setupPromiseNotifications discovers them
-  async notif_tokenMoved(args: any) { return super.notif_tokenMoved(args); }
-  async notif_counter(args: any) { return super.notif_counter(args); }
-  async notif_animate(args: any) { return super.notif_animate(args); }
-  notif_log(args: any) { return super.notif_log(args); }
-  notif_message_warning(notif: Notif) { return super.notif_message_warning(notif); }
-  notif_message_info(notif: Notif) { return super.notif_message_info(notif); }
+  async notif_tokenMoved(args: any) {
+    return super.notif_tokenMoved(args);
+  }
+  async notif_counter(args: any) {
+    return super.notif_counter(args);
+  }
+  async notif_animate(args: any) {
+    return super.notif_animate(args);
+  }
+  notif_log(args: any) {
+    return super.notif_log(args);
+  }
+  notif_message_warning(notif: Notif) {
+    return super.notif_message_warning(notif);
+  }
+  notif_message_info(notif: Notif) {
+    return super.notif_message_info(notif);
+  }
 
   async notif_message(args: any) {
     //console.log("notif", args);
@@ -1056,7 +1068,7 @@ export class Game extends GameMachine {
     if (!log) return { log: "", args: [] };
     try {
       if (typeof log !== "string") {
-        console.trace("Non-string log message", log, args);
+        //console.trace("Non-string log message", log, args);
         if ((log as any).log) {
           return this.bgaFormatText(log.log, log.args);
         }
