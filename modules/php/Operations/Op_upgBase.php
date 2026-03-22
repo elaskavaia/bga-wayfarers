@@ -190,7 +190,7 @@ abstract class Op_upgBase extends Op_acquireBase {
 
         if ($payop) {
             $op = $this->game->machine->instanciateOperation($payop, $this->getOwner());
-            return ["payop" => $payop, "payop_name" => $op->getOpName()] + parent::getExtraArgs();
+            return ["payop" => $payop, "payop_name" => $op->getIconicName()] + parent::getExtraArgs();
         }
         return ["payop" => "?", "payop_name" => "?"] + parent::getExtraArgs();
     }
