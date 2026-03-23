@@ -106,6 +106,8 @@ class Op_cardInsp extends Op_cardBase {
             // Gain the benefit
             $workerRule = $this->game->getRulesForAndAssert("action_insp_{$state}", "r");
             $this->queue($workerRule);
+            // Handle influence interaction if there's influence on the card
+            $this->queue("cardInteract", $owner, ["card" => $cardSelected]);
             // Discard the card
             $deck = "deck_insp";
             $extreme_pos = $this->game->tokens->db->getExtremePosition(false, $deck);

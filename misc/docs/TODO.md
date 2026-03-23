@@ -25,4 +25,4 @@
   - [ ] Rotate rectangular tiles to fit winding path
 
 - [ ] UI support for AI upgrade tiles placed alongside board (state 0, no caravan position)
-- [ ] Can we please have the AIs cards they collect be in a facedown pile, with the number of cards in the stack on them?
+- [x] Can we please have the AIs cards they collect be in a facedown pile, with the number of cards in the stack on them?
