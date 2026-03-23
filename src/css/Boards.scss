@@ -114,10 +114,6 @@
   justify-content: space-around;
 }
 
-#ebd-body[data-board-layout="scale"] #current_player_panel {
-  overflow: hidden;
-}
-
 #players_panels {
   overflow-x: auto;
   overflow-y: visible;
@@ -129,7 +125,7 @@
 }
 
 #ebd-body[data-board-layout="scale"] #players_panels {
-  overflow: hidden;
+  overflow: visible;
   justify-content: center;
   align-items: center;
 }
@@ -548,11 +544,13 @@
   }
 }
 
-// Layout mode: Scale to fit
-#ebd-body[data-board-layout="scale"] #mainarea {
-  overflow: hidden;
+#mainarea {
+  overflow: visible;
   justify-content: center;
   align-items: center;
+  .mainboardall {
+    min-width: max-content;
+  }
 }
 
 // Layout mode: Horizontal scroll
@@ -561,10 +559,6 @@
   overflow-y: visible;
   // Center when content fits, align left when scrolling needed
   justify-content: safe center;
-
-  .mainboardall {
-    min-width: max-content;
-  }
 }
 
 // Combined: scale + rotated - JavaScript handles the combined transform

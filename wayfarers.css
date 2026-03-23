@@ -1182,10 +1182,6 @@ html[data-theme=dark] .deck .counter {
   justify-content: space-around;
 }
 
-#ebd-body[data-board-layout=scale] #current_player_panel {
-  overflow: hidden;
-}
-
 #players_panels {
   overflow-x: auto;
   overflow-y: visible;
@@ -1197,7 +1193,7 @@ html[data-theme=dark] .deck .counter {
 }
 
 #ebd-body[data-board-layout=scale] #players_panels {
-  overflow: hidden;
+  overflow: visible;
   justify-content: center;
   align-items: center;
 }
@@ -1574,19 +1570,19 @@ html[data-theme=dark] .deck .counter {
   color: white;
 }
 
-#ebd-body[data-board-layout=scale] #mainarea {
-  overflow: hidden;
+#mainarea {
+  overflow: visible;
   justify-content: center;
   align-items: center;
+}
+#mainarea .mainboardall {
+  min-width: max-content;
 }
 
 #ebd-body[data-board-layout=scroll] #mainarea {
   overflow-x: auto;
   overflow-y: visible;
   justify-content: safe center;
-}
-#ebd-body[data-board-layout=scroll] #mainarea .mainboardall {
-  min-width: max-content;
 }
 
 #supply {
@@ -2855,11 +2851,19 @@ html[data-theme=dark] .miniboard .guild_count {
   display: none;
 }
 
+#thething_wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
 #thething {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  overflow: visible;
+}
+
+#ebd-body[data-board-layout=scale] #thething {
+  overflow: hidden;
 }
 
 .bgabutton_gray {

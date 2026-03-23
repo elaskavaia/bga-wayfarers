@@ -53,10 +53,8 @@ export class Game extends GameMachine {
   }
 
   readonly gameTemplate = `
+<div id="thething_wrap">
 <div id="thething">
-
-<div id="round_banner">
-</div>
 <div id='selection_area' class='selection_area'></div>
 <div id="game-score-sheet"></div>
   <div id="game-score-sheet-ai"></div>
@@ -124,13 +122,16 @@ export class Game extends GameMachine {
       <div id="guild_black" class="guild guild_black"></div>
     </div>
   </div>
- </div>
 </div>
-<div id="players_panels"></div>
+</div>
+  <div id="players_panels"></div>
 <div id="test_stuff">
 </div>
 <div id="supply">
 </div>
+ 
+</div>
+
 
 
 `;
@@ -339,21 +340,7 @@ export class Game extends GameMachine {
   }
 
   private boundUpdateBoardScale = () => {
-    this.updateBoardScale($("mainboardall"));
-    // main player
-    document.querySelectorAll("#current_player_panel .tableau").forEach((node: HTMLElement) => {
-      this.updateBoardScale(node);
-    });
-    // other players take max
-    let min = 1;
-    document.querySelectorAll("#players_panels .tableau").forEach((node: HTMLElement) => {
-      this.updateBoardScale(node);
-      const scale = parseFloat(node.dataset.scale);
-      if (scale < min) min = scale;
-    });
-    document.querySelectorAll("#players_panels .tableau").forEach((node: HTMLElement) => {
-      this.applyScale(node, min);
-    });
+    this.updateBoardScale($("thething"));
   };
 
   updateBoardScale(scalecontrol: HTMLElement) {
@@ -372,7 +359,12 @@ export class Game extends GameMachine {
 
     if (!set) return; // just unset
 
+    // Temporarily allow overflow and shrink to min-content to measure natural content width
+    scalecontrol.style.overflow = "visible";
+    scalecontrol.style.width = "min-content";
     const naturalWidth = scalecontrol.scrollWidth;
+    scalecontrol.style.width = "";
+    scalecontrol.style.overflow = "";
     const availableWidth = parent.clientWidth;
 
     let scale = 1;
@@ -380,15 +372,19 @@ export class Game extends GameMachine {
       scale = availableWidth / naturalWidth;
     }
 
-    this.applyScale(scalecontrol, scale);
+    this.applyScale(scalecontrol, scale, naturalWidth);
   }
 
-  applyScale(scalecontrol: HTMLElement, scale: number) {
+  applyScale(scalecontrol: HTMLElement, scale: number, naturalWidth?: number) {
     if (Math.abs(scale - 1) < 0.01) return;
+    // Set width to natural content width so scaling fills the available space
+    if (naturalWidth) {
+      scalecontrol.style.width = `${naturalWidth}px`;
+    }
     const naturalHeight = scalecontrol.scrollHeight;
     scalecontrol.dataset.scale = String(scale);
     scalecontrol.style.transform = `scale(${scale})`;
-    scalecontrol.style.transformOrigin = "top center";
+    scalecontrol.style.transformOrigin = "top left";
     // Use negative margin to reduce flow space instead of setting height,
     // so that absolutely positioned children keep their containing block size
     const reducedHeight = naturalHeight * (1 - scale);
@@ -1049,9 +1045,6 @@ export class Game extends GameMachine {
 
   async notif_endScores(args: any) {
     // setting scores will make the score sheet visible if it isn't already
-    if (args.final) {
-      $("round_banner").innerHTML = _("Game Over");
-    }
     await this.scoreSheet.setScores(args.endScores, {
       startBy: this.bga.players.getCurrentPlayerId()
     });

@@ -79,11 +79,19 @@
   display: none;
 }
 
+#thething_wrap {
+  width: 100%;
+  overflow: hidden;
+}
+
 #thething {
   display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: center;
+  flex-direction: column;
+  overflow: visible;
+}
+
+#ebd-body[data-board-layout="scale"] #thething {
+  overflow: hidden;
 }
 // BUTTONS
 
