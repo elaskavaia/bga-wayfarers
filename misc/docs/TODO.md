@@ -11,9 +11,9 @@
 
 ## Bugs
 
-- [ ] When Journalling, if you gain a Black Influence at any point on that turn you can then spend a Black Influence to Journal an additional time (you don't need to have the Black Influence at the start of the action) Table #851087 Move #63
+- [x] When Journalling, if you gain a Black Influence at any point on that turn you can then spend a Black Influence to Journal an additional time (you don't need to have the Black Influence at the start of the action) Table #851087 Move #63
       — waiting on designer input: should rest abilities be player-ordered, or journal resolved last?
-      [ ] So we give them a choce of townfolk, but since gain coin or food does no affect anything we can auto-resolve them first and move on to choices that matter
+      [x] So we give them a choce of townfolk, but since gain coin or food does no affect anything we can auto-resolve them first and move on to choices that matter
 
 - [x] When journaling is possible to gain black inf while resolving tile effect - need to shedule blackInf indepennt of current count
 - [x] Can recruit book/obs folk without spot/tag for it (home_1 is already occupied by pre-print)

@@ -83,6 +83,53 @@
     z-index: 2;
     bottom: 8.5%;
   }
+
+  // Facedown card piles with CSS counter
+  .column {
+    counter-reset: card-counter;
+
+    // Hide all except last card
+    .card:not(:last-child) {
+      visibility: hidden;
+    }
+
+    .card {
+      counter-increment: card-counter;
+
+      // Show count on the visible (last) card
+      &:last-child::after {
+        content: counter(card-counter);
+        position: absolute;
+        bottom: 1%;
+        right: 1%;
+        z-index: 10;
+        font-size: large;
+        font-weight: bold;
+        color: white;
+        text-shadow: v.$textShadowBlack;
+      }
+    }
+
+    // Card backs — same background-positions as deck classes
+    .card_folk {
+      background-position: 40% 100%;
+    }
+    .card_land {
+      background-image: url(img/cards_folk.jpg);
+      background-position: 60% 100%;
+    }
+    .card_water {
+      background-image: url(img/cards_folk.jpg);
+      background-position: 80% 100%;
+    }
+    .card_space {
+      background-position: 20% 100%;
+    }
+    .card_insp {
+      background-image: url(img/cards_folk.jpg);
+      background-position: 100% 100%;
+    }
+  }
 }
 
 .card_scheme {
