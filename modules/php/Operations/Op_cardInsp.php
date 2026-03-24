@@ -33,6 +33,9 @@ class Op_cardInsp extends Op_cardBase {
         return "insp";
     }
 
+    public function requireConfirmation() {
+        return true;
+    }
     function getPossibleMoves() {
         $cardSelected = $this->getCard();
 

@@ -2996,6 +2996,14 @@ button.bgabutton > * {
   background-color: #f8f8f8;
 }
 
+#score-area {
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: row;
+  justify-content: center;
+  gap: 20px;
+}
+
 .score-sheet {
   background-image: url(img/starbg.jpg);
   background-size: cover;

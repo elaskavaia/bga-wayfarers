@@ -85,7 +85,10 @@ abstract class Op_infBase extends CountableOperation {
                 $influenceKey = $this->game->tokens->db->createTokenAutoInc("influence_$owner", "tableau_$owner", 0);
             }
 
-            $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} places ${token_name} on ${place_name}'));
+            $icon = trim($this->getIconicName(), "[]");
+            $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} gains ${token_icon}'), [
+                "token_icon" => $icon,
+            ]);
         } else {
             // Move from another location
             $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} moves ${token_name} to ${place_name}'));

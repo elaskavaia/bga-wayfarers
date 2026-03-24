@@ -49,7 +49,7 @@ class Op_spendInfBlack extends Operation {
         if ($op->noValidTargets()) {
             return ["err" => clienttranslate("No valid targets for Journal")];
         }
-        return parent::getPossibleMoves();
+        return ["confirm" => ["q" => 0, "name" => clienttranslate("Spend Black Influence")]];
     }
 
     public function canSkip() {

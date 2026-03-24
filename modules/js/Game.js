@@ -1391,7 +1391,7 @@ class GameMachine extends Game1Tokens {
         }
         else if (opInfo.subtitle)
             this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
-        else if (opInfo.data.reason)
+        else if (opInfo.data?.reason)
             this.setSubPrompt(this.getReasonText(opInfo.data.reason));
         const multiselect = this.isMultiSelectArgs(opInfo);
         const sortedTargets = Object.keys(opInfo.info);
@@ -1857,6 +1857,11 @@ class PlayerTurn {
     // }
     onPlayerActivationChange(args, isCurrentPlayerActive) { }
 }
+class PlayerTurnConfirm extends PlayerTurn {
+    onEnteringState(args, isCurrentPlayerActive) {
+        this.bga.statusBar.addActionButton(_("Confirm"), () => this.game.resolveAction());
+    }
+}
 class Game extends GameMachine {
     constructor(bga) {
         super(bga);
@@ -1864,12 +1869,17 @@ class Game extends GameMachine {
         this.boardLayout = "scale";
         this.AI_PLAYER_ID = 1;
         this.AI_COLOR_OVERRIDE = "982fff";
+        this._ghostMouseHandler = null;
         this.gameTemplate = `
+<div id='selection_area' class='selection_area'></div>
+<div id="score-area">
+  <div id="game-score-sheet"></div>
+  <div id="game-score-sheet-ai"></div>
+</div>
+
+
 <div id="thething_wrap">
 <div id="thething">
-<div id='selection_area' class='selection_area'></div>
-<div id="game-score-sheet"></div>
-  <div id="game-score-sheet-ai"></div>
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
@@ -1951,8 +1961,8 @@ class Game extends GameMachine {
             this.updateBoardScale($("thething"));
         };
         //console.log("wayfarers constructor");
-        this.playerTurn = new PlayerTurn(this, bga);
-        this.bga.states.register("PlayerTurn", this.playerTurn);
+        this.bga.states.register("PlayerTurn", new PlayerTurn(this, bga));
+        this.bga.states.register("PlayerTurnConfirm", new PlayerTurnConfirm(this, bga));
     }
     setup(gamedatas) {
         try {
@@ -2238,19 +2248,11 @@ class Game extends GameMachine {
             }
         });
     }
-    onUpdateActionButtons_MultiPlayerTurnPrivate(opInfo) {
-        // this.onEnteringState_PlayerTurn(opInfo);
-        //console.log("onUpdateActionButtons_MultiPlayerTurnPrivate", opInfo);
-    }
-    onEnteringState_MultiPlayerTurnPrivate(opInfo) {
-        this.onEnteringState_PlayerTurn(opInfo);
-    }
-    onEnteringState_MultiPlayerMaster(opInfo) {
-        this.onEnteringState_PlayerTurn(opInfo);
-    }
     onEnteringState_PlayerTurn(opInfo) {
         console.log("onEnteringState_PlayerTurn", opInfo);
         super.onEnteringState_PlayerTurn(opInfo);
+        if (!this.bga.players.isCurrentPlayerActive())
+            return;
         switch (opInfo.type) {
             case "turn":
                 // $("selection_area").insertAdjacentElement("afterend", $("mainarea"));
@@ -2262,13 +2264,60 @@ class Game extends GameMachine {
                     block: "nearest" // Scrolls the minimum amount to bring the element into view vertically
                 });
                 break;
-            case "act":
-                //if ((opInfo as any).turn == 3) this.bga.gameArea.addLastTurnBanner(_("This is the last turn before you need to feed the settlers"));
+            case "upgYellow":
+            case "upgBlue":
+            case "upgGreen":
+            case "upgPink":
+            case "upgBlack":
+                this.startGhostTile(opInfo);
                 break;
         }
     }
+    startGhostTile(opInfo) {
+        const tileId = opInfo.data.tile;
+        const tileNode = $(tileId);
+        if (!tileNode)
+            return;
+        const ghost = this.animationLa.projectOnto(tileNode, "_ghost");
+        ghost.style.opacity = "0.6";
+        ghost.style.pointerEvents = "none";
+        ghost.style.transitionProperty = "none";
+        ghost.style.visibility = "hidden";
+        const over = $("oversurface");
+        const caravan = $(`caravan_${this.player_color}`);
+        if (!caravan)
+            return;
+        const handler = (e) => {
+            const overRect = over.getBoundingClientRect();
+            const scaleX = over.offsetWidth > 0 ? overRect.width / over.offsetWidth : 1;
+            const scaleY = over.offsetHeight > 0 ? overRect.height / over.offsetHeight : 1;
+            const caravanRect = caravan.getBoundingClientRect();
+            const inCaravan = e.clientX >= caravanRect.left && e.clientX <= caravanRect.right && e.clientY >= caravanRect.top && e.clientY <= caravanRect.bottom;
+            if (inCaravan) {
+                const x = (e.clientX - overRect.left) / scaleX - 21;
+                const y = (e.clientY - overRect.top) / scaleY - 21;
+                ghost.style.left = x + "px";
+                ghost.style.top = y + "px";
+                ghost.style.transform = "none";
+                ghost.style.visibility = "visible";
+            }
+            else {
+                ghost.style.visibility = "hidden";
+            }
+        };
+        document.addEventListener("mousemove", handler);
+        this._ghostMouseHandler = handler;
+    }
+    stopGhostTile() {
+        if (this._ghostMouseHandler) {
+            document.removeEventListener("mousemove", this._ghostMouseHandler);
+            this._ghostMouseHandler = null;
+        }
+        document.querySelectorAll("[id$='_ghost']").forEach((el) => el.remove());
+    }
     onLeavingState(stateName, args) {
         super.onLeavingState(stateName, args);
+        this.stopGhostTile();
         const opInfo = this.opInfo;
         if (opInfo?.ui?.replicate) {
             $("selection_area")

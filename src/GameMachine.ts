@@ -85,7 +85,7 @@ export class GameMachine extends Game1Tokens {
     if (opInfo.err) {
       this.setSubPrompt(_("Error") + " " + this.getTr(opInfo.err, opInfo));
     } else if (opInfo.subtitle) this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
-    else if (opInfo.data.reason) this.setSubPrompt(this.getReasonText(opInfo.data.reason));
+    else if (opInfo.data?.reason) this.setSubPrompt(this.getReasonText(opInfo.data.reason));
     const multiselect = this.isMultiSelectArgs(opInfo);
 
     const sortedTargets = Object.keys(opInfo.info);

@@ -226,10 +226,10 @@ final class Op_journalTest extends TestCase {
     }
 
     public function testGetConnectorIdBoard3(): void {
-        $this->game->tokens->db->setTokenState("mainboard_3", 1);
+        $this->game->tokens->db->setTokenState("mainboard_2", 1);
 
         $op = $this->createOp();
-        // 72→80 is on mainboard_3
+        // 72→80 is on mainboard_2
         $connector = $op->getConnectorId(72, 80);
         $this->assertEquals("jconn_72_80_1", $connector);
     }
