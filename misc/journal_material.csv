@@ -14,7 +14,6 @@ num|conn|r|gw|tooltip
 40|50|upgPink
 43|50,55|upgPink
 47|55|upgPink
-
 50|60,63|jtile,pickGreen|3
 55|63,67|jtile,pickGreen
 60|80,72|cardInsp,newDie
@@ -25,9 +24,9 @@ num|conn|r|gw|tooltip
 80|90|upgPink
 83|90,95|upgPink
 87|95|upgPink
+#set location=mainboard_3
 90|100,102,103|jtile
 95|103,106,107|jtile
-#set location=mainboard_3
 100||infBlack,infBlack,(upgPink/cardInsp)
 102||infAny,infAny
 103||infYellow,infYellow,(upgPink/cardInsp)
@@ -85,7 +84,7 @@ num|conn|r|gw|tooltip
 63|76|tag_Harbour|4
 67|76|tag_card_folk|4
 67|87|tag_Stars|4
-#set location=mainboard_3
+
 72|80|tag_Book|3
 72|83|tag_Comet|6
 76|83|tag_Stars|4
@@ -94,6 +93,7 @@ num|conn|r|gw|tooltip
 83|90|tag_Vista|3
 83|95|tag_Observatory|3
 87|95|tag_upg_any|7
+#set location=mainboard_3
 90|100|tag_Observatory|4
 90|102|Op(n_infBlack)
 90|103|tag_Sea|4
