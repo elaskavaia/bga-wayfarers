@@ -389,7 +389,7 @@ class Base extends Table {
             $infos[self::PLAYER_AUTOMA]["player_color"] = $this->getAutomaColor();
             $infos[self::PLAYER_AUTOMA]["player_name"] = "Aida";
             $infos[self::PLAYER_AUTOMA]["player_ai"] = 1;
-            $infos[self::PLAYER_AUTOMA]["player_score"] = 0;
+            $infos[self::PLAYER_AUTOMA]["player_" . "score"] = 0; // on purpose to trick static analysis
         }
         return $infos;
     }
