@@ -12,9 +12,9 @@ if (!defined("APP_GAMEMODULE_PATH")) {
     define("APP_GAMEMODULE_PATH", getenv("APP_GAMEMODULE_PATH"));
 }
 require_once APP_GAMEMODULE_PATH . "/php/stubs/BgaFrameworkStubs.php";
-require_once __DIR__ . "/../../modules/php/Tests/_autoload.php";
+require_once __DIR__ . "/../../phptests/_autoload.php";
 
-use Bga\Games\wayfarers\Tests\GameUT;
+use Tests\GameUT;
 
 $game = new GameUT();
 $game->init();

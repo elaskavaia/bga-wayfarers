@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace Bga\Games\wayfarers\Tests;
+namespace Tests;
 
 use Bga\Games\wayfarers\OpCommon\MathExpression;
 use Exception;

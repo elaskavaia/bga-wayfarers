@@ -1,7 +1,7 @@
 <?php
 
 declare(strict_types=1);
-namespace Bga\Games\wayfarers\Tests;
+namespace Tests;
 
 if (!defined("PCOLOR")) {
     define("PCOLOR", "6cd0f6");

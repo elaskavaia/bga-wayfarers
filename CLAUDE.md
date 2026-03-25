@@ -22,7 +22,7 @@ Games rules as in misc/docs/RULES.md
 ### Testing
 
 - `npm run tests` - Run all PHPUnit tests
-- To run a single test file: `APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --bootstrap ./modules/php/Tests/_autoload.php modules/php/Tests/<TestFile>.php`
+- To run a single test file: `APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --bootstrap ./phptests/_autoload.php phptests/<TestFile>.php`
 - Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository
 
 ### Utilities
@@ -114,7 +114,7 @@ SCSS files in src/css/ compile to wayfarers.css with GameXBody.scss as the entry
 2. Implement required methods: effect(), canResolve(), etc.
 3. Add operation definition to misc/op_material.csv if it needs material data
 4. Run `npm run genmat` to update Material.php
-5. Add tests in modules/php/Tests/
+5. Add tests in phptests/
 
 ### Adding New Game Elements
 

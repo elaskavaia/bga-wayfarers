@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use Bga\Games\wayfarers\Tests\GameUT;
+use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
 final class RefillMainAreaTest extends TestCase {

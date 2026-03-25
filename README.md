@@ -25,4 +25,4 @@ Material.php is partially generated file, to run just generation of this
 
 Run tests (also defined as vscode tasks)
 
-- APP_GAMEMODULE_PATH=${userHome}/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./modules/php/Tests/\_autoload.php
+- APP_GAMEMODULE_PATH=${userHome}/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./phptests/\_autoload.php

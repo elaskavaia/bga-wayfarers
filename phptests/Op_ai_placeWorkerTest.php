@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Operations\Op_ai_placeWorker;
-use Bga\Games\wayfarers\Tests\GameUT;
+use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
 final class Op_ai_placeWorkerTest extends TestCase {

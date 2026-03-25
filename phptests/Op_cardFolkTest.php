@@ -5,7 +5,7 @@ declare(strict_types=1);
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\Operations\Op_cardFolk;
 use Bga\Games\wayfarers\OpCommon\Operation;
-use Bga\Games\wayfarers\Tests\GameUT;
+use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
 final class Op_cardFolkTest extends TestCase {

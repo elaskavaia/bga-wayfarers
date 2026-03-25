@@ -3,7 +3,7 @@
 declare(strict_types=1);
 
 use Bga\Games\wayfarers\Operations\Op_placeDie;
-use Bga\Games\wayfarers\Tests\GameUT;
+use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
 final class Op_placeDieTest extends TestCase {

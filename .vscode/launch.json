@@ -29,7 +29,7 @@
       "name": "PHP: debug predeploy",
       "type": "php",
       "request": "launch",
-      "program": "${workspaceFolder}/modules/php/Tests/_testpredeploy.php",
+      "program": "${workspaceFolder}/phptests/_testpredeploy.php",
       "cwd": "${workspaceFolder}",
       "port": 0,
       "runtimeArgs": ["-dxdebug.start_with_request=yes"],
@@ -44,7 +44,7 @@
       "name": "PHP: predeploy",
       "type": "php",
       "request": "launch",
-      "program": "${workspaceFolder}/modules/php/Tests/_testpredeploy.php",
+      "program": "${workspaceFolder}/phptests/_testpredeploy.php",
       "cwd": "${workspaceFolder}/modules/php/",
       "port": 0,
       "env": {
