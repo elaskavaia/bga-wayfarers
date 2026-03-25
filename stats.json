@@ -34,6 +34,26 @@
       "id": 29,
       "name": "VP total",
       "type": "int"
+    },
+    "game_turns": {
+      "id": 17,
+      "name": "Number of turns",
+      "type": "int"
+    },
+    "game_dice_actions": {
+      "id": 18,
+      "name": "Number of dice actions",
+      "type": "int"
+    },
+    "game_rest_actions": {
+      "id": 19,
+      "name": "Number of rest actions",
+      "type": "int"
+    },
+    "game_worker_actions": {
+      "id": 20,
+      "name": "Number of worker actions",
+      "type": "int"
     }
   },
   "table": {

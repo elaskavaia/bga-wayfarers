@@ -1122,4 +1122,139 @@ final class GameTest extends TestCase {
         $count = $this->game->evaluateExpression("tag_card_folk", PCOLOR);
         $this->assertEquals(1, $count, "Default tableau should have 1 folk card (Capital Townsfolk)");
     }
+
+    private function assertLastNotifResolved(string $context = "") {
+        $notifications = $this->game->notify->_getNotifications();
+        $this->assertNotEmpty($notifications, "No notification was sent" . ($context ? " ($context)" : ""));
+        $notif = end($notifications);
+        $log = $notif['log'];
+        if (!$log) return; // empty log = suppressed notification
+        $args = $notif['args'];
+        // Check that all ${...} placeholders in the log have corresponding keys in args
+        preg_match_all('/\$\{(\w+)\}/', $log, $matches);
+        foreach ($matches[1] as $key) {
+            $this->assertArrayHasKey($key, $args, "Notification missing key '$key' in log: $log" . ($context ? " ($context)" : ""));
+        }
+    }
+
+    public function testDbSetTokenLocation_defaultNotif() {
+        $this->game->tokens->createTokens();
+        $this->game->tokens->dbSetTokenLocation("influence_" . PCOLOR . "_1", "guild_blue", 0, "*", [], PCOLOR_ID);
+        $this->assertLastNotifResolved("default notif *");
+    }
+
+    public function testDbSetTokenLocation_customNotif_tokenName() {
+        $this->game->tokens->createTokens();
+        $this->game->tokens->dbSetTokenLocation(
+            "influence_" . PCOLOR . "_1",
+            "guild_blue",
+            0,
+            clienttranslate('${player_name} moves ${token_name} to ${place_name}'),
+            [],
+            PCOLOR_ID
+        );
+        $this->assertLastNotifResolved("token_name + place_name");
+    }
+
+    public function testDbSetTokenLocation_customNotif_tokenIcon() {
+        $this->game->tokens->createTokens();
+        $this->game->tokens->dbSetTokenLocation(
+            "influence_" . PCOLOR . "_1",
+            "guild_blue",
+            0,
+            clienttranslate('${player_name} gains ${token_icon}'),
+            ["token_icon" => "wicon_inf_blue"],
+            PCOLOR_ID
+        );
+        $this->assertLastNotifResolved("token_icon");
+    }
+
+    public function testDbSetTokenLocation_customNotif_placeFromName() {
+        $this->game->tokens->createTokens();
+        // First move to a known location
+        $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_1", "guild_blue");
+        $this->game->tokens->dbSetTokenLocation(
+            "influence_" . PCOLOR . "_1",
+            "guild_yellow",
+            0,
+            clienttranslate('${player_name} moves ${token_name} from ${place_from_name} to ${place_name}'),
+            [],
+            PCOLOR_ID
+        );
+        $this->assertLastNotifResolved("place_from_name");
+    }
+
+    public function testDbSetTokenLocation_emptyNotif() {
+        $this->game->tokens->createTokens();
+        $this->game->tokens->dbSetTokenLocation("influence_" . PCOLOR . "_1", "guild_blue", 0, "", [], PCOLOR_ID);
+        // Empty notification should not crash
+        $this->assertLastNotifResolved("empty notif");
+    }
+
+    // --- Turn stats tests ---
+
+    private function setupTurnOp(string $owner = PCOLOR): \Bga\Games\wayfarers\OpCommon\Operation {
+        $op = $this->game->machine->instanciateOperation("turn", $owner);
+        $op->saveToDb(1, true);
+        return $this->dispatch();
+    }
+
+    public function testTurnStats_DiceAction() {
+        $this->game->tokens->createTokens();
+        $playerId = $this->game->custom_getPlayerIdByColor(PCOLOR);
+
+        $op = $this->setupTurnOp();
+        $this->game->fakeUserAction($op, "dice_" . PCOLOR . "_1");
+
+        $this->assertEquals(1, $this->game->playerStats->get("game_turns", $playerId));
+        $this->assertEquals(1, $this->game->playerStats->get("game_dice_actions", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_rest_actions", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_worker_actions", $playerId));
+    }
+
+    public function testTurnStats_RestAction() {
+        $this->game->tokens->createTokens();
+        $playerId = $this->game->custom_getPlayerIdByColor(PCOLOR);
+
+        $op = $this->setupTurnOp();
+        $this->game->fakeUserAction($op, "rest");
+
+        $this->assertEquals(1, $this->game->playerStats->get("game_turns", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_dice_actions", $playerId));
+        $this->assertEquals(1, $this->game->playerStats->get("game_rest_actions", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_worker_actions", $playerId));
+    }
+
+    public function testTurnStats_WorkerAction() {
+        $this->game->tokens->createTokens();
+        $playerId = $this->game->custom_getPlayerIdByColor(PCOLOR);
+
+        // Place a worker in the player's supply so it's a valid selection
+        $this->game->tokens->db->moveToken("worker_blue_1", "tableau_" . PCOLOR);
+
+        $op = $this->setupTurnOp();
+        $this->game->fakeUserAction($op, "worker_blue_1");
+
+        $this->assertEquals(1, $this->game->playerStats->get("game_turns", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_dice_actions", $playerId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_rest_actions", $playerId));
+        $this->assertEquals(1, $this->game->playerStats->get("game_worker_actions", $playerId));
+    }
+
+    public function testTurnStats_AutomaNoStats() {
+        $this->game(1); // solo mode
+        $this->game->tokens->createTokens();
+
+        // Automa turn: auto() should route to ai_turn and never call resolve()
+        $op = $this->game->machine->instanciateOperation("turn", ACOLOR);
+        $autoResult = $op->auto();
+        $this->assertTrue($autoResult, "Automa turn should auto-resolve");
+
+        // Automa player ID should have no stats incremented
+        $automaId = \Bga\Games\wayfarers\Game::PLAYER_AUTOMA;
+        $this->assertEquals(0, $this->game->playerStats->get("game_turns", $automaId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_dice_actions", $automaId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_rest_actions", $automaId));
+        $this->assertEquals(0, $this->game->playerStats->get("game_worker_actions", $automaId));
+    }
 }
