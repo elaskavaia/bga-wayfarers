@@ -40,7 +40,4 @@ class Op_pigeon extends Operation {
         return clienttranslate('Use Pigeon asset');
     }
 
-    public function getIconicName() {
-        return "[wicon_pigeon]";
-    }
 }

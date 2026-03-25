@@ -73,7 +73,7 @@ abstract class Op_infBase extends CountableOperation {
     function resolve(): void {
         $guild = $this->getGuild();
         $influenceKey = $this->getCheckedArg();
-
+        $icon = $this->getIcon();
         if ($influenceKey == "confirm") {
             // Place from supply
             $influence = $this->getInfluenceInPlayerSupply();
@@ -85,13 +85,20 @@ abstract class Op_infBase extends CountableOperation {
                 $influenceKey = $this->game->tokens->db->createTokenAutoInc("influence_$owner", "tableau_$owner", 0);
             }
 
-            $icon = trim($this->getIconicName(), "[]");
             $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} gains ${token_icon}'), [
                 "token_icon" => $icon,
             ]);
         } else {
             // Move from another location
-            $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} moves ${token_name} to ${place_name}'));
+            $this->dbSetTokenLocation(
+                $influenceKey,
+                $guild,
+                0,
+                clienttranslate('${player_name} gains ${token_icon} from ${place_from_name}'),
+                [
+                    "token_icon" => $icon,
+                ]
+            );
         }
         if ($this->getCount() > 1) {
             $this->incMinCount(-1);

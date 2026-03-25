@@ -74,7 +74,6 @@ describe("Game", () => {
       const args: any = {};
       const result = game.bgaFormatText("You gained [coin]", args);
       expect(result.log).to.equal("You gained <div>coin</div>");
-      expect(args.processed).to.be.true;
     });
 
     it("replaces multiple square bracket tokens", () => {
@@ -126,6 +125,15 @@ describe("Game", () => {
       const args: any = { reason: "some_token" };
       const result = game.bgaFormatText("$did thing ${reason}", args);
       expect(result.args.reason).to.equal("(Name of some_token)");
+    });
+
+    it("resolves player_name and bracket icons together", () => {
+      (game as any).getTokenPresentaton = (_key: string, tokenKey: string) => `<i>${tokenKey}</i>`;
+      const args: any = { player_id: "2" };
+      const result = game.bgaFormatText("${player_name} gains [wicon_coin]", args);
+      expect(result.args.player_name).to.equal("Bob");
+      expect(result.log).to.include("<i>wicon_coin</i>");
+      expect(result.log).not.to.include("[wicon_coin]");
     });
   });
 });

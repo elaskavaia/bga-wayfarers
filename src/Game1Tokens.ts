@@ -711,7 +711,8 @@ export class Game1Tokens extends Game0Basics {
           "token_div",
           "token2_div",
           "token3_div",
-          "token_icon"
+          "token_icon",
+          "place_from_name"
         ];
         for (var i in keys) {
           const key = keys[i];

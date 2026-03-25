@@ -1,6 +1,10 @@
 ## Server
 
 [x] Interraction for inf placed by player, player may refuse interaction (and pay)
+[ ] Stats: Number of turns
+[ ] Stats: Number of dice actions
+[ ] Stats: Number of rest actions
+[ ] Stats: Number of worker actions
 
 ## Client
 

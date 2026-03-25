@@ -331,14 +331,15 @@ class PGameTokens {
         $notifyArgs = [
             "token_id" => $token_id,
             "place_id" => $place_id,
-            "token_name" => $token_id,
-            "place_name" => $place_id,
             "new_state" => $state,
             "place_from" => $place_from,
         ];
 
-        if (str_contains($notif, '${token_div}')) {
-            $notifyArgs["token_div"] = $token_id;
+        $magicArgs = ["token_div" => $token_id, "place_name" => $place_id, "place_from_name" => $place_from, "token_name" => $token_id];
+        foreach ($magicArgs as $key => $value) {
+            if (str_contains($notif, '${' . $key . "}")) {
+                $notifyArgs[$key] = $value;
+            }
         }
         $args = array_merge($notifyArgs, $args);
         //$this->warn("$type $notif ".$args['token_id']." -> ".$args['place_id']."|");

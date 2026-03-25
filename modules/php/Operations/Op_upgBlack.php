@@ -35,7 +35,4 @@ class Op_upgBlack extends Op_upgBase {
         return 2;
     }
 
-    public function getIconicName() {
-        return "[wicon_upg_black]";
-    }
 }

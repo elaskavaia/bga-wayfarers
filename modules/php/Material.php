@@ -236,11 +236,13 @@ class Material {
         "class" => "Op_gain",
         "type" => "food",
         "name" => clienttranslate("Gain Provisions"),
+        "wicon" => "wicon_food",
 ],
     "Op_coin" => [ 
         "class" => "Op_gain",
         "type" => "coin",
         "name" => clienttranslate("Gain Silver"),
+        "wicon" => "wicon_coin",
 ],
     "Op_turn" => [ 
         "type" => "turn",
@@ -253,6 +255,7 @@ class Material {
     "Op_rest" => [ 
         "type" => "rest",
         "name" => clienttranslate("Rest"),
+        "wicon" => "wicon_rest",
 ],
     "Op_placeWorker" => [ 
         "type" => "placeWorker",
@@ -277,18 +280,22 @@ class Material {
     "Op_cardSpace" => [ 
         "type" => "cardSpace",
         "name" => clienttranslate("Acquire Space Card"),
+        "wicon" => "wicon_Op_cardSpace",
 ],
     "Op_cardFolk" => [ 
         "type" => "cardFolk",
         "name" => clienttranslate("Acquire Townsfolk Card"),
+        "wicon" => "wicon_Op_cardFolk",
 ],
     "Op_cardWater" => [ 
         "type" => "cardWater",
         "name" => clienttranslate("Acquire Water Card"),
+        "wicon" => "wicon_Op_cardWater",
 ],
     "Op_cardLand" => [ 
         "type" => "cardLand",
         "name" => clienttranslate("Acquire Land Card"),
+        "wicon" => "wicon_Op_cardLand",
 ],
     "Op_cardDraw" => [ 
         "type" => "cardDraw",
@@ -297,6 +304,7 @@ class Material {
     "Op_cardInsp" => [ 
         "type" => "cardInsp",
         "name" => clienttranslate("Acquire Inspiration Card"),
+        "wicon" => "wicon_Op_cardInsp",
 ],
     "Op_cardInteract" => [ 
         "type" => "cardInteract",
@@ -305,62 +313,77 @@ class Material {
     "Op_upgBlack" => [ 
         "type" => "upgBlack",
         "name" => clienttranslate("Gain Space Upgrade Tile"),
+        "wicon" => "wicon_upg_black",
 ],
     "Op_upgBlue" => [ 
         "type" => "upgBlue",
         "name" => clienttranslate("Gain Water Upgrade Tile"),
+        "wicon" => "wicon_upg_blue",
 ],
     "Op_upgGreen" => [ 
         "type" => "upgGreen",
         "name" => clienttranslate("Gain Basic Upgrade Tile"),
+        "wicon" => "wicon_upg_green",
 ],
     "Op_upgPink" => [ 
         "type" => "upgPink",
         "name" => clienttranslate("Gain Special Upgrade Tile"),
+        "wicon" => "wicon_upg_pink",
 ],
     "Op_upgYellow" => [ 
         "type" => "upgYellow",
         "name" => clienttranslate("Gain Land Upgrade Tile"),
+        "wicon" => "wicon_upg_yellow",
 ],
     "Op_journal" => [ 
         "type" => "journal",
         "name" => clienttranslate("Journal"),
+        "wicon" => "wicon_journal",
 ],
     "Op_pickWorker" => [ 
         "type" => "pickWorker",
         "name" => clienttranslate("Retrieve a Worker"),
+        "wicon" => "wicon_pick_worker",
 ],
     "Op_reroll" => [ 
         "type" => "reroll",
         "name" => clienttranslate("Refresh a Die"),
+        "wicon" => "wicon_reroll",
 ],
     "Op_infAny" => [ 
         "type" => "infAny",
         "name" => clienttranslate("Place Influence on any Guild"),
+        "wicon" => "wicon_inf_any",
 ],
     "Op_infBlue" => [ 
         "type" => "infBlue",
         "name" => clienttranslate("Place Influence on Blue Guild"),
+        "wicon" => "wicon_inf_blue",
 ],
     "Op_infYellow" => [ 
         "type" => "infYellow",
         "name" => clienttranslate("Place Influence on Yellow Guild"),
+        "wicon" => "wicon_inf_yellow",
 ],
     "Op_infBlack" => [ 
         "type" => "infBlack",
         "name" => clienttranslate("Place Influence on Black Guild"),
+        "wicon" => "wicon_inf_black",
 ],
     "Op_infCard" => [ 
         "type" => "infCard",
         "name" => clienttranslate("Place Influence on Card"),
+        "wicon" => "wicon_infCard",
 ],
     "Op_infMove" => [ 
         "type" => "infMove",
         "name" => clienttranslate("Move Influence"),
+        "wicon" => "wicon_inf_move",
 ],
     "Op_diceMod" => [ 
         "type" => "diceMod",
         "name" => clienttranslate("Modify Dice by +/- 1"),
+        "wicon" => "wicon_dice_mod",
 ],
     "Op_dicePlus" => [ 
         "type" => "dicePlus",
@@ -373,6 +396,7 @@ class Material {
     "Op_newDie" => [ 
         "type" => "newDie",
         "name" => clienttranslate("Gain Die"),
+        "wicon" => "wicon_new_die",
 ],
     "Op_jtile" => [ 
         "type" => "jtile",
@@ -385,22 +409,27 @@ class Material {
     "Op_n_food" => [ 
         "type" => "n_food",
         "name" => clienttranslate("Pay Provisions"),
+        "wicon" => "wicon_food",
 ],
     "Op_n_coin" => [ 
         "type" => "n_coin",
         "name" => clienttranslate("Pay Silver"),
+        "wicon" => "wicon_coin",
 ],
     "Op_n_infBlue" => [ 
         "type" => "n_infBlue",
         "name" => clienttranslate("Pay Blue Influence"),
+        "wicon" => "wicon_inf_blue_pay",
 ],
     "Op_n_infYellow" => [ 
         "type" => "n_infYellow",
         "name" => clienttranslate("Pay Yellow Influence"),
+        "wicon" => "wicon_inf_yellow_pay",
 ],
     "Op_n_infBlack" => [ 
         "type" => "n_infBlack",
         "name" => clienttranslate("Pay Black Influence"),
+        "wicon" => "wicon_inf_black_pay",
 ],
     "Op_finalScoring" => [ 
         "type" => "finalScoring",
@@ -410,18 +439,22 @@ class Material {
     "Op_ship" => [ 
         "type" => "ship",
         "name" => clienttranslate("Ship"),
+        "wicon" => "wicon_ship",
 ],
     "Op_camel" => [ 
         "type" => "camel",
         "name" => clienttranslate("Camel"),
+        "wicon" => "wicon_camel",
 ],
     "Op_telescope" => [ 
         "type" => "telescope",
         "name" => clienttranslate("Telescope"),
+        "wicon" => "wicon_telescope",
 ],
     "Op_pigeon" => [ 
         "type" => "pigeon",
         "name" => clienttranslate("Pigeon"),
+        "wicon" => "wicon_pigeon",
 ],
 // #ai ops
     "Op_ai_turn" => [ 
@@ -431,43 +464,52 @@ class Material {
     "Op_ai_rest" => [ 
         "type" => "ai_rest",
         "name" => clienttranslate("AI Rest"),
+        "wicon" => "wicon_rest",
 ],
     "Op_ai_cardLand" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardLand",
         "name" => clienttranslate("AI Acquire Land Card"),
+        "wicon" => "wicon_Op_cardLand",
 ],
     "Op_ai_cardWater" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardWater",
         "name" => clienttranslate("AI Acquire Water Card"),
+        "wicon" => "wicon_Op_cardWater",
 ],
     "Op_ai_cardSpace" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardSpace",
         "name" => clienttranslate("AI Acquire Space Card"),
+        "wicon" => "wicon_Op_cardSpace",
 ],
     "Op_ai_cardFolk" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardFolk",
         "name" => clienttranslate("AI Acquire Townsfolk Card"),
+        "wicon" => "wicon_Op_cardFolk",
 ],
     "Op_ai_cardInsp" => [ 
         "class" => "Op_ai_cardBase",
         "type" => "ai_cardInsp",
         "name" => clienttranslate("AI Acquire Inspiration Card"),
+        "wicon" => "wicon_Op_cardInsp",
 ],
     "Op_ai_upgAny" => [ 
         "type" => "ai_upgAny",
         "name" => clienttranslate("AI Gain Upgrade Tile"),
+        "wicon" => "wicon_upg_any",
 ],
     "Op_ai_upgPink" => [ 
         "type" => "ai_upgPink",
         "name" => clienttranslate("AI Gain Pink Upgrade Tile"),
+        "wicon" => "wicon_upg_pink",
 ],
     "Op_ai_journal" => [ 
         "type" => "ai_journal",
         "name" => clienttranslate("AI Journal"),
+        "wicon" => "wicon_journal",
 ],
     "Op_ai_shuffle" => [ 
         "type" => "ai_shuffle",
@@ -480,14 +522,17 @@ class Material {
     "Op_ai_placeWorker" => [ 
         "type" => "ai_placeWorker",
         "name" => clienttranslate("AI Place Worker"),
+        "wicon" => "wicon_pick_worker",
 ],
     "Op_ai_pickWorker" => [ 
         "type" => "ai_pickWorker",
         "name" => clienttranslate("AI Retrieve Worker"),
+        "wicon" => "wicon_pick_worker",
 ],
     "Op_ai_infCard" => [ 
         "type" => "ai_infCard",
         "name" => clienttranslate("AI Influence on Card"),
+        "wicon" => "wicon_infCard",
 ],
     "Op_ai_focusAction" => [ 
         "type" => "ai_focusAction",
@@ -496,6 +541,7 @@ class Material {
     "Op_ai_comet" => [ 
         "type" => "ai_comet",
         "name" => clienttranslate("AI Comet Track"),
+        "wicon" => "wicon_comet",
 ],
     "Op_ai_cardInteract" => [ 
         "type" => "ai_cardInteract",

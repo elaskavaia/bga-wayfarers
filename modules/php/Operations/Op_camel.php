@@ -41,7 +41,4 @@ class Op_camel extends Operation {
         return clienttranslate('Use Camel asset');
     }
 
-    public function getIconicName() {
-        return "[wicon_camel]";
-    }
 }

@@ -123,7 +123,4 @@ class Op_journal extends Operation {
         }
     }
 
-    public function getIconicName() {
-        return "[wicon_journal]";
-    }
 }

@@ -44,7 +44,4 @@ class Op_upgPink extends Op_upgBase {
         return 1;
     }
 
-    public function getIconicName() {
-        return "[wicon_upg_pink]";
-    }
 }

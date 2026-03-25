@@ -1,4 +1,4 @@
-type|name|php
+type|name|wicon
 #set id=Op_{type}
 
 
@@ -19,88 +19,88 @@ paygain|Trade
 #game specific  ops
 
 #set class=Op_gain
-food|Gain Provisions
-coin|Gain Silver
+food|Gain Provisions|wicon_food
+coin|Gain Silver|wicon_coin
 
 #set class=
 turn|Turn
 turnconf|Confirm Turn
-rest|Rest
+rest|Rest|wicon_rest
 placeWorker|Place Worker
 placeDie|Place Die
 spendInfBlue|Spend Blue Influence for Ship
-spendInfYellow|Spend Yellow Influence to Modify Dice 
+spendInfYellow|Spend Yellow Influence to Modify Dice
 spendInfBlack|Spend Black Influence for Extra Journal
-cardSpace|Acquire Space Card
-cardFolk|Acquire Townsfolk Card
-cardWater|Acquire Water Card
-cardLand|Acquire Land Card
+cardSpace|Acquire Space Card|wicon_Op_cardSpace
+cardFolk|Acquire Townsfolk Card|wicon_Op_cardFolk
+cardWater|Acquire Water Card|wicon_Op_cardWater
+cardLand|Acquire Land Card|wicon_Op_cardLand
 cardDraw|Draw and Pick Card
-cardInsp|Acquire Inspiration Card
+cardInsp|Acquire Inspiration Card|wicon_Op_cardInsp
 cardInteract|Interact with Card
 
 
-upgBlack|Gain Space Upgrade Tile
-upgBlue|Gain Water Upgrade Tile
-upgGreen|Gain Basic Upgrade Tile
-upgPink|Gain Special Upgrade Tile
-upgYellow|Gain Land Upgrade Tile
-journal|Journal
-pickWorker|Retrieve a Worker
-reroll|Refresh a Die
+upgBlack|Gain Space Upgrade Tile|wicon_upg_black
+upgBlue|Gain Water Upgrade Tile|wicon_upg_blue
+upgGreen|Gain Basic Upgrade Tile|wicon_upg_green
+upgPink|Gain Special Upgrade Tile|wicon_upg_pink
+upgYellow|Gain Land Upgrade Tile|wicon_upg_yellow
+journal|Journal|wicon_journal
+pickWorker|Retrieve a Worker|wicon_pick_worker
+reroll|Refresh a Die|wicon_reroll
 
-infAny|Place Influence on any Guild
-infBlue|Place Influence on Blue Guild
-infYellow|Place Influence on Yellow Guild
-infBlack|Place Influence on Black Guild
-infCard|Place Influence on Card
-infMove|Move Influence
-diceMod|Modify Dice by +/- 1
-dicePlus|Modify Dice by +1
-diceMinus|Modify Dice by -1
-newDie|Gain Die
+infAny|Place Influence on any Guild|wicon_inf_any
+infBlue|Place Influence on Blue Guild|wicon_inf_blue
+infYellow|Place Influence on Yellow Guild|wicon_inf_yellow
+infBlack|Place Influence on Black Guild|wicon_inf_black
+infCard|Place Influence on Card|wicon_infCard
+infMove|Move Influence|wicon_inf_move
+diceMod|Modify Dice by +/- 1|wicon_dice_mod
+dicePlus|Modify Dice by +1|
+diceMinus|Modify Dice by -1|
+newDie|Gain Die|wicon_new_die
 jtile|Gain Journal Tile Bonus
 pickGreen|Retrieve Green Worker
 
 
 
 #set class=
-n_food|Pay Provisions
-n_coin|Pay Silver
+n_food|Pay Provisions|wicon_food
+n_coin|Pay Silver|wicon_coin
 
 #set class=
-n_infBlue|Pay Blue Influence
-n_infYellow|Pay Yellow Influence
-n_infBlack|Pay Black Influence
+n_infBlue|Pay Blue Influence|wicon_inf_blue_pay
+n_infYellow|Pay Yellow Influence|wicon_inf_yellow_pay
+n_infBlack|Pay Black Influence|wicon_inf_black_pay
 finalScoring|Final Scoring
 
 #Assets
-ship|Ship
-camel|Camel
-telescope|Telescope
-pigeon|Pigeon
+ship|Ship|wicon_ship
+camel|Camel|wicon_camel
+telescope|Telescope|wicon_telescope
+pigeon|Pigeon|wicon_pigeon
 
 #ai ops
 ai_turn|AI Turn
-ai_rest|AI Rest
+ai_rest|AI Rest|wicon_rest
 #set class=Op_ai_cardBase
-ai_cardLand|AI Acquire Land Card
-ai_cardWater|AI Acquire Water Card
-ai_cardSpace|AI Acquire Space Card
-ai_cardFolk|AI Acquire Townsfolk Card
-ai_cardInsp|AI Acquire Inspiration Card
+ai_cardLand|AI Acquire Land Card|wicon_Op_cardLand
+ai_cardWater|AI Acquire Water Card|wicon_Op_cardWater
+ai_cardSpace|AI Acquire Space Card|wicon_Op_cardSpace
+ai_cardFolk|AI Acquire Townsfolk Card|wicon_Op_cardFolk
+ai_cardInsp|AI Acquire Inspiration Card|wicon_Op_cardInsp
 
 
 #set class=
-ai_upgAny|AI Gain Upgrade Tile
-ai_upgPink|AI Gain Pink Upgrade Tile
-ai_journal|AI Journal
+ai_upgAny|AI Gain Upgrade Tile|wicon_upg_any
+ai_upgPink|AI Gain Pink Upgrade Tile|wicon_upg_pink
+ai_journal|AI Journal|wicon_journal
 ai_shuffle|AI Shuffle
 ai_res|AI Resource Track
-ai_placeWorker|AI Place Worker
-ai_pickWorker|AI Retrieve Worker
-ai_infCard|AI Influence on Card
+ai_placeWorker|AI Place Worker|wicon_pick_worker
+ai_pickWorker|AI Retrieve Worker|wicon_pick_worker
+ai_infCard|AI Influence on Card|wicon_infCard
 ai_focusAction|AI Focus Action
-ai_comet|AI Comet Track
+ai_comet|AI Comet Track|wicon_comet
 ai_cardInteract|AI Interact with Card
 ai_cardInteractChoice|AI Card Interaction Choice

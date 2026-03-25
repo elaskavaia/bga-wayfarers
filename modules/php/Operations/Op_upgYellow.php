@@ -37,7 +37,4 @@ class Op_upgYellow extends Op_upgBase {
         return true;
     }
 
-    public function getIconicName() {
-        return "[wicon_upg_yellow]";
-    }
 }

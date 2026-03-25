@@ -40,7 +40,4 @@ class Op_ship extends Operation {
         return clienttranslate('Use Ship asset');
     }
 
-    public function getIconicName() {
-        return "[wicon_ship]";
-    }
 }

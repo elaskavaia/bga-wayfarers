@@ -34,7 +34,4 @@ class Op_upgGreen extends Op_upgBase {
         return 1;
     }
 
-    public function getIconicName() {
-        return "[wicon_upg_green]";
-    }
 }

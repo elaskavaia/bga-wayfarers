@@ -428,7 +428,15 @@ abstract class Operation {
         return clienttranslate("Skip");
     }
 
+    function getIcon() {
+        return $this->game->getRulesFor($this->getOpId(), "wicon", "");
+    }
+
     function getIconicName() {
+        $wicon = $this->getIcon();
+        if ($wicon) {
+            return "[$wicon]";
+        }
         return $this->getOpName();
     }
 

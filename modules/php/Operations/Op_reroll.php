@@ -119,7 +119,4 @@ class Op_reroll extends Operation {
         return parent::getExtraArgs() + ["token_div" => "wicon_die_$dieValue"];
     }
 
-    public function getIconicName() {
-        return "[wicon_reroll]";
-    }
 }

@@ -69,7 +69,4 @@ class Op_pickWorker extends Operation {
         return clienttranslate("Select a worker to pick");
     }
 
-    public function getIconicName() {
-        return "[wicon_pick_worker]";
-    }
 }

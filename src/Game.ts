@@ -1102,10 +1102,25 @@ export class Game extends GameMachine {
       }
     }
   }
+  replaceSimpleIconsInLog(log: string) {
+    // Process square bracket syntax [tokenId]
+    if (log.includes("[")) {
+      log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
+        try {
+          return this.getTokenPresentaton(keyExpr, keyExpr, []) ?? match;
+        } catch (e) {
+          console.error(`Failed to get token presentation for [${keyExpr}]`, e);
+          return match; // Return original if error
+        }
+      });
+    }
+    return log;
+  }
   /** @Override */
   bgaFormatText(log: string | NotificationMessage, args: any) {
-    if (!log) return { log: "", args: [] };
     try {
+      if (!log) return { log: "", args: [] };
+
       if (typeof log !== "string") {
         //console.trace("Non-string log message", log, args);
         if ((log as any).log) {
@@ -1114,18 +1129,10 @@ export class Game extends GameMachine {
 
         return { log: "?", args: [] };
       }
-      // Process square bracket syntax [tokenId]
-      if (log.includes("[")) {
-        args.processed = true;
-        log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
-          try {
-            return this.getTokenPresentaton(keyExpr, keyExpr, args) ?? match;
-          } catch (e) {
-            console.error(`Failed to get token presentation for [${keyExpr}]`, e);
-            return match; // Return original if error
-          }
-        });
+      if (args && args.processed) {
+        return { log, args };
       }
+
       if (args && !args.processed && log.includes("$")) {
         args.processed = true;
 
@@ -1150,8 +1157,10 @@ export class Game extends GameMachine {
         const res = super.bgaFormatText(log, args);
         log = res.log;
         args = res.args;
+        log = this.replaceSimpleIconsInLog(log);
         return { log, args };
       }
+      log = this.replaceSimpleIconsInLog(log);
     } catch (e) {
       console.error(log, args, "Exception thrown", e.stack);
     }

@@ -122,7 +122,4 @@ class Op_rest extends Operation {
         return true;
     }
 
-    public function getIconicName() {
-        return "[wicon_rest]";
-    }
 }

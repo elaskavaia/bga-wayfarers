@@ -182,9 +182,24 @@ class Game extends Base {
                 $this->effect_incCount($color, "coin", 4, "setup");
             }
             $this->effect_incCount($color, "food", 2, "setup");
-            $this->tokens->dbSetTokenLocation("influence_{$color}_1", "guild_blue", 0, "*", [], $player_id);
+
+            $this->tokens->dbSetTokenLocation(
+                "influence_{$color}_1",
+                "guild_blue",
+                0,
+                clienttranslate('${player_name} gains [wicon_inf_blue]'),
+                ["player_name" => $this->getPlayerNameById($player_id)],
+                $player_id
+            );
             if ($i > 1) {
-                $this->tokens->dbSetTokenLocation("influence_{$color}_2", "guild_yellow", 0, "*", [], $player_id);
+                $this->tokens->dbSetTokenLocation(
+                    "influence_{$color}_2",
+                    "guild_yellow",
+                    0,
+                    clienttranslate('${player_name} gains [wicon_inf_yellow]'),
+                    ["player_name" => $this->getPlayerNameById($player_id)],
+                    $player_id
+                );
             }
             // 5 Dice in their chosen color (roll 3 and place them next to their Player Board; keep 2 in reserve near the Minarets on the Main Board).
             // 15 Influence tokens in their chosen color.

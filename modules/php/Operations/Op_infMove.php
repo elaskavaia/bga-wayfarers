@@ -77,7 +77,4 @@ class Op_infMove extends Operation {
         return clienttranslate("Select where to move Influence");
     }
 
-    public function getIconicName() {
-        return "[wicon_inf_move]";
-    }
 }

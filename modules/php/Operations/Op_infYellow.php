@@ -19,10 +19,6 @@ class Op_infYellow extends Op_infBase {
         return "guild_yellow";
     }
 
-    public function getIconicName() {
-        return "[wicon_inf_yellow]";
-    }
-
     public function isTrivial(): bool {
         return true;
     }
