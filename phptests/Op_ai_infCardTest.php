@@ -147,6 +147,38 @@ final class Op_ai_infCardTest extends TestCase {
         $this->assertTrue($isVoid);
     }
 
+    public function testCardWithWorkerIsStillAvailable(): void {
+        $waterCard = $this->addCardToMainarea("water", 1);
+
+        // Place a worker on the card — should NOT block influence
+        $this->game->tokens->db->moveToken("worker_blue_1", $waterCard);
+
+        $this->setResourceTrackPosition(1);
+        $this->setResourceTrackRules(1, "blue");
+        $this->setPositionPriority(1);
+
+        $op = $this->createOp();
+        $this->assertFalse($op->isVoid());
+
+        $result = $op->auto();
+        $this->assertTrue($result);
+
+        $influences = $this->game->tokens->getTokensOfTypeInLocation("influence_" . self::AI_COLOR, $waterCard);
+        $this->assertCount(1, $influences);
+    }
+
+    public function testCardWithInfluenceAndWorkerIsOccupied(): void {
+        $waterCard = $this->addCardToMainarea("water", 1);
+
+        // Place both a worker and influence on the card
+        $this->game->tokens->db->moveToken("worker_blue_1", $waterCard);
+        $this->addInfluenceToCard($waterCard);
+
+        $op = $this->createOp();
+        $cards = $op->getCards("water");
+        $this->assertEquals(\Bga\Games\wayfarers\Material::ERR_OCCUPIED, $cards["p1"]["q"]);
+    }
+
     public function testIsVoidFalseWhenCardsAvailable(): void {
         $this->addCardToMainarea("water", 1);
 

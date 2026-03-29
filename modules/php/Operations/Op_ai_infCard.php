@@ -35,10 +35,17 @@ class Op_ai_infCard extends AiOperation {
 
         $res = [];
         foreach ($cards as $cardId => $info) {
-            // Card is available if it has no children (no influence on it)
             $state = $info["state"];
             $argkey = "p$state";
-            if (count($info["children"]) == 0) {
+            // Card is available if it has no influence on it (workers don't block influence)
+            $hasInfluence = false;
+            foreach ($info["children"] as $childKey => $child) {
+                if (str_starts_with($childKey, "influence")) {
+                    $hasInfluence = true;
+                    break;
+                }
+            }
+            if (!$hasInfluence) {
                 $res[$argkey] = $info + ["q" => Material::RET_OK];
             } else {
                 $res[$argkey] = $info + ["q" => Material::ERR_OCCUPIED];

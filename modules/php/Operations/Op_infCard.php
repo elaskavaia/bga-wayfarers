@@ -43,8 +43,15 @@ class Op_infCard extends Op_infBase {
         $cards = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card", "mainarea");
 
         foreach ($cards as $cardId => $info) {
-            // Card is available if it has no children (no influence on it)
-            if (count($info["children"]) == 0) {
+            // Card is available if it has no influence on it (workers don't block influence)
+            $hasInfluence = false;
+            foreach ($info["children"] as $childKey => $child) {
+                if (str_starts_with($childKey, "influence")) {
+                    $hasInfluence = true;
+                    break;
+                }
+            }
+            if (!$hasInfluence) {
                 $res[$cardId] = ["q" => Material::RET_OK];
             }
         }
