@@ -663,6 +663,8 @@ export class Game extends GameMachine {
       const color = getPart(location, 1);
       result.location = `breakroom_${color}`;
       result.onClick = (x) => this.onToken(x);
+    } else if (tokenId.startsWith("worker") && location.startsWith("card")) {
+      result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("dice") && location.startsWith("card")) {
       result.onClick = (x) => this.onToken(x);
     } else if (tokenId.startsWith("inf")) {
