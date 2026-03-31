@@ -1087,7 +1087,10 @@ class Game extends Base {
     }
 
     public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
-        $this->debugLog("customUndoSavepoint $player_id bar= $barrier");
+        //$this->debugLog("customUndoSavepoint $player_id bar= $barrier");
+        if ($this->isSolo()) {
+            $player_id = $this->getFirstPlayer();
+        }
         if ($this->isMultiActive()) {
             $this->dbMultiUndo->doSaveUndoSnapshot(["barrier" => $barrier, "label" => $label], $player_id, true);
         } else {

@@ -91,7 +91,7 @@ class Op_cardDraw extends CountableOperation {
                 $this->queue($this->getType(), $owner, $this->getData());
             }
 
-            $this->game->customUndoSavepoint($this->player_id, 1);
+            $this->game->customUndoSavepoint($this->getPlayerId(), 1);
             return;
         }
 

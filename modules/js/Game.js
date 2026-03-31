@@ -1387,6 +1387,7 @@ class GameMachine extends Game1Tokens {
         if (opInfo.prompt) {
             this.bga.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
         }
+        this.setSubPrompt("");
         if (opInfo.err) {
             this.setSubPrompt(_("Error") + " " + this.getTr(opInfo.err, opInfo));
         }

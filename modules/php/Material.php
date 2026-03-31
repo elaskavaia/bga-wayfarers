@@ -199,10 +199,6 @@ class Material {
         "type" => "barrier",
         "name" => clienttranslate("None"),
 ],
-    "Op_savepoint" => [ 
-        "type" => "savepoint",
-        "name" => clienttranslate("None"),
-],
     "Op_or" => [ 
         "type" => "or",
         "name" => clienttranslate("Choice"),
@@ -1418,10 +1414,10 @@ class Material {
         "rest" => 1,
         "num" => 120,
         "cost" => 1,
-        "dr" => "food,infMove",
+        "dr" => "coin,infMove",
         "tags" => "Sea",
         "nom" => clienttranslate("Enforcer"),
-        "tooltip" => clienttranslate("Gain Provisions and Move Influence"),
+        "tooltip" => clienttranslate("Gain Silver and Move Influence"),
 ],
     "card_folk_127" => [ 
         "create" => 1,

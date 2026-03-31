@@ -7,7 +7,6 @@ type|name|wicon
 #common ops
 nop|None
 barrier|None
-savepoint|None
 or|Choice
 unique|Unique Choice
 order|Choose Order
