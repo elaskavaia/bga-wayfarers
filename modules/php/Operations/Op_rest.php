@@ -121,5 +121,4 @@ class Op_rest extends Operation {
         }
         return true;
     }
-
 }
