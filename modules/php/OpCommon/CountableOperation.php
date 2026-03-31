@@ -53,10 +53,12 @@ abstract class CountableOperation extends Operation {
     }
 
     function getIconicName() {
-        if ($this->getCount() == 1) {
-            return '${name}';
+        $wicon = $this->getIcon();
+        $count = $this->getCount();
+        if ($count == 1) {
+            return $wicon ? "[$wicon]" : '${name}';
         }
-        return clienttranslate('${name} x ${count}');
+        return $wicon ? "[$wicon] x {$count}" : '${name} x ${count}';
     }
     function getPossibleMoves() {
         return $this->getRangeMoves();
