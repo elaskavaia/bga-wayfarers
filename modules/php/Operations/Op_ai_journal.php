@@ -234,7 +234,7 @@ class Op_ai_journal extends AiOperation {
         if ($more && $blackInf >= $requiredBlackInf) {
             // Spend black influence and journal extra space
             $this->notifyMessage(clienttranslate('${player_name} journals an extra space'));
-            $this->queue("{$requiredBlackInf}infBlack");
+            $this->queue("{$requiredBlackInf}n_infBlack");
             $this->queue("ai_journal", $owner, ["final" => 1]);
         }
 
