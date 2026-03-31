@@ -15,7 +15,6 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Game;
-use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_pickWorker extends Operation {
@@ -29,15 +28,10 @@ class Op_pickWorker extends Operation {
 
     /** Get available workers that can be picked */
     function getAvailableWorkers(): array {
-        $workers = [];
-
         // Get workers from cards on main board (public workers)
         $publicWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%");
-        foreach ($publicWorkers as $key => $worker) {
-            $workers[$key] = ["q" => Material::RET_OK];
-        }
 
-        return $workers;
+        return array_keys($publicWorkers);
     }
 
     function getPossibleMoves() {
@@ -48,6 +42,12 @@ class Op_pickWorker extends Operation {
     }
     public function canSkip() {
         return true;
+    }
+
+    public function skip() {
+        if (empty($this->getAvailableWorkers())) {
+            $this->notifyMessage(clienttranslate('${player_name} skips picking a worker - none available'));
+        }
     }
 
     function resolve(): void {
@@ -68,5 +68,4 @@ class Op_pickWorker extends Operation {
     function getPrompt() {
         return clienttranslate("Select a worker to pick");
     }
-
 }
