@@ -10,9 +10,11 @@
     "watch:scss": "sass --watch src/css/Game.scss wayfarers.css",
     "watch": "npm run watch:ts && npm run watch:scss",
     "build": "npm run build:ts && npm run build:scss && npm run genmat",
+    "predeploy": "npm run build && npm run lint:php && npm run tests && npm run jstests",
+    "lint:php": "find modules/php/ -name '*.php' -exec php -l {} + && echo 'All PHP files OK'",
     "genmat": "php8.4 misc/other/genmat.php misc/*.csv",
     "tests": "APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./phptests/_autoload.php  --colors=always phptests",
-    "jstests": "TS_NODE_PROJECT=src/tests/tsconfig.json mocha -r ts-node/register -r src/tests/setup.ts src/tests/**/*.spec.ts"
+    "jstests": "TS_NODE_PROJECT=src/tests/tsconfig.json node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON -r ts-node/register node_modules/.bin/mocha -r src/tests/setup.ts src/tests/**/*.spec.ts"
   },
   "author": "Alena Laskavaia",
   "license": "EPL2.0",
@@ -25,7 +27,7 @@
     "@types/node": "^10.9.2",
     "@types/sinon": "^10.x.x",
     "chai": "^4.x.x",
-    "jsdom": "^20.0.0",
+    "jsdom": "^29.0.1",
     "mocha": "^10.x.x",
     "prettier": "^3.6",
     "rollup": "^4.60.0",

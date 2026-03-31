@@ -100,7 +100,7 @@ class Op_ai_cardBase extends AiOperation {
         $card = $this->selectCard();
 
         if ($card === null) {
-            $this->notifyMessage(clienttranslate('${player_name} cannot acquire a card — none available'));
+            $this->notifyMessage(clienttranslate('${player_name} cannot acquire a card - none available'));
             return true;
         }
 

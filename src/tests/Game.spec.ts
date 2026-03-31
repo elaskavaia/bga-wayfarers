@@ -89,10 +89,13 @@ describe("Game", () => {
     });
 
     it("keeps original text if getTokenPresentaton throws", () => {
+      const origError = console.error;
+      console.error = () => {};
       (game as any).getTokenPresentaton = () => {
         throw new Error("boom");
       };
       const result = game.bgaFormatText("Got [broken]", {});
+      console.error = origError;
       expect(result.log).to.equal("Got [broken]");
     });
 
