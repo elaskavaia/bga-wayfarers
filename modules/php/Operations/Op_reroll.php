@@ -83,6 +83,7 @@ class Op_reroll extends Operation {
             $newValue,
             clienttranslate('${player_name} rerolls ${token_name} to ${new_state}')
         );
+        $this->game->customUndoSavepoint($this->getPlayerId(), 1);
     }
     public function canSkip() {
         if ($this->getConfirmed()) {
@@ -118,5 +119,4 @@ class Op_reroll extends Operation {
         $dieValue = $this->getDieValue();
         return parent::getExtraArgs() + ["token_div" => "wicon_die_$dieValue"];
     }
-
 }
