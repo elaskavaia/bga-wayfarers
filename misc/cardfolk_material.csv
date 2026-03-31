@@ -39,7 +39,7 @@ num|cost|dr|tags|nom|da|tooltip
 #set rest=1
 
 119|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
-120|1|food,infMove|Sea|Enforcer||Gain Provisions and Move Influence
+120|1|coin,infMove|Sea|Enforcer||Gain Silver and Move Influence
 127|3|food,coin|Sea|Guardian||Gain Provisions and Silver
 128|3|2coin|Sea|Guardian||Gain 2 Silver
 129|3|2food|Sea|Guardian||Gain 2 Provisions
