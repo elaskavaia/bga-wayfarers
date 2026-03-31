@@ -43,7 +43,7 @@ class Op_ai_cardBase extends AiOperation {
      * Select card by priority, filtering out denied cards.
      * If all cards were denied (cannot fully deny a type), resets denied list and wraps around.
      */
-    function selectCard(): string {
+    function selectCard(): ?string {
         $moves = $this->getPossibleMoves();
         $cardType = $this->getCardType();
 
@@ -51,6 +51,10 @@ class Op_ai_cardBase extends AiOperation {
             // All cards were denied — cannot fully deny a type, reset denied list
             $this->withDataField("denied", []);
             $moves = $this->getPossibleMoves();
+        }
+
+        if (empty($moves)) {
+            return null;
         }
 
         if ($cardType == "insp") {
@@ -66,8 +70,9 @@ class Op_ai_cardBase extends AiOperation {
             ]);
         }
 
-        $card = $moves[$prio - 1] ?? "";
-        $this->game->systemAssert("Missing card on main display $prio", $card);
+        $count = count($moves);
+        $index = ($prio - 1) % $count;
+        $card = $moves[$index];
         return $card;
     }
 
@@ -93,6 +98,11 @@ class Op_ai_cardBase extends AiOperation {
         }
 
         $card = $this->selectCard();
+
+        if ($card === null) {
+            $this->notifyMessage(clienttranslate('${player_name} cannot acquire a card — none available'));
+            return true;
+        }
 
         // Check for opponent influence before committing
         $inf = $this->game->tokens->getTokensOfTypeInLocation("influence", $card);
