@@ -40,7 +40,7 @@ class Op_ai_cardInteract extends Op_cardInteract {
         if ($this->isBeingBought() && $card) {
             $workers = $this->game->tokens->getTokensOfTypeInLocation("worker", $card);
             foreach (array_keys($workers) as $workerKey) {
-                $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} gains ${token_name}'));
+                $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} gains ${token_name} ${reason}'));
             }
         }
         return true;

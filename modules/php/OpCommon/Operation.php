@@ -239,10 +239,16 @@ abstract class Operation {
      * wrapper for dbSetTokenLocation to pass proper player that owns the action
      */
     function dbSetTokenLocation(string $tokenId, string $placeId, int|null $state = null, string $notif = "*", mixed $args = []) {
+        if (!isset($args["reason"])) {
+            $args["reason"] = $this->getReason();
+        }
         $this->game->tokens->dbSetTokenLocation($tokenId, $placeId, $state, $notif, $args, $this->getPlayerId());
     }
 
     function dbSetTokenState($tokenId, $state = null, $notif = "*", $args = []) {
+        if (!isset($args["reason"])) {
+            $args["reason"] = $this->getReason();
+        }
         $this->game->tokens->dbSetTokenState($tokenId, $state, $notif, $args, $this->getPlayerId());
     }
 

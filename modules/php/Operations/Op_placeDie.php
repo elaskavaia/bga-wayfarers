@@ -182,6 +182,11 @@ class Op_placeDie extends Op_acquireBase {
             $dieValue,
             clienttranslate('${player_name} places Die ${new_state} onto ${place_name}')
         );
+
+        // Player can choose order
+        /** @var Op_order $op */
+        $op = $this->instanciateOperation("order", $owner);
+
         // Check for folk card tucked under this card (same state) and activate its ability
         $folkCard = $this->getTuckedFolk($cardId);
         if ($folkCard) {
@@ -189,16 +194,15 @@ class Op_placeDie extends Op_acquireBase {
             if (!$isRestOnly) {
                 $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
                 if ($folkRule) {
-                    $this->queue($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]);
+                    $op->withDelegate($this->instanciateOperation($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]));
                 }
             }
         }
-        // XXX player can chose order
+
         $r = $this->game->getRulesFor($cardId, "dr");
         $r = $this->applyFoodDiscount($r);
-        $op = $this->instanciateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]);
-        $op->checkVoid();
-        $this->queue($r, $owner, ["die" => $selectedDie, "reason" => $cardId]);
+        $op->withDelegate($this->instanciateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]));
+        $this->queueOp($op);
     }
 
     public function getExtraArgs() {

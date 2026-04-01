@@ -33,4 +33,12 @@ class Op_paygain extends Op_seq {
     function getOperator() {
         return ":";
     }
+
+    function getIconicName() {
+        $names = [];
+        foreach ($this->delegates as $sub) {
+            $names[] = $sub->getIconicName();
+        }
+        return implode(" ⤇ ", $names);
+    }
 }
