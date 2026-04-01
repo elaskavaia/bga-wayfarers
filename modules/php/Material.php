@@ -1636,7 +1636,7 @@ class Material {
         "create" => 1,
         "num" => 15,
         "r" => "infAny",
-        "d" => "camel",
+        "d" => "camel,pigeon",
         "dr" => "cardFolk,journal",
         "tags" => "City Book",
         "tor" => clienttranslate("Place Influence on any Guild"),

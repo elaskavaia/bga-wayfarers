@@ -18,7 +18,7 @@ num|r|d|dr|tags|trig|tor|todr
 12||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Gain a Space Upgrade Tile or place 2 Influence on Black Guild
 13||telescope,camel|cardSpace,infBlack|City Observatory|||Acquire a Space card and place Influence on Black Guild
 14||telescope,camel|cardSpace(dis)|City Observatory|||Acquire a discounted Space card
-15|infAny|camel|cardFolk,journal|City Book||Place Influence on any Guild|Acquire a Townsfolk card and gain Journal
+15|infAny|camel,pigeon|cardFolk,journal|City Book||Place Influence on any Guild|Acquire a Townsfolk card and gain Journal
 16||pigeon|infYellow,journal|City Book|||Place Influence on Yellow Guild and Journal
 17||pigeon|infBlue,journal|City Book|||Place Influence on Blue Guild and Journal
 18||telescope,pigeon|infBlack,journal|City Book Observatory|||Place Influence on Black Guild and Journal
