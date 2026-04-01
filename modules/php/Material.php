@@ -843,7 +843,7 @@ class Material {
 ],
     "tag_Book" => [ 
         "type" => "wicon_book",
-        "name" => clienttranslate("Book"),
+        "name" => clienttranslate("Library"),
 ],
     "tag_Comet" => [ 
         "type" => "wicon_comet",
@@ -864,10 +864,6 @@ class Material {
     "tag_Moon" => [ 
         "type" => "wicon_moon",
         "name" => clienttranslate("Moon"),
-],
-    "tag_Library" => [ 
-        "type" => "wicon_book",
-        "name" => clienttranslate("Library"),
 ],
     "tag_card_space" => [ 
         "type" => "wicon_card_space",
@@ -1887,7 +1883,7 @@ class Material {
         "num" => 44,
         "d" => "ship,ship",
         "dr" => "1n_food:cardWater",
-        "tags" => "Harbour Book",
+        "tags" => "Harbour",
         "c1" => "_xx_",
         "c2" => "yx__",
         "todr" => clienttranslate("Pay Provisions to acquire a Water card"),
@@ -3033,7 +3029,7 @@ class Material {
     "card_insp_5" => [ 
         "create" => 1,
         "num" => 5,
-        "collect" => "tag_Library",
+        "collect" => "tag_Book",
         "goal" => 4,
         "tooltip" => clienttranslate("Have at least 4 Library tags, including starting tag"),
         "nom" => "Curiosity",
