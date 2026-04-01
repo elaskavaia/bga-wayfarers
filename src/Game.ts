@@ -9,7 +9,7 @@
  *
  */
 
-import { getPart, NotificationMessage, placeHtml } from "./Game0Basics";
+import { getParentParts, getPart, NotificationMessage, placeHtml } from "./Game0Basics";
 import { Token, TokenMoveInfo, AnimArgs, TokenDisplayInfo } from "./Game1Tokens";
 import { GameMachine, OpInfo, ParamInfo } from "./GameMachine";
 import { BgaScoreSheet } from "./libs";
@@ -557,6 +557,17 @@ export class Game extends GameMachine {
     $("limbo")?.appendChild($(tokenId));
   }
 
+  getRemainingUpgradeTileCount(tokenId: string): number {
+    const prefix = getParentParts(tokenId);
+    let count = 0;
+    for (const key in this.gamedatas.tokens) {
+      if (this.gamedatas.tokens[key].location === "mainarea" && prefix == getParentParts(key)) {
+        count++;
+      }
+    }
+    return count;
+  }
+
   getPlaceRedirect(tokenInfo: Token, args: AnimArgs = {}): TokenMoveInfo {
     const location = tokenInfo.location ?? "limbo";
     const tokenId = tokenInfo.key;
@@ -922,6 +933,8 @@ export class Game extends GameMachine {
           }
         }
         if (tokenInfo.vp) tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
+        const count = this.getRemainingUpgradeTileCount(tokenInfo.tokenId);
+        tokenInfo.tooltip += this.ttSection(_("Remaining Tiles"), String(count));
 
         return;
       }

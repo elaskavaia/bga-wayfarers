@@ -2336,6 +2336,16 @@ class Game extends GameMachine {
     hideCard(tokenId) {
         $("limbo")?.appendChild($(tokenId));
     }
+    getRemainingUpgradeTileCount(tokenId) {
+        const prefix = getParentParts(tokenId);
+        let count = 0;
+        for (const key in this.gamedatas.tokens) {
+            if (this.gamedatas.tokens[key].location === "mainarea" && prefix == getParentParts(key)) {
+                count++;
+            }
+        }
+        return count;
+    }
     getPlaceRedirect(tokenInfo, args = {}) {
         const location = tokenInfo.location ?? "limbo";
         const tokenId = tokenInfo.key;
@@ -2708,6 +2718,8 @@ class Game extends GameMachine {
                 }
                 if (tokenInfo.vp)
                     tokenInfo.tooltip += this.ttSection(_("VP"), _(tokenInfo.vp));
+                const count = this.getRemainingUpgradeTileCount(tokenInfo.tokenId);
+                tokenInfo.tooltip += this.ttSection(_("Remaining Tiles"), String(count));
                 return;
             }
             case "jtile": {
