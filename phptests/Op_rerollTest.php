@@ -38,7 +38,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["die" => $dieKey]);
+        $op = $this->createOp(["target" => $dieKey]);
         $moves = $op->getPossibleMoves();
 
         // Should return button-style array with die key
@@ -50,7 +50,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["die" => $dieKey, "confirmed" => true]);
+        $op = $this->createOp(["target" => $dieKey, "confirmed" => true]);
         $moves = $op->getPossibleMoves();
 
         // Should return simple array with just the die key (auto-select)
@@ -66,7 +66,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["die" => $dieKey]);
+        $op = $this->createOp(["target" => $dieKey]);
         $this->assertTrue($op->canSkip());
     }
 
@@ -74,7 +74,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["die" => $dieKey, "confirmed" => true]);
+        $op = $this->createOp(["target" => $dieKey, "confirmed" => true]);
         $this->assertFalse($op->canSkip());
     }
 
@@ -85,7 +85,7 @@ final class Op_rerollTest extends TestCase {
         // Move die to a card (simulating placed die)
         $this->game->tokens->db->moveToken($dieKey, "card_land_1", 3);
 
-        $op = $this->createOp(["die" => $dieKey]);
+        $op = $this->createOp(["target" => $dieKey]);
         $op->resolve();
 
         // Die should be back in tableau
@@ -119,7 +119,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["die" => $dieKey]);
+        $op = $this->createOp(["target" => $dieKey]);
         $prompt = $op->getPrompt();
         $this->assertStringContainsString("Confirm", $prompt);
     }

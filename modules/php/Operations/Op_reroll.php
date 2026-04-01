@@ -49,7 +49,7 @@ class Op_reroll extends Operation {
     function getPossibleMoves() {
         $dieKey = $this->getDie();
         if ($dieKey) {
-            if ($this->getConfirmed()) {
+            if ($this->isConfirmed()) {
                 return [$dieKey];
             }
             $res[$dieKey] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll"), "buttons" => true];
@@ -86,17 +86,17 @@ class Op_reroll extends Operation {
         $this->game->customUndoSavepoint($this->getPlayerId(), 1);
     }
     public function canSkip() {
-        if ($this->getConfirmed()) {
+        if ($this->isConfirmed()) {
             return false;
         }
         return true;
     }
 
     function getDie() {
-        return $this->getDataField("die", null);
+        return $this->getDataField("target", null);
     }
 
-    function getConfirmed() {
+    function isConfirmed() {
         return $this->getDataField("confirmed", null);
     }
 
@@ -108,7 +108,7 @@ class Op_reroll extends Operation {
     }
 
     function getPrompt() {
-        $dieKey = $this->getDataField("die");
+        $dieKey = $this->getDie();
         if ($dieKey) {
             return clienttranslate('Confirm to reroll ${token_div}');
         }
