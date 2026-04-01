@@ -105,25 +105,20 @@
 .wicon.dice {
   background-image: unset;
 }
-// @each $key, $val in v.$colors-list {
-//   .dice#{$key}::before {
-//     background-color: $val;
-//   }
-// }
-.dice_ff0000::before {
-  background-position-x: 66.6%;
-}
 
-.dice_ffcc02::before {
-  background-position-x: 0%;
-}
-
-.dice_6cd0f6::before {
-  background-position-x: 33.3%;
-}
-
-.dice_982fff::before {
-  background-position-x: 100%;
+$i: 0;
+@each $key, $val in v.$colors-list-dice {
+  .dice#{$key}::before {
+    background-position-x: calc($i / 3 * 100%);
+  }
+  $color: str-slice("#{$val}", 2);
+  #ebd-body[data-player-color="#{$color}"] #pagemaintitletext,
+  #ebd-body[data-player-color="#{$color}"] #generalactions {
+    .dice::before {
+      background-position-x: calc($i / 3 * 100%);
+    }
+  }
+  $i: $i + 1;
 }
 
 @for $i from 1 through 6 {

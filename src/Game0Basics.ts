@@ -46,6 +46,7 @@ export class Game0Basics {
     const first_player_id = Object.keys(gamedatas.players)[0];
     if (!this.bga.players.isCurrentPlayerSpectator()) this.player_color = gamedatas.players[this.player_id].color;
     else this.player_color = gamedatas.players[first_player_id].color;
+    $("ebd-body").dataset.playerColor = this.player_color;
   }
 
   // utils

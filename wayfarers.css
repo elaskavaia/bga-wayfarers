@@ -1816,19 +1816,39 @@ html[data-theme=dark] .miniboard .guild_count {
   background-image: unset;
 }
 
-.dice_ff0000::before {
-  background-position-x: 66.6%;
-}
-
 .dice_ffcc02::before {
   background-position-x: 0%;
 }
 
+#ebd-body[data-player-color=ffcc02] #pagemaintitletext .dice::before,
+#ebd-body[data-player-color=ffcc02] #generalactions .dice::before {
+  background-position-x: 0%;
+}
+
 .dice_6cd0f6::before {
-  background-position-x: 33.3%;
+  background-position-x: 33.3333333333%;
+}
+
+#ebd-body[data-player-color="6cd0f6"] #pagemaintitletext .dice::before,
+#ebd-body[data-player-color="6cd0f6"] #generalactions .dice::before {
+  background-position-x: 33.3333333333%;
+}
+
+.dice_ff0000::before {
+  background-position-x: 66.6666666667%;
+}
+
+#ebd-body[data-player-color=ff0000] #pagemaintitletext .dice::before,
+#ebd-body[data-player-color=ff0000] #generalactions .dice::before {
+  background-position-x: 66.6666666667%;
 }
 
 .dice_982fff::before {
+  background-position-x: 100%;
+}
+
+#ebd-body[data-player-color="982fff"] #pagemaintitletext .dice::before,
+#ebd-body[data-player-color="982fff"] #generalactions .dice::before {
   background-position-x: 100%;
 }
 
