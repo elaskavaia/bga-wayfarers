@@ -186,19 +186,19 @@ class Op_ai_upgAny extends AiOperation {
 
         if ($position === null) {
             // No space in caravan - place alongside the board (state 0)
-            $this->dbSetTokenLocation(
+            $this->game->effect_gainTile(
+                $owner,
                 $selectedTile,
-                "tableau_$owner",
                 0,
                 clienttranslate('${player_name} acquires ${token_name} and places it alongside their board')
             );
             return true;
         }
 
-        // Place tile in caravan amd notify
-        $this->dbSetTokenLocation(
+        // Place tile in caravan and notify
+        $this->game->effect_gainTile(
+            $owner,
             $selectedTile,
-            "tableau_$owner",
             $position,
             clienttranslate('${player_name} acquires ${token_name} and places it in caravan')
         );

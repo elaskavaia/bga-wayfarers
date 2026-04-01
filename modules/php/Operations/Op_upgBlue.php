@@ -33,8 +33,4 @@ class Op_upgBlue extends Op_upgBase {
     function getTileHeight(): int {
         return 1;
     }
-    function isDoubleSided(): bool {
-        return true;
-    }
-
 }

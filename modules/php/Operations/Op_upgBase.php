@@ -195,33 +195,6 @@ abstract class Op_upgBase extends Op_acquireBase {
         return ["payop" => "?", "payop_name" => "?"] + parent::getExtraArgs();
     }
 
-    /**
-     * Check if this tile type is double-sided (yellow and blue are double-sided)
-     */
-    function isDoubleSided(): bool {
-        return false;
-    }
-
-    /**
-     * Get the reverse side tile key for a double-sided tile
-     * Odd numbers pair with next even number (1<->2, 3<->4, etc.)
-     */
-    function getReverseSideTileKey(string $tileKey): string {
-        // Tile key format: upg_color_num_copy (e.g., upg_blue_1_1)
-        $parts = explode("_", $tileKey);
-        $num = (int) $parts[2];
-
-        // Odd pairs with next even, even pairs with previous odd
-        if ($num % 2 === 1) {
-            $reverseNum = $num + 1;
-        } else {
-            $reverseNum = $num - 1;
-        }
-
-        $parts[2] = (string) $reverseNum;
-        return implode("_", $parts);
-    }
-
     function getPaymentOperation(?string $card = null): string {
         $c = max(0, 3 - $this->getCoinDiscount());
         if ($c <= 0) {
@@ -256,19 +229,8 @@ abstract class Op_upgBase extends Op_acquireBase {
         // Extract position from "ccell_X_owner" format
         $posValue = (int) getPart($position, 1);
 
-        // Place tile in tableau with position encoded in state
-        $this->dbSetTokenLocation(
-            $selectedTile,
-            "tableau_$owner",
-            $posValue,
-            clienttranslate('${player_name} places ${token_name} in caravan')
-        );
-
-        // For double-sided tiles (yellow/blue), remove the reverse side from mainarea
-        if ($this->isDoubleSided()) {
-            $reverseTile = $this->getReverseSideTileKey($selectedTile);
-            $this->game->tokens->db->moveToken($reverseTile, "limbo", 0);
-        }
+        // Place tile and remove reverse side of double-sided tiles
+        $this->game->effect_gainTile($owner, $selectedTile, $posValue, clienttranslate('${player_name} places ${token_name} in caravan'));
 
         // Check if any Vista cards are triggered by this upgrade tile
         $this->queueVistaTriggers($selectedTile);

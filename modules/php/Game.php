@@ -596,6 +596,42 @@ class Game extends Base {
     }
 
     /**
+     * Get the reverse side tile key for a double-sided tile
+     * Odd numbers pair with next even number (1<->2, 3<->4, etc.)
+     */
+    function getReverseSideTileKey(string $tileKey): string {
+        // Tile key format: upg_color_num_copy (e.g., upg_blue_1_1)
+        $parts = explode("_", $tileKey);
+        $num = (int) $parts[2];
+
+        // Odd pairs with next even, even pairs with previous odd
+        if ($num % 2 === 1) {
+            $reverseNum = $num + 1;
+        } else {
+            $reverseNum = $num - 1;
+        }
+
+        $parts[2] = (string) $reverseNum;
+        return implode("_", $parts);
+    }
+
+    /**
+     * Place an upgrade tile into a player's tableau and remove the reverse side
+     * of double-sided tiles (blue/yellow) from mainarea.
+     */
+    function effect_gainTile(string $owner, string $tileKey, int $posValue, string $notif): void {
+        $player_id = $this->custom_getPlayerIdByColor($owner);
+        $this->tokens->dbSetTokenLocation($tileKey, "tableau_$owner", $posValue, $notif, [], $player_id);
+
+        // For double-sided tiles, remove the reverse side from mainarea
+        $color = getPart($tileKey, 1);
+        if ($color === "blue" || $color === "yellow") {
+            $reverseTile = $this->getReverseSideTileKey($tileKey);
+            $this->tokens->dbSetTokenLocation($reverseTile, "limbo", 0, "");
+        }
+    }
+
+    /**
      * Check if a player has achieved an inspiration card's goal
      * @param string $cardKey - the inspiration card key (e.g., "card_insp_1")
      * @param string $owner - player color
