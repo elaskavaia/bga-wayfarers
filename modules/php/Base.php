@@ -815,6 +815,9 @@ function custom_array_rotate(array $array, int $start_index, int $direction) {
     for ($i = 0; $i < $count; $i++) {
         // Calculate the source index with wrapping: direction 1 = forward, -1 = backward
         $source_index = ((($start_index + $i * $direction) % $count) + $count) % $count;
+        if ($values[$source_index] === null) {
+            continue; // Skip null entries (filtered positions)
+        }
         $result[$keys[$source_index]] = $values[$source_index];
     }
 

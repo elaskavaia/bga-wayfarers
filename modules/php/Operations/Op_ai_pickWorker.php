@@ -112,9 +112,11 @@ class Op_ai_pickWorker extends AiOperation {
                 $workersByPosition[$cardState][$workerKey] = $workerInfo;
             }
 
-            // Sort by position
-            ksort($workersByPosition);
-            $positions = array_keys($workersByPosition);
+            // Build 4-slot position array with nulls for empty positions
+            $positions = [null, null, null, null];
+            foreach ($workersByPosition as $pos => $workersAtPos) {
+                $positions[$pos - 1] = $pos; // Convert 1-based to 0-based index
+            }
 
             // Use sum value for positional selection
             $prio = $this->getPositionPriority();
@@ -122,7 +124,7 @@ class Op_ai_pickWorker extends AiOperation {
             $sortedPositions = custom_array_rotate($positions, $prio - 1, $dir);
 
             // Return first worker at selected position
-            $selectedPosition = $sortedPositions[0];
+            $selectedPosition = reset($sortedPositions);
             return array_key_first($workersByPosition[$selectedPosition]);
         }
 

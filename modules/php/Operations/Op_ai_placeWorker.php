@@ -77,34 +77,49 @@ class Op_ai_placeWorker extends AiOperation {
             return null;
         }
 
-        // Filter out denied (denied) cards
+        // Build position-indexed array (0-3) with card keys, null for invalid/filtered positions
         $skip = $this->getDataField("denied", []);
+        $positions = [null, null, null, null];
+        foreach ($cards as $cardKey => $info) {
+            $pos = (int) $info["state"] - 1; // Convert 1-based state to 0-based index
+            $positions[$pos] = $cardKey;
+        }
+
+        // Null out denied cards
         if (!empty($skip)) {
-            $cards = array_diff_key($cards, array_flip($skip));
-            if (empty($cards)) {
-                // All cards denied — cannot fully deny, reset skip
-                $this->withDataField("denied", []);
-                $cards = $this->getMainareaCards($cardType);
+            foreach ($positions as $i => $cardKey) {
+                if ($cardKey !== null && in_array($cardKey, $skip)) {
+                    $positions[$i] = null;
+                }
+            }
+            // Cannot fully deny — reset if all nulled
+            if (array_filter($positions) === []) {
+                foreach ($cards as $cardKey => $info) {
+                    $positions[(int) $info["state"] - 1] = $cardKey;
+                }
             }
         }
 
-        // Filter out cards that already have a worker of the same color
+        // Null out cards that already have a worker of the same color
         if ($workerColor) {
-            $cards = array_filter($cards, function ($info, $cardKey) use ($workerColor) {
-                $workers = $this->game->tokens->getTokensOfTypeInLocation("worker_$workerColor", $cardKey);
-                return empty($workers);
-            }, ARRAY_FILTER_USE_BOTH);
-            if (empty($cards)) {
+            foreach ($positions as $i => $cardKey) {
+                if ($cardKey !== null) {
+                    $workers = $this->game->tokens->getTokensOfTypeInLocation("worker_$workerColor", $cardKey);
+                    if (!empty($workers)) {
+                        $positions[$i] = null;
+                    }
+                }
+            }
+            if (array_filter($positions) === []) {
                 return null;
             }
         }
 
         $prio = $this->getPositionPriority();
-        $cardKeys = array_keys($cards);
         $dir = $this->getNextPositionPriorityDirection($prio);
-        $sorted = custom_array_rotate($cardKeys, $prio - 1, $dir);
+        $sorted = custom_array_rotate($positions, $prio - 1, $dir);
 
-        return $sorted[0];
+        return reset($sorted) ?: null;
     }
 
     /**
