@@ -155,4 +155,47 @@ final class Op_orTest extends TestCase {
         $this->assertArrayHasKey("choice_1", $moves);
         $this->assertCount(2, $moves);
     }
+
+    /**
+     * Test that getPossibleMoves propagates parent data to delegates without blowing away
+     * delegate counts. E.g. or with countable children like 2(coin)/3(food) and parent data
+     * containing die info.
+     */
+    public function testGetPossibleMoves_PropagatesDataWithoutBlowingCounts(): void {
+        // Create or with countable children: 2(coin)/3(food)
+        /** @var Op_or */
+        $op = $this->game->machine->instanciateOperation("4(2coin/3food)", PCOLOR, ["x" => "y"]);
+
+        $moves = $op->getPossibleMoves();
+
+        // Moves should have both choices with correct max counts preserved
+        $this->assertArrayHasKey("choice_0", $moves);
+        $this->assertArrayHasKey("choice_1", $moves);
+
+        // Delegate counts should not be blown away by parent data propagation
+        $this->assertEquals(2, $op->delegates[0]->getDataField("count"), "First delegate count should still be 2");
+        $this->assertEquals(3, $op->delegates[1]->getDataField("count"), "Second delegate count should still be 3");
+
+        // Parent data should have been propagated to delegates
+        $this->assertEquals("y", $op->delegates[0]->getDataField("x"), "Parent data should propagate to first delegate");
+        $this->assertEquals("y", $op->delegates[1]->getDataField("x"), "Parent data should propagate to second delegate");
+
+        $op->saveToDb(1, true);
+
+        $coinBefore = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $foodBefore = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+
+        $op->action_resolve(["target" => ["choice_1" => 2]]);
+
+        $this->game->machine->dispatchAll();
+
+        $coinAfter = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
+        $foodAfter = $this->game->tokens->getTrackerValue(PCOLOR, "food");
+
+        $this->assertEquals($coinBefore, $coinAfter, "Coin should not be gained");
+        $this->assertEquals($foodBefore + 6, $foodAfter, "Food should be gained");
+
+        $op = $this->game->machine->createTopOperationFromDbForOwner(PCOLOR);
+        $this->assertEquals("2(2(coin)/3(food))", $op->getTypeFullExpr(), "Top operation should be or with count of 2");
+    }
 }

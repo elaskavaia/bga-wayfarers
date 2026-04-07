@@ -38,18 +38,17 @@ class Op_or extends ComplexOperation {
         $rank = 1;
         foreach ($this->delegates as $i => $sub) {
             $key = "choice_$i";
-            $c = $res[$key] ?? 0;
+            $c = $res[$key] ?? 0; // user selects the count of sub operation
             $total += $c;
             if ($c > 0) {
                 $max = $sub->getDataField("count", 1);
                 $min = $sub->getDataField("mcount", 1);
-                $sub->withData($this->getData()); // get all data from parent
+                $sub->withData($this->getData(), true); // get all data from parent
                 // now override count
                 $sub->withDataField("count", $max * $c);
                 $sub->withDataField("mcount", $min * $c);
                 // save
-                $sub->saveToDb($rank, true);
-                $rank++;
+                $this->queueOp($sub);
 
                 // Reset delegate counts so serialization stays clean if saved again
                 $sub->withDataField("count", $max);
@@ -59,7 +58,7 @@ class Op_or extends ComplexOperation {
                 $this->incMinCount(-$c);
                 $this->incCount(-$c);
             }
-            $sub->destroy();
+            $sub->destroy(); // this destroys this in db, but it will saved again when parent saves its state
         }
 
         if ($total > $count) {
@@ -67,7 +66,7 @@ class Op_or extends ComplexOperation {
         }
 
         if ($this->getCount() > 0) {
-            $this->saveToDb($rank, true);
+            $this->queueOp($this);
         }
         return;
     }
@@ -76,6 +75,7 @@ class Op_or extends ComplexOperation {
         $res = [];
         $totalLimit = 0;
         foreach ($this->delegates as $i => $sub) {
+            $sub->withData($this->getData(), true);
             $arg = $this->paramInfo($sub);
             $totalLimit += $arg["max"] ?? 0;
             $res["choice_$i"] = $arg;

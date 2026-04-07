@@ -75,8 +75,12 @@ abstract class Operation {
         $this->owner = $owner;
         return $this;
     }
-    function withData($data) {
+    function withData(mixed $data, bool $nocounts = false) {
         $xdata = self::decodeData($data);
+        if ($nocounts) {
+            unset($xdata["count"]);
+            unset($xdata["mcount"]);
+        }
         if ($this->data === null) {
             $this->data = $xdata;
         } elseif ($xdata) {
@@ -84,6 +88,7 @@ abstract class Operation {
         }
         return $this;
     }
+
     static function decodeData($data) {
         if (is_string($data)) {
             $data = json_decode($data, true, 20, JSON_THROW_ON_ERROR | JSON_BIGINT_AS_STRING);
