@@ -37,9 +37,8 @@ class Op_ai_upgAny extends AiOperation {
         foreach ($prio as $color) {
             $tiles = $this->game->tokens->getTokensOfTypeInLocation("upg_{$color}", "mainarea");
             if (!empty($tiles)) {
-                // return array with all positions 1-4 (4 may not exists) which matches rules p (position) of upgrade, null if absent
                 $res = [];
-                for ($p = 1; $p <= 4; $p++) {
+                for ($p = 1; $p <= $this->getMaxPosition(); $p++) {
                     $res["p$p"] = ["q" => Material::ERR_NONE_LEFT, "color" => $color, "p" => $p, "tile" => null];
                     foreach ($tiles as $tileId => $tileInfo) {
                         if ($this->game->getRulesFor($tileId, "p", 0) == $p) {
@@ -52,6 +51,10 @@ class Op_ai_upgAny extends AiOperation {
             }
         }
         return [];
+    }
+
+    function getMaxPosition(): int {
+        return 4;
     }
 
     /**

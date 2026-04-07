@@ -33,6 +33,10 @@ class Op_ai_upgPink extends Op_ai_upgAny {
         return ["pink"];
     }
 
+    function getMaxPosition(): int {
+        return 10;
+    }
+
     function getPositionPriority(): int {
         // When acquiring a Special (Pink) Upgrade Tile, the AI prioritises
         // using the reference at the bottom of their most recently revealed
