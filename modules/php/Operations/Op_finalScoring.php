@@ -27,7 +27,7 @@ class Op_finalScoring extends Operation {
         return $this->finalScoring();
     }
 
-    function finalScoring(): GameResult {
+    function finalScoring() {
         $game = $this->game;
         $players = $game->loadPlayersBasicInfos();
         $guildInfluence = []; // Track influence per guild per player for majority
@@ -188,14 +188,21 @@ class Op_finalScoring extends Operation {
 
             if ($score < $aiScore) {
                 $game->notifyMessage(clienttranslate('${player_name} wins! You loose'), [], $player_id);
+                $game->notifyMessage(clienttranslate("Scoring is negated (cannot lose with positive scoring in solo)"));
+                $game->playerScore->set($game->getFirstPlayer(), -$score);
                 $reverseScoring = true;
             }
         }
 
-        $game->notify->all("endScores", "", ["endScores" => $game->getEndScores(), "aiEndScores" => $aiEndScored, "final" => true]);
+        $game->notify->all("endScores", "", [
+            "endScores" => $game->getEndScores(),
+            "aiEndScores" => $aiEndScored,
+            "final" => true,
+            "reverseScoring" => $reverseScoring,
+        ]);
 
-        $playersDb = $game->getCollectionFromDb("SELECT * FROM `player`");
-        $players = Player::fromPlayersDb($playersDb);
-        return GameResult::individualRanking($players, reverseScore: $reverseScoring);
+        // $playersDb = $game->getCollectionFromDb("SELECT * FROM `player`");
+        // $players = Player::fromPlayersDb($playersDb);
+        // return GameResult::individualRanking($players, reverseScore: $reverseScoring);
     }
 }
