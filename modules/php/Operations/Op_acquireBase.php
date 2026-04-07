@@ -26,13 +26,16 @@ abstract class Op_acquireBase extends Operation {
     }
 
     /**
-     * Get the die value
+     * Get the die value. 0 means no die is passed
      */
     function getDieValue(): int {
-        if (!$this->getDie()) {
+        $die = $this->getDie();
+        if (!$die) {
             return 0;
         }
-        return (int) $this->game->tokens->db->getTokenState($this->getDie());
+        $dieValue = (int) $this->game->tokens->db->getTokenState($die);
+        $this->game->systemAssert("Invalid die value", $dieValue >= 1 && $dieValue <= 6);
+        return $dieValue;
     }
 
     function canAfford(string $op): bool {
@@ -56,6 +59,7 @@ abstract class Op_acquireBase extends Operation {
     function getCoinDiscount(): int {
         $dieValue = $this->getDieValue();
         if (!$dieValue) {
+            // no die is placed in caravan?
             $v = 0;
         } else {
             $owner = $this->getOwner();

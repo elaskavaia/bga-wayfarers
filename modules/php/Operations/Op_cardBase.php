@@ -80,8 +80,7 @@ abstract class Op_cardBase extends Op_acquireBase {
             if ($this->isFree()) {
                 $payop = "";
             }
-            //$children = $info["children"];
-            // XXX mark influence on the card?
+
             $can = $this->canAfford($payop);
             $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop];
         }
@@ -145,5 +144,4 @@ abstract class Op_cardBase extends Op_acquireBase {
         }
         return true;
     }
-
 }
