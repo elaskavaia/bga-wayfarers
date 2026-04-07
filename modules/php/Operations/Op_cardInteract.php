@@ -102,8 +102,12 @@ class Op_cardInteract extends Operation {
                 // Pay from acting player
                 $this->game->effect_incCount($owner, $resourceType, -1, $this->getOpId());
 
-                // Give to opponent
-                $this->game->effect_incCount($opp, $resourceType, 1, $this->getOpId());
+                // Give to opponent (AI moves resource marker instead of gaining coin/food)
+                if ($opp === $this->game->getAutomaColor()) {
+                    $this->queue("ai_res", $opp);
+                } else {
+                    $this->game->effect_incCount($opp, $resourceType, 1, $this->getOpId());
+                }
             }
 
             // Return the influence token to the player's tableau (unless buy is false)
