@@ -78,10 +78,7 @@ class Op_journal extends Operation {
     }
 
     public function canSkip() {
-        if ($this->noValidTargets()) {
-            return true;
-        }
-        return false;
+        return true;
     }
 
     public function requireConfirmation() {
@@ -122,5 +119,4 @@ class Op_journal extends Operation {
             $this->game->triggerEndGame($this->getPlayerId());
         }
     }
-
 }

@@ -244,7 +244,7 @@ final class Op_journalTest extends TestCase {
         $this->assertTrue($op->canSkip());
     }
 
-    public function testCannotSkipWhenValidTargetsExist(): void {
+    public function testCanSkipWhenValidTargetsExist(): void {
         // Setup: position with valid connection
         $this->setMarkerPosition(0);
         $this->setupPosition(0, "10");
@@ -252,7 +252,7 @@ final class Op_journalTest extends TestCase {
 
         $op = $this->createOp();
 
-        $this->assertFalse($op->canSkip());
+        $this->assertTrue($op->canSkip());
     }
 
     public function testRequireConfirmation(): void {
