@@ -54,11 +54,17 @@ abstract class Op_cardBase extends Op_acquireBase {
             return false;
         }
 
+        // Add assets from tucked folk card (e.g. Messenger provides pigeon)
+        $folkCard = $this->getTuckedFolk($placedCard);
+        if ($folkCard !== null) {
+            $folkRule = $this->game->getRulesFor($folkCard, "da", "");
+            $this->game->updateMatchingAssetsFromRule($folkRule, $caravanAssets);
+        }
+
         // Get asset requirements for that card
         $requirements = $this->game->getRulesFor($placedCard, "d", "");
 
         // Calculate leftover assets after meeting requirements
-
         $missing = $this->game->getMissingAssetRequirements($requirements . ",pigeon", $caravanAssets);
 
         // If pigeon is not missing its available
