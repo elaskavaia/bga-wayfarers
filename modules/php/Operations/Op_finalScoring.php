@@ -14,20 +14,17 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
-use Bga\GameFramework\GameResult\GameResult;
-use Bga\GameFramework\GameResult\Player;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\AiOperation;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_finalScoring extends Operation {
-    function onEnteringGameState() {
+    function resolve(): void {
         $this->dbSetTokenState(Game::GAME_STAGE, 5, clienttranslate("Final turn complete. Game ends!"));
-        //$this->game->gamestate->jumpToState(99);
-        return $this->finalScoring();
+        $this->finalScoring();
     }
 
-    function finalScoring() {
+    function finalScoring(): void {
         $game = $this->game;
         $players = $game->loadPlayersBasicInfos();
         $guildInfluence = []; // Track influence per guild per player for majority
