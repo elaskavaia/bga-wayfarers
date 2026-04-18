@@ -31,14 +31,20 @@ class Op_ai_upgAny extends AiOperation {
     // AI caravan dimensions
     const CARAVAN_COLS = 7;
     const CARAVAN_ROWS = 3;
+    // State offset to mark tile as rotated 90° from native orientation
+    // (state 1-21 = native orientation; state 101-121 = rotated)
+    const ROTATED_STATE_OFFSET = 100;
+    // Winding caravan path: bottom row L→R (15-21), middle row R→L (14-8), top row L→R (1-7)
+    private const WINDING_PATH = [15, 16, 17, 18, 19, 20, 21, 14, 13, 12, 11, 10, 9, 8, 1, 2, 3, 4, 5, 6, 7];
 
     public function getPossibleMoves() {
         $prio = $this->getColorPriority();
+        $pos = $this->getMaxPosition();
         foreach ($prio as $color) {
             $tiles = $this->game->tokens->getTokensOfTypeInLocation("upg_{$color}", "mainarea");
             if (!empty($tiles)) {
                 $res = [];
-                for ($p = 1; $p <= $this->getMaxPosition(); $p++) {
+                for ($p = 1; $p <= $pos; $p++) {
                     $res["p$p"] = ["q" => Material::ERR_NONE_LEFT, "color" => $color, "p" => $p, "tile" => null];
                     foreach ($tiles as $tileId => $tileInfo) {
                         if ($this->game->getRulesFor($tileId, "p", 0) == $p) {
@@ -71,70 +77,6 @@ class Op_ai_upgAny extends AiOperation {
 
     function getUpgradeColor() {
         return $this->getDataField("upgrade", null);
-    }
-
-    /**
-     * Get next available caravan position for AI
-     * AI caravan is 7 x 3 without any reserved slots
-     * Winding path: bottom row L→R (15-21), middle row R→L (14-8), top row L→R (1-7)
-     */
-    function getNextCaravanPosition(int $tileW, int $tileH): ?int {
-        $owner = $this->getOwner();
-        $tiles = $this->game->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
-
-        // Track which positions are occupied (including full footprint of multi-cell tiles)
-        $occupied = [];
-        foreach ($tiles as $tileId => $tileInfo) {
-            if ($tileInfo["state"] > 0) {
-                $anchorPos = $tileInfo["state"];
-                $w = (int) $this->game->getRulesFor($tileId, "w", 1);
-                $h = (int) $this->game->getRulesFor($tileId, "h", 1);
-                $ax = ($anchorPos - 1) % self::CARAVAN_COLS;
-                $ay = (int) floor(($anchorPos - 1) / self::CARAVAN_COLS);
-                for ($dy = 0; $dy < $h; $dy++) {
-                    for ($dx = 0; $dx < $w; $dx++) {
-                        $occupied[] = $ax + $dx + ($ay + $dy) * self::CARAVAN_COLS + 1;
-                    }
-                }
-            }
-        }
-
-        // Winding path order: bottom row L→R, middle row R→L, top row L→R
-        $windingPath = [15, 16, 17, 18, 19, 20, 21, 14, 13, 12, 11, 10, 9, 8, 1, 2, 3, 4, 5, 6, 7];
-
-        // Try positions in winding path order
-        foreach ($windingPath as $pos) {
-            if (in_array($pos, $occupied)) {
-                continue;
-            }
-
-            // Check if tile fits (considering width and height)
-            $x = ($pos - 1) % self::CARAVAN_COLS;
-            $y = (int) floor(($pos - 1) / self::CARAVAN_COLS);
-
-            // Check bounds
-            if ($x + $tileW > self::CARAVAN_COLS || $y + $tileH > self::CARAVAN_ROWS) {
-                continue;
-            }
-
-            // Check for collisions with existing tiles
-            $canPlace = true;
-            for ($dy = 0; $dy < $tileH; $dy++) {
-                for ($dx = 0; $dx < $tileW; $dx++) {
-                    $checkPos = $x + $dx + ($y + $dy) * self::CARAVAN_COLS + 1;
-                    if (in_array($checkPos, $occupied)) {
-                        $canPlace = false;
-                        break 2;
-                    }
-                }
-            }
-
-            if ($canPlace) {
-                return $pos;
-            }
-        }
-
-        return null; // No space available
     }
 
     /**
@@ -176,16 +118,10 @@ class Op_ai_upgAny extends AiOperation {
             return true; // Complete even if no tile available
         }
 
-        // Get tile dimensions
-        $tileW = (int) $this->game->getRulesFor($selectedTile, "w", 1);
-        $tileH = (int) $this->game->getRulesFor($selectedTile, "h", 1);
-
-        // Find next available position, rotating rectangular tiles if needed to fit winding path
-        $position = $this->getNextCaravanPosition($tileW, $tileH);
-        if ($position === null && $tileW !== $tileH) {
-            //$position = $this->getNextCaravanPosition($tileH, $tileW);
-            //TODO: we won't support rotating tiles for now
-        }
+        // Get tile dimensions and pick caravan position + orientation
+        $nativeW = (int) $this->game->getRulesFor($selectedTile, "w", 1);
+        $nativeH = (int) $this->game->getRulesFor($selectedTile, "h", 1);
+        [$position, $rotated] = $this->pickPlacement($nativeW, $nativeH);
 
         if ($position === null) {
             // No space in caravan - place alongside the board (state 0)
@@ -198,20 +134,21 @@ class Op_ai_upgAny extends AiOperation {
             return true;
         }
 
-        // Place tile in caravan and notify
+        $stateValue = $rotated ? $position + self::ROTATED_STATE_OFFSET : $position;
+
         $this->game->effect_gainTile(
             $owner,
             $selectedTile,
-            $position,
+            $stateValue,
             clienttranslate('${player_name} acquires ${token_name} and places it in caravan')
         );
 
-        // Resolve effects of covered caravan icons
+        // Cover bonuses use the effective (post-rotation) footprint, not the native one
+        [$effW, $effH] = $rotated ? [$nativeH, $nativeW] : [$nativeW, $nativeH];
         $boardNumber = $this->aiGetBoardNumber();
-        $x = ($position - 1) % self::CARAVAN_COLS;
-        $y = (int) floor(($position - 1) / self::CARAVAN_COLS);
-        for ($dy = 0; $dy < $tileH; $dy++) {
-            for ($dx = 0; $dx < $tileW; $dx++) {
+        [$x, $y] = $this->xyFromPos($position);
+        for ($dy = 0; $dy < $effH; $dy++) {
+            for ($dx = 0; $dx < $effW; $dx++) {
                 $i = $x + $dx + ($y + $dy) * self::CARAVAN_COLS;
                 $bonus = $this->game->getRulesFor("aibonus_{$boardNumber}_{$i}", "r", "");
                 if ($bonus) {
@@ -221,5 +158,81 @@ class Op_ai_upgAny extends AiOperation {
         }
 
         return true;
+    }
+
+    /**
+     * Pick caravan position and orientation for a tile. Rectangular tiles
+     * must orient horizontally to follow the winding row direction; vertical
+     * only at row-end corners where horizontal cannot fit at the current
+     * candidate. Returns [pos, rotated] where rotated=true means the tile is
+     * drawn 90° from its native orientation. pos is null when nothing fits.
+     */
+    private function pickPlacement(int $nativeW, int $nativeH): array {
+        $occupied = $this->computeOccupied();
+        // Primary = horizontal (wide-over-tall); secondary = vertical.
+        // For squares, primary is the only orientation and rotated stays false.
+        $primaryW = max($nativeW, $nativeH);
+        $primaryH = min($nativeW, $nativeH);
+        $rotatedForPrimary = $nativeW < $nativeH;
+
+        foreach (self::WINDING_PATH as $pos) {
+            if (in_array($pos, $occupied)) {
+                continue;
+            }
+            if ($this->fitsAt($pos, $primaryW, $primaryH, $occupied)) {
+                return [$pos, $rotatedForPrimary];
+            }
+            if ($primaryW !== $primaryH && $this->fitsAt($pos, $primaryH, $primaryW, $occupied)) {
+                return [$pos, !$rotatedForPrimary];
+            }
+        }
+        return [null, false];
+    }
+
+    private function computeOccupied(): array {
+        $owner = $this->getOwner();
+        $tiles = $this->game->tokens->getTokensOfTypeInLocation("upg", "tableau_$owner");
+        $occupied = [];
+        foreach ($tiles as $tileId => $tileInfo) {
+            // state 0 = alongside-board overflow; contributes no caravan footprint
+            if ($tileInfo["state"] <= 0) {
+                continue;
+            }
+            $rawState = (int) $tileInfo["state"];
+            $rotated = $rawState > self::ROTATED_STATE_OFFSET;
+            $anchorPos = $rotated ? $rawState - self::ROTATED_STATE_OFFSET : $rawState;
+            $w = (int) $this->game->getRulesFor($tileId, "w", 1);
+            $h = (int) $this->game->getRulesFor($tileId, "h", 1);
+            if ($rotated) {
+                [$w, $h] = [$h, $w];
+            }
+            [$ax, $ay] = $this->xyFromPos($anchorPos);
+            for ($dy = 0; $dy < $h; $dy++) {
+                for ($dx = 0; $dx < $w; $dx++) {
+                    $occupied[] = $ax + $dx + ($ay + $dy) * self::CARAVAN_COLS + 1;
+                }
+            }
+        }
+        return $occupied;
+    }
+
+    private function fitsAt(int $pos, int $w, int $h, array $occupied): bool {
+        [$x, $y] = $this->xyFromPos($pos);
+        if ($x + $w > self::CARAVAN_COLS || $y + $h > self::CARAVAN_ROWS) {
+            return false;
+        }
+        for ($dy = 0; $dy < $h; $dy++) {
+            for ($dx = 0; $dx < $w; $dx++) {
+                $checkPos = $x + $dx + ($y + $dy) * self::CARAVAN_COLS + 1;
+                if (in_array($checkPos, $occupied)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private function xyFromPos(int $pos): array {
+        return [($pos - 1) % self::CARAVAN_COLS, intdiv($pos - 1, self::CARAVAN_COLS)];
     }
 }

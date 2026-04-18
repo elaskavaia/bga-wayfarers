@@ -692,13 +692,20 @@ export class Game extends GameMachine {
       }
     } else if (tokenId.startsWith("upg")) {
       if (location.startsWith("tableau")) {
-        // Upgrade tiles in caravan - state encodes position: pos = x + y * 6 + 1
+        // Upgrade tiles in caravan. State encodes position (1-21) and rotation:
+        // state > 100 means the tile is drawn rotated 90° from its native orientation.
         const color = getPart(location, 1);
-        const pos = Number(tokenInfo.state);
+        const rawState = Number(tokenInfo.state);
+        const ROTATED_OFFSET = 100;
+        const rotated = rawState > ROTATED_OFFSET;
+        const pos = rotated ? rawState - ROTATED_OFFSET : rawState;
         if (pos <= 0) {
           // they hung out on tableau?
         } else {
           result.location = `ccell_${pos}_${color}`;
+          result.onEnd = (node: HTMLElement) => {
+            node.classList.toggle("rotated", rotated);
+          };
         }
       } else if (location.startsWith("mainarea")) {
         const cardType = getPart(tokenId, 1);

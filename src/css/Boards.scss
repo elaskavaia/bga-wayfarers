@@ -239,6 +239,17 @@
     width: 200%;
     height: 100%;
   }
+  .upg.upg_black {
+    width: 100%;
+    height: 200%;
+  }
+  // Rotated tiles: swap the visual footprint via 90° rotation around top-left,
+  // then shift back so the anchor cell stays aligned with the tile's top-left.
+  // A 2×1 wide tile becomes 1×2 tall; a 1×2 tall tile becomes 2×1 wide.
+  .upg.rotated {
+    transform-origin: top left;
+    transform: rotate(90deg) translateY(-100%);
+  }
 }
 
 .mainboardall {
