@@ -14,12 +14,20 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 use function Bga\Games\wayfarers\getPart;
 
 class Op_journal extends Operation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            $this->queue("ai_" . $this->getType(), $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
     function getPossibleMoves() {
         $owner = $this->getOwner();
         $markerId = "marker_$owner";
