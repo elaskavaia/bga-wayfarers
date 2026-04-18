@@ -77,6 +77,13 @@ class Op_infCard extends Op_infBase {
         return parent::getPossibleMoves();
     }
 
+    function canSkip() {
+        if ($this->noValidTargets()) {
+            return true;
+        }
+        return parent::canSkip();
+    }
+
     function resolve(): void {
         $owner = $this->getOwner();
         $selectedCard = $this->getGuild();
