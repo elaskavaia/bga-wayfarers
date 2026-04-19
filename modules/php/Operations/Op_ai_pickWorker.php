@@ -48,6 +48,11 @@ class Op_ai_pickWorker extends AiOperation {
                 continue;
             }
 
+            // Exclude workers placed this turn (state=1) — RULES.md line 252.
+            if ((int) $worker["state"] !== 0) {
+                continue;
+            }
+
             $color = getPart($key, 1);
 
             if (!isset($workersByColor[$color])) {

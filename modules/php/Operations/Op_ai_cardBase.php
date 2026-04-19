@@ -22,9 +22,23 @@ class Op_ai_cardBase extends AiOperation {
     public function getPossibleMoves() {
         $cardType = $this->getCardType();
         $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_$cardType", "mainarea", null, "token_state");
-        $moves = array_keys($tokens);
+        $moves = [];
 
-        // Filter out denied (denied) cards
+        // RULES: cannot acquire a card that holds a worker placed this turn (state=1).
+        foreach ($tokens as $card => $info) {
+            $blocked = false;
+            foreach ($info["children"] ?? [] as $child) {
+                if (str_starts_with($child["key"], "worker_") && (int) $child["state"] !== 0) {
+                    $blocked = true;
+                    break;
+                }
+            }
+            if (!$blocked) {
+                $moves[] = $card;
+            }
+        }
+
+        // Filter out denied cards
         $skip = $this->getDataField("denied", []);
         if (!empty($skip)) {
             $moves = array_values(array_diff($moves, $skip));

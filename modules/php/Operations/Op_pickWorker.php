@@ -31,7 +31,14 @@ class Op_pickWorker extends Operation {
         // Get workers from cards on main board (public workers)
         $publicWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%");
 
-        return array_keys($publicWorkers);
+        // Exclude workers placed this turn (state=1) — RULES.md line 252.
+        $available = [];
+        foreach ($publicWorkers as $key => $info) {
+            if ((int) $info["state"] === 0) {
+                $available[] = $key;
+            }
+        }
+        return $available;
     }
 
     function getPossibleMoves() {

@@ -25,6 +25,13 @@ use function Bga\Games\wayfarers\getPart;
  */
 class Op_turn extends Operation {
     public function auto(): bool {
+        // Clear the "placed-this-turn" marker (state=1) on workers left on cards from the
+        // previous turn so they become retrievable again.
+        $placedWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%", 1);
+        foreach ($placedWorkers as $key => $info) {
+            $this->game->tokens->db->setTokenState($key, 0);
+        }
+
         if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
             $this->queue("ai_turn", $this->game->getAutomaColor());
             return true;

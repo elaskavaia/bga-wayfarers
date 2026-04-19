@@ -88,7 +88,18 @@ abstract class Op_cardBase extends Op_acquireBase {
             }
 
             $can = $this->canAfford($payop);
-            $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop];
+            $entry = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $payop];
+
+            // RULES cannot acquire a card that holds a worker you placed this turn.
+            // Workers placed this turn are marked with state=1 (reset to 0 by Op_turn::auto).
+            foreach ($info["children"] ?? [] as $child) {
+                if (str_starts_with($child["key"], "worker_") && (int) $child["state"] !== 0) {
+                    $entry["q"] = Material::ERR_NOT_APPLICABLE;
+                    $entry["err"] = clienttranslate("Cannot acquire a card holding a worker you placed this turn");
+                    break;
+                }
+            }
+            $res[$card] = $entry;
         }
 
         return $res;

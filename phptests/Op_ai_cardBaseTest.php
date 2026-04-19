@@ -113,4 +113,37 @@ final class Op_ai_cardBaseTest extends TestCase {
 
         $this->assertTrue($result);
     }
+
+    /**
+     * RULES: cannot acquire a card holding a worker placed this turn.
+     * Worker state=1 marks "placed this turn". getPossibleMoves must filter such cards out.
+     */
+    public function testGetPossibleMovesExcludesCardWithThisTurnWorker(): void {
+        $this->addCardToMainarea("land", 1);
+        $this->addCardToMainarea("land", 2);
+        // Place a this-turn worker (state=1) on card_land_1
+        $this->game->tokens->db->moveToken("worker_yellow_1", "card_land_1", 1);
+        // And a prior-turn worker (state=0) on card_land_2 — should NOT be filtered
+        $this->game->tokens->db->moveToken("worker_yellow_2", "card_land_2", 0);
+
+        $op = $this->createOp("ai_cardLand");
+        $moves = $op->getPossibleMoves();
+
+        $this->assertNotContains("card_land_1", $moves, "Card with this-turn worker must be filtered");
+        $this->assertContains("card_land_2", $moves, "Card with prior-turn worker must still be available");
+    }
+
+    public function testSelectCardSkipsCardWithThisTurnWorker(): void {
+        $this->addCardToMainarea("land", 1);
+        $this->addCardToMainarea("land", 2);
+        $this->addCardToMainarea("land", 3);
+        $this->game->tokens->db->moveToken("worker_yellow_1", "card_land_1", 1);
+        $this->setPositionPriority(1);
+
+        $op = $this->createOp("ai_cardLand");
+        $card = $op->selectCard();
+
+        // card_land_1 filtered; remaining [card_land_2, card_land_3]; priority 1 -> index 0
+        $this->assertEquals("card_land_2", $card);
+    }
 }

@@ -131,12 +131,14 @@ class Op_ai_placeWorker extends AiOperation {
         // Handle influence interaction (commit phase — influence return only, no player choice)
         $this->queue("ai_cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
 
-        // Place the worker on the card
+        // Place the worker on the card. State=1 marks it as placed-this-turn so the AI
+        // cannot retrieve it or acquire this card later in the same turn (RULES.md line 252).
+        // Op_turn::auto clears the marker at the start of the next turn.
         $state = (int) $this->game->tokens->db->getTokenState($targetCard);
         $this->dbSetTokenLocation(
             $worker,
             $targetCard,
-            0,
+            1,
             clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos}'),
             ["pos" => $state, "card_type" => $this->game->getTokenName($cardType)]
         );

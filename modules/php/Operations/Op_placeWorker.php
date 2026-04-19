@@ -112,11 +112,13 @@ class Op_placeWorker extends Operation {
         $this->queue("cardInteract", $owner, ["card" => $targetCard, "buy" => false]);
         $state = $this->game->tokens->db->getTokenState($targetCard);
         $ctype = getPart($targetCard, 1);
-        // Move worker to the card
+        // Move worker to the card. State=1 marks it as placed-this-turn so it cannot be
+        // retrieved or have its card acquired this turn (RULES.md line 252).
+        // Op_turn::auto resets the state back to 0 at the start of the next turn.
         $this->dbSetTokenLocation(
             $selectedWorker,
             $targetCard,
-            0,
+            1,
             clienttranslate('${player_name} places ${token_name} on action ${card_type} position ${pos}'),
             ["pos" => $state, "card_type" => $this->game->getTokenName($ctype)]
         );
