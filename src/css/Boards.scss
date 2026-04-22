@@ -122,12 +122,12 @@
   position: relative;
   flex-wrap: wrap;
   justify-content: space-around;
+  align-items: flex-start;
+  gap: 20px;
 }
 
 #ebd-body[data-board-layout="scale"] #players_panels {
   overflow: visible;
-  justify-content: center;
-  align-items: center;
 }
 
 .pboard {
@@ -164,7 +164,7 @@
     pointer-events: auto;
     display: inline-block;
     vertical-align: top;
-    margin-right: 3px;
+    margin-right: 5px;
   }
 }
 .infsupply {
@@ -584,6 +584,7 @@
   & > * {
     display: inline-block;
     vertical-align: top;
+    margin-right: 5px;
   }
 }
 // Journal track positions (jpos) - positioned on ink blots
