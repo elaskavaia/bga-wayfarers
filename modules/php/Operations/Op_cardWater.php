@@ -104,10 +104,10 @@ class Op_cardWater extends Op_cardBase {
                 }
                 break;
             case 1: // coin
-                $this->game->effect_incCount($owner, "coin", 1, $this->getOpId());
+                $this->queue("coin", $owner);
                 break;
             case 2: // food
-                $this->game->effect_incCount($owner, "food", 1, $this->getOpId());
+                $this->queue("food", $owner);
                 break;
             case 3: // infCard
                 $this->queue("infCard", $owner);
