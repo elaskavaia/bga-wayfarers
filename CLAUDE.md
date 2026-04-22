@@ -98,9 +98,8 @@ SCSS files in src/css/ compile to wayfarers.css with GameXBody.scss as the entry
 
 ## Prepare the game for BGA deployment:
 
-#. Run the full build process: `npm run build`
+#. Run the full build process: `npm run predeploy`
 #. Check for any build errors in TypeScript, SCSS, or material generation
-#. Run tests: `npm run tests`
 #. Check and fix failed tests
 #. Show git status to see which files have changed
 #. Check for spelling mistakes and issues in changed code
