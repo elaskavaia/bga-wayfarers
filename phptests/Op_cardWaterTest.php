@@ -23,8 +23,9 @@ final class Op_cardWaterTest extends TestCase {
     }
 
     /**
-     * Place a water card directly in the player's tableau at the given slot
-     * (mimicking Op_cardBase::placeCard which uses state = count + 2).
+     * Place a water card in the player's tableau. `checkSideMatchingBonuses`
+     * pairs the placed card with the card at $slot-1, so pass slot >= 2
+     * to ensure there IS a previous card.
      */
     private function placeWaterInTableau(string $cardId, int $slot): void {
         $this->game->tokens->db->moveToken($cardId, "tableau_" . PCOLOR, $slot);
@@ -83,15 +84,8 @@ final class Op_cardWaterTest extends TestCase {
     }
 
     /**
-     * Food link bonus: prev card c2[2]='x' and placed card c1[2]='x'.
-     * card_water_53 has c2=_xx_ — but c2[1]='x' too, so placing after it would also
-     * trigger coin. Use card_water_60 c2=_xx_ for same reason? Same issue.
-     * Find a pair that isolates food:
-     *   prev c2[2]='x', c2[1]='_', c2[3]='_', c2[0]='_';
-     *   placed c1[2]='x', c1[1]='_', c1[3]='_', c1[0]='_'
-     * card_water_55 c2=__xx has c2[2]='x', c2[3]='x' (would also trigger infCard if c1[3]='x'),
-     * paired with card_water_52 c1=x_x_ — c1[2]='x' ✓, c1[3]='_' ✓, c1[0]='x' but c2[0]='_' so no inf.
-     * Result: food only.
+     * Food link bonus: prev card_water_55 (c2=__xx) + placed card_water_52 (c1=x_x_)
+     * triggers the food position (c2[2]=x, c1[2]=x) without triggering any other.
      */
     public function testFoodLinkBonus_DoesNotFireBeforeCardInteract(): void {
         $color = PCOLOR;
