@@ -1090,10 +1090,10 @@ class Material {
         "location" => "tableau_{COLOR}",
         "num" => 2,
         "d" => "camel",
-        "dr" => "2n_food:cardLand,coin",
+        "dr" => "2n_food:coin,cardLand",
         "tags" => "City",
         "nom" => "Capital City",
-        "todr" => "Pay 2 Provisions to acquire a Land Card and gain Silver",
+        "todr" => "Pay 2 Provisions to gain Silver and acquire a Land Card",
         "state"=>-1,
 ],
     "card_home_3" => [ 
