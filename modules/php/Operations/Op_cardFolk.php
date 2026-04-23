@@ -97,7 +97,11 @@ class Op_cardFolk extends Op_cardBase {
         $cardSelected = $this->getCard();
         $owner = $this->getOwner();
         if ($cardSelected == null) {
-            $this->queue($this->getTypeFullExpr(), $owner, ["card" => $this->getCheckedArg()]);
+            $this->queue($this->getTypeFullExpr(), $owner, [
+                "card" => $this->getCheckedArg(),
+                "die" => $this->getDie(),
+                "reason" => $this->getReason(),
+            ]);
             return;
         }
 

@@ -287,4 +287,46 @@ final class Op_cardFolkTest extends TestCase {
         // getTypeFullExpr should include the (free) parameter
         $this->assertEquals("cardFolk(free)", $op->getTypeFullExpr());
     }
+
+    /**
+     * Bug regression: the two-step cardFolk flow (pick folk → pick tuck target)
+     * used to drop the `die` data field on the re-queue, so the second-step
+     * payment was computed with no die and thus no coinDis discount.
+     * Drive the full flow and verify the queued payment op reflects the discount.
+     */
+    public function testCoinDiscountFromCaravanAppliesToFolkPurchase(): void {
+        $color = PCOLOR;
+
+        // Tableau card to tuck the folk under (must share a tag).
+        $this->setupTableauCard("card_space_1", "Vista");
+        // Folk card costing 1 coin with matching tag.
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
+
+        // Caravan upgrade tile giving coinDis at die value 1 (column 0).
+        // upg_yellow_6: w=2, r=coinDis (left col), r2=vp (right col). state=1 → x=0,y=0.
+        $this->game->tokens->db->moveToken("upg_yellow_6", "tableau_$color", 1);
+
+        // Place a die with value 1 so the discount applies.
+        $die = "dice_{$color}_1";
+        $this->game->tokens->db->setTokenState($die, 1);
+
+        // Step 1: op with the die but no card chosen yet.
+        /** @var Op_cardFolk $op */
+        $op = $this->game->machine->instanciateOperation("cardFolk", $color, ["die" => $die]);
+        $op->saveToDb();
+
+        // User picks the folk card.
+        $this->game->fakeUserAction($op, "card_folk_133");
+
+        // Step 2 op should have been queued with die carried over.
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($top);
+        $this->assertEquals("cardFolk", $top->getType());
+        $this->assertEquals($die, $top->getDataField("die"), "die must be carried to step 2");
+
+        // Payment for the selected card should now reflect the discount:
+        // cost 1 - coinDis 1 = 0 → "0n_coin".
+        /** @var Op_cardFolk $top */
+        $this->assertEquals("0n_coin", $top->getPaymentOperation("card_folk_133"));
+    }
 }
