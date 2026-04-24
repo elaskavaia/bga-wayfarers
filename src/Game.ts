@@ -42,7 +42,8 @@ export class Game extends GameMachine {
   private scoreSheet: any;
   private scoreSheetAI: any;
   private inSetup = true;
-  private boardLayout: string = "scale";
+  private boardZoomMode: "fit" | "manual" = "fit";
+  private boardZoomScale: number = 1;
   private AI_PLAYER_ID = 1;
   private AI_COLOR_OVERRIDE = "982fff";
   private _ghostMouseHandler: ((e: MouseEvent) => void) | null = null;
@@ -68,8 +69,9 @@ export class Game extends GameMachine {
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
-   <button id="layout_scale" class="layout_button active">⤢</button>
-   <button id="layout_scroll" class="layout_button">↔</button>
+   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa fa-expand"></i></button>
+   <button id="layout_zoom_in" class="layout_button" title="Zoom in"><i class="fa fa-search-plus"></i></button>
+   <button id="layout_zoom_out" class="layout_button" title="Zoom out"><i class="fa fa-search-minus"></i></button>
  </div>
  <div id="mainarea">
   <div id="mainboardall" class="mainboardall">
@@ -306,96 +308,123 @@ export class Game extends GameMachine {
       });
   }
   setupLayoutControls() {
-    super.setupLocalControls("board_layout_controls");
-    // Load saved preferences from localStorage
-    const savedLayout = localStorage.getItem("wayfarers_board_layout") || "scale";
+    this.destroyDivOtherCopies("board_layout_controls");
+    const host = document.getElementById("ebd-body") ?? document.body;
+    host.appendChild($("board_layout_controls"));
 
-    this.boardLayout = savedLayout;
+    const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
+    const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");
+    this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
+    this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
 
-    // Apply saved settings
-    this.applyBoardLayout();
+    $("layout_home").addEventListener("click", () => this.setZoomMode("fit"));
+    $("layout_zoom_in").addEventListener("click", () => this.zoomBy(+0.1));
+    $("layout_zoom_out").addEventListener("click", () => this.zoomBy(-0.1));
 
-    // Add event listeners
-    $("layout_scale").addEventListener("click", () => this.setBoardLayout("scale"));
-    $("layout_scroll").addEventListener("click", () => this.setBoardLayout("scroll"));
-
-    $("layout_scale").title = _("Board Layout: Scale to fit");
-    $("layout_scroll").title = _("Board Layout: Horizontal scroll");
+    this.applyCurrentZoom();
   }
 
-  setBoardLayout(layout: string) {
-    this.boardLayout = layout;
-    localStorage.setItem("wayfarers_board_layout", layout);
-    this.applyBoardLayout();
+  setZoomMode(mode: "fit" | "manual") {
+    this.boardZoomMode = mode;
+    localStorage.setItem("wayfarers_board_zoom_mode", mode);
+    this.applyCurrentZoom();
   }
 
-  applyBoardLayout() {
-    $("ebd-body").dataset.boardLayout = this.boardLayout;
-    this.boundUpdateBoardScale();
+  zoomBy(delta: number) {
+    const scalecontrol = $("thething");
+    const current = this.boardZoomMode === "fit" ? parseFloat(scalecontrol.dataset.scale ?? "1") || 1 : this.boardZoomScale;
+    const next = Math.min(2.0, Math.max(0.3, current + delta));
+    this.boardZoomScale = next;
+    localStorage.setItem("wayfarers_board_zoom_scale", String(next));
+    this.setZoomMode("manual");
+  }
 
-    // Update button active states
+  applyCurrentZoom() {
+    const scalecontrol = $("thething");
+    $("ebd-body").dataset.boardZoom = this.boardZoomMode;
+
     document.querySelectorAll(".layout_button").forEach((btn) => btn.classList.remove("active"));
-    $(`layout_${this.boardLayout}`)?.classList.add("active");
-
-    // Handle scale mode with dynamic calculation
-    if (this.boardLayout === "scale") {
-      // Add resize listener for scale mode
-      window.addEventListener("resize", this.boundUpdateBoardScale);
+    if (this.boardZoomMode === "fit") {
+      $("layout_home")?.classList.add("active");
+      window.addEventListener("resize", this.boundApplyFitZoom);
+      this.applyFitZoom(scalecontrol);
     } else {
-      window.removeEventListener("resize", this.boundUpdateBoardScale);
+      window.removeEventListener("resize", this.boundApplyFitZoom);
+      this.applyManualZoom(scalecontrol);
     }
   }
 
-  private boundUpdateBoardScale = () => {
-    this.updateBoardScale($("thething"));
+  private boundApplyFitZoom = () => {
+    this.applyFitZoom($("thething"));
   };
 
-  updateBoardScale(scalecontrol: HTMLElement) {
-    const set = this.boardLayout === "scale";
-    const parent = scalecontrol.parentElement;
-
-    // Reset all inline style
-    scalecontrol.style.transform = "none";
-    scalecontrol.style.width = "";
-    scalecontrol.style.height = "";
-    scalecontrol.style.marginBottom = "";
-    scalecontrol.style.transformOrigin = "";
-    scalecontrol.scrollLeft = 0;
-    scalecontrol.dataset.scale = "1";
-    parent.scrollLeft = 0;
-
-    if (!set) return; // just unset
-
-    // Temporarily allow overflow and shrink to min-content to measure natural content width
+  private measureNaturalWidth(scalecontrol: HTMLElement): number {
     scalecontrol.style.overflow = "visible";
     scalecontrol.style.width = "min-content";
     const naturalWidth = scalecontrol.scrollWidth;
     scalecontrol.style.width = "";
     scalecontrol.style.overflow = "";
-    const availableWidth = parent.clientWidth;
-
-    let scale = 1;
-    if (naturalWidth > availableWidth) {
-      scale = availableWidth / naturalWidth;
-    }
-
-    this.applyScale(scalecontrol, scale, naturalWidth);
+    return naturalWidth;
   }
 
-  applyScale(scalecontrol: HTMLElement, scale: number, naturalWidth?: number) {
-    if (Math.abs(scale - 1) < 0.01) return;
-    // Set width to natural content width so scaling fills the available space
-    if (naturalWidth) {
-      scalecontrol.style.width = `${naturalWidth}px`;
+  private resetScale(scalecontrol: HTMLElement) {
+    scalecontrol.style.transform = "none";
+    scalecontrol.style.width = "";
+    scalecontrol.style.height = "";
+    scalecontrol.style.marginBottom = "";
+    scalecontrol.style.marginLeft = "";
+    scalecontrol.style.marginRight = "";
+    scalecontrol.style.transformOrigin = "";
+    scalecontrol.scrollLeft = 0;
+    scalecontrol.dataset.scale = "1";
+    scalecontrol.parentElement?.scrollTo({ left: 0 });
+  }
+
+  applyFitZoom(scalecontrol: HTMLElement) {
+    this.resetScale(scalecontrol);
+    const parent = scalecontrol.parentElement;
+    if (!parent) return;
+    const naturalWidth = this.measureNaturalWidth(scalecontrol);
+    const availableWidth = parent.clientWidth;
+    if (naturalWidth <= availableWidth) return; // content fits, leave natural layout alone
+    this.applyScale(scalecontrol, availableWidth / naturalWidth, naturalWidth, true);
+  }
+
+  applyManualZoom(scalecontrol: HTMLElement) {
+    this.resetScale(scalecontrol);
+    const wrap = scalecontrol.parentElement;
+    if (wrap) wrap.style.width = "";
+    const naturalWidth = this.measureNaturalWidth(scalecontrol);
+    const zoomingIn = this.boardZoomScale > 1;
+    if (zoomingIn && wrap) {
+      // Pin the scroll container's width to its current available width BEFORE #thething gets
+      // pinned to a wider scaled value. Otherwise #thething_wrap (width: 100% of a content-sized
+      // ancestor) grows with its child and never overflows, so overflow-x: auto can't engage.
+      wrap.style.width = `${wrap.clientWidth}px`;
+    }
+    this.applyScale(scalecontrol, this.boardZoomScale, naturalWidth, zoomingIn);
+    // After zoom-in, the scroll container left-anchors the overflowing child. Center the initial
+    // view by scrolling to the middle of the overflow so the board appears centered.
+    if (zoomingIn && wrap) {
+      wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2);
+    }
+  }
+
+  applyScale(scalecontrol: HTMLElement, scale: number, naturalWidth: number, pinWidth: boolean) {
+    if (pinWidth) {
+      // Pin layout width to scaled visual width: layout box and visual box match. Combined with
+      // top-left origin this gives correct scrollbar ranges when zoomed in past the viewport.
+      scalecontrol.style.width = `${naturalWidth * scale}px`;
+      scalecontrol.style.transformOrigin = "top left";
+    } else {
+      // Keep natural layout width; scale from the center so the visual stays centered inside it.
+      scalecontrol.style.transformOrigin = "top center";
     }
     const naturalHeight = scalecontrol.scrollHeight;
     scalecontrol.dataset.scale = String(scale);
     scalecontrol.style.transform = `scale(${scale})`;
-    scalecontrol.style.transformOrigin = "top left";
-    // Use negative margin to reduce flow space instead of setting height,
-    // so that absolutely positioned children keep their containing block size
-    const reducedHeight = naturalHeight * (1 - scale);
-    scalecontrol.style.marginBottom = `-${reducedHeight}px`;
+    const heightDelta = naturalHeight * (scale - 1);
+    scalecontrol.style.marginBottom = scale !== 1 ? `${heightDelta}px` : "";
   }
 
   updateBanner() {
@@ -630,7 +659,7 @@ export class Game extends GameMachine {
             "afterend"
           );
           if (this.gameAnimationsActive()) {
-            this.boundUpdateBoardScale();
+            this.applyCurrentZoom();
             $(result.location).scrollIntoView({ behavior: "smooth", block: "center" });
           }
         }

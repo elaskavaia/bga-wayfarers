@@ -68,6 +68,8 @@
 #thething_wrap {
   width: 100%;
   overflow: hidden;
+  display: flex;
+  justify-content: safe center;
 }
 
 #thething {
@@ -76,8 +78,15 @@
   overflow: visible;
 }
 
-#ebd-body[data-board-layout="scale"] #thething {
+// In fit mode, clip #thething so the internal layout doesn't bleed
+#ebd-body[data-board-zoom="fit"] #thething {
   overflow: hidden;
+}
+
+// In manual mode, let #thething_wrap scroll horizontally so a zoomed-in board can be panned
+#ebd-body[data-board-zoom="manual"] #thething_wrap {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 // BUTTONS
 

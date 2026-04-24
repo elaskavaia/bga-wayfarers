@@ -1194,7 +1194,7 @@ html[data-theme=dark] .deck .counter {
   gap: 20px;
 }
 
-#ebd-body[data-board-layout=scale] #players_panels {
+#ebd-body[data-board-zoom=fit] #players_panels {
   overflow: visible;
 }
 
@@ -1538,13 +1538,16 @@ html[data-theme=dark] .deck .counter {
 }
 
 .board_layout_controls {
+  position: fixed;
+  top: 140px;
+  left: 8px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  z-index: 10;
-  padding: 4px 8px;
-  margin: 5px;
+  gap: 6px;
+  z-index: 1000;
+  padding: 4px;
 }
 .board_layout_controls .layout_label {
   font-size: 12px;
@@ -1556,10 +1559,10 @@ html[data-theme=dark] .deck .counter {
   margin: 0 4px;
 }
 .board_layout_controls .layout_button {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 50%;
   background: white;
   cursor: pointer;
   font-size: 16px;
@@ -1567,10 +1570,12 @@ html[data-theme=dark] .deck .counter {
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 }
 .board_layout_controls .layout_button:hover {
   background: #e0e0e0;
   border-color: #999;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
 }
 .board_layout_controls .layout_button.active {
   background: #19bedb;
@@ -1585,12 +1590,6 @@ html[data-theme=dark] .deck .counter {
 }
 #mainarea .mainboardall {
   min-width: max-content;
-}
-
-#ebd-body[data-board-layout=scroll] #mainarea {
-  overflow-x: auto;
-  overflow-y: visible;
-  justify-content: safe center;
 }
 
 #supply {
@@ -2913,6 +2912,8 @@ html[data-theme=dark] .miniboard .guild_count {
 #thething_wrap {
   width: 100%;
   overflow: hidden;
+  display: flex;
+  justify-content: safe center;
 }
 
 #thething {
@@ -2921,8 +2922,13 @@ html[data-theme=dark] .miniboard .guild_count {
   overflow: visible;
 }
 
-#ebd-body[data-board-layout=scale] #thething {
+#ebd-body[data-board-zoom=fit] #thething {
   overflow: hidden;
+}
+
+#ebd-body[data-board-zoom=manual] #thething_wrap {
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 .bgabutton_gray {

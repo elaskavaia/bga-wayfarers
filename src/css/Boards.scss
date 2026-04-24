@@ -126,7 +126,7 @@
   gap: 20px;
 }
 
-#ebd-body[data-board-layout="scale"] #players_panels {
+#ebd-body[data-board-zoom="fit"] #players_panels {
   overflow: visible;
 }
 
@@ -508,15 +508,18 @@
   position: relative;
 }
 
-// Layout controls - positioned outside scroll area
+// Layout controls - fixed vertical bar in top-right of viewport
 .board_layout_controls {
+  position: fixed;
+  top: 140px;
+  left: 8px;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 10px;
-  z-index: 10;
-  padding: 4px 8px;
-  margin: 5px;
+  gap: 6px;
+  z-index: 1000;
+  padding: 4px;
 
   .layout_label {
     font-size: 12px;
@@ -530,10 +533,10 @@
   }
 
   .layout_button {
-    width: 28px;
-    height: 28px;
+    width: 32px;
+    height: 32px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 50%;
     background: white;
     cursor: pointer;
     font-size: 16px;
@@ -541,10 +544,12 @@
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
 
     &:hover {
       background: #e0e0e0;
       border-color: #999;
+      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
     }
 
     &.active {
@@ -564,13 +569,7 @@
   }
 }
 
-// Layout mode: Horizontal scroll
-#ebd-body[data-board-layout="scroll"] #mainarea {
-  overflow-x: auto;
-  overflow-y: visible;
-  // Center when content fits, align left when scrolling needed
-  justify-content: safe center;
-}
+// Manual zoom scroll is handled on #thething_wrap (outside the scaled element) in Game.scss
 
 // Combined: scale + rotated - JavaScript handles the combined transform
 

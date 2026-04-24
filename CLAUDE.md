@@ -8,6 +8,16 @@ This is a Board Game Arena (BGA) implementation of the game "Wayfarers". It uses
 
 Games rules as in misc/docs/RULES.md
 
+## Backwards Compatibility
+
+The game is publicly released on BGA as an alpha. Real users may have existing persisted state from prior versions. When changing anything that gets persisted across sessions, either preserve old values or provide a graceful fallback. This applies to:
+
+- **localStorage keys** — renaming or changing the shape of a key orphans prior values. Either read the old key as a fallback, or accept that users lose that preference (call it out in the commit).
+- **Saved game state** — DB schema changes, `gamestate` / operation-queue shapes, serialized material. Games in progress must be able to load after a deploy.
+- **Material IDs and operation names** — referenced by saved state.
+
+"It's alpha" is not a license to break saves — players have ongoing games.
+
 ## Development Commands
 
 ### Build and Watch
