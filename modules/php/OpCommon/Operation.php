@@ -229,7 +229,7 @@ abstract class Operation {
         if ($data === null) {
             $data = [];
         }
-        if (!isset($data["reason"])) {
+        if (!array_key_exists("reason", $data)) {
             $data["reason"] = $this->getOpId();
         }
         $this->game->machine->insert($type, $owner, $data, $this->queueRank);

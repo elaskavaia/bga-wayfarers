@@ -104,7 +104,7 @@ export class Game0Basics {
   }
 
   /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */
-  showPopin(html: string, id = "gg_dialog", title: string = undefined, refresh: boolean = false) {
+  showPopin(html: string, id = "gg_dialog", title: string = "", refresh: boolean = false) {
     const content_id = `popin_${id}_contents`;
     if (refresh && $(content_id)) {
       $(content_id).innerHTML = html;

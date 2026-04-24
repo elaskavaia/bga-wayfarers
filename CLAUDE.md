@@ -19,6 +19,8 @@ Games rules as in misc/docs/RULES.md
 - `npm run watch:scss` - Watch and compile SCSS
 - `npm run genmat` - Generate Material.php from CSV files in misc/
 
+**Never edit generated files directly** — `modules/js/Game.js`, `wayfarers.js`, `wayfarers.css`, and `modules/php/Material.php` are all build outputs. Edit the sources (`src/*.ts`, `src/css/*.scss`, `misc/*.csv`) and run `npm run build` (or the relevant sub-target) after finishing any edits.
+
 ### Testing
 
 - `npm run tests` - Run all PHPUnit tests

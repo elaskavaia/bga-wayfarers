@@ -132,15 +132,15 @@ class Op_turn extends Operation {
 
         if ($selected === "rest") {
             $this->game->playerStats->inc("game_rest_actions", 1, $playerId);
-            $this->queue("rest");
+            $this->queue("rest", null, ["reason" => null]);
         } elseif (str_starts_with($selected, "worker_")) {
             $this->game->playerStats->inc("game_worker_actions", 1, $playerId);
-            $this->queue("placeWorker", $owner, ["worker" => $selected]);
+            $this->queue("placeWorker", $owner, ["worker" => $selected, "reason" => null]);
         } elseif (str_starts_with($selected, "dice_")) {
             $this->game->playerStats->inc("game_dice_actions", 1, $playerId);
-            $this->queue("placeDie", $owner, ["die" => $selected]);
+            $this->queue("placeDie", $owner, ["die" => $selected, "reason" => null]);
         }
-        $this->queue("turnconf");
+        $this->queue("turnconf", null, ["reason" => null]);
         $this->game->queueNextTurnOrEnd($this->getPlayerId());
     }
 

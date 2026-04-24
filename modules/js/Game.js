@@ -94,7 +94,7 @@ class Game0Basics {
         this.bga.statusBar.addActionButton(name, handler, { id: "button_cancel", color: "alert" });
     }
     /** Show pop in dialog. If you need div id of dialog its `popin_${id}` where id is second parameter here */
-    showPopin(html, id = "gg_dialog", title = undefined, refresh = false) {
+    showPopin(html, id = "gg_dialog", title = "", refresh = false) {
         const content_id = `popin_${id}_contents`;
         if (refresh && $(content_id)) {
             $(content_id).innerHTML = html;
@@ -1379,23 +1379,28 @@ class GameMachine extends Game1Tokens {
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo?.description)
                 this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
-            this.setSubPrompt("");
             this.addUndoButton(opInfo.ui?.undo);
             return;
         }
         this.completeOpInfo(opInfo);
         this.opInfo = opInfo;
-        if (opInfo.prompt) {
-            this.bga.statusBar.setTitle(this.getTr(opInfo.prompt, opInfo));
-        }
-        this.setSubPrompt("");
+        const prompt = opInfo.prompt ? this.getTr(opInfo.prompt, opInfo) : "";
+        let subprompt = "";
         if (opInfo.err) {
-            this.setSubPrompt(_("Error") + " " + this.getTr(opInfo.err, opInfo));
+            subprompt = _("Error") + ": " + this.getTr(opInfo.err, opInfo);
         }
-        else if (opInfo.subtitle)
-            this.setSubPrompt(this.getTr(opInfo.subtitle, opInfo), opInfo);
-        else if (opInfo.data?.reason)
-            this.setSubPrompt(this.getReasonText(opInfo.data.reason));
+        else if (opInfo.data?.reason) {
+            subprompt = this.getReasonText(opInfo.data.reason);
+        }
+        if (opInfo.subtitle) {
+            this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
+        }
+        if (subprompt && prompt) {
+            this.bga.statusBar.setTitle(`[${subprompt}] ${prompt}`);
+        }
+        else if (prompt) {
+            this.bga.statusBar.setTitle(prompt);
+        }
         const multiselect = this.isMultiSelectArgs(opInfo);
         const sortedTargets = Object.keys(opInfo.info);
         sortedTargets.sort((a, b) => opInfo.info[a].o - opInfo.info[b].o);
@@ -1409,7 +1414,7 @@ class GameMachine extends Game1Tokens {
             const active = q == 0;
             // simple case we select element (dom node) which is target of operation
             if (div && active && paramInfo.noactive !== true) {
-                const doNotShowActive = paramInfo.noactive ?? opInfo.ui.noactive ?? false;
+                const doNotShowActive = paramInfo.noactive ?? opInfo.ui?.noactive ?? false;
                 if (doNotShowActive == false) {
                     div.classList.add(this.classActiveSlot);
                     div.dataset.targetOpType = opInfo.type;
@@ -1529,7 +1534,7 @@ class GameMachine extends Game1Tokens {
     getReasonText(reason) {
         if (!reason)
             return "";
-        return _("Reason:") + " " + this.getTokenName(reason);
+        return this.getTokenName(reason);
     }
     getTargetButtonName(target, paramInfo) {
         const div = $(target);
@@ -1654,8 +1659,19 @@ class GameMachine extends Game1Tokens {
         })
             .catch((e) => {
             console.log("action failed", e);
-            this.setSubPrompt(e.message, e.args ?? []);
+            this.setActionStatus(e.message, e.args ?? []);
         });
+    }
+    addInfoButton(helpText) {
+        const escaped = document.createElement("div");
+        escaped.textContent = helpText;
+        const div = this.bga.statusBar.addActionButton(_("Info"), () => {
+            this.showPopin(escaped.innerHTML);
+        }, {
+            color: "secondary"
+        });
+        div.classList.add("button_info");
+        div.title = _("Click to see additional information about this prompt");
     }
     addUndoButton(cond = true) {
         if (!$("button_undo") && !this.bga.players.isCurrentPlayerSpectator() && cond) {
@@ -1664,14 +1680,14 @@ class GameMachine extends Game1Tokens {
                 checkAction: false
             })
                 .catch((e) => {
-                this.setSubPrompt(e.message, e.args ?? []);
+                this.setActionStatus(e.message, e.args ?? []);
             }), {
                 color: "alert",
                 id: "button_undo"
             });
             div.classList.add("button_undo");
             div.title = _("Undo all possible steps");
-            $("undoredo_wrap")?.appendChild(div);
+            //$("undoredo_wrap")?.appendChild(div);
             // const div2 = this.addActionButtonColor("button_undo_last", _("Undo"), () => this.sendActionUndo(-1), "red");
             // div2.classList.add("button_undo");
             // div2.title = _("Undo One Step");
@@ -1765,14 +1781,14 @@ class GameMachine extends Game1Tokens {
             }
         }
     }
-    setSubPrompt(text, args = {}) {
+    setActionStatus(text, args = {}) {
         if (!text)
             text = "";
-        const message = this.format_string_recursive(this.getTr(text, args), args);
-        // have to set after otherwise status update wipes it
-        setTimeout(() => {
-            $("gameaction_status").innerHTML = `<div class="subtitle">${message}</div>`;
-        }, 100);
+        const node = document.querySelector("#gameaction_status");
+        const message = this.getTr(text, args);
+        if (node)
+            node.innerHTML = message;
+        this.bga.statusBar.setTitle(message);
     }
     completeOpInfo(opInfo) {
         var _a, _b;
@@ -2856,7 +2872,7 @@ class Game extends GameMachine {
             handlers: [this],
             onStart: (notifName, msg, args) => {
                 if (msg)
-                    this.setSubPrompt(msg, args);
+                    this.setActionStatus(msg, args);
             }
             // onEnd: (notifName, msg, args) => this.setSubPrompt("", args)
         });
@@ -2911,7 +2927,10 @@ class Game extends GameMachine {
         if (log.includes("[")) {
             log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
                 try {
-                    return this.getTokenPresentaton(keyExpr, keyExpr, []) ?? match;
+                    const x = this.getTokenPresentaton(keyExpr, keyExpr, []);
+                    if (!x || keyExpr == x)
+                        return match;
+                    return x;
                 }
                 catch (e) {
                     console.error(`Failed to get token presentation for [${keyExpr}]`, e);

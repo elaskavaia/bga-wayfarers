@@ -1071,7 +1071,7 @@ export class Game extends GameMachine {
       logger: console.log, // show notif debug informations on console. Could be console.warn or any custom debug function (default null = no logs)
       handlers: [this],
       onStart: (notifName, msg, args) => {
-        if (msg) this.setSubPrompt(msg, args);
+        if (msg) this.setActionStatus(msg, args);
       }
       // onEnd: (notifName, msg, args) => this.setSubPrompt("", args)
     });
@@ -1129,7 +1129,9 @@ export class Game extends GameMachine {
     if (log.includes("[")) {
       log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
         try {
-          return this.getTokenPresentaton(keyExpr, keyExpr, []) ?? match;
+          const x = this.getTokenPresentaton(keyExpr, keyExpr, []);
+          if (!x || keyExpr == x) return match;
+          return x;
         } catch (e) {
           console.error(`Failed to get token presentation for [${keyExpr}]`, e);
           return match; // Return original if error
