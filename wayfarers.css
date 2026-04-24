@@ -2922,10 +2922,6 @@ html[data-theme=dark] .miniboard .guild_count {
   overflow: visible;
 }
 
-#ebd-body[data-board-zoom=fit] #thething {
-  overflow: hidden;
-}
-
 #ebd-body[data-board-zoom=manual] #thething_wrap {
   overflow-x: auto;
   overflow-y: visible;

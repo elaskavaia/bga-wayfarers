@@ -321,8 +321,14 @@ export class Game extends GameMachine {
     $("layout_zoom_in").addEventListener("click", () => this.zoomByFactor(1.1));
     $("layout_zoom_out").addEventListener("click", () => this.zoomByFactor(1 / 1.1));
 
+    window.addEventListener("resize", this.boundOnResize);
+
     this.applyCurrentZoom();
   }
+
+  private boundOnResize = () => {
+    this.applyCurrentZoom();
+  };
 
   setZoomMode(mode: "fit" | "manual") {
     this.boardZoomMode = mode;
@@ -346,21 +352,15 @@ export class Game extends GameMachine {
     document.querySelectorAll(".layout_button").forEach((btn) => btn.classList.remove("active"));
     if (this.boardZoomMode === "fit") {
       $("layout_home")?.classList.add("active");
-      window.addEventListener("resize", this.boundApplyFitZoom);
       this.applyFitZoom(scalecontrol);
     } else {
-      window.removeEventListener("resize", this.boundApplyFitZoom);
       this.applyManualZoom(scalecontrol);
     }
   }
 
-  private boundApplyFitZoom = () => {
-    this.applyFitZoom($("thething"));
-  };
-
   private measureNaturalWidth(scalecontrol: HTMLElement): number {
     scalecontrol.style.overflow = "visible";
-    scalecontrol.style.width = "min-content";
+    //scalecontrol.style.width = "min-content";
     const naturalWidth = scalecontrol.scrollWidth;
     scalecontrol.style.width = "";
     scalecontrol.style.overflow = "";
@@ -388,40 +388,39 @@ export class Game extends GameMachine {
     this.resetScale(scalecontrol);
     const parent = scalecontrol.parentElement;
     if (!parent) return;
-    const naturalWidth = this.measureNaturalWidth(scalecontrol);
     const availableWidth = parent.clientWidth;
+    const naturalWidth = this.measureNaturalWidth(scalecontrol);
     if (naturalWidth <= availableWidth) return; // content fits, leave natural layout alone
     this.applyScale(scalecontrol, availableWidth / naturalWidth, naturalWidth, true);
   }
 
   applyManualZoom(scalecontrol: HTMLElement) {
     this.resetScale(scalecontrol);
-    const wrap = scalecontrol.parentElement;
+    const wrap = scalecontrol.parentElement!;
     const naturalWidth = this.measureNaturalWidth(scalecontrol);
     const zoomingIn = this.boardZoomScale > 1;
-    if (zoomingIn && wrap) {
+    if (zoomingIn) {
       // Pin the scroll container's width to its current available width BEFORE #thething gets
       // pinned to a wider scaled value. Otherwise #thething_wrap (width: 100% of a content-sized
       // ancestor) grows with its child and never overflows, so overflow-x: auto can't engage.
       wrap.style.width = `${wrap.clientWidth}px`;
     }
     this.applyScale(scalecontrol, this.boardZoomScale, naturalWidth, zoomingIn);
-    // Center the initial view: whenever the layout box overflows the wrap's visible width
-    // (zoom-in on desktop, or any mobile where natural content > viewport), scroll to the middle
-    // of the overflow so the board appears centered rather than left- or right-anchored.
-    if (wrap && wrap.scrollWidth > wrap.clientWidth) {
+    // Center the initial view: whenever the layout box overflows the wrap's visible width,
+    // scroll to the middle of the overflow so the board appears centered.
+    if (wrap.scrollWidth > wrap.clientWidth) {
       wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
     }
   }
 
   applyScale(scalecontrol: HTMLElement, scale: number, naturalWidth: number, pinWidth: boolean) {
     if (pinWidth) {
-      // Pin layout width to scaled visual width: layout box and visual box match. Combined with
-      // top-left origin this gives correct scrollbar ranges when zoomed in past the viewport.
-      scalecontrol.style.width = `${naturalWidth * scale}px`;
+      // Pin layout width to the unscaled natural width. Inner content (e.g. #mainboardall with
+      // min-width: max-content) keeps its natural size; transform scales the whole rendering -
+      // including any overflow - by `scale` so the visual occupies [0, naturalWidth*scale].
+      scalecontrol.style.width = `${naturalWidth}px`;
       scalecontrol.style.transformOrigin = "top left";
     } else {
-      // Keep natural layout width; scale from the center so the visual stays centered inside it.
       scalecontrol.style.transformOrigin = "top center";
     }
     const naturalHeight = scalecontrol.scrollHeight;
