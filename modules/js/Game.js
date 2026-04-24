@@ -2133,8 +2133,8 @@ class Game extends GameMachine {
         this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
         this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
         $("layout_home").addEventListener("click", () => this.setZoomMode("fit"));
-        $("layout_zoom_in").addEventListener("click", () => this.zoomBy(+0.1));
-        $("layout_zoom_out").addEventListener("click", () => this.zoomBy(-0.1));
+        $("layout_zoom_in").addEventListener("click", () => this.zoomByFactor(1.1));
+        $("layout_zoom_out").addEventListener("click", () => this.zoomByFactor(1 / 1.1));
         this.applyCurrentZoom();
     }
     setZoomMode(mode) {
@@ -2142,10 +2142,10 @@ class Game extends GameMachine {
         localStorage.setItem("wayfarers_board_zoom_mode", mode);
         this.applyCurrentZoom();
     }
-    zoomBy(delta) {
+    zoomByFactor(factor) {
         const scalecontrol = $("thething");
         const current = this.boardZoomMode === "fit" ? parseFloat(scalecontrol.dataset.scale ?? "1") || 1 : this.boardZoomScale;
-        const next = Math.min(2.0, Math.max(0.3, current + delta));
+        const next = Math.min(2.0, Math.max(0.3, current * factor));
         this.boardZoomScale = next;
         localStorage.setItem("wayfarers_board_zoom_scale", String(next));
         this.setZoomMode("manual");
@@ -2182,7 +2182,11 @@ class Game extends GameMachine {
         scalecontrol.style.transformOrigin = "";
         scalecontrol.scrollLeft = 0;
         scalecontrol.dataset.scale = "1";
-        scalecontrol.parentElement?.scrollTo({ left: 0 });
+        const parent = scalecontrol.parentElement;
+        if (parent) {
+            parent.style.width = "";
+            parent.scrollTo({ left: 0 });
+        }
     }
     applyFitZoom(scalecontrol) {
         this.resetScale(scalecontrol);
@@ -2198,8 +2202,6 @@ class Game extends GameMachine {
     applyManualZoom(scalecontrol) {
         this.resetScale(scalecontrol);
         const wrap = scalecontrol.parentElement;
-        if (wrap)
-            wrap.style.width = "";
         const naturalWidth = this.measureNaturalWidth(scalecontrol);
         const zoomingIn = this.boardZoomScale > 1;
         if (zoomingIn && wrap) {
@@ -2209,10 +2211,11 @@ class Game extends GameMachine {
             wrap.style.width = `${wrap.clientWidth}px`;
         }
         this.applyScale(scalecontrol, this.boardZoomScale, naturalWidth, zoomingIn);
-        // After zoom-in, the scroll container left-anchors the overflowing child. Center the initial
-        // view by scrolling to the middle of the overflow so the board appears centered.
-        if (zoomingIn && wrap) {
-            wrap.scrollLeft = Math.max(0, (wrap.scrollWidth - wrap.clientWidth) / 2);
+        // Center the initial view: whenever the layout box overflows the wrap's visible width
+        // (zoom-in on desktop, or any mobile where natural content > viewport), scroll to the middle
+        // of the overflow so the board appears centered rather than left- or right-anchored.
+        if (wrap && wrap.scrollWidth > wrap.clientWidth) {
+            wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
         }
     }
     applyScale(scalecontrol, scale, naturalWidth, pinWidth) {
@@ -2458,7 +2461,8 @@ class Game extends GameMachine {
                     // else
                     placeHtml(`<div id='${result.location}' class='column' data-state='${x}' style='order: ${x};'></div>`, `pboard_${color}`, "afterend");
                     if (this.gameAnimationsActive()) {
-                        this.applyCurrentZoom();
+                        if (this.boardZoomMode === "fit")
+                            this.applyCurrentZoom();
                         $(result.location).scrollIntoView({ behavior: "smooth", block: "center" });
                     }
                 }
