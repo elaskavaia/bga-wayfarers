@@ -78,10 +78,6 @@
   overflow: visible;
 }
 
-// Note: do NOT set overflow: hidden on #thething in fit mode. The board content (mainboardall
-// with min-width: max-content) can be wider than #thething's layout box; clipping here would
-// hide it BEFORE the transform scales it down. The wrap (#thething_wrap) clips instead.
-
 // In manual mode, let #thething_wrap scroll horizontally so a zoomed-in board can be panned
 #ebd-body[data-board-zoom="manual"] #thething_wrap {
   overflow-x: auto;

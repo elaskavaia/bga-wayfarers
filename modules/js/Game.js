@@ -2163,29 +2163,10 @@ class Game extends GameMachine {
             this.applyManualZoom(scalecontrol);
         }
     }
-    measureNaturalWidth(scalecontrol) {
-        scalecontrol.style.overflow = "visible";
-        //scalecontrol.style.width = "min-content";
-        const naturalWidth = scalecontrol.scrollWidth;
-        scalecontrol.style.width = "";
-        scalecontrol.style.overflow = "";
-        return naturalWidth;
-    }
     resetScale(scalecontrol) {
-        scalecontrol.style.transform = "none";
-        scalecontrol.style.width = "";
-        scalecontrol.style.height = "";
-        scalecontrol.style.marginBottom = "";
-        scalecontrol.style.marginLeft = "";
-        scalecontrol.style.marginRight = "";
-        scalecontrol.style.transformOrigin = "";
-        scalecontrol.scrollLeft = 0;
+        scalecontrol.style.zoom = "";
         scalecontrol.dataset.scale = "1";
-        const parent = scalecontrol.parentElement;
-        if (parent) {
-            parent.style.width = "";
-            parent.scrollTo({ left: 0 });
-        }
+        scalecontrol.parentElement?.scrollTo({ left: 0 });
     }
     applyFitZoom(scalecontrol) {
         this.resetScale(scalecontrol);
@@ -2193,45 +2174,22 @@ class Game extends GameMachine {
         if (!parent)
             return;
         const availableWidth = parent.clientWidth;
-        const naturalWidth = this.measureNaturalWidth(scalecontrol);
+        const naturalWidth = scalecontrol.scrollWidth;
         if (naturalWidth <= availableWidth)
             return; // content fits, leave natural layout alone
-        this.applyScale(scalecontrol, availableWidth / naturalWidth, naturalWidth, true);
+        this.applyZoom(scalecontrol, availableWidth / naturalWidth);
     }
     applyManualZoom(scalecontrol) {
         this.resetScale(scalecontrol);
+        this.applyZoom(scalecontrol, this.boardZoomScale);
         const wrap = scalecontrol.parentElement;
-        const naturalWidth = this.measureNaturalWidth(scalecontrol);
-        const zoomingIn = this.boardZoomScale > 1;
-        if (zoomingIn) {
-            // Pin the scroll container's width to its current available width BEFORE #thething gets
-            // pinned to a wider scaled value. Otherwise #thething_wrap (width: 100% of a content-sized
-            // ancestor) grows with its child and never overflows, so overflow-x: auto can't engage.
-            wrap.style.width = `${wrap.clientWidth}px`;
-        }
-        this.applyScale(scalecontrol, this.boardZoomScale, naturalWidth, zoomingIn);
-        // Center the initial view: whenever the layout box overflows the wrap's visible width,
-        // scroll to the middle of the overflow so the board appears centered.
         if (wrap.scrollWidth > wrap.clientWidth) {
             wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
         }
     }
-    applyScale(scalecontrol, scale, naturalWidth, pinWidth) {
-        if (pinWidth) {
-            // Pin layout width to the unscaled natural width. Inner content (e.g. #mainboardall with
-            // min-width: max-content) keeps its natural size; transform scales the whole rendering -
-            // including any overflow - by `scale` so the visual occupies [0, naturalWidth*scale].
-            scalecontrol.style.width = `${naturalWidth}px`;
-            scalecontrol.style.transformOrigin = "top left";
-        }
-        else {
-            scalecontrol.style.transformOrigin = "top center";
-        }
-        const naturalHeight = scalecontrol.scrollHeight;
+    applyZoom(scalecontrol, scale) {
         scalecontrol.dataset.scale = String(scale);
-        scalecontrol.style.transform = `scale(${scale})`;
-        const heightDelta = naturalHeight * (scale - 1);
-        scalecontrol.style.marginBottom = scale !== 1 ? `${heightDelta}px` : "";
+        scalecontrol.style.zoom = String(scale);
     }
     updateBanner() {
         if (this.gamedatas.lastTurn)
