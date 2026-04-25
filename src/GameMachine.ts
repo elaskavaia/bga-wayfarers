@@ -71,13 +71,14 @@ export class GameMachine extends Game1Tokens {
   opInfo?: OpInfo;
 
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
+    this.opInfo = opInfo;
     if (!this.bga.players.isCurrentPlayerActive()) {
       if (opInfo?.description) this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
-      this.addUndoButton(opInfo?.ui?.undo); // opInfo not sanitized here
+      this.addUndoButton(opInfo?.ui?.undo ?? false); // opInfo not sanitized here
       return;
     }
     this.completeOpInfo(opInfo);
-    this.opInfo = opInfo;
+
     const prompt = opInfo.prompt ? this.getTr(opInfo.prompt, opInfo) : "";
     let subprompt = "";
     if (opInfo.err) {
@@ -389,7 +390,6 @@ export class GameMachine extends Game1Tokens {
       })
       .catch((e: any) => {
         console.log("action failed", e);
-        this.setActionStatus(e.message, e.args ?? []);
       });
   }
 
@@ -419,7 +419,7 @@ export class GameMachine extends Game1Tokens {
               checkAction: false
             })
             .catch((e: any) => {
-              this.setActionStatus(e.message, e.args ?? []);
+              console.error(e);
             }),
         {
           color: "alert",
@@ -530,11 +530,11 @@ export class GameMachine extends Game1Tokens {
 
   setActionStatus(text: string, args: any = {}) {
     if (!text) text = "";
-
-    const node = document.querySelector("#gameaction_status");
-
     const message = this.getTr(text, args);
+    // set both status and title because only one of them visible at a time
+    const node = document.querySelector("#gameaction_status");
     if (node) node.innerHTML = message;
+
     this.bga.statusBar.setTitle(message);
   }
 

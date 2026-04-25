@@ -1376,14 +1376,14 @@ class Game1Tokens extends Game0Basics {
 /**  Generic processing related to Operation Machine */
 class GameMachine extends Game1Tokens {
     onEnteringState_PlayerTurn(opInfo) {
+        this.opInfo = opInfo;
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo?.description)
                 this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
-            this.addUndoButton(opInfo?.ui?.undo); // opInfo not sanitized here
+            this.addUndoButton(opInfo?.ui?.undo ?? false); // opInfo not sanitized here
             return;
         }
         this.completeOpInfo(opInfo);
-        this.opInfo = opInfo;
         const prompt = opInfo.prompt ? this.getTr(opInfo.prompt, opInfo) : "";
         let subprompt = "";
         if (opInfo.err) {
@@ -1659,7 +1659,6 @@ class GameMachine extends Game1Tokens {
         })
             .catch((e) => {
             console.log("action failed", e);
-            this.setActionStatus(e.message, e.args ?? []);
         });
     }
     addInfoButton(helpText) {
@@ -1681,7 +1680,7 @@ class GameMachine extends Game1Tokens {
                 checkAction: false
             })
                 .catch((e) => {
-                this.setActionStatus(e.message, e.args ?? []);
+                console.error(e);
             }), {
                 color: "alert",
                 id: "button_undo"
@@ -1785,8 +1784,9 @@ class GameMachine extends Game1Tokens {
     setActionStatus(text, args = {}) {
         if (!text)
             text = "";
-        const node = document.querySelector("#gameaction_status");
         const message = this.getTr(text, args);
+        // set both status and title because only one of them visible at a time
+        const node = document.querySelector("#gameaction_status");
         if (node)
             node.innerHTML = message;
         this.bga.statusBar.setTitle(message);
@@ -1904,9 +1904,9 @@ class Game extends GameMachine {
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
-   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa6 fa6-arrows-to-dot"></i></button>
-   <button id="layout_zoom_in" class="layout_button" title="Zoom in"><i class="fa fa-search-plus"></i></button>
-   <button id="layout_zoom_out" class="layout_button" title="Zoom out"><i class="fa fa-search-minus"></i></button>
+   <button id="layout_home" class="layout_button active" title="${_("Fit to screen")}"><i class="fa6 fa6-arrows-to-dot"></i></button>
+   <button id="layout_zoom_in" class="layout_button" title="${_("Zoom in")}"><i class="fa fa-search-plus"></i></button>
+   <button id="layout_zoom_out" class="layout_button" title="${_("Zoom out")}"><i class="fa fa-search-minus"></i></button>
  </div>
  <div id="mainarea">
   <div id="mainboardall" class="mainboardall">
@@ -2167,7 +2167,8 @@ class Game extends GameMachine {
     resetScale(scalecontrol) {
         scalecontrol.style.zoom = "";
         scalecontrol.dataset.scale = "1";
-        scalecontrol.parentElement?.scrollTo({ left: 0 });
+        if (scalecontrol.parentElement)
+            scalecontrol.parentElement.scrollLeft = 0;
     }
     applyFitZoom(scalecontrol) {
         this.resetScale(scalecontrol);
@@ -2869,7 +2870,6 @@ class Game extends GameMachine {
                 if (msg)
                     this.setActionStatus(msg, args);
             }
-            // onEnd: (notifName, msg, args) => this.setSubPrompt("", args)
         });
     }
     // Re-declare parent notif_ methods so setupPromiseNotifications discovers them
