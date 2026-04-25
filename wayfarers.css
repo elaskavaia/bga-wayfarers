@@ -1538,9 +1538,10 @@ html[data-theme=dark] .deck .counter {
 }
 
 .board_layout_controls {
-  position: fixed;
-  top: 140px;
+  position: absolute;
+  top: 100%;
   left: 8px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1549,37 +1550,29 @@ html[data-theme=dark] .deck .counter {
   z-index: 1000;
   padding: 4px;
 }
-.board_layout_controls .layout_label {
-  font-size: 12px;
-  color: #666;
-  margin-right: 4px;
-}
-.board_layout_controls .layout_separator {
-  color: #ccc;
-  margin: 0 4px;
-}
 .board_layout_controls .layout_button {
   width: 32px;
   height: 32px;
   border: 1px solid #ccc;
   border-radius: 50%;
   background: white;
+  color: #2d5a3d;
   cursor: pointer;
-  font-size: 16px;
+  font-size: 22px;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: all 0.2s;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 }
 .board_layout_controls .layout_button:hover {
   background: #e0e0e0;
   border-color: #999;
-  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
 }
 .board_layout_controls .layout_button.active {
-  background: #19bedb;
-  border-color: #19bedb;
+  background: #2d5a3d;
+  border-color: #2d5a3d;
   color: white;
 }
 
@@ -3007,8 +3000,9 @@ button.bgabutton > * {
 }
 
 .button_undo {
-  min-width: 2em;
+  min-width: 6em;
   background-image: none;
+  margin-left: 6em;
 }
 
 #overall-content {

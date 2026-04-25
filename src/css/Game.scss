@@ -193,13 +193,9 @@ button.bgabutton > * {
 }
 
 .button_undo {
-  min-width: 2em;
+  min-width: 6em;
   background-image: none;
-  // &::before {
-  //   content: "\f049"; //' "\f0e2";
-  //   font-size: large;
-  //   font-family: FontAwesome;
-  // }
+  margin-left: 6em;
 }
 
 #overall-content {

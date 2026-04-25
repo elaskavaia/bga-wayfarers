@@ -508,11 +508,13 @@
   position: relative;
 }
 
-// Layout controls - fixed vertical bar in top-right of viewport
+$layout_button_color: #2d5a3d;
+// Layout controls - vertical bar anchored to bottom-left of #page-title (action bar)
 .board_layout_controls {
-  position: fixed;
-  top: 140px;
+  position: absolute;
+  top: 100%;
   left: 8px;
+  margin-top: 8px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -521,40 +523,30 @@
   z-index: 1000;
   padding: 4px;
 
-  .layout_label {
-    font-size: 12px;
-    color: #666;
-    margin-right: 4px;
-  }
-
-  .layout_separator {
-    color: #ccc;
-    margin: 0 4px;
-  }
-
   .layout_button {
     width: 32px;
     height: 32px;
     border: 1px solid #ccc;
     border-radius: 50%;
     background: white;
+    color: $layout_button_color;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.2s;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 3px 8px rgba(0, 0, 0, 0.4);
 
     &:hover {
       background: #e0e0e0;
       border-color: #999;
-      box-shadow: 0 3px 6px rgba(0, 0, 0, 0.3);
+      box-shadow: 0 5px 12px rgba(0, 0, 0, 0.5);
     }
 
     &.active {
-      background: v.$activeColor;
-      border-color: v.$activeColor;
+      background: $layout_button_color;
+      border-color: $layout_button_color;
       color: white;
     }
   }

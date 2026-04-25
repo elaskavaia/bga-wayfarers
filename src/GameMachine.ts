@@ -63,7 +63,7 @@ export interface OpInfo {
 
   count?: number;
   mcount?: number;
-  ui?: UiOptions;
+  ui: UiOptions;
 }
 
 /**  Generic processing related to Operation Machine */
@@ -73,7 +73,7 @@ export class GameMachine extends Game1Tokens {
   onEnteringState_PlayerTurn(opInfo: OpInfo) {
     if (!this.bga.players.isCurrentPlayerActive()) {
       if (opInfo?.description) this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
-      this.addUndoButton(opInfo.ui?.undo);
+      this.addUndoButton(opInfo.ui.undo);
       return;
     }
     this.completeOpInfo(opInfo);
@@ -84,10 +84,6 @@ export class GameMachine extends Game1Tokens {
       subprompt = _("Error") + ": " + this.getTr(opInfo.err, opInfo);
     } else if (opInfo.data?.reason) {
       subprompt = this.getReasonText(opInfo.data.reason);
-    }
-
-    if (opInfo.subtitle) {
-      this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
     }
 
     if (subprompt && prompt) {
@@ -120,7 +116,7 @@ export class GameMachine extends Game1Tokens {
       }
 
       // we also can have one addition way of selection (possibly)
-      let altNode: HTMLElement;
+      let altNode: HTMLElement | undefined;
       if (opInfo.ui.replicate == true) {
         altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
       }
@@ -153,10 +149,6 @@ export class GameMachine extends Game1Tokens {
       }
     }
 
-    if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
-      this.addShowMeButton(true);
-    }
-
     // secondary buttons
     for (const target of sortedTargets) {
       const paramInfo = opInfo.info[target];
@@ -182,6 +174,14 @@ export class GameMachine extends Game1Tokens {
 
     if (multiselect) {
       this.activateMultiSelectPrompt(opInfo);
+    }
+
+    if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
+      this.addShowMeButton(true);
+    }
+
+    if (opInfo.subtitle) {
+      this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
     }
 
     // need a global condition when this can be added
@@ -402,7 +402,8 @@ export class GameMachine extends Game1Tokens {
         this.showPopin(escaped.innerHTML);
       },
       {
-        color: "secondary"
+        color: "secondary",
+        id: "button_info"
       }
     );
     div.classList.add("button_info");

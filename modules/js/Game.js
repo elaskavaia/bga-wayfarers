@@ -1379,7 +1379,7 @@ class GameMachine extends Game1Tokens {
         if (!this.bga.players.isCurrentPlayerActive()) {
             if (opInfo?.description)
                 this.bga.statusBar.setTitle(this.getTr(opInfo.description, opInfo));
-            this.addUndoButton(opInfo.ui?.undo);
+            this.addUndoButton(opInfo.ui.undo);
             return;
         }
         this.completeOpInfo(opInfo);
@@ -1391,9 +1391,6 @@ class GameMachine extends Game1Tokens {
         }
         else if (opInfo.data?.reason) {
             subprompt = this.getReasonText(opInfo.data.reason);
-        }
-        if (opInfo.subtitle) {
-            this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
         }
         if (subprompt && prompt) {
             this.bga.statusBar.setTitle(`[${subprompt}] ${prompt}`);
@@ -1453,9 +1450,6 @@ class GameMachine extends Game1Tokens {
                 altNode.dataset.max = "1";
             }
         }
-        if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
-            this.addShowMeButton(true);
-        }
         // secondary buttons
         for (const target of sortedTargets) {
             const paramInfo = opInfo.info[target];
@@ -1475,6 +1469,12 @@ class GameMachine extends Game1Tokens {
         }
         if (multiselect) {
             this.activateMultiSelectPrompt(opInfo);
+        }
+        if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
+            this.addShowMeButton(true);
+        }
+        if (opInfo.subtitle) {
+            this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
         }
         // need a global condition when this can be added
         this.addUndoButton(this.bga.players.isCurrentPlayerActive() || opInfo.ui.undo);
@@ -1668,7 +1668,8 @@ class GameMachine extends Game1Tokens {
         const div = this.bga.statusBar.addActionButton(_("Info"), () => {
             this.showPopin(escaped.innerHTML);
         }, {
-            color: "secondary"
+            color: "secondary",
+            id: "button_info"
         });
         div.classList.add("button_info");
         div.title = _("Click to see additional information about this prompt");
@@ -1903,7 +1904,7 @@ class Game extends GameMachine {
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
-   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa fa-expand"></i></button>
+   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa6 fa6-arrows-to-dot"></i></button>
    <button id="layout_zoom_in" class="layout_button" title="Zoom in"><i class="fa fa-search-plus"></i></button>
    <button id="layout_zoom_out" class="layout_button" title="Zoom out"><i class="fa fa-search-minus"></i></button>
  </div>
@@ -2126,7 +2127,7 @@ class Game extends GameMachine {
     }
     setupLayoutControls() {
         this.destroyDivOtherCopies("board_layout_controls");
-        const host = document.getElementById("ebd-body") ?? document.body;
+        const host = document.getElementById("page-title") ?? document.getElementById("ebd-body") ?? document.body;
         host.appendChild($("board_layout_controls"));
         const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
         const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");

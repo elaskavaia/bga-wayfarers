@@ -241,3 +241,21 @@ The game supports a solo mode where a human player plays against an AI opponent 
 - \_ide_helper.php provides IDE autocomplete for BGA framework
 - Follow BGA framework conventions for notifications, database queries, and state transitions
 - Game uses modern BGA framework with namespace support: `Bga\Games\wayfarers`
+
+## Framework versions
+
+Versions currently used by BGA framework:
+
+Dojo Toolkit 1.15 - deprecated, avoid at all cost
+PHP: 8.4
+SQL: MySQL 5.7 (prod) - on studio 8.0
+
+JS/CSS/HTML: limited by what minimization tools support: JS minimization: For performance reasons, when deploying a game the javascript code is minimized using terser (https://github.com/terser/terser). This minifier works with modern javascript syntax. From your project "Manage game" page, you can now test a minified version of your javascript on the studio (and revert to the original).NB: it has been reported that there is an issue with this minifier and percentage values for opacity.
+
+Font Awesome: 4.7 https://fontawesome.com/v4.7/icons/ (available as <i class="fa fa-clock" />)
+Font Awesome: 6.4.0 https://fontawesome.com/v6/search?o=r&m=free (available as <i class="fa6 fa6-clock" />)
+PHP Extensions Used
+
+The following PHP extensions are - as of Apr 1, 2026 - in use in BGA Studio:
+
+Core date libxml openssl pcre sqlite3 zlib ctype curl dom fileinfo filter hash iconv json mbstring SPL session PDO pdo_sqlite standard posix random readline Reflection Phar SimpleXML tokenizer xml xmlreader xmlwriter mysqlnd cgi-fcgi apcu gd gettext gmp mysqli pcntl redis sodium zip memcached Zend OPcache

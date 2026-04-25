@@ -69,7 +69,7 @@ export class Game extends GameMachine {
 <div id="current_player_panel"></div>
 <div id="mainarea_wrap">
  <div id="board_layout_controls" class="board_layout_controls">
-   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa fa-expand"></i></button>
+   <button id="layout_home" class="layout_button active" title="Fit to screen"><i class="fa6 fa6-arrows-to-dot"></i></button>
    <button id="layout_zoom_in" class="layout_button" title="Zoom in"><i class="fa fa-search-plus"></i></button>
    <button id="layout_zoom_out" class="layout_button" title="Zoom out"><i class="fa fa-search-minus"></i></button>
  </div>
@@ -309,7 +309,7 @@ export class Game extends GameMachine {
   }
   setupLayoutControls() {
     this.destroyDivOtherCopies("board_layout_controls");
-    const host = document.getElementById("ebd-body") ?? document.body;
+    const host = document.getElementById("page-title") ?? document.getElementById("ebd-body") ?? document.body;
     host.appendChild($("board_layout_controls"));
 
     const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
