@@ -2147,7 +2147,7 @@ class Game extends GameMachine {
     zoomByFactor(factor) {
         const scalecontrol = $("thething");
         const current = this.boardZoomMode === "fit" ? parseFloat(scalecontrol.dataset.scale ?? "1") || 1 : this.boardZoomScale;
-        const next = Math.min(2.0, Math.max(0.3, current * factor));
+        const next = Math.min(4.0, Math.max(0.3, current * factor));
         this.boardZoomScale = next;
         localStorage.setItem("wayfarers_board_zoom_scale", String(next));
         this.setZoomMode("manual");

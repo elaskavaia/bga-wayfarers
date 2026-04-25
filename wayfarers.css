@@ -1244,6 +1244,7 @@ html[data-theme=dark] .deck .counter {
   display: inline-block;
   vertical-align: top;
   margin-right: 5px;
+  margin-bottom: 3px;
 }
 
 .infsupply {
