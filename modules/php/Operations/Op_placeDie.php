@@ -42,6 +42,19 @@ class Op_placeDie extends Op_acquireBase {
     }
 
     /**
+     * Map of die value (1-6) → one representative die key from the player's tableau.
+     */
+    function getDiceMap(): array {
+        $owner = $this->getOwner();
+        $playerDice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
+        $diceByValue = [];
+        foreach ($playerDice as $dieKey => $dieInfo) {
+            $diceByValue[(int) $dieInfo["state"]] = $dieKey;
+        }
+        return $diceByValue;
+    }
+
+    /**
      * Check if blue influence has already been spent this turn
      */
     function isBlueInfluenceSpentThisTurn(): bool {
@@ -79,17 +92,8 @@ class Op_placeDie extends Op_acquireBase {
         $res = [];
 
         if ($dieValue === 0) {
-            // Die was reset
-            // Add dice options - group by die value (1-6)
-            $player_dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
-            $diceByValue = [];
-            foreach ($player_dice as $dieKey => $dieInfo) {
-                $dieValue = (int) $dieInfo["state"];
-                $diceByValue[$dieValue] = $dieKey;
-            }
-
-            // Add one option per unique die value
-            foreach ($diceByValue as $dieValue => $diceKey) {
+            // Die was reset - add one option per unique die value
+            foreach ($this->getDiceMap() as $diceKey) {
                 $res[$diceKey] = ["q" => Material::RET_OK];
             }
             return $res;
@@ -140,7 +144,11 @@ class Op_placeDie extends Op_acquireBase {
             }
         }
 
-        $res["change"] = ["q" => Material::RET_OK, "name" => clienttranslate("Switch Die")];
+        // Only offer Switch Die if there's a different value to switch to;
+        // otherwise auto-resolve loops between change ↔ re-select-same-die.
+        if (count($this->getDiceMap()) >= 2) {
+            $res["change"] = ["q" => Material::RET_OK, "name" => clienttranslate("Switch Die")];
+        }
 
         return $res;
     }
