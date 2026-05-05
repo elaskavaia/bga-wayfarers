@@ -3709,7 +3709,7 @@ class Material {
         "num" => 15,
         "conn" => 27,
         "r" => "tag_upg_green",
-        "gw" => 2,
+        "gw" => 1,
 ],
     "jconn_20_40_1" => [ 
         "location" => "mainboard_1",
