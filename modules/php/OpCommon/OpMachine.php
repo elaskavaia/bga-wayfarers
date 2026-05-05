@@ -300,7 +300,10 @@ class OpMachine {
 
     function action_undo(int $player_id, int $move_id = 0) {
         try {
-            $this->game->undoRestorePoint();
+            // Use the wayfarers-native undo (restores only the tables listed in DbMultiUndo::needsSaving:
+            // token, machine, stats). The framework's undoRestorePoint() restores the full DB including
+            // the `global` table, which can wipe next_move_id if zz_savepoint_global wasn't populated.
+            $this->game->dbMultiUndo->undoRestorePoint($player_id, $move_id);
         } catch (Exception $e) {
             $this->game->userAssert($e->getMessage());
         }

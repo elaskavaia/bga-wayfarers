@@ -50,7 +50,7 @@ class Game extends Base {
         $this->machine = new OpMachine();
         $tokens = new DbTokens($this);
         $this->tokens = new PGameTokens($this, $tokens);
-        $this->dbMultiUndo = new DbMultiUndo($this, "restorePlayerTables");
+        $this->dbMultiUndo = new DbMultiUndo($this);
 
         $this->notify->addDecorator(function (string $message, array $args) {
             if (str_contains($message, '${reason}') && !isset($args["reason"])) {
@@ -220,6 +220,7 @@ class Game extends Base {
 
         $this->machine->queue("turn", $this->custom_getPlayerColorById($startingPlayer));
         $this->customUndoSavepoint($startingPlayer, 1);
+
         return GameDispatch::class;
     }
 
@@ -958,61 +959,10 @@ class Game extends Base {
     }
 
     public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
-        //$this->debugLog("customUndoSavepoint $player_id bar= $barrier");
         if ($this->isSolo()) {
             $player_id = $this->getFirstPlayer();
         }
-        if ($this->isMultiActive()) {
-            $this->dbMultiUndo->doSaveUndoSnapshot(["barrier" => $barrier, "label" => $label], $player_id, true);
-        } else {
-            $this->dbMultiUndo->doSaveUndoSnapshot(["barrier" => $barrier, "label" => $label], $player_id, true);
-            $this->undoSavepoint();
-        }
-    }
-
-    function restorePlayerTables($table, $saved_data, $meta) {
-        $player_id = (int) $meta["player_id"];
-        $owner = $this->custom_getPlayerColorById($player_id);
-        if ($table == "token") {
-            // filter the data
-            $curtokens = $this->tokens->db->getTokensOfTypeInLocation(null, "%_{$owner}%");
-            $saved_data = array_filter($saved_data, function ($row) use ($owner, $curtokens) {
-                return str_contains($row["token_location"], $owner) ||
-                    str_contains($row["token_key"], $owner) ||
-                    array_key_exists($row["token_key"], $curtokens);
-            });
-            $keys = array_map(fn($row) => $row["token_key"], $saved_data);
-            $this->notifyMessage(clienttranslate('${player_name} undoes their turn'), [], $player_id);
-            $this->tokens->db->dbReplaceValues($saved_data);
-            foreach ($keys as $token_id) {
-                $info = $this->tokens->db->getTokenInfo($token_id);
-                $this->tokens->dbSetTokenLocation($token_id, $info["location"], $info["state"], "", [], $player_id);
-            }
-
-            //return true;
-        } elseif ($table == "machine") {
-            $multi = $this->game->machine->getAllOperationsMulti();
-            foreach ($multi as $dop) {
-                if ($dop["owner"] == $owner) {
-                    $this->game->machine->hide((int) $dop["id"]);
-                }
-            }
-            $this->game->machine->db->normalize();
-            $saved_data = array_filter($saved_data, function ($row) use ($owner) {
-                return $row["owner"] == $owner && $row["rank"] >= 0;
-            });
-            uasort($saved_data, function ($a, $b) {
-                return $a["rank"] <=> $b["rank"];
-            });
-            $rank = 1;
-            foreach ($saved_data as $dop) {
-                $dop["rank"] = $rank++;
-            }
-            $this->game->machine->db->interrupt(count($saved_data));
-            $this->game->machine->db->insertList(null, $saved_data);
-            //return true;
-        }
-        return false;
+        $this->dbMultiUndo->doSaveUndoSnapshot(["barrier" => $barrier, "label" => $label], $player_id, true);
     }
 
     function debug_op(string $type) {

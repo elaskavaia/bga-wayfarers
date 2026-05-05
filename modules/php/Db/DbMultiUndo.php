@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Db;
 
+use Bga\GameFramework\NotificationMessage;
 use Bga\GameFramework\UserException;
 use Bga\Games\wayfarers\Game;
 
@@ -172,7 +173,9 @@ class DbMultiUndo {
         if ($move_id == 0) {
             throw new UserException(clienttranslate("Nothing to undo"));
         } else {
-            throw new UserException(clienttranslate('Nothing to undo for move ${move_id}'), ["move_id" => $move_id]);
+            throw new UserException(
+                new NotificationMessage(clienttranslate('Nothing to undo for move ${move_id}'), ["move_id" => $move_id])
+            );
         }
     }
 
@@ -267,17 +270,21 @@ class DbMultiUndo {
         $next = $this->getNextMoveId();
 
         if ($move_id == 0) {
-            $move_id = (int) $this->getEarliestSavedMoveId($player_id);
+            $earliest = $this->getEarliestSavedMoveId($player_id);
+            if ($earliest === null) {
+                $this->errorCannotUndo();
+            }
+            $move_id = (int) $earliest;
         } elseif ($move_id == -1) {
             $latest_saved_move_id = (int) $this->getLatestSavedMoveId($next + 1, $player_id);
-            $prev = (int) $this->getLatestSavedMoveId($latest_saved_move_id, $player_id);
-            if (!$prev) {
-                $prev = (int) $this->getEarliestSavedMoveId($player_id);
+            $prev = $this->getLatestSavedMoveId($latest_saved_move_id, $player_id);
+            if ($prev === null) {
+                $prev = $this->getEarliestSavedMoveId($player_id);
             }
-            $move_id = $prev;
-        }
-        if (!$move_id) {
-            $this->errorCannotUndo();
+            if ($prev === null) {
+                $this->errorCannotUndo();
+            }
+            $move_id = (int) $prev;
         }
 
         // if ($move_id >= $next - 1) {
@@ -311,6 +318,10 @@ class DbMultiUndo {
             ],
             $player_id
         );
+
+        // Trigger BGA client-side full state refresh after restore — without this the UI keeps
+        // showing the post-action state even though the DB has been reverted.
+        $this->game->notify->all("undoRestorePoint", "", []);
 
         $this->notifyUndoMoveMeta($meta);
     }
