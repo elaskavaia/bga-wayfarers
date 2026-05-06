@@ -17,6 +17,7 @@ namespace Bga\Games\wayfarers\Operations;
 use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
+use Override;
 
 use function Bga\Games\wayfarers\getPart;
 
@@ -272,5 +273,13 @@ abstract class Op_upgBase extends Op_acquireBase {
             ]);
         }
         return clienttranslate("Select where to place the tile in your caravan");
+    }
+
+    #[Override]
+    public function canSkip() {
+        if ($this->noValidTargets()) {
+            return true;
+        }
+        return parent::canSkip();
     }
 }
