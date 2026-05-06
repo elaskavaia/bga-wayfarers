@@ -1736,7 +1736,7 @@ html[data-theme=dark] .deck .counter {
   height: 32px;
   aspect-ratio: 1/1;
 }
-.log .tracker, #page-title .tracker {
+.log .tracker, #page-title .tracker, #replaylogs .tracker {
   display: inline-block;
   vertical-align: middle;
   height: 24px;
@@ -1794,7 +1794,7 @@ html[data-theme=dark] .miniboard .guild_count {
   background-image: url(img/tokens.png);
   background-size: auto 800%;
 }
-.log .wooden, #page-title .wooden {
+.log .wooden, #page-title .wooden, #replaylogs .wooden {
   display: inline-block;
   vertical-align: middle;
   height: 24px;
@@ -2046,7 +2046,7 @@ html[data-theme=dark] .miniboard .guild_count {
   height: 32px;
   aspect-ratio: 1;
 }
-.log .wicon, #page-title .wicon {
+.log .wicon, #page-title .wicon, #replaylogs .wicon {
   display: inline-block;
   vertical-align: middle;
   height: 24px;

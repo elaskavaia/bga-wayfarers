@@ -1422,10 +1422,10 @@ class GameMachine extends Game1Tokens {
             if (opInfo.ui.replicate == true) {
                 altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
             }
-            if (opInfo.ui.imagebuttons == true) {
+            if (opInfo.ui.imagebuttons == true && paramInfo.buttons !== false) {
                 altNode = this.replicateTargetOnToolbar(target, paramInfo);
             }
-            if (!altNode && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
+            if (!altNode && paramInfo.buttons !== false && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
                 altNode = this.createTargetButton(target, paramInfo);
             }
             if (!altNode)
@@ -1453,7 +1453,7 @@ class GameMachine extends Game1Tokens {
         // secondary buttons
         for (const target of sortedTargets) {
             const paramInfo = opInfo.info[target];
-            if (paramInfo.sec) {
+            if (paramInfo.sec && paramInfo.buttons !== false) {
                 // skip, whatever TODO: anytime
                 const color = paramInfo.color ?? "secondary";
                 const call = paramInfo.call ?? target;

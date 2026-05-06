@@ -6,7 +6,8 @@
   aspect-ratio: 1/1;
 
   .log &,
-  #page-title & {
+  #page-title &,
+  #replaylogs & {
     display: inline-block;
     vertical-align: middle;
     height: 24px;
@@ -78,7 +79,8 @@
   background-size: auto 800%;
 
   .log &,
-  #page-title & {
+  #page-title &,
+  #replaylogs & {
     display: inline-block;
     vertical-align: middle;
     height: 24px;
@@ -254,7 +256,8 @@ $i: 0;
   aspect-ratio: 1;
 
   .log &,
-  #page-title & {
+  #page-title &,
+  #replaylogs & {
     display: inline-block;
     vertical-align: middle;
     height: 24px;

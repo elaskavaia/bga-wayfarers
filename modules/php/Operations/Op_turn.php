@@ -86,8 +86,9 @@ class Op_turn extends Operation {
             $dieValue = (int) $dieInfo["state"];
             if (array_key_exists($dieValue, $diceByValue)) {
                 $res[$dieKey] = [
-                    "q" => Material::ERR_NOT_APPLICABLE,
-                    "err" => clienttranslate("Duplicate die value"),
+                    "q" => Material::RET_OK,
+                    "buttons" => false,
+                    "sec" => true,
                 ];
             } else {
                 $res[$dieKey] = ["q" => Material::RET_OK, "color" => "primary"];
