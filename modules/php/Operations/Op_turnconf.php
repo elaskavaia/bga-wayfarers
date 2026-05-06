@@ -15,6 +15,7 @@ namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\Material;
+use Override;
 
 /**
  * Turn end confirmation operation.
@@ -37,5 +38,12 @@ class Op_turnconf extends Operation {
 
     function resolve(): void {
         // Nothing to do - just confirmation
+    }
+
+    #[Override]
+    public function getExtraArgs() {
+        return parent::getExtraArgs() + [
+            "pref_id" => Material::MA_PREF_CONFIRM_TURN,
+        ];
     }
 }

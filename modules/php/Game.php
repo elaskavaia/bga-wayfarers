@@ -38,6 +38,7 @@ class Game extends Base {
     public Material $material;
     public PGameTokens $tokens;
     public DbMultiUndo $dbMultiUndo;
+    protected array $undoSavepointMeta = [];
 
     function __construct() {
         Game::$instance = $this;
@@ -962,7 +963,26 @@ class Game extends Base {
         if ($this->isSolo()) {
             $player_id = $this->getFirstPlayer();
         }
-        $this->dbMultiUndo->doSaveUndoSnapshot(["barrier" => $barrier, "label" => $label], $player_id, true);
+        $this->undoSavepointMeta = [
+            "barrier" => $barrier,
+            "label" => $label,
+            "player_id" => $player_id,
+        ];
+        $this->undoSavepoint();
+    }
+
+    function doCustomUndoSavePoint() {
+        if ($this->isMultiActive()) {
+            return;
+        }
+        if (empty($this->undoSavepointMeta)) {
+            return;
+        }
+        $meta = $this->undoSavepointMeta;
+        $player_id = (int) ($meta["player_id"] ?? 0);
+        unset($meta["player_id"]);
+        $this->undoSavepointMeta = [];
+        $this->dbMultiUndo->doSaveUndoSnapshot($meta, $player_id, true);
     }
 
     function debug_op(string $type) {
