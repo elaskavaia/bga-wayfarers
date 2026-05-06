@@ -737,6 +737,38 @@ final class GameTest extends TestCase {
         $this->assertTrue($result);
     }
 
+    /**
+     * Eminence (card_insp_12): collect="inf_yellow+inf_blue+inf_black", goal=10
+     */
+    public function testIsInspirationGoalAchieved_Eminence() {
+        $this->game();
+
+        $cardKey = "card_insp_12";
+
+        // Sanity: nothing in any guild → false
+        $this->assertFalse($this->game->isInspirationGoalAchieved($cardKey, PCOLOR));
+
+        // 9 combined (3 yellow + 3 blue + 3 black) → still under 10
+        $n = 1;
+        for ($i = 0; $i < 3; $i++) {
+            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_$n", "guild_yellow");
+            $n++;
+        }
+        for ($i = 0; $i < 3; $i++) {
+            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_$n", "guild_blue");
+            $n++;
+        }
+        for ($i = 0; $i < 3; $i++) {
+            $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_$n", "guild_black");
+            $n++;
+        }
+        $this->assertFalse($this->game->isInspirationGoalAchieved($cardKey, PCOLOR), "9 combined influence should not meet goal of 10");
+
+        // One more → 10 combined → goal met
+        $this->game->tokens->db->moveToken("influence_" . PCOLOR . "_$n", "guild_yellow");
+        $this->assertTrue($this->game->isInspirationGoalAchieved($cardKey, PCOLOR), "10 combined influence should meet Eminence goal");
+    }
+
     public function testTriggeredVistaAbilities() {
         // Setup: Place a Vista card in player's tableau
         // card_land_20: trig="Stars", dr="food", tags="Vista"
