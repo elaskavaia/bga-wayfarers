@@ -998,13 +998,14 @@ class Game extends Base {
 
     function debug_q() {
         $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
-        $this->customUndoSavepoint((int) $this->getCurrentPlayerId(), 0);
-        $vp = $this->countVpForSpaceCard("card_space_1_$color", $color);
-        $upg = $this->evaluateExpression("tag_upg_green", $color);
-        $folk = $this->evaluateExpression("tag_card_folk", $color);
-        $obs = $this->evaluateExpression("tag_Observatory", $color);
+        $this->machine->push("upgGreen", $color);
+        $this->machine->push("upgGreen", $color);
+        $this->machine->push("upgBlack", $color);
+        $this->machine->push("upgBlack", $color);
+        $this->machine->push("upgYellow", $color);
+        $this->machine->push("upgYellow", $color);
 
-        $this->debugConsole("vp=$vp upg=$upg fold=$folk obs=$obs");
+        $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
     function debug_game_variant(string $type = "variant_multi", int $value = 1) {
         $this->setGameStateValue($type, $value);
