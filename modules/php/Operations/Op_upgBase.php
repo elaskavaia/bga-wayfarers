@@ -176,13 +176,20 @@ abstract class Op_upgBase extends Op_acquireBase {
 
                 if (!isset($seenTypes[$uniqueType])) {
                     $seenTypes[$uniqueType] = true;
-                    $res[$card] = ["q" => 0];
+                    $res[] = $card;
                 }
+            }
+            if (count($res) == 0) {
+                return ["q" => Material::ERR_NONE_LEFT, "err" => clienttranslate("No more tiles of this type left")];
             }
             return $res;
         } else {
             // Step 2: Select position on caravan grid
-            return $this->getValidPositions($this->getTileWidth(), $this->getTileHeight());
+            $res = $this->getValidPositions($this->getTileWidth(), $this->getTileHeight());
+            if (count($res) == 0) {
+                return ["q" => Material::ERR_NONE_LEFT, "err" => clienttranslate("Caravan is full")];
+            }
+            return $res;
         }
     }
 
@@ -281,5 +288,14 @@ abstract class Op_upgBase extends Op_acquireBase {
             return true;
         }
         return parent::canSkip();
+    }
+
+    #[Override]
+    public function skip() {
+        parent::skip();
+        if ($this->noValidTargets()) {
+            $error = $this->getError();
+            $this->notifyMessage(clienttranslate('${player_name} skips buying an Upgrade Tile: ${error_name}'), ["error_name" => $error]);
+        }
     }
 }
