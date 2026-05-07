@@ -289,6 +289,28 @@ final class Op_cardFolkTest extends TestCase {
     }
 
     /**
+     * RULES: cannot acquire a card holding a worker you placed this turn.
+     * Without this check, the cardInteract step on acquisition would return the
+     * just-placed worker to the buyer's supply — a free worker retrieve.
+     */
+    public function testCannotAcquireFolkCardWithThisTurnWorker(): void {
+        $this->setupTableauCard("card_space_1", "Vista");
+        $this->setupFolkCardInMainArea("card_folk_133", "Vista", 1);
+        $this->setupFolkCardInMainArea("card_folk_115", "Vista", 1);
+        $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
+
+        // Worker placed this turn (state=1) on 133, prior-turn worker (state=0) on 115.
+        $this->game->tokens->db->moveToken("worker_green_1", "card_folk_133", 1);
+        $this->game->tokens->db->moveToken("worker_green_2", "card_folk_115", 0);
+
+        $op = $this->createOp();
+        $moves = $op->getPossibleMoves();
+
+        $this->assertEquals(Material::ERR_NOT_APPLICABLE, $moves["card_folk_133"]["q"]);
+        $this->assertEquals(Material::RET_OK, $moves["card_folk_115"]["q"]);
+    }
+
+    /**
      * Bug regression: the two-step cardFolk flow (pick folk → pick tuck target)
      * used to drop the `die` data field on the re-queue, so the second-step
      * payment was computed with no die and thus no coinDis discount.

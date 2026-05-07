@@ -42,11 +42,17 @@ class Op_cardInsp extends Op_cardBase {
         if ($cardSelected == null) {
             // First step: select which inspiration card to acquire
             $res = [];
-            $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_insp", "mainarea");
+            $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_insp", "mainarea");
 
-            foreach (array_keys($tokens) as $card) {
+            foreach ($tokens as $card => $tokenInfo) {
                 // there is NO requirement on playing the card excp placement below
                 $res[$card] = ["q" => Material::RET_OK];
+
+                $placedWorkerError = $this->getPlacedWorkerError($tokenInfo);
+                if ($placedWorkerError) {
+                    $res[$card]["q"] = Material::ERR_NOT_APPLICABLE;
+                    $res[$card]["err"] = $placedWorkerError;
+                }
             }
 
             return $res;

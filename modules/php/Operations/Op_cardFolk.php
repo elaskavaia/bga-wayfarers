@@ -41,12 +41,19 @@ class Op_cardFolk extends Op_cardBase {
         }
         unset($info);
         if ($cardSelected == null) {
-            $tokens = $this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea");
+            $tokens = $this->game->tokens->getTokensOfTypeInLocationWithChildren("card_folk", "mainarea");
 
             foreach ($tokens as $card => $tokenInfo) {
                 $pay = $this->isFree() ? "" : $this->getPaymentOperation($card);
                 $can = $this->canAfford($pay);
                 $res[$card] = ["q" => $can ? 0 : Material::ERR_COST, "can" => $can, "pay" => $pay];
+
+                $placedWorkerError = $this->getPlacedWorkerError($tokenInfo);
+                if ($placedWorkerError) {
+                    $res[$card]["q"] = Material::ERR_NOT_APPLICABLE;
+                    $res[$card]["err"] = $placedWorkerError;
+                    continue;
+                }
 
                 if (!$can) {
                     continue;
