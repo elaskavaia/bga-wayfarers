@@ -99,6 +99,7 @@ ai_res|AI Resource Track
 ai_placeWorker|AI Place Worker|wicon_pick_worker
 ai_pickWorker|AI Retrieve Worker|wicon_pick_worker
 ai_infCard|AI Influence on Card|wicon_infCard
+ai_infAny|AI Influence on any Guild|wicon_inf_any
 ai_focusAction|AI Focus Action
 ai_comet|AI Comet Track|wicon_comet
 ai_cardInteract|AI Interact with Card

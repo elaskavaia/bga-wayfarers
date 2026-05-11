@@ -530,6 +530,11 @@ class Material {
         "name" => clienttranslate("AI Influence on Card"),
         "wicon" => "wicon_infCard",
 ],
+    "Op_ai_infAny" => [ 
+        "type" => "ai_infAny",
+        "name" => clienttranslate("AI Influence on any Guild"),
+        "wicon" => "wicon_inf_any",
+],
     "Op_ai_focusAction" => [ 
         "type" => "ai_focusAction",
         "name" => clienttranslate("AI Focus Action"),

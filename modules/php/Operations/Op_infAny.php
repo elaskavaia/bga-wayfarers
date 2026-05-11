@@ -21,6 +21,15 @@ class Op_infAny extends Op_infBase {
         return $this->getDataField("guild", "");
     }
 
+    public function auto(): bool {
+        if ($this->isAutomaPlayer()) {
+            // Hand off to the AI-specific operation; the player-side flow doesn't apply.
+            $this->queue("ai_infAny", $this->game->getAutomaColor());
+            return true;
+        }
+        return parent::auto();
+    }
+
     function getPossibleMoves() {
         $selectedGuild = $this->getGuild();
 
@@ -105,5 +114,4 @@ class Op_infAny extends Op_infBase {
 
         return parent::getPrompt();
     }
-
 }
