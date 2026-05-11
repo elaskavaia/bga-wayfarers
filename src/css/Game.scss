@@ -130,7 +130,8 @@ button.bgabutton > * {
 
 // Stacked upgrade tiles share coordinates; the duplicate paints last and steals
 // clicks. Lift the active one so the click lands on the tile that owns the op.
-.active_slot.upg {
+.active_slot.upg,
+.active_slot.influence {
   z-index: 20;
 }
 

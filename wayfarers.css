@@ -2957,7 +2957,8 @@ button.bgabutton > * {
   outline: 4px dashed #3f51b5;
 }
 
-.active_slot.upg {
+.active_slot.upg,
+.active_slot.influence {
   z-index: 20;
 }
 
