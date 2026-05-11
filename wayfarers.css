@@ -1212,6 +1212,7 @@ html[data-theme=dark] .deck .counter {
   height: 100%;
   position: absolute;
   z-index: 1;
+  background-repeat: no-repeat;
 }
 
 .pboard[data-state="-1"]::before {
