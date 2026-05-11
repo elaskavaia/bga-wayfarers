@@ -998,12 +998,12 @@ class Game extends Base {
 
     function debug_q() {
         $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
-        $this->machine->push("upgGreen", $color);
-        $this->machine->push("upgGreen", $color);
-        $this->machine->push("upgBlack", $color);
-        $this->machine->push("upgBlack", $color);
-        $this->machine->push("upgYellow", $color);
-        $this->machine->push("upgYellow", $color);
+        // $this->machine->push("upgGreen", $color);
+        // $this->machine->push("upgGreen", $color);
+        // $this->machine->push("upgBlack", $color);
+        // $this->machine->push("upgBlack", $color);
+        // $this->machine->push("upgYellow", $color);
+        $this->machine->push("infAny", $this->getAutomaColor());
 
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
