@@ -109,6 +109,18 @@ class Op_turn extends Operation {
             $res[$workerKey] = ["q" => Material::RET_OK, "color" => "secondary"];
         }
 
+        // Add influence spending options
+        $ops = ["spendInfYellow"];
+        $owner = $this->getOwner();
+        foreach ($ops as $opId) {
+            $op = $this->game->machine->instanciateOperation($opId, $owner);
+            $key = $op->getOpId();
+            $void = $op->noValidTargets();
+            if (!$void) {
+                $res[$key] = ["q" => Material::RET_OK, "name" => $op->getIconicName(), "color" => "secondary"];
+            }
+        }
+
         /** @var Op_rest */
         $oprest = $this->instanciateOperation("rest");
         if ($oprest->isGoodRest()) {
@@ -116,7 +128,6 @@ class Op_turn extends Operation {
         } else {
             $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest"), "color" => "alert"];
         }
-
         return $res;
     }
 
@@ -140,6 +151,14 @@ class Op_turn extends Operation {
         } elseif (str_starts_with($selected, "dice_")) {
             $this->game->playerStats->inc("game_dice_actions", 1, $playerId);
             $this->queue("placeDie", $owner, ["die" => $selected, "reason" => null]);
+        } elseif (str_starts_with($selected, "Op_")) {
+            $op = str_replace("Op_", "", $selected);
+            $this->queue($op, $owner, ["reason" => null]);
+            // re-queue itself so player still gets their main action after the free spend
+            $this->queue($this->getType(), $owner, $this->getData());
+            return;
+        } else {
+            $this->game->systemAssert("Invalid choice $selected");
         }
         $this->queue("turnconf", null, ["reason" => null]);
         $this->game->queueNextTurnOrEnd($this->getPlayerId());
