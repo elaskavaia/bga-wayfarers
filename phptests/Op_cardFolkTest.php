@@ -92,11 +92,12 @@ final class Op_cardFolkTest extends TestCase {
         $op = $this->createOp("card_folk_133");
         $moves = $op->getPossibleMoves();
 
-        // Should only show matching tableau card (Vista)
+        // Matching tableau card (Vista) is selectable
         $this->assertArrayHasKey("card_land_20", $moves);
         $this->assertEquals(Material::RET_OK, $moves["card_land_20"]["q"]);
-        // Non-matching card should not be in the result
-        $this->assertArrayNotHasKey("card_land_9", $moves);
+        // Non-matching card is reported as ERR_PREREQ so the UI can render it as an invalid target
+        $this->assertArrayHasKey("card_land_9", $moves);
+        $this->assertEquals(Material::ERR_PREREQ, $moves["card_land_9"]["q"]);
     }
 
     public function testHasMatchingTagsWithMatch(): void {

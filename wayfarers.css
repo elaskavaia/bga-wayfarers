@@ -2901,6 +2901,12 @@ html[data-theme=dark] .miniboard .guild_count {
   animation: pulse 500ms ease-in-out;
 }
 
+.phantom_ghost.invalid_target {
+  outline: 3px dashed red;
+  outline-offset: -3px;
+  opacity: 0.5;
+}
+
 .limbo {
   display: none;
 }

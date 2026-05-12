@@ -29,7 +29,8 @@ class Op_cardFolk extends Op_cardBase {
         foreach ($allCards as $tcard => $info) {
             if (str_starts_with($tcard, "card_folk")) {
                 $occupiedStates[(int) $info["state"]] = true;
-            } elseif (!str_starts_with($tcard, "card_home_1_")) { // pre-printed folk occupies this
+            } elseif (!str_starts_with($tcard, "card_home_1_")) {
+                // pre-printed folk occupies this
                 $cards[$tcard] = $info;
             }
         }
@@ -59,10 +60,12 @@ class Op_cardFolk extends Op_cardBase {
                     continue;
                 }
                 $res[$card]["q"] = Material::ERR_PREREQ;
-                foreach ($cards as $tcard => $cardInfo) {
-                    if ($this->hasMatchingTags($card, $tcard) && !$cardInfo["folkon"]) {
+                $res[$card]["err"] = clienttranslate("Cannot find home for Townfolk");
+                foreach ($cards as $tcard => $info) {
+                    if ($this->hasMatchingTags($card, $tcard) && !$info["folkon"]) {
                         // At least one position available
                         $res[$card]["q"] = Material::RET_OK;
+                        $res[$card]["err"] = "";
                         break;
                     }
                 }
@@ -74,12 +77,17 @@ class Op_cardFolk extends Op_cardBase {
         foreach ($cards as $tcard => $info) {
             if ($this->hasMatchingTags($cardSelected, $tcard) && !$info["folkon"]) {
                 $res[$tcard] = ["q" => 0];
+            } else {
+                $res[$tcard] = [
+                    "q" => Material::ERR_PREREQ,
+                    "err" => clienttranslate("Cannot find home for Townfolk"),
+                ];
             }
         }
         return $res;
     }
 
-    function hasMatchingTags($greenCard, $card) {
+    function hasMatchingTags(string $greenCard, string $card) {
         $tagsGreen = $this->game->getTagsSet($greenCard);
         $tags = $this->game->getTagsSet($card);
         foreach ($tagsGreen as $tag => $x) {

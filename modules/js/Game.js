@@ -2294,31 +2294,36 @@ class Game extends GameMachine {
         if (!tileNode)
             return;
         const ghost = this.animationLa.projectOnto(tileNode, "_ghost");
-        ghost.style.opacity = "0.6";
         ghost.style.pointerEvents = "none";
-        ghost.style.transitionProperty = "none";
+        ghost.style.transitionProperty = "all";
         ghost.style.visibility = "hidden";
         const over = $("oversurface");
         const caravan = $(`caravan_${this.player_color}`);
         if (!caravan)
             return;
+        // Footprint matches Boards.scss .ccell .upg.* rules and Op_upgBase placement math:
+        // anchor cell is top-left, tile extends right and/or down.
+        const tileW = this.getRulesFor(tileId, "w");
+        const tileH = this.getRulesFor(tileId, "h");
         const handler = (e) => {
+            const cell = document
+                .elementsFromPoint(e.clientX, e.clientY)
+                .find((el) => el.classList.contains("ccell") && el.closest(`#caravan_${this.player_color}`));
+            if (!cell) {
+                ghost.style.visibility = "hidden";
+                return;
+            }
             const overRect = over.getBoundingClientRect();
             const scaleX = over.offsetWidth > 0 ? overRect.width / over.offsetWidth : 1;
             const scaleY = over.offsetHeight > 0 ? overRect.height / over.offsetHeight : 1;
-            const caravanRect = caravan.getBoundingClientRect();
-            const inCaravan = e.clientX >= caravanRect.left && e.clientX <= caravanRect.right && e.clientY >= caravanRect.top && e.clientY <= caravanRect.bottom;
-            if (inCaravan) {
-                const x = (e.clientX - overRect.left) / scaleX - 21;
-                const y = (e.clientY - overRect.top) / scaleY - 21;
-                ghost.style.left = x + "px";
-                ghost.style.top = y + "px";
-                ghost.style.transform = "none";
-                ghost.style.visibility = "visible";
-            }
-            else {
-                ghost.style.visibility = "hidden";
-            }
+            const cellRect = cell.getBoundingClientRect();
+            ghost.style.left = (cellRect.left - overRect.left) / scaleX + "px";
+            ghost.style.top = (cellRect.top - overRect.top) / scaleY + "px";
+            ghost.style.width = (cellRect.width / scaleX) * tileW + "px";
+            ghost.style.height = (cellRect.height / scaleY) * tileH + "px";
+            ghost.style.transform = "none";
+            ghost.style.visibility = "visible";
+            ghost.classList.toggle("invalid_target", !cell.classList.contains("active_slot"));
         };
         document.addEventListener("mousemove", handler);
         this._ghostMouseHandler = handler;
