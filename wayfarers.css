@@ -1213,6 +1213,7 @@ html[data-theme=dark] .deck .counter {
   position: absolute;
   z-index: 1;
   background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 .pboard[data-state="-1"]::before {

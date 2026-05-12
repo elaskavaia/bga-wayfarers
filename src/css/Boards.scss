@@ -144,6 +144,7 @@
   position: absolute;
   z-index: 1;
   background-repeat: no-repeat;
+  pointer-events: none;
 }
 
 @for $i from -1 through -4 {
