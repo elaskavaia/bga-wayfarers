@@ -36,8 +36,8 @@ export interface TokenDisplayInfo {
 }
 
 export interface TokenMoveInfo extends Token {
-  onStart?: (node: Element) => Promise<void> | void;
-  onEnd?: (node: Element) => void;
+  onStart?: (node: HTMLElement) => Promise<void> | void;
+  onEnd?: (node: HTMLElement) => void;
   onClick?: (event?: any) => void;
   animtime?: number;
   noa?: boolean;

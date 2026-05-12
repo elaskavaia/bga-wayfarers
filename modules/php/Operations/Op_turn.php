@@ -25,6 +25,10 @@ use function Bga\Games\wayfarers\getPart;
  */
 class Op_turn extends Operation {
     public function auto(): bool {
+        $reentry = $this->getDataField("reentry", false);
+        if ($reentry) {
+            return parent::auto();
+        }
         // Clear the "placed-this-turn" marker (state=1) on workers left on cards from the
         // previous turn so they become retrievable again.
         $placedWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%", 1);
@@ -155,7 +159,7 @@ class Op_turn extends Operation {
             $op = str_replace("Op_", "", $selected);
             $this->queue($op, $owner, ["reason" => null]);
             // re-queue itself so player still gets their main action after the free spend
-            $this->queue($this->getType(), $owner, $this->getData());
+            $this->queue($this->getType(), $owner, $this->getData() + ["reentry" => true]);
             return;
         } else {
             $this->game->systemAssert("Invalid choice $selected");

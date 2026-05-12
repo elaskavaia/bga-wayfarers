@@ -1988,6 +1988,7 @@ class Game extends GameMachine {
     }
     setup(gamedatas) {
         try {
+            this.inSetup = true;
             super.setup(gamedatas);
             placeHtml(this.gameTemplate, this.bga.gameArea.getElement());
             // Setting up player boards
@@ -2433,8 +2434,9 @@ class Game extends GameMachine {
             }
             else if (location.startsWith("card")) {
                 result.onEnd = (node) => {
-                    const grand = node.parentElement.parentElement;
-                    grand.appendChild(node);
+                    const grand = node.parentElement?.parentElement;
+                    if (grand)
+                        grand.appendChild(node);
                     node.dataset[`${getPart(location, 1)}Pos`] = getPart(location, 2);
                 };
             }

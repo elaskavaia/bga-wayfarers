@@ -146,6 +146,7 @@ export class Game extends GameMachine {
 `;
   setup(gamedatas) {
     try {
+      this.inSetup = true;
       super.setup(gamedatas);
 
       placeHtml(this.gameTemplate, this.bga.gameArea.getElement());
@@ -403,7 +404,7 @@ export class Game extends GameMachine {
       { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
       { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
     ];
-    this.scoreSheet = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet`), {
+    this.scoreSheet = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet`)!, {
       animationsActive: () => this.gameAnimationsActive(),
       playerNameWidth: 80,
       playerNameHeight: 30,
@@ -630,8 +631,8 @@ export class Game extends GameMachine {
         result.onEnd = (node) => this.hideCard(node);
       } else if (location.startsWith("card")) {
         result.onEnd = (node: HTMLElement) => {
-          const grand = node.parentElement.parentElement;
-          grand.appendChild(node);
+          const grand = node.parentElement?.parentElement;
+          if (grand) grand.appendChild(node);
           node.dataset[`${getPart(location, 1)}Pos`] = getPart(location, 2);
         };
       }
