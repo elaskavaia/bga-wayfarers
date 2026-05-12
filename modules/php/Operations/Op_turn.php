@@ -49,6 +49,7 @@ class Op_turn extends Operation {
         $this->game->tokens->db->setTokenState("used_inf_blue_$owner", 0);
         $this->game->tokens->db->setTokenState("used_inf_yellow_$owner", 0);
         $this->game->tokens->db->setTokenState("used_inf_black_$owner", 0);
+        $this->notifyMessage(clienttranslate('${player_name} starts the turn'));
 
         return parent::auto();
     }

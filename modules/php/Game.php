@@ -221,6 +221,9 @@ class Game extends Base {
 
         $this->machine->queue("turn", $this->custom_getPlayerColorById($startingPlayer));
         $this->customUndoSavepoint($startingPlayer, 1);
+        // Force the deferred save now — framework's setup-end self::sendNotifications bypasses
+        // our Base::sendNotifications override, so the snapshot would otherwise never be written.
+        $this->doUndoSavePoint();
 
         return GameDispatch::class;
     }
@@ -982,7 +985,7 @@ class Game extends Base {
         $player_id = (int) ($meta["player_id"] ?? 0);
         unset($meta["player_id"]);
         $this->undoSavepointMeta = [];
-        $this->dbMultiUndo->doSaveUndoSnapshot($meta, $player_id, true);
+        $this->dbMultiUndo->doSaveUndoSnapshot($meta, $player_id, false);
     }
 
     function debug_op(string $type) {
