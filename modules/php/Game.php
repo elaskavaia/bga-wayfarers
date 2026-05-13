@@ -20,13 +20,10 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers;
 
-use Bga\GameFramework\GameResult\GameResult;
 use Bga\GameFramework\NotificationMessage;
 use Bga\Games\wayfarers\Common\PGameTokens;
 use Bga\Games\wayfarers\Db\DbMultiUndo;
 use Bga\Games\wayfarers\Db\DbTokens;
-use Bga\Games\wayfarers\OpCommon\AiOperation;
-use Bga\Games\wayfarers\OpCommon\ComplexOperation;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
 use Bga\Games\wayfarers\States\GameDispatch;
 
@@ -331,9 +328,25 @@ class Game extends Base {
                 $key = str_replace("player_", "", $pkey);
                 $result["playerswithbots"][$player_id][$key] = $value;
             }
+            $color = $player["player_color"];
+
+            $result["journalTagCounts"][$player_id] = $this->getJournalTagCounts($color);
         }
 
         return $result;
+    }
+
+    public function getJournalTagCounts(string $color): array {
+        $counts = [];
+        $tags = Material::JOURNAL_TAGS;
+        if ($color == $this->getAutomaColor()) {
+            $tags = Material::JOURNAL_TAGS_AI;
+        }
+        foreach ($tags as $tag) {
+            $counts[$tag] = (int) $this->evaluateExpression($tag, $color);
+        }
+
+        return $counts;
     }
 
     /*
@@ -801,7 +814,9 @@ class Game extends Base {
 
             $plus = 0;
             if ($ttype == "land" || $ttype == "water" || $ttype == "star") {
-                $plus = 1; // player starts with 1 of other pre-printed cards
+                if ($owner != $this->getAutomaColor()) {
+                    $plus = 1; // player starts with 1 of other pre-printed cards
+                }
             }
             return count($tokens) + $plus;
         }
@@ -815,7 +830,7 @@ class Game extends Base {
         }
 
         if (str_starts_with($x, "win_")) {
-            // check if player has more Comet tags than all individual opponents
+            // check if player has more tags than all individual opponents
             $tag = getPart($x, 1);
             $tagCount = $this->countPlayerTags($tag, $owner);
             $players = $this->loadPlayersBasicInfosWithBots();
@@ -927,7 +942,7 @@ class Game extends Base {
                     "deck_$ctype",
                     "mainarea",
                     $pos,
-                    clienttranslate('Card is placed on Main Board: ${token_name}')
+                    clienttranslate('${player_name} draws card ${token_name}')
                 );
                 $pos++;
             }

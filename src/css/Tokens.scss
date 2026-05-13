@@ -45,7 +45,8 @@
   // overlapping numbers with shadow
   .tracker,
   .counter,
-  .guild_count {
+  .guild_count,
+  .jtag_count {
     color: black;
     text-shadow: v.$textShadowWhite;
 
@@ -53,22 +54,49 @@
       color: white;
       text-shadow: v.$textShadowBlack;
     }
+    margin-left: 6px;
+    &::after {
+      content: attr(data-state);
+      position: relative;
+      left: 0px;
+      top: 9px;
+    }
+  }
 
-    &::after {
-      content: attr(data-state);
-      position: relative;
-      left: 12px;
-      top: 9px;
+  .jtag_counts {
+    flex-basis: 100%;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    margin-top: 4px;
+    justify-content: space-around;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+
+    &[data-collapsed="1"] {
+      max-height: 0;
+      margin-top: 0;
     }
   }
-  .guild_count {
-    &::after {
-      content: attr(data-state);
-      position: relative;
-      left: 8px;
-      top: 9px;
+
+  .jtag_toggle {
+    cursor: pointer;
+    width: 100%;
+    background: transparent;
+    padding: 0 4px;
+    display: flex;
+    justify-content: center;
+
+    i {
+      transition: transform 0.2s ease-out;
+      transform: rotate(-180deg);
+    }
+
+    &[data-collapsed="1"] i {
+      transform: rotate(0deg);
     }
   }
+
   .tracker_vp_ffffff {
     display: none;
   }
@@ -308,13 +336,16 @@ $i: 0;
   background-position: 54% 2%;
 }
 .wicon_planet {
-  background-position: 62% 2%;
+  background-position: 62% 1%;
+  background-size: auto 1000%;
 }
 .wicon_moon {
-  background-position: 69.5% 2%;
+  background-position: 70% 1.5%;
+  background-size: auto 1000%;
 }
 .wicon_sun {
   background-position: 78% 2%;
+  background-size: auto 1100%;
 }
 .wicon_vp {
   background-position: 86% 2%;
@@ -323,22 +354,27 @@ $i: 0;
 // Row 2: upgrades
 .wicon_upg_green {
   background-position: 0% 14%;
+  background-size: auto 1000%;
 }
 .wicon_upg_black {
   background-position: 10% 14%;
+  background-size: auto 1000%;
 }
 .wicon_upg_yellow {
   background-position: 19% 14%;
+  background-size: auto 1000%;
 }
 .wicon_upg_blue {
-  background-position: 30% 14%;
+  background-position: 28.5% 14%;
+  background-size: auto 1000%;
 }
 .wicon_upg_pink {
   background-position: 38% 14%;
-  background-size: auto 1100%;
+  background-size: auto 1000%;
 }
 .wicon_upg_any {
-  background-position: 50% 14%;
+  background-position: 48% 14%;
+  background-size: auto 1000%;
 }
 .wicon_upg_green_free {
   background-position: 60% 14%;
@@ -385,44 +421,56 @@ $i: 0;
   background-size: auto 1000%;
   aspect-ratio: 1;
 }
+
 .wicon_water {
-  background-position: 0% 28%;
-  background-size: auto 1200%;
+  background-position: 12% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
 .wicon_card_water {
-  background-position: 0% 28%;
-  background-size: auto 1200%;
+  background-position: 49% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
 .wicon_land {
   background-position: 10% 28%;
-  background-size: auto 1200%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
+
 .wicon_card_land {
-  background-position: 10% 28%;
-  background-size: auto 1200%;
+  background-position: 43% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
+
 .wicon_space {
-  background-position: 20% 28%;
-  background-size: auto 1200%;
+  background-position: 20% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
 .wicon_card_space {
-  background-position: 17% 28%;
-  background-size: auto 1200%;
+  background-position: 55% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
 .wicon_folk {
-  background-position: 30% 28%;
-  background-size: auto 1200%;
+  background-position: 30% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
 .wicon_card_folk {
-  background-position: 37% 28%;
+  background-position: 37% 27%;
   background-size: auto 1000%;
   aspect-ratio: 3 / 4;
 }
 
 .wicon_card_insp {
-  background-position: 20% 28%;
-  background-size: auto 1200%;
+  background-position: 61% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3 / 4;
 }
+
 .wicon_camel {
   background-position: 69% 28%;
   background-size: auto 1000%;

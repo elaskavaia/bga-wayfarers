@@ -1764,29 +1764,56 @@ html[data-theme=dark] .influence {
 }
 .miniboard .tracker,
 .miniboard .counter,
-.miniboard .guild_count {
+.miniboard .guild_count,
+.miniboard .jtag_count {
   color: black;
   text-shadow: #fff -1px -1px, #fff 1px 1px, #fff -1px 1px, #fff 1px -1px;
+  margin-left: 6px;
 }
 html[data-theme=dark] .miniboard .tracker,
 html[data-theme=dark] .miniboard .counter,
-html[data-theme=dark] .miniboard .guild_count {
+html[data-theme=dark] .miniboard .guild_count,
+html[data-theme=dark] .miniboard .jtag_count {
   color: white;
   text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
 }
 .miniboard .tracker::after,
 .miniboard .counter::after,
-.miniboard .guild_count::after {
+.miniboard .guild_count::after,
+.miniboard .jtag_count::after {
   content: attr(data-state);
   position: relative;
-  left: 12px;
+  left: 0px;
   top: 9px;
 }
-.miniboard .guild_count::after {
-  content: attr(data-state);
-  position: relative;
-  left: 8px;
-  top: 9px;
+.miniboard .jtag_counts {
+  flex-basis: 100%;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  margin-top: 4px;
+  justify-content: space-around;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+.miniboard .jtag_counts[data-collapsed="1"] {
+  max-height: 0;
+  margin-top: 0;
+}
+.miniboard .jtag_toggle {
+  cursor: pointer;
+  width: 100%;
+  background: transparent;
+  padding: 0 4px;
+  display: flex;
+  justify-content: center;
+}
+.miniboard .jtag_toggle i {
+  transition: transform 0.2s ease-out;
+  transform: rotate(-180deg);
+}
+.miniboard .jtag_toggle[data-collapsed="1"] i {
+  transform: rotate(0deg);
 }
 .miniboard .tracker_vp_ffffff {
   display: none;
@@ -2106,15 +2133,18 @@ html[data-theme=dark] .miniboard .guild_count {
 }
 
 .wicon_planet {
-  background-position: 62% 2%;
+  background-position: 62% 1%;
+  background-size: auto 1000%;
 }
 
 .wicon_moon {
-  background-position: 69.5% 2%;
+  background-position: 70% 1.5%;
+  background-size: auto 1000%;
 }
 
 .wicon_sun {
   background-position: 78% 2%;
+  background-size: auto 1100%;
 }
 
 .wicon_vp {
@@ -2123,27 +2153,32 @@ html[data-theme=dark] .miniboard .guild_count {
 
 .wicon_upg_green {
   background-position: 0% 14%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_black {
   background-position: 10% 14%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_yellow {
   background-position: 19% 14%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_blue {
-  background-position: 30% 14%;
+  background-position: 28.5% 14%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_pink {
   background-position: 38% 14%;
-  background-size: auto 1100%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_any {
-  background-position: 50% 14%;
+  background-position: 48% 14%;
+  background-size: auto 1000%;
 }
 
 .wicon_upg_green_free {
@@ -2199,49 +2234,57 @@ html[data-theme=dark] .miniboard .guild_count {
 }
 
 .wicon_water {
-  background-position: 0% 28%;
-  background-size: auto 1200%;
+  background-position: 12% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_card_water {
-  background-position: 0% 28%;
-  background-size: auto 1200%;
+  background-position: 49% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_land {
   background-position: 10% 28%;
-  background-size: auto 1200%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_card_land {
-  background-position: 10% 28%;
-  background-size: auto 1200%;
+  background-position: 43% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_space {
-  background-position: 20% 28%;
-  background-size: auto 1200%;
+  background-position: 20% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_card_space {
-  background-position: 17% 28%;
-  background-size: auto 1200%;
+  background-position: 55% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_folk {
-  background-position: 30% 28%;
-  background-size: auto 1200%;
+  background-position: 30% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_card_folk {
-  background-position: 37% 28%;
+  background-position: 37% 27%;
   background-size: auto 1000%;
   aspect-ratio: 3/4;
 }
 
 .wicon_card_insp {
-  background-position: 20% 28%;
-  background-size: auto 1200%;
+  background-position: 61% 27%;
+  background-size: auto 1000%;
+  aspect-ratio: 3/4;
 }
 
 .wicon_camel {
@@ -3025,6 +3068,8 @@ button.bgabutton > * {
 
 .player-board {
   background-color: #f8f8f8;
+  background-image: url(img/bg.jpg);
+  background-size: cover;
 }
 
 #score-area {

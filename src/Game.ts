@@ -162,10 +162,14 @@ export class Game extends GameMachine {
 
       super.setupGame(gamedatas);
       for (const playerId of gamedatas.playerorder) {
-        this.updateGuildCounters(gamedatas.players[playerId].color);
+        const pcolor = gamedatas.players[playerId].color;
+        this.updateGuildCounters(pcolor);
+        this.updateJournalTagCounters(pcolor, gamedatas.journalTagCounts?.[playerId]);
       }
       if (this.isSolo()) {
-        this.updateGuildCounters(gamedatas.playerswithbots[this.AI_PLAYER_ID].color);
+        const aiColor = gamedatas.playerswithbots[this.AI_PLAYER_ID].color;
+        this.updateGuildCounters(aiColor);
+        this.updateJournalTagCounters(aiColor, gamedatas.journalTagCounts?.[this.AI_PLAYER_ID]);
       }
       $("mainboard_3").appendChild($("supply"));
       this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
@@ -733,6 +737,48 @@ export class Game extends GameMachine {
     );
   }
 
+  updateJournalTagCounters(pcolor: string, counts: Record<string, number> | undefined) {
+    if (!pcolor || !counts) return;
+    let tags = $(`jtag_counts_${pcolor}`);
+    if (!tags) {
+      placeHtml(
+        `
+        <div id='jtag_toggle_${pcolor}' class='jtag_toggle' title='${_("Toggle tags")}'><i class='fa fa-chevron-down'></i></div>
+        <div id="jtag_counts_${pcolor}" class='jtag_counts'></div>`,
+        `miniboard_${pcolor}`
+      );
+      $(`jtag_toggle_${pcolor}`)?.addEventListener("click", () => this.toggleJournalTagsCollapsed());
+      this.applyJournalTagsCollapsedState();
+    }
+    for (const tag in counts) {
+      const value = counts[tag];
+      let node = $(`jtag_${tag}_${pcolor}`);
+      if (!node) {
+        const icon = this.getRulesFor(tag, "type", "");
+        placeHtml(`<div id='jtag_${tag}_${pcolor}' class='jtag_count wicon ${icon}' data-state='0'></div>`, `jtag_counts_${pcolor}`);
+        node = $(`jtag_${tag}_${pcolor}`);
+      }
+      if (node) {
+        this.updateTooltip(tag, node, { force: true });
+        node.dataset.state = String(value ?? 0);
+      }
+    }
+  }
+
+  private getJournalTagsCollapsed(): string {
+    return localStorage.getItem("wayfarers_jtag_collapsed") ?? "1";
+  }
+
+  private applyJournalTagsCollapsedState() {
+    const collapsed = this.getJournalTagsCollapsed();
+    document.querySelectorAll(".jtag_counts,.jtag_toggle").forEach((el) => ((el as HTMLElement).dataset.collapsed = collapsed));
+  }
+
+  toggleJournalTagsCollapsed() {
+    localStorage.setItem("wayfarers_jtag_collapsed", this.getJournalTagsCollapsed() === "1" ? "0" : "1");
+    this.applyJournalTagsCollapsedState();
+  }
+
   updateGuildCounters(pcolor: string) {
     const guilds = ["yellow", "blue", "black"];
     for (const guild of guilds) {
@@ -1102,6 +1148,10 @@ export class Game extends GameMachine {
   async notif_undoMove(args: any) {
     console.log("notif", args);
     return gameui.wait(1);
+  }
+
+  async notif_journalTagCounts(args: any) {
+    this.updateJournalTagCounters(args.color, args.counts);
   }
 
   async notif_lastTurn(args: any) {

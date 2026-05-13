@@ -16,6 +16,28 @@ class Material {
 
     const MA_PREF_CONFIRM_TURN = 101;
 
+    const JOURNAL_TAGS = [
+        "tag_City",
+        "tag_Vista",
+        "tag_Sea",
+        "tag_Harbour",
+        "tag_Observatory",
+        "tag_Book",
+        "tag_Comet",
+        "tag_Stars",
+        "tag_Sun",
+        "tag_Moon",
+        "tag_Planet",
+        "tag_card_folk",
+        "tag_upg_green",
+        "tag_upg_black",
+        "tag_upg_yellow",
+        "tag_upg_blue",
+        "tag_upg_any",
+    ];
+
+    const JOURNAL_TAGS_AI = ["tag_Comet", "tag_card_folk", "tag_card_land", "tag_card_water", "tag_card_space", "tag_card_insp"];
+
     private array $token_types;
     private bool $adjusted = false;
     public function __construct() {

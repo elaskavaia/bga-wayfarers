@@ -22,6 +22,17 @@ use Override;
  * Requires confirmation based on player preference MA_PREF_CONFIRM_TURN.
  */
 class Op_turnconf extends Operation {
+    #[Override]
+    public function auto(): bool {
+        $owner = $this->getOwner();
+        $playerId = $this->getPlayerId();
+        $this->game->notify->all("journalTagCounts", "", [
+            "player_id" => $playerId,
+            "color" => $owner,
+            "counts" => $this->game->getJournalTagCounts($owner),
+        ]);
+        return parent::auto();
+    }
     function requireConfirmation() {
         $player_id = $this->getPlayerId();
         $pref = $this->game->getUserPreference($player_id, Material::MA_PREF_CONFIRM_TURN);
@@ -37,7 +48,7 @@ class Op_turnconf extends Operation {
     }
 
     function resolve(): void {
-        // Nothing to do - just confirmation
+        // nothing
     }
 
     #[Override]
