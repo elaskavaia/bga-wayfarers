@@ -51,6 +51,14 @@ class Op_turn extends Operation {
         $this->game->tokens->db->setTokenState("used_inf_black_$owner", 0);
         $this->notifyMessage(clienttranslate('${player_name} starts the turn'));
 
+        if ($this->game->isSolo()) {
+            $this->game->notify->all("journalTagCounts", "", [
+                "player_id" => Game::PLAYER_AUTOMA,
+                "color" => $this->game->getAutomaColor(),
+                "counts" => $this->game->getJournalTagCounts($this->game->getAutomaColor()),
+            ]);
+        }
+
         return parent::auto();
     }
 
