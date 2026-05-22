@@ -153,7 +153,10 @@ class Op_turn extends Operation {
         $selected = $this->getCheckedArg();
 
         $playerId = $this->getPlayerId();
-        $this->game->playerStats->inc("game_turns", 1, $playerId);
+        $reentry = $this->getDataField("reentry", false);
+        if (!$reentry) {
+            $this->game->playerStats->inc("game_turns", 1, $playerId);
+        }
 
         if ($selected === "rest") {
             $this->game->playerStats->inc("game_rest_actions", 1, $playerId);
