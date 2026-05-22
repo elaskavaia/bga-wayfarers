@@ -6,6 +6,7 @@ use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\Operations\Op_journal;
 use Bga\Games\wayfarers\OpCommon\Operation;
+use Bga\GameFramework\UserException;
 use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
@@ -316,7 +317,6 @@ final class Op_journalTest extends TestCase {
     public function testResolveTriggersEndGameOnTerminalPosition(): void {
         // Setup: test end game trigger by checking the method directly
         // rather than through resolve which has complex prerequisites
-        $op = $this->createOp();
 
         // Initially game stage should be 0
         $gameStage = $this->game->tokens->db->getTokenState(Game::GAME_STAGE);
@@ -504,5 +504,58 @@ final class Op_journalTest extends TestCase {
 
         // Name should be [wicon_inf_black_pay] for Op(n_infBlack)
         $this->assertEquals("[wicon_inf_black_pay]", $moves["jpos_50"]["name"]);
+    }
+
+    // --- Final-space blocking (1-marker-per-final-space rule) ---
+
+    public function testIsJournalSpaceBlockedReturnsFalseForNonFinalSpace(): void {
+        // Position has outbound conn → not final, never blocked even with markers
+        $this->setupPosition(50, "60,63");
+        $this->setMarkerPosition(50, BCOLOR);
+        $this->assertFalse($this->game->isJournalSpaceBlocked(50));
+    }
+
+    public function testIsJournalSpaceBlockedReturnsFalseForFreeFinalSpace(): void {
+        // Final space (no conn) with no marker on it
+        $this->setupPosition(100, "");
+        $this->assertFalse($this->game->isJournalSpaceBlocked(100));
+    }
+
+    public function testIsJournalSpaceBlockedReturnsTrueForOccupiedFinalSpace(): void {
+        // Final space with opponent's marker on it
+        $this->setupPosition(100, "");
+        $this->setMarkerPosition(100, BCOLOR);
+        $this->assertTrue($this->game->isJournalSpaceBlocked(100));
+    }
+
+    public function testGetPossibleMovesMarksBlockedFinalAsOccupied(): void {
+        // Marker at 90 (pre-final column); 90→100 final option occupied by opponent
+        $this->setMarkerPosition(90);
+        $this->setupPosition(90, "100,102,103");
+        $this->setupPosition(100, "");
+        $this->setupPosition(102, "");
+        $this->setupPosition(103, "");
+        // Real material has gw=4/5 on these connectors; override to make "true" trivially satisfy.
+        $this->game->material->setRulesFor("jconn_90_100_0", ["r" => "true", "gw" => "1"]);
+        $this->game->material->setRulesFor("jconn_90_102_0", ["r" => "true", "gw" => "1"]);
+        $this->game->material->setRulesFor("jconn_90_103_0", ["r" => "true", "gw" => "1"]);
+        $this->setMarkerPosition(100, BCOLOR);
+
+        $moves = $this->createOp()->getPossibleMoves();
+
+        $this->assertEquals(Material::ERR_OCCUPIED, $moves["jpos_100"]["q"]);
+        $this->assertEquals(Material::RET_OK, $moves["jpos_102"]["q"]);
+        $this->assertEquals(Material::RET_OK, $moves["jpos_103"]["q"]);
+    }
+
+    public function testResolveThrowsWhenTargetingBlockedFinalSpace(): void {
+        $this->setMarkerPosition(90);
+        $this->setupPosition(90, "100");
+        $this->setupPosition(100, "");
+        $this->game->material->setRulesFor("jconn_90_100_0", ["r" => "true", "gw" => "1"]);
+        $this->setMarkerPosition(100, BCOLOR);
+
+        $this->expectException(UserException::class);
+        $this->createOp()->action_resolve([Operation::ARG_TARGET => "jpos_100"]);
     }
 }

@@ -889,6 +889,25 @@ class Game extends Base {
     }
 
     /**
+     * Final-column journal spaces are the terminal positions — they have no outbound conn.
+     * Rule (RULES.md): "These 5 spaces are limited to 1 Player Marker each."
+     */
+    function isJournalFinalSpace(int $pos): bool {
+        return $this->getRulesFor("jpos_$pos", "conn", "") === "";
+    }
+
+    /**
+     * True iff `$pos` is a final-column space already occupied by any player marker.
+     * Non-final spaces are never blocked. The journaling player's own marker can't be at `$pos`
+     * (it's at the current position, and conn lists forward neighbours), so no exclusion is needed.
+     */
+    function isJournalSpaceBlocked(int $pos): bool {
+        if (!$this->isJournalFinalSpace($pos)) {
+            return false;
+        }
+        return count($this->tokens->getTokensOfTypeInLocation("marker", null, $pos)) > 0;
+    }
+    /**
      * Trigger end of game condition
      * All players including the one who triggered get one more turn
      */

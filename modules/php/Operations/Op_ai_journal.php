@@ -128,20 +128,27 @@ class Op_ai_journal extends AiOperation {
 
         // Check if we're in final column (3 options)
         if (count($positions) == 3) {
-            // AI never takes middle option in final column
-            if ($pathPreference === "blue") {
-                return $positions[0]; // first = upper/North
-            } else {
-                return $positions[2]; // last = lower/South
+            // Prefer ends over middle. If preferred end is blocked, take the other end.
+            // Middle is only a fallback if both ends are blocked (not reachable with 1 opponent).
+            $upper = $positions[0];
+            $middle = $positions[1];
+            $lower = $positions[2];
+            $candidates = $pathPreference === "blue" ? [$upper, $lower, $middle] : [$lower, $upper, $middle];
+            foreach ($candidates as $c) {
+                if (!$this->game->isJournalSpaceBlocked($c)) {
+                    return $c;
+                }
             }
+            return $candidates[0];
         }
 
-        // For 2 options, choose based on path preference
-        if ($pathPreference === "blue") {
-            return $positions[0]; // first = upper/North path
-        } else {
-            return $positions[1]; // last = lower/South path
+        // For 2 options, pick the preferred path; fall back to the other if it's a blocked final space
+        $preferred = $pathPreference === "blue" ? $positions[0] : $positions[1];
+        $other = $pathPreference === "blue" ? $positions[1] : $positions[0];
+        if ($this->game->isJournalSpaceBlocked($preferred)) {
+            return $other;
         }
+        return $preferred;
     }
 
     /**

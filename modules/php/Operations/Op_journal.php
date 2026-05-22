@@ -45,6 +45,15 @@ class Op_journal extends Operation {
             $connector = $this->getConnectorId($currentState, $pos);
             $name = $pos;
 
+            if ($this->game->isJournalSpaceBlocked($pos)) {
+                $res["jpos_$pos"] = [
+                    "q" => Material::ERR_OCCUPIED,
+                    "name" => $pos,
+                    "token_id" => $connector,
+                ];
+                continue;
+            }
+
             $achived = false;
             $prereq = $this->game->getRulesFor($connector, "r", "");
 
@@ -101,6 +110,10 @@ class Op_journal extends Operation {
         $selected = $this->getCheckedArg();
         $currentState = (int) $this->game->tokens->db->getTokenState($markerId);
         $newState = (int) getPart($selected, 1);
+        $this->game->userAssert(
+            clienttranslate("That space is already occupied"),
+            !$this->game->isJournalSpaceBlocked($newState)
+        );
         $connector = $this->getConnectorId($currentState, $newState);
         $r = $this->game->getRulesFor($connector, "r", "");
         if (str_starts_with($r, "Op")) {

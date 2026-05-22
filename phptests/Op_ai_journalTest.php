@@ -193,4 +193,46 @@ final class Op_ai_journalTest extends TestCase {
         $op = $this->createOp();
         $this->assertEquals("red", $op->getPathPreference());
     }
+
+    // --- Final-space blocking: AI skips occupied finals ---
+
+    /**
+     * AI is at 90 (pre-final), preferred end is upper (100) per blue majority.
+     * Human marker occupies 100 → AI must fall back to the other end (103), not the middle.
+     */
+    public function testSelectPositionSkipsBlockedPreferredEnd(): void {
+        $this->setMarkerPosition(90, self::AI_COLOR);
+        $this->setupPosition(90, "100,102,103");
+        $this->setupPosition(100, "");
+        $this->setupPosition(102, "");
+        $this->setupPosition(103, "");
+        $this->setMarkerPosition(100, PCOLOR); // block preferred upper end
+
+        $this->addSchemeCard(1, "blue"); // blue majority → prefer upper
+
+        $op = $this->createOp();
+        $selected = $op->selectPosition($op->getPossibleMoves());
+
+        $this->assertEquals(103, $selected, "Should fall back to the other end, not the middle");
+    }
+
+    /**
+     * Both ends blocked → AI falls back to middle (rare; needs 2 opponents — covered defensively).
+     */
+    public function testSelectPositionFallsToMiddleWhenBothEndsBlocked(): void {
+        $this->setMarkerPosition(90, self::AI_COLOR);
+        $this->setupPosition(90, "100,102,103");
+        $this->setupPosition(100, "");
+        $this->setupPosition(102, "");
+        $this->setupPosition(103, "");
+        $this->setMarkerPosition(100, PCOLOR);
+        $this->setMarkerPosition(103, BCOLOR);
+
+        $this->addSchemeCard(1, "blue");
+
+        $op = $this->createOp();
+        $selected = $op->selectPosition($op->getPossibleMoves());
+
+        $this->assertEquals(102, $selected);
+    }
 }
