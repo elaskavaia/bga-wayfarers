@@ -29,9 +29,6 @@ class Op_infCard extends Op_infBase {
         // This returns the selected card (used as target location)
         return $this->getDataField("card", "");
     }
-    public function getUiArgs() {
-        return ["buttons" => false];
-    }
 
     /**
      * Get cards in mainarea that don't have any player's influence yet

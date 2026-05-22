@@ -58,8 +58,8 @@ abstract class Op_infBase extends CountableOperation {
             return ["confirm"];
         }
 
-        // No influence in supply - check for movable influence
-        $movable = $this->getMovableInfluence();
+        // No influence in supply - check for movable influence (skip target guild — moving onto itself is a no-op)
+        $movable = $this->getMovableInfluence($this->getGuild());
         return ["prompt" => clienttranslate("No influence left in supply. Select influence to move or Skip")] + $movable;
     }
     public function getUiArgs() {

@@ -43,23 +43,7 @@ class Op_infAny extends Op_infBase {
             ];
         }
 
-        // Step 2: Guild selected, now place or select influence to move
-        $influence = $this->getInfluenceInPlayerSupply();
-        if (count($influence) > 0) {
-            return ["confirm"];
-        }
-
-        // No influence in supply - show movable influence
-        $movable = $this->getMovableInfluence($selectedGuild);
-        if (count($movable) == 0) {
-            return ["q" => Material::ERR_NONE_LEFT];
-        }
-
-        return $movable;
-    }
-
-    public function getUiArgs() {
-        return ["buttons" => true];
+        return parent::getPossibleMoves();
     }
 
     function canSkip() {
