@@ -186,14 +186,14 @@ class Game0Basics {
             return "";
         if (name.log !== undefined) {
             const notif = name;
-            const log = this.format_string_recursive(gameui.clienttranslate_string(notif.log), notif.args);
+            const log = this.format_string_recursive(notif.log, notif.args);
             return log;
         }
         if (typeof name !== "string")
             return name.toString();
         //if (name.includes("$"))
         {
-            const log = this.format_string_recursive(gameui.clienttranslate_string(name), args);
+            const log = this.format_string_recursive(name, args);
             return log;
         }
         //return this.clienttranslate_string(name);
@@ -215,6 +215,16 @@ class Game0Basics {
     }
     isSolo() {
         return this.gamedatas.playerorder.length == 1;
+    }
+    // Player ids in turn order, rotated so current player is first (unless spectator)
+    getOrderedPlayerIds(gamedatas) {
+        const ids = gamedatas.playerorder.map(Number);
+        if (this.bga.players.isCurrentPlayerSpectator())
+            return ids;
+        const idx = ids.indexOf(this.player_id);
+        if (idx <= 0)
+            return ids;
+        return ids.slice(idx).concat(ids.slice(0, idx));
     }
     addTooltipToLogItems(log_id) {
         // override
@@ -1992,7 +2002,8 @@ class Game extends GameMachine {
             super.setup(gamedatas);
             placeHtml(this.gameTemplate, this.bga.gameArea.getElement());
             // Setting up player boards
-            for (const playerId of gamedatas.playerorder) {
+            const orderedPlayerIds = this.getOrderedPlayerIds(gamedatas);
+            for (const playerId of orderedPlayerIds) {
                 const playerInfo = gamedatas.players[playerId];
                 this.setupPlayer(playerInfo);
             }
@@ -2000,7 +2011,7 @@ class Game extends GameMachine {
                 this.setupAutoma(gamedatas.playerswithbots[this.AI_PLAYER_ID]);
             }
             super.setupGame(gamedatas);
-            for (const playerId of gamedatas.playerorder) {
+            for (const playerId of orderedPlayerIds) {
                 const pcolor = gamedatas.players[playerId].color;
                 this.updateGuildCounters(pcolor);
                 this.updateJournalTagCounters(pcolor, gamedatas.journalTagCounts?.[playerId]);
@@ -2713,7 +2724,12 @@ class Game extends GameMachine {
                         else {
                             if (tokenInfo.dr) {
                                 tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
-                                tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
+                                if (tokenInfo.tags !== "Vista") {
+                                    tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
+                                }
+                                else {
+                                    tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when card ability is triggered"));
+                                }
                             }
                         }
                         if (tokenInfo.da) {
@@ -2969,6 +2985,11 @@ class Game extends GameMachine {
     }
     replaceSimpleIconsInLog(log) {
         // Process square bracket syntax [tokenId]
+        if (!log)
+            return log;
+        if (typeof log !== "string")
+            return log;
+        log = gameui.clienttranslate_string(log);
         if (log.includes("[")) {
             log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
                 try {

@@ -151,7 +151,8 @@ export class Game extends GameMachine {
 
       placeHtml(this.gameTemplate, this.bga.gameArea.getElement());
       // Setting up player boards
-      for (const playerId of gamedatas.playerorder) {
+      const orderedPlayerIds = this.getOrderedPlayerIds(gamedatas);
+      for (const playerId of orderedPlayerIds) {
         const playerInfo = gamedatas.players[playerId];
         this.setupPlayer(playerInfo);
       }
@@ -161,7 +162,7 @@ export class Game extends GameMachine {
       }
 
       super.setupGame(gamedatas);
-      for (const playerId of gamedatas.playerorder) {
+      for (const playerId of orderedPlayerIds) {
         const pcolor = gamedatas.players[playerId].color;
         this.updateGuildCounters(pcolor);
         this.updateJournalTagCounters(pcolor, gamedatas.journalTagCounts?.[playerId]);
@@ -905,7 +906,11 @@ export class Game extends GameMachine {
             } else {
               if (tokenInfo.dr) {
                 tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
-                tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
+                if (tokenInfo.tags !== "Vista") {
+                  tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
+                } else {
+                  tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when card ability is triggered"));
+                }
               }
             }
             if (tokenInfo.da) {
@@ -1013,7 +1018,7 @@ export class Game extends GameMachine {
     }
   }
 
-  ttSection(prefix: string, text: string) {
+  ttSection(prefix: string | undefined, text: string) {
     if (prefix) return `<p><b>${prefix}</b>: ${text}</p>`;
     else return `<p>${text}</p>`;
   }
@@ -1174,6 +1179,9 @@ export class Game extends GameMachine {
   }
   replaceSimpleIconsInLog(log: string) {
     // Process square bracket syntax [tokenId]
+    if (!log) return log;
+    if (typeof log !== "string") return log;
+    log = (gameui as any).clienttranslate_string(log);
     if (log.includes("[")) {
       log = log.replace(/\[([^\]]+)\]/g, (match, keyExpr) => {
         try {
@@ -1189,7 +1197,7 @@ export class Game extends GameMachine {
     return log;
   }
   /** @Override */
-  bgaFormatText(log: string | NotificationMessage, args: any) {
+  bgaFormatText(log: string | NotificationMessage, args: any): NotificationMessage {
     try {
       if (!log) return { log: "", args: [] };
 
@@ -1224,16 +1232,19 @@ export class Game extends GameMachine {
           args.reason = "(" + this.getTokenName(args.reason) + ")";
         }
         if (log.includes("actplayer") && !args.actplayer) {
-          args.actplayer = this.gamedatas.players[this.bga.players.getActivePlayerId()].name;
+          args.actplayer = this.gamedatas.players[this.bga.players.getActivePlayerId()!].name;
         }
         const res = super.bgaFormatText(log, args);
         log = res.log;
         args = res.args;
+
         log = this.replaceSimpleIconsInLog(log);
+
         return { log, args };
       }
+
       log = this.replaceSimpleIconsInLog(log);
-    } catch (e) {
+    } catch (e: any) {
       console.error(log, args, "Exception thrown", e.stack);
     }
     return { log, args: {} }; // no args - to prevent framework doing nasty stuff

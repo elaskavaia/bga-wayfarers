@@ -318,3 +318,10 @@ html:before {
 
   z-index: -1;
 }
+
+#player_board_inner_6cd0f6,
+#player_board_inner_ffcc02 {
+  .player-name a {
+    text-shadow: v.$textShadowBlack; // these 2 colors needs a bit help
+  }
+}

@@ -697,7 +697,7 @@ export class Game1Tokens extends Game0Basics {
     }
     return false;
   }
-  bgaFormatText(log: string, args: any) {
+  bgaFormatText(log: string, args: any): NotificationMessage {
     try {
       if (log && args) {
         // if adding key here and it ends with _name make sure also exclude from rtr in dbSetTokenLocation
