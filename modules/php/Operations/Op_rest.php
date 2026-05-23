@@ -89,7 +89,7 @@ class Op_rest extends Operation {
 
         // Move all placed dice back to player's tableau and roll them
         foreach ($placedDice as $dieKey => $dieInfo) {
-            $this->queue("reroll", $owner, ["target" => $dieKey, "confirmed" => true]);
+            $this->queue("reroll", $owner, ["target" => $dieKey, "mandatory" => true]);
         }
 
         // Also reroll dice that were already in supply (optional per rules)

@@ -100,9 +100,10 @@ class Op_ai_cardInteractChoice extends Operation {
     }
 
     public function getUiArgs() {
+        $card = $this->getDataField("card");
         return [
             "imagebuttons" => true,
-            "noactive" => true,
+            "selected" => [$card],
         ];
     }
 }

@@ -1818,7 +1818,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "card_folk",
         "tor" => clienttranslate("Gain 2 Silver"),
-        "todr" => clienttranslate("Modify dice by +/- 1 and move Influence"),
+        "todr" => clienttranslate("Modify dice by ±1 and move Influence"),
 ],
     "card_land_32" => [ 
         "create" => 1,

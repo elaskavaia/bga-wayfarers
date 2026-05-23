@@ -1068,8 +1068,9 @@ html[data-theme=dark] .deck .counter {
 }
 .card .influence {
   position: absolute;
-  top: 1%;
-  left: 20%;
+  top: -7%;
+  left: 37%;
+  filter: drop-shadow(2px 2px 3px black);
 }
 
 .selection_area {
@@ -1179,15 +1180,19 @@ html[data-theme=dark] .deck .counter {
 .pboard::after {
   content: attr(data-player-name);
   position: absolute;
-  width: 100px;
-  height: 32px;
-  top: 240px;
-  left: 30px;
+  /* width: 100px; */
+  height: 20px;
+  top: 49px;
+  background-color: rgba(255, 255, 255, 0.6274509804);
+  border: 1px solid white;
+  border-radius: 10%;
+  left: 2px;
+  padding: 0 5px 0 5px;
   color: var(--player-color);
   z-index: 10;
+  font-size: 18px;
   text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
   font-family: var(--accent-game-font);
-  font-size: large;
 }
 
 #current_player_panel {
@@ -1363,21 +1368,21 @@ html[data-theme=dark] .deck .counter {
   background-size: unset;
 }
 .mainboardall .carddisplay_folk {
-  top: 0;
+  top: -5px;
   left: 0;
 }
 .mainboardall .carddisplay_space {
-  top: 0;
+  top: -5px;
   right: 12%;
   left: auto;
 }
 .mainboardall .carddisplay_land {
-  bottom: 0;
+  bottom: -5px;
   left: 0;
   top: auto;
 }
 .mainboardall .carddisplay_water {
-  bottom: 0;
+  bottom: -5px;
   right: 12%;
   left: auto;
   top: auto;
@@ -1556,6 +1561,8 @@ html[data-theme=dark] .deck .counter {
 #mainarea_wrap {
   width: 100%;
   position: relative;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 .board_layout_controls {
@@ -2664,7 +2671,7 @@ html[data-theme=dark] .miniboard .jtag_count {
   background-position: 100% 0;
 }
 
-.withtooltip {
+#page-content .withtooltip:not(.active_slot) {
   cursor: help;
 }
 

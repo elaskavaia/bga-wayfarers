@@ -717,18 +717,24 @@ class Game1Tokens extends Game0Basics {
         //this.updateCountersSafe(this.gamedatas.counters);
     }
     addShowMeButton(scroll) {
-        const firstTarget = document.querySelector("." + this.classActiveSlot);
-        if (!firstTarget)
-            return;
+        let query = "." + this.classActiveSlot;
+        const firstTarget = document.querySelector(query);
+        if (!firstTarget) {
+            query = "." + this.classSelected;
+            if (!document.querySelector(query))
+                return;
+        }
         this.bga.statusBar.addActionButton(_("Show me"), () => {
             const butt = $("button_showme");
-            const firstTarget = document.querySelector("." + this.classActiveSlot);
-            if (!firstTarget)
-                return;
-            if (scroll)
-                $(firstTarget).scrollIntoView({ behavior: "smooth", block: "center" });
-            document.querySelectorAll("." + this.classActiveSlot).forEach((node) => {
+            let scrolled = false;
+            document.querySelectorAll(query).forEach((node) => {
                 const elem = node;
+                if (scroll && !scrolled) {
+                    setTimeout(() => {
+                        elem.scrollIntoView({ behavior: "smooth", block: "center" });
+                    }, 1);
+                    scrolled = true;
+                }
                 elem.style.removeProperty("animation");
                 elem.style.setProperty("animation", "active-pulse 500ms 3");
                 butt.classList.add(this.classButtonDisabled);
@@ -1411,6 +1417,8 @@ class GameMachine extends Game1Tokens {
         const multiselect = this.isMultiSelectArgs(opInfo);
         const sortedTargets = Object.keys(opInfo.info);
         sortedTargets.sort((a, b) => opInfo.info[a].o - opInfo.info[b].o);
+        const uiOptions = opInfo.ui;
+        let showMe = false;
         for (const target of sortedTargets) {
             const paramInfo = opInfo.info[target];
             if (paramInfo.sec) {
@@ -1420,22 +1428,24 @@ class GameMachine extends Game1Tokens {
             const q = paramInfo.q;
             const active = q == 0;
             // simple case we select element (dom node) which is target of operation
-            if (div && active && paramInfo.noactive !== true) {
-                const doNotShowActive = paramInfo.noactive ?? opInfo.ui?.noactive ?? false;
-                if (doNotShowActive == false) {
-                    div.classList.add(this.classActiveSlot);
-                    div.dataset.targetOpType = opInfo.type;
-                }
+            if (div && active && !(paramInfo.noactive ?? uiOptions.noactive ?? false)) {
+                div.classList.add(this.classActiveSlot);
+                div.dataset.targetOpType = opInfo.type;
+                showMe = true;
             }
             // we also can have one addition way of selection (possibly)
             let altNode;
-            if (opInfo.ui.replicate == true) {
+            // create special selectable object not on toolbar (because BGA guidelines don't want it on toolbar)
+            if (uiOptions.replicate == true) {
                 altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
+                showMe = true;
             }
-            if (opInfo.ui.imagebuttons == true && paramInfo.buttons !== false) {
+            // create custom button on toolbar (usually just with little image)
+            if (uiOptions.imagebuttons == true && paramInfo.buttons !== false) {
                 altNode = this.replicateTargetOnToolbar(target, paramInfo);
             }
-            if (!altNode && paramInfo.buttons !== false && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
+            // last we create default buttons if nothing else created or explicitly asked
+            if (!altNode && (!div || (paramInfo.buttons ?? uiOptions.buttons))) {
                 altNode = this.createTargetButton(target, paramInfo);
             }
             if (!altNode)
@@ -1464,7 +1474,6 @@ class GameMachine extends Game1Tokens {
         for (const target of sortedTargets) {
             const paramInfo = opInfo.info[target];
             if (paramInfo.sec && paramInfo.buttons !== false) {
-                // skip, whatever TODO: anytime
                 const color = paramInfo.color ?? "secondary";
                 const call = paramInfo.call ?? target;
                 const button = this.bga.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), () => this.bga.actions.performAction(`action_${call}`, {
@@ -1477,22 +1486,34 @@ class GameMachine extends Game1Tokens {
                 button.dataset.targetId = target;
             }
         }
+        // highlights
+        if (uiOptions.selected) {
+            for (const target of uiOptions.selected) {
+                const div = $(target);
+                if (div) {
+                    div.classList.add(this.classSelected);
+                    div.dataset.targetOpType = opInfo.type;
+                    showMe = true;
+                }
+            }
+        }
         if (multiselect) {
             this.activateMultiSelectPrompt(opInfo);
         }
-        if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
+        if (showMe) {
             this.addShowMeButton(true);
         }
         if (opInfo.subtitle) {
             this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
         }
-        // need a global condition when this can be added
-        this.addUndoButton(this.bga.players.isCurrentPlayerActive() || opInfo.ui.undo);
+        // Active-player branch: we've already early-returned for inactive above.
+        // Default to showing undo; an op can opt out by setting ui.undo = false.
+        this.addUndoButton(uiOptions.undo ?? true);
     }
     createTargetButton(target, paramInfo) {
         const q = paramInfo.q;
         const active = q == 0;
-        const color = paramInfo.color ?? this.opInfo.ui.color;
+        const color = paramInfo.color ?? this.opInfo?.ui.color;
         const button = this.bga.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), (event) => this.onToken(event), {
             color: color,
             disabled: !active,
@@ -1606,6 +1627,8 @@ class GameMachine extends Game1Tokens {
     onToken_token(target, node) {
         if (!target)
             return false;
+        if (!this.opInfo)
+            return false;
         if (!this.clientCheckTargetError(target, this.opInfo, node)) {
             return false;
         }
@@ -1613,9 +1636,13 @@ class GameMachine extends Game1Tokens {
         return true;
     }
     onToken_token_array(target, node) {
+        if (!this.opInfo)
+            return false;
         return this.onMultiCount(target, this.opInfo, node);
     }
     onToken_token_count(target, node) {
+        if (!this.opInfo)
+            return false;
         return this.onMultiCount(target, this.opInfo, node);
     }
     activateMultiSelectPrompt(opInfo) {
@@ -1730,7 +1757,7 @@ class GameMachine extends Game1Tokens {
         if (!tid)
             return false;
         let node = clicknode ?? $(tid);
-        let altnode;
+        let altnode = undefined;
         if (clicknode) {
             altnode = $(clicknode.dataset.primaryId);
         }
@@ -2723,6 +2750,7 @@ class Game extends GameMachine {
         const parentId = token?.parentElement?.id;
         const state = parseInt(token?.dataset.state);
         const tokenId = tokenInfo.tokenId;
+        const origLocation = token?.dataset.location;
         switch (mainType) {
             case "worker":
                 return;
@@ -2748,7 +2776,7 @@ class Game extends GameMachine {
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
-                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                            tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
                         if (tokenInfo.d)
                             tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
                         if (tokenInfo.trig) {
@@ -2761,54 +2789,53 @@ class Game extends GameMachine {
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
-                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                            tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
                         if (tokenInfo.dr)
                             tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
                         break;
                     case "space":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-                        tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
-                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Land or Water Card"));
+                        if (origLocation == "mainarea") {
+                            tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
+                            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Land or Water Card"));
+                        }
                         tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
-                            tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+                            tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
                         tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
                         break;
                     case "folk":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-                        tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
+                        if (origLocation == "mainarea") {
+                            tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
+                            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed below ONE of the required Tags"));
+                        }
                         tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
-                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed below ONE of the required Tags"));
                         if (tokenInfo.rest) {
-                            tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
-                            tokenInfo.tooltip += this.ttSection(undefined, _("Rest bonus is activated when Rest is taken with one or less die"));
+                            tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt) + ". " + _("Rest bonus is activated when Rest is taken with one or less die"));
                         }
-                        else {
-                            if (tokenInfo.dr) {
-                                tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
-                                if (tokenInfo.tags !== "Vista") {
-                                    tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
-                                }
-                                else {
-                                    tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when card ability is triggered"));
-                                }
-                            }
+                        else if (tokenInfo.dr) {
+                            const trigger = tokenInfo.tags === "Vista"
+                                ? _("Bonus is activated when card ability is triggered")
+                                : _("Bonus is activated when die is placed above");
+                            tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt) + ". " + trigger);
                         }
-                        if (tokenInfo.da) {
-                            tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.da));
-                            tokenInfo.tooltip += this.ttSection(undefined, _("Assets are activated when die is placed above"));
+                        else if (tokenInfo.da) {
+                            tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.da) + ". " + _("Assets are activated when die is placed above"));
                         }
                         break;
                     case "insp":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-                        tokenInfo.tooltip += this.ttSection(_("Cost"), _("Free"));
-                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Space Card"));
+                        if (origLocation == "mainarea") {
+                            tokenInfo.tooltip += this.ttSection(_("Cost"), _("Free"));
+                            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Space Card"));
+                        }
                         tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
                         tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Space Card's scoring"));
-                        tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
+                        tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
                         break;
                     case "scheme":
                         // # 6 Scheme Cards for Solo AI

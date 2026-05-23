@@ -722,7 +722,7 @@ abstract class Operation {
         $targets = $args[Operation::ARG_TARGET];
         $num = count($targets);
         if ($num == 0) {
-            $state = $this->skip();
+            $state = $this->action_skip();
         } else {
             // TODO: support multi-select
             $state = $this->action_resolve([Operation::ARG_TARGET => $targets[bga_rand(0, $num - 1)]]);

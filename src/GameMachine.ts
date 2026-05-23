@@ -12,13 +12,15 @@
 import { Game1Tokens } from "./Game1Tokens";
 import type { NotificationMessage } from "./Game0Basics";
 
+type tButtonColor = "primary" | "secondary" | "alert";
 export interface UiOptions {
-  buttons?: boolean;
-  replicate?: boolean;
-  imagebuttons?: boolean;
-  noactive?: boolean;
-  undo?: boolean;
-  color?: string; // buton color fallback
+  buttons?: boolean; // show buttons in toolbar - default is true on top level
+  replicate?: boolean; // replicate target in another area
+  imagebuttons?: boolean; // show alternative buttons on toolbar
+  noactive?: boolean; // do not activate board elements
+  undo?: boolean; // add undo button
+  color?: tButtonColor; // button color
+  selected?: string[]; // list of elements to pre-select
 }
 export interface ParamInfo extends UiOptions {
   q: number; // error code
@@ -30,7 +32,6 @@ export interface ParamInfo extends UiOptions {
 
   sec?: boolean; // this is secondary target
   o?: number; //  priority order
-  color?: string; // button color
   confirm?: string; // extra confirmation dialog before submitting
 
   token_id?: string; // representation item
@@ -96,8 +97,9 @@ export class GameMachine extends Game1Tokens {
     const multiselect = this.isMultiSelectArgs(opInfo);
 
     const sortedTargets = Object.keys(opInfo.info);
-    sortedTargets.sort((a, b) => opInfo.info[a].o - opInfo.info[b].o);
-
+    sortedTargets.sort((a, b) => opInfo.info[a].o! - opInfo.info[b].o!);
+    const uiOptions = opInfo.ui!;
+    let showMe = false;
     for (const target of sortedTargets) {
       const paramInfo = opInfo.info[target];
       if (paramInfo.sec) {
@@ -108,25 +110,27 @@ export class GameMachine extends Game1Tokens {
       const active = q == 0;
 
       // simple case we select element (dom node) which is target of operation
-      if (div && active && paramInfo.noactive !== true) {
-        const doNotShowActive = paramInfo.noactive ?? opInfo.ui?.noactive ?? false;
-        if (doNotShowActive == false) {
-          div.classList.add(this.classActiveSlot);
-          div.dataset.targetOpType = opInfo.type;
-        }
+      if (div && active && !(paramInfo.noactive ?? uiOptions.noactive ?? false)) {
+        div.classList.add(this.classActiveSlot);
+        div.dataset.targetOpType = opInfo.type;
+        showMe = true;
       }
 
       // we also can have one addition way of selection (possibly)
       let altNode: HTMLElement | undefined;
-      if (opInfo.ui.replicate == true) {
+      // create special selectable object not on toolbar (because BGA guidelines don't want it on toolbar)
+      if (uiOptions.replicate == true) {
         altNode = this.replicateTargetOnSelectionArea(target, paramInfo);
+        showMe = true;
       }
 
-      if (opInfo.ui.imagebuttons == true && paramInfo.buttons !== false) {
+      // create custom button on toolbar (usually just with little image)
+      if (uiOptions.imagebuttons == true && paramInfo.buttons !== false) {
         altNode = this.replicateTargetOnToolbar(target, paramInfo);
       }
 
-      if (!altNode && paramInfo.buttons !== false && (opInfo.ui.buttons || !div || paramInfo.buttons)) {
+      // last we create default buttons if nothing else created or explicitly asked
+      if (!altNode && (!div || (paramInfo.buttons ?? uiOptions.buttons))) {
         altNode = this.createTargetButton(target, paramInfo);
       }
 
@@ -154,7 +158,6 @@ export class GameMachine extends Game1Tokens {
     for (const target of sortedTargets) {
       const paramInfo = opInfo.info[target];
       if (paramInfo.sec && paramInfo.buttons !== false) {
-        // skip, whatever TODO: anytime
         const color: any = paramInfo.color ?? "secondary";
         const call = (paramInfo as any).call ?? target;
         const button = this.bga.statusBar.addActionButton(
@@ -173,11 +176,23 @@ export class GameMachine extends Game1Tokens {
       }
     }
 
+    // highlights
+    if (uiOptions.selected) {
+      for (const target of uiOptions.selected) {
+        const div = $(target);
+        if (div) {
+          div.classList.add(this.classSelected);
+          div.dataset.targetOpType = opInfo.type;
+          showMe = true;
+        }
+      }
+    }
+
     if (multiselect) {
       this.activateMultiSelectPrompt(opInfo);
     }
 
-    if (opInfo.ui.buttons == false || opInfo.ui.replicate) {
+    if (showMe) {
       this.addShowMeButton(true);
     }
 
@@ -185,14 +200,15 @@ export class GameMachine extends Game1Tokens {
       this.addInfoButton(this.getTr(opInfo.subtitle, opInfo));
     }
 
-    // need a global condition when this can be added
-    this.addUndoButton(this.bga.players.isCurrentPlayerActive() || opInfo.ui.undo);
+    // Active-player branch: we've already early-returned for inactive above.
+    // Default to showing undo; an op can opt out by setting ui.undo = false.
+    this.addUndoButton(uiOptions.undo ?? true);
   }
 
   createTargetButton(target: string, paramInfo: ParamInfo): HTMLElement | undefined {
     const q = paramInfo.q;
     const active = q == 0;
-    const color: any = paramInfo.color ?? this.opInfo.ui.color;
+    const color: tButtonColor | undefined = paramInfo.color ?? this.opInfo?.ui.color;
     const button = this.bga.statusBar.addActionButton(this.getTargetButtonName(target, paramInfo), (event: Event) => this.onToken(event), {
       color: color,
       disabled: !active,
@@ -308,6 +324,7 @@ export class GameMachine extends Game1Tokens {
 
   onToken_token(target: string, node: HTMLElement) {
     if (!target) return false;
+    if (!this.opInfo) return false;
     if (!this.clientCheckTargetError(target, this.opInfo, node)) {
       return false;
     }
@@ -316,10 +333,12 @@ export class GameMachine extends Game1Tokens {
   }
 
   onToken_token_array(target: string, node: HTMLElement) {
+    if (!this.opInfo) return false;
     return this.onMultiCount(target, this.opInfo, node);
   }
 
   onToken_token_count(target: string, node: HTMLElement) {
+    if (!this.opInfo) return false;
     return this.onMultiCount(target, this.opInfo, node);
   }
 
@@ -349,8 +368,8 @@ export class GameMachine extends Game1Tokens {
     this.bga.statusBar.addActionButton(
       _("Reset"),
       () => {
-        const allSel = document.querySelectorAll(`.${this.classSelectedAlt},.${this.classSelected}`);
-        allSel.forEach((node: HTMLElement) => {
+        const allSel = document.querySelectorAll<HTMLElement>(`.${this.classSelectedAlt},.${this.classSelected}`);
+        allSel.forEach((node) => {
           delete node.dataset.count;
         });
 
@@ -463,7 +482,7 @@ export class GameMachine extends Game1Tokens {
   onMultiCount(tid: string, opInfo: OpInfo, clicknode: HTMLElement | undefined) {
     if (!tid) return false;
     let node = clicknode ?? $(tid);
-    let altnode: HTMLElement;
+    let altnode: HTMLElement | undefined | null = undefined;
     if (clicknode) {
       altnode = $(clicknode.dataset.primaryId);
     }

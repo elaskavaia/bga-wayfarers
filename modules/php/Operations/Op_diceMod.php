@@ -117,7 +117,7 @@ class Op_diceMod extends CountableOperation {
     }
 
     function getPrompt() {
-        return clienttranslate("Select a die to modify by +1 or -1");
+        return clienttranslate("Select a die to modify by ±1");
     }
 
     public function getIconicName() {

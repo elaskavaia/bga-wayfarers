@@ -109,15 +109,19 @@
 .pboard::after {
   content: attr(data-player-name);
   position: absolute;
-  width: 100px;
-  height: 32px;
-  top: 240px;
-  left: 30px;
+  /* width: 100px; */
+  height: 20px;
+  top: 49px;
+  background-color: #ffffffa0;
+  border: 1px solid white;
+  border-radius: 10%;
+  left: 2px;
+  padding: 0 5px 0 5px;
   color: var(--player-color);
   z-index: 10;
+  font-size: 18px;
   text-shadow: v.$textShadowBlack;
   font-family: var(--accent-game-font);
-  font-size: large;
 }
 
 #current_player_panel {
@@ -300,24 +304,24 @@
   }
 
   .carddisplay_folk {
-    top: 0;
+    top: -5px;
     left: 0;
   }
 
   .carddisplay_space {
-    top: 0;
+    top: -5px;
     right: 12%;
     left: auto;
   }
 
   .carddisplay_land {
-    bottom: 0;
+    bottom: -5px;
     left: 0;
     top: auto;
   }
 
   .carddisplay_water {
-    bottom: 0;
+    bottom: -5px;
     right: 12%;
     left: auto;
     top: auto;
@@ -525,6 +529,8 @@
 #mainarea_wrap {
   width: 100%;
   position: relative;
+  margin-top: 15px;
+  margin-bottom: 15px;
 }
 
 $layout_button_color: #2d5a3d;

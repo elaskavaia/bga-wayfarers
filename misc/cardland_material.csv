@@ -35,7 +35,7 @@ num|r|d|dr|tags|trig|tor|todr
 28|2coin||pickWorker|Vista|Planet/Sun/Moon|Gain 2 Silver|Retrieve a Worker
 29|reroll||coin|Vista|City|Refresh a die|Gain Silver
 30|reroll||infYellow/infMove|Vista|City|Refresh a die|Place Influence on Yellow Guild or Move Influence
-31|2coin||diceMod,infMove|Vista|card_folk|Gain 2 Silver|Modify dice by +/- 1 and move Influence
+31|2coin||diceMod,infMove|Vista|card_folk|Gain 2 Silver|Modify dice by ±1 and move Influence
 32|infCard||infCard|Vista|card_folk|Place Influence on a Card|Place Influence on a Card
 33|coin||coin|Vista|Harbour|Gain Silver|Gain Silver
 34|infYellow||infYellow/infMove|Vista|Harbour|Place Influence on Yellow Guild|Place Influence on Yellow Guild or Move Influence

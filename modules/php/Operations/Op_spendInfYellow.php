@@ -69,7 +69,7 @@ class Op_spendInfYellow extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate("Spend Yellow influence to modify dice twice +/- 1 (once per turn)");
+        return clienttranslate("Spend Yellow influence to modify dice twice ±1 (once per turn)");
     }
 
     public function getIconicName() {

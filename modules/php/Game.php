@@ -186,7 +186,7 @@ class Game extends Base {
                 "influence_{$color}_1",
                 "guild_blue",
                 0,
-                clienttranslate('${player_name} gains [wicon_inf_blue]'),
+                clienttranslate('${player_name} gains [wicon_inf_blue] (setup)'),
                 ["player_name" => $this->getPlayerNameById($player_id)],
                 $player_id
             );
@@ -195,7 +195,7 @@ class Game extends Base {
                     "influence_{$color}_2",
                     "guild_yellow",
                     0,
-                    clienttranslate('${player_name} gains [wicon_inf_yellow]'),
+                    clienttranslate('${player_name} gains [wicon_inf_yellow] (setup)'),
                     ["player_name" => $this->getPlayerNameById($player_id)],
                     $player_id
                 );

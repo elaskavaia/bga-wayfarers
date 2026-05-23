@@ -732,6 +732,6 @@ $i: 0;
   }
 }
 
-.withtooltip {
+#page-content .withtooltip:not(.active_slot) {
   cursor: help;
 }

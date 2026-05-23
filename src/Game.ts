@@ -926,6 +926,7 @@ export class Game extends GameMachine {
     const parentId = token?.parentElement?.id;
     const state = parseInt(token?.dataset.state);
     const tokenId = tokenInfo.tokenId;
+    const origLocation = token?.dataset.location;
     switch (mainType) {
       case "worker":
         return;
@@ -951,7 +952,7 @@ export class Game extends GameMachine {
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
-            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
             if (tokenInfo.d) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
             if (tokenInfo.trig) {
               tokenInfo.tooltip += this.ttSection(_("Triggers on"), this.getTagsListTr(tokenInfo.trig));
@@ -962,17 +963,19 @@ export class Game extends GameMachine {
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
-            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
             if (tokenInfo.dr) tokenInfo.tooltip += this.ttSection(_("Die Slot"), this.getTr(tokenInfo.todr));
             break;
 
           case "space":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-            tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
-            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Land or Water Card"));
+            if (origLocation == "mainarea") {
+              tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
+              tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Land or Water Card"));
+            }
             tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
-            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
+            if (tokenInfo.r) tokenInfo.tooltip += this.ttSection(_("Instant Bonus"), this.getTr(tokenInfo.tor));
             tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
 
             break;
@@ -980,33 +983,37 @@ export class Game extends GameMachine {
           case "folk":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-            tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
-            tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
-            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed below ONE of the required Tags"));
-            if (tokenInfo.rest) {
-              tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
-              tokenInfo.tooltip += this.ttSection(undefined, _("Rest bonus is activated when Rest is taken with one or less die"));
-            } else {
-              if (tokenInfo.dr) {
-                tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt));
-                if (tokenInfo.tags !== "Vista") {
-                  tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when die is placed above"));
-                } else {
-                  tokenInfo.tooltip += this.ttSection(undefined, _("Bonus is activated when card ability is triggered"));
-                }
-              }
+            if (origLocation == "mainarea") {
+              tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
+              tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed below ONE of the required Tags"));
             }
-            if (tokenInfo.da) {
-              tokenInfo.tooltip += this.ttSection(_("Assets"), this.getOpListTr(tokenInfo.da));
-              tokenInfo.tooltip += this.ttSection(undefined, _("Assets are activated when die is placed above"));
+            tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
+            if (tokenInfo.rest) {
+              tokenInfo.tooltip += this.ttSection(
+                _("Rest"),
+                this.getTr(origtt) + ". " + _("Rest bonus is activated when Rest is taken with one or less die")
+              );
+            } else if (tokenInfo.dr) {
+              const trigger =
+                tokenInfo.tags === "Vista"
+                  ? _("Bonus is activated when card ability is triggered")
+                  : _("Bonus is activated when die is placed above");
+              tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt) + ". " + trigger);
+            } else if (tokenInfo.da) {
+              tokenInfo.tooltip += this.ttSection(
+                _("Assets"),
+                this.getOpListTr(tokenInfo.da) + ". " + _("Assets are activated when die is placed above")
+              );
             }
 
             break;
           case "insp":
             tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
             tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-            tokenInfo.tooltip += this.ttSection(_("Cost"), _("Free"));
-            tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Space Card"));
+            if (origLocation == "mainarea") {
+              tokenInfo.tooltip += this.ttSection(_("Cost"), _("Free"));
+              tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Space Card"));
+            }
             tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
             tokenInfo.tooltip += this.ttSection(
               undefined,
@@ -1014,7 +1021,7 @@ export class Game extends GameMachine {
             );
 
             tokenInfo.tooltip += this.ttSection(
-              _("Instant"),
+              _("Instant Bonus"),
               _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to")
             );
 

@@ -50,7 +50,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["target" => $dieKey, "confirmed" => true]);
+        $op = $this->createOp(["target" => $dieKey, "mandatory" => true]);
         $moves = $op->getPossibleMoves();
 
         // Should return simple array with just the die key (auto-select)
@@ -74,7 +74,7 @@ final class Op_rerollTest extends TestCase {
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
         $dieKey = array_key_first($dice);
 
-        $op = $this->createOp(["target" => $dieKey, "confirmed" => true]);
+        $op = $this->createOp(["target" => $dieKey, "mandatory" => true]);
         $this->assertFalse($op->canSkip());
     }
 
