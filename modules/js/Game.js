@@ -2048,6 +2048,8 @@ class Game extends GameMachine {
                 this.updateGuildCounters(aiColor);
                 this.updateJournalTagCounters(aiColor, gamedatas.journalTagCounts?.[this.AI_PLAYER_ID]);
             }
+            // Decks' "Cards left" tooltip is cached during setupTokens before counter nodes exist; refresh.
+            document.querySelectorAll(".deck").forEach((node) => this.updateTooltip(node.id, undefined, { force: true }));
             $("mainboard_3").appendChild($("supply"));
             this.addListenerWithGuard($("guild_black"), (e) => this.onToken(e));
             this.addListenerWithGuard($("guild_yellow"), (e) => this.onToken(e));
@@ -2917,6 +2919,19 @@ class Game extends GameMachine {
                 tokenInfo.imageTypes += " _nottimage";
                 return;
             }
+            case "deck": {
+                const count = $(`counter_${tokenId}`)?.dataset.state ?? "?";
+                tokenInfo.tooltip = this.ttSection(_("Cards left"), String(count));
+                const ctype = getPart(tokenId, 1);
+                if (ctype === "folk" || ctype === "space" || ctype === "insp") {
+                    tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Cards from this Deck can only be acquired when face up"));
+                }
+                if (ctype === "land" || ctype === "water") {
+                    tokenInfo.tooltip += this.ttSection(_("Draw 3 Option"), _("When acquiring a Card via Dice placement, may forgo the faceup Card to draw 3 and keep 1 — costs 1 Provision or 1 Pigeon."));
+                }
+                tokenInfo.tooltip += this.ttSection(_("Card Refreshing"), _("Faceup Cards are refreshed only at the end of each player's turn. Remaining Cards slide to fill gaps before new Cards are revealed."));
+                return;
+            }
             case "pboard":
             case "mainarea":
                 tokenInfo.showtooltip = false;
@@ -3037,7 +3052,13 @@ class Game extends GameMachine {
         return super.notif_tokenMoved(args);
     }
     async notif_counter(args) {
-        return super.notif_counter(args);
+        const res = await super.notif_counter(args);
+        // Counter name is `counter_<deckId>`; refresh that deck's tooltip so "Cards left" stays current.
+        const deckId = String(args?.name ?? "").replace(/^counter_/, "");
+        if (deckId.startsWith("deck_") && $(deckId)) {
+            this.updateTooltip(deckId, undefined, { force: true });
+        }
+        return res;
     }
     async notif_animate(args) {
         return super.notif_animate(args);
