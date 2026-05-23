@@ -325,3 +325,9 @@ html:before {
     text-shadow: v.$textShadowBlack; // these 2 colors needs a bit help
   }
 }
+
+#first_player_marker {
+  margin-left: 0.4em;
+  vertical-align: middle;
+  font-weight: normal;
+}

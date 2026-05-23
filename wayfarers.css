@@ -3153,3 +3153,9 @@ html:before {
 #player_board_inner_ffcc02 .player-name a {
   text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
 }
+
+#first_player_marker {
+  margin-left: 0.4em;
+  vertical-align: middle;
+  font-weight: normal;
+}
