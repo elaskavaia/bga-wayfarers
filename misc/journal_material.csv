@@ -2,36 +2,36 @@ num|conn|r|gw|tooltip
 #Journal nodes/positions
 #set id=jpos_{num}
 #set location=mainboard_1
-0|10,15
+0|10,15|||Starting position
 10|20,23|jtile,pickGreen|1
 15|23,27|jtile,pickGreen
-20|40,32|cardInsp,newDie
-23|32,36|cardInsp,newDie
-27|36,47|cardInsp,newDie
+20|40,32|cardInsp,newDie||Acquire Inspiration Card and Gain Die
+23|32,36|cardInsp,newDie||Acquire Inspiration Card and Gain Die
+27|36,47|cardInsp,newDie||Acquire Inspiration Card and Gain Die
 32|40,43|jtile,pickGreen|2
 36|43,47|jtile,pickGreen
 #set location=mainboard_2
-40|50|upgPink
-43|50,55|upgPink
-47|55|upgPink
+40|50|upgPink||Gain Special Upgrade Tile
+43|50,55|upgPink||Gain Special Upgrade Tile
+47|55|upgPink||Gain Special Upgrade Tile
 50|60,63|jtile,pickGreen|3
 55|63,67|jtile,pickGreen
-60|80,72|cardInsp,newDie
-63|72,76|cardInsp,newDie
-67|76,87|cardInsp,newDie
+60|80,72|cardInsp,newDie||Acquire Inspiration Card and Gain Die
+63|72,76|cardInsp,newDie||Acquire Inspiration Card and Gain Die
+67|76,87|cardInsp,newDie||Acquire Inspiration Card and Gain Die
 72|80,83|jtile,pickGreen|4
 76|83,87|jtile,pickGreen
-80|90|upgPink
-83|90,95|upgPink
-87|95|upgPink
+80|90|upgPink||Gain Special Upgrade Tile
+83|90,95|upgPink||Gain Special Upgrade Tile
+87|95|upgPink||Gain Special Upgrade Tile
 #set location=mainboard_3
 90|100,102,103|jtile
 95|103,106,107|jtile
-100||infBlack,infBlack,(upgPink/cardInsp)
-102||infAny,infAny
-103||infYellow,infYellow,(upgPink/cardInsp)
-106||infAny,infAny
-107||infBlue,infBlue,(upgPink/cardInsp)
+100||infBlack,infBlack,(upgPink/cardInsp)||Place 2 Influence on Black Guild and Gain Special Upgrade Tile or Acquire Inspiration Card
+102||infAny,infAny||Place 2 Influence on any Guild
+103||infYellow,infYellow,(upgPink/cardInsp)||Place 2 Influence on Yellow Guild and Gain Special Upgrade Tile or Acquire Inspiration Card
+106||infAny,infAny||Place 2 Influence on any Guild
+107||infBlue,infBlue,(upgPink/cardInsp)||Place 2 Influence on Blue Guild and Gain Special Upgrade Tile or Acquire Inspiration Card
 
 #Journal tiles
 #set id=jtile_{num}

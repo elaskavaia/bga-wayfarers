@@ -400,7 +400,7 @@ class Material {
 ],
     "Op_diceMod" => [ 
         "type" => "diceMod",
-        "name" => clienttranslate("Modify Dice by +/- 1"),
+        "name" => clienttranslate("Modify Dice by ±1"),
         "wicon" => "wicon_dice_mod",
 ],
     "Op_dicePlus" => [ 
@@ -1738,7 +1738,7 @@ class Material {
         "tags" => "Vista",
         "trig" => "Comet",
         "tor" => clienttranslate("Gain a free Basic Upgrade Tile"),
-        "todr" => clienttranslate("Gain Silver and modify dice by +/- 1"),
+        "todr" => clienttranslate("Gain Silver and modify dice by ±1"),
 ],
     "card_land_24" => [ 
         "create" => 1,
@@ -1963,7 +1963,7 @@ class Material {
         "tags" => "Harbour",
         "c1" => "_xx_",
         "c2" => "uxx_",
-        "todr" => clienttranslate("Refresh a die, modify dice by +/- 1 and gain Provisions"),
+        "todr" => clienttranslate("Refresh a die, modify dice by ±1 and gain Provisions"),
 ],
     "card_water_50" => [ 
         "create" => 1,
@@ -2089,7 +2089,7 @@ class Material {
         "tags" => "Sea",
         "c1" => "x__x",
         "c2" => "b_x_",
-        "tor" => clienttranslate("Gain a free Basic Upgrade Tile and modify dice by +/- 1"),
+        "tor" => clienttranslate("Gain a free Basic Upgrade Tile and modify dice by ±1"),
 ],
     "card_water_63" => [ 
         "create" => 1,
@@ -2549,6 +2549,7 @@ class Material {
         "num" => 1,
         "r" => "cardFolk,diceMod",
         "name" => clienttranslate("Recruit"),
+        "tooltip" => clienttranslate("Acquire Townsfolk Card and Modify Dice by ±1"),
 ],
     "action_land_2" => [ 
         "type" => "action",
@@ -2556,6 +2557,7 @@ class Material {
         "num" => 2,
         "r" => "2coin,infYellow",
         "name" => clienttranslate("Yellow Influence"),
+        "tooltip" => clienttranslate("Gain 2 Silver and Place Influence on Yellow Guild"),
 ],
     "action_land_3" => [ 
         "type" => "action",
@@ -2563,6 +2565,7 @@ class Material {
         "num" => 3,
         "r" => "upgYellow",
         "name" => clienttranslate("Yellow Upgrade"),
+        "tooltip" => clienttranslate("Gain Land Upgrade Tile"),
 ],
     "action_land_4" => [ 
         "type" => "action",
@@ -2570,6 +2573,7 @@ class Material {
         "num" => 4,
         "r" => "3n_food:3cardDraw(land)",
         "name" => clienttranslate("Explore"),
+        "tooltip" => clienttranslate("Pay 3 Provisions to Draw 3 Land Cards and keep one of them"),
 ],
 // # Water card worker actions (positions 1-4)
     "action_water_1" => [ 
@@ -2578,6 +2582,7 @@ class Material {
         "num" => 1,
         "r" => "reroll,diceMod,diceMod",
         "name" => clienttranslate("Organize"),
+        "tooltip" => clienttranslate("Refresh a Die and Modify Dice by ±1 twice"),
 ],
     "action_water_2" => [ 
         "type" => "action",
@@ -2585,6 +2590,7 @@ class Material {
         "num" => 2,
         "r" => "2food,infBlue",
         "name" => clienttranslate("Blue Influence"),
+        "tooltip" => clienttranslate("Gain 2 Provisions and Place Influence on Blue Guild"),
 ],
     "action_water_3" => [ 
         "type" => "action",
@@ -2592,6 +2598,7 @@ class Material {
         "num" => 3,
         "r" => "upgBlue",
         "name" => clienttranslate("Blue Upgrade"),
+        "tooltip" => clienttranslate("Gain Water Upgrade Tile"),
 ],
     "action_water_4" => [ 
         "type" => "action",
@@ -2599,6 +2606,7 @@ class Material {
         "num" => 4,
         "r" => "3n_food:3cardDraw(water)",
         "name" => clienttranslate("Voyage"),
+        "tooltip" => clienttranslate("Pay 3 Provisions to Draw 3 Water Cards and keep one of them"),
 ],
 // # Folk card worker actions (positions 1-4)
     "action_folk_1" => [ 
@@ -2607,6 +2615,7 @@ class Material {
         "num" => 1,
         "r" => "cardSpace(dis)",
         "name" => clienttranslate("Stargaze"),
+        "tooltip" => clienttranslate("Acquire Space Card with 1 Silver discount"),
 ],
     "action_folk_2" => [ 
         "type" => "action",
@@ -2614,6 +2623,7 @@ class Material {
         "num" => 2,
         "r" => "infYellow,infBlue,infBlack",
         "name" => clienttranslate("Network"),
+        "tooltip" => clienttranslate("Place Influence on Yellow, Blue and Black Guild"),
 ],
     "action_folk_3" => [ 
         "type" => "action",
@@ -2621,6 +2631,7 @@ class Material {
         "num" => 3,
         "r" => "upgGreen(free)",
         "name" => clienttranslate("Base Upgrade"),
+        "tooltip" => clienttranslate("Gain Basic Upgrade Tile for free"),
 ],
     "action_folk_4" => [ 
         "type" => "action",
@@ -2628,6 +2639,7 @@ class Material {
         "num" => 4,
         "r" => "journal,food",
         "name" => clienttranslate("Journal"),
+        "tooltip" => clienttranslate("Journal and Gain Provisions"),
 ],
 // # Inspiration card worker actions (positions 1-4)
     "action_insp_1" => [ 
@@ -2636,6 +2648,7 @@ class Material {
         "num" => 1,
         "r" => "2food",
         "name" => clienttranslate("Forage"),
+        "tooltip" => clienttranslate("Gain 2 Provisions"),
 ],
     "action_insp_2" => [ 
         "type" => "action",
@@ -2643,6 +2656,7 @@ class Material {
         "num" => 2,
         "r" => "food,infAny",
         "name" => clienttranslate("Network"),
+        "tooltip" => clienttranslate("Gain Provisions and Place Influence on any Guild"),
 ],
     "action_insp_3" => [ 
         "type" => "action",
@@ -2650,6 +2664,7 @@ class Material {
         "num" => 3,
         "r" => "coin,reroll",
         "name" => clienttranslate("Barter"),
+        "tooltip" => clienttranslate("Gain Silver and Refresh a Die"),
 ],
     "action_insp_4" => [ 
         "type" => "action",
@@ -2657,6 +2672,7 @@ class Material {
         "num" => 4,
         "r" => "2coin",
         "name" => clienttranslate("Earn"),
+        "tooltip" => clienttranslate("Gain 2 Silver"),
 ],
             /* --- gen php end action_material --- */
 
@@ -3173,6 +3189,7 @@ class Material {
         "location" => "mainboard_1",
         "num" => 0,
         "conn" => "10,15",
+        "tooltip" => clienttranslate("Starting position"),
 ],
     "jpos_10" => [ 
         "location" => "mainboard_1",
@@ -3192,18 +3209,21 @@ class Material {
         "num" => 20,
         "conn" => "40,32",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_23" => [ 
         "location" => "mainboard_1",
         "num" => 23,
         "conn" => "32,36",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_27" => [ 
         "location" => "mainboard_1",
         "num" => 27,
         "conn" => "36,47",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_32" => [ 
         "location" => "mainboard_1",
@@ -3223,18 +3243,21 @@ class Material {
         "num" => 40,
         "conn" => 50,
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_43" => [ 
         "location" => "mainboard_2",
         "num" => 43,
         "conn" => "50,55",
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_47" => [ 
         "location" => "mainboard_2",
         "num" => 47,
         "conn" => 55,
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_50" => [ 
         "location" => "mainboard_2",
@@ -3254,18 +3277,21 @@ class Material {
         "num" => 60,
         "conn" => "80,72",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_63" => [ 
         "location" => "mainboard_2",
         "num" => 63,
         "conn" => "72,76",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_67" => [ 
         "location" => "mainboard_2",
         "num" => 67,
         "conn" => "76,87",
         "r" => "cardInsp,newDie",
+        "tooltip" => clienttranslate("Acquire Inspiration Card and Gain Die"),
 ],
     "jpos_72" => [ 
         "location" => "mainboard_2",
@@ -3285,18 +3311,21 @@ class Material {
         "num" => 80,
         "conn" => 90,
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_83" => [ 
         "location" => "mainboard_2",
         "num" => 83,
         "conn" => "90,95",
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_87" => [ 
         "location" => "mainboard_2",
         "num" => 87,
         "conn" => 95,
         "r" => "upgPink",
+        "tooltip" => clienttranslate("Gain Special Upgrade Tile"),
 ],
     "jpos_90" => [ 
         "location" => "mainboard_3",
@@ -3314,26 +3343,31 @@ class Material {
         "location" => "mainboard_3",
         "num" => 100,
         "r" => "infBlack,infBlack,(upgPink/cardInsp)",
+        "tooltip" => clienttranslate("Place 2 Influence on Black Guild and Gain Special Upgrade Tile or Acquire Inspiration Card"),
 ],
     "jpos_102" => [ 
         "location" => "mainboard_3",
         "num" => 102,
         "r" => "infAny,infAny",
+        "tooltip" => clienttranslate("Place 2 Influence on any Guild"),
 ],
     "jpos_103" => [ 
         "location" => "mainboard_3",
         "num" => 103,
         "r" => "infYellow,infYellow,(upgPink/cardInsp)",
+        "tooltip" => clienttranslate("Place 2 Influence on Yellow Guild and Gain Special Upgrade Tile or Acquire Inspiration Card"),
 ],
     "jpos_106" => [ 
         "location" => "mainboard_3",
         "num" => 106,
         "r" => "infAny,infAny",
+        "tooltip" => clienttranslate("Place 2 Influence on any Guild"),
 ],
     "jpos_107" => [ 
         "location" => "mainboard_3",
         "num" => 107,
         "r" => "infBlue,infBlue,(upgPink/cardInsp)",
+        "tooltip" => clienttranslate("Place 2 Influence on Blue Guild and Gain Special Upgrade Tile or Acquire Inspiration Card"),
 ],
 // #Journal tiles
     "jtile_1" => [ 

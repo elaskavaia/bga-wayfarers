@@ -27,7 +27,7 @@ num|r|d|dr|tags|trig|tor|todr
 20|coin||food|Vista|Stars|Gain Silver|Gain Provisions
 21|coin||coin|Vista|Sea|Gain Silver|Gain Silver
 22|infBlue||infBlue/infMove|Vista|Sea|Place Influence on Blue Guild|Place Influence on Blue Guild or Move Influence
-23|upgGreen(free)||coin,diceMod|Vista|Comet|Gain a free Basic Upgrade Tile|Gain Silver and modify dice by +/- 1
+23|upgGreen(free)||coin,diceMod|Vista|Comet|Gain a free Basic Upgrade Tile|Gain Silver and modify dice by ±1
 24|upgGreen(free)||food,infMove|Vista|Comet|Gain a free Basic Upgrade Tile|Gain Provisions and Move Influence
 25|reroll||coin|Vista|Vista|Refresh a die|Gain Silver
 26|reroll||infBlue/infMove|Vista|Vista|Refresh a die|Place Influence on Blue Guild or Move Influence

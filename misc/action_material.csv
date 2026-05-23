@@ -1,27 +1,27 @@
-ctype|num|r|name
+ctype|num|r|name|tooltip
 #set id=action_{ctype}_{num}
 #set type=action
 
 # Land card worker actions (positions 1-4)
-land|1|cardFolk,diceMod|Recruit
-land|2|2coin,infYellow|Yellow Influence
-land|3|upgYellow|Yellow Upgrade
-land|4|3n_food:3cardDraw(land)|Explore
+land|1|cardFolk,diceMod|Recruit|Acquire Townsfolk Card and Modify Dice by ±1
+land|2|2coin,infYellow|Yellow Influence|Gain 2 Silver and Place Influence on Yellow Guild
+land|3|upgYellow|Yellow Upgrade|Gain Land Upgrade Tile
+land|4|3n_food:3cardDraw(land)|Explore|Pay 3 Provisions to Draw 3 Land Cards and keep one of them
 
 # Water card worker actions (positions 1-4)
-water|1|reroll,diceMod,diceMod|Organize
-water|2|2food,infBlue|Blue Influence
-water|3|upgBlue|Blue Upgrade
-water|4|3n_food:3cardDraw(water)|Voyage
+water|1|reroll,diceMod,diceMod|Organize|Refresh a Die and Modify Dice by ±1 twice
+water|2|2food,infBlue|Blue Influence|Gain 2 Provisions and Place Influence on Blue Guild
+water|3|upgBlue|Blue Upgrade|Gain Water Upgrade Tile
+water|4|3n_food:3cardDraw(water)|Voyage|Pay 3 Provisions to Draw 3 Water Cards and keep one of them
 
 # Folk card worker actions (positions 1-4)
-folk|1|cardSpace(dis)|Stargaze
-folk|2|infYellow,infBlue,infBlack|Network
-folk|3|upgGreen(free)|Base Upgrade
-folk|4|journal,food|Journal
+folk|1|cardSpace(dis)|Stargaze|Acquire Space Card with 1 Silver discount
+folk|2|infYellow,infBlue,infBlack|Network|Place Influence on Yellow, Blue and Black Guild
+folk|3|upgGreen(free)|Base Upgrade|Gain Basic Upgrade Tile for free
+folk|4|journal,food|Journal|Journal and Gain Provisions
 
 # Inspiration card worker actions (positions 1-4)
-insp|1|2food|Forage
-insp|2|food,infAny|Network
-insp|3|coin,reroll|Barter
-insp|4|2coin|Earn
+insp|1|2food|Forage|Gain 2 Provisions
+insp|2|food,infAny|Network|Gain Provisions and Place Influence on any Guild
+insp|3|coin,reroll|Barter|Gain Silver and Refresh a Die
+insp|4|2coin|Earn|Gain 2 Silver

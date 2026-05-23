@@ -23,9 +23,25 @@
   z-index: 0;
   position: relative;
 }
+.guild_hotzone {
+  position: absolute;
+  width: 43%;
+  height: 43%;
+  cursor: help;
+}
+.guild_majority {
+  top: -53%;
+  left: 24%;
+}
+.guild_action {
+  bottom: -42%;
+  left: 11%;
+  width: 59%;
+}
+
 .guild {
   position: absolute;
-  width: 40%;
+  width: 35%;
   height: 10%;
 
   // Player influence areas within each guild
@@ -67,16 +83,16 @@
   }
 }
 .guild_blue {
-  top: 65%;
+  top: 66%;
   left: 50%;
 }
 .guild_yellow {
-  top: 40%;
+  top: 42%;
   left: 38%;
 }
 .guild_black {
   top: 20%;
-  left: 50%;
+  left: 55%;
 }
 
 .tableau {
@@ -573,7 +589,7 @@ $layout_button_color: #2d5a3d;
   top: 6%;
   left: 28%;
   width: 70%;
-  height: 20%;
+  height: 8%;
 
   & > * {
     display: inline-block;
@@ -581,6 +597,100 @@ $layout_button_color: #2d5a3d;
     margin-right: 5px;
   }
 }
+
+.mainboard {
+  // Board action hot zones (cover the full illustrated area, not just the icon).
+  // Fixed px so all hot zones are the same physical size — mainboard_2 is wider
+  // (aspect-ratio 1212/1024 vs 768/1024) so % sizing would differ across boards.
+  .action {
+    position: absolute;
+    z-index: 1;
+    width: 130px;
+    height: 50px;
+  }
+
+  // Insp actions sit on the right edge — rotated, so swap w/h
+  .action_insp_1,
+  .action_insp_2,
+  .action_insp_3,
+  .action_insp_4 {
+    width: 50px;
+    height: 130px;
+  }
+}
+.mainboard_1 {
+  .action_folk_4 {
+    top: 0;
+    left: 36%;
+  }
+  .action_folk_3 {
+    top: 0;
+    left: 69%;
+  }
+  .action_land_4 {
+    bottom: 0;
+    left: 36%;
+  }
+  .action_land_3 {
+    bottom: 0;
+    left: 69%;
+  }
+}
+
+.mainboard_2 {
+  .action_folk_2 {
+    top: 0;
+    left: 1%;
+  }
+  .action_folk_1 {
+    top: 0;
+    left: 22%;
+  }
+  .action_land_2 {
+    bottom: 0;
+    left: 1%;
+  }
+  .action_land_1 {
+    bottom: 0;
+    left: 22%;
+  }
+  .action_water_1 {
+    bottom: 0;
+    left: 58%;
+  }
+  .action_water_2 {
+    bottom: 0;
+    left: 79%;
+  }
+}
+
+.mainboard_3 {
+  .action_water_3 {
+    bottom: 0;
+    left: -1%;
+  }
+  .action_water_4 {
+    bottom: 0;
+    left: 33%;
+  }
+  .action_insp_1 {
+    right: 0;
+    top: 2%;
+  }
+  .action_insp_2 {
+    right: 0;
+    top: 26%;
+  }
+  .action_insp_3 {
+    right: 0;
+    top: 51%;
+  }
+  .action_insp_4 {
+    right: 0;
+    top: 78%;
+  }
+}
+
 // Journal track positions (jpos) - positioned on ink blots
 .jpos {
   position: absolute;

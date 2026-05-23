@@ -1945,6 +1945,10 @@ class Game extends GameMachine {
         <div id="jpos_32" class="jpos jpos_32"></div>
         <div id="jpos_36" class="jpos jpos_36"></div>
 
+        <div id="action_folk_4" class="action action_folk_4"></div>
+        <div id="action_folk_3" class="action action_folk_3"></div>
+        <div id="action_land_4" class="action action_land_4"></div>
+        <div id="action_land_3" class="action action_land_3"></div>
     </div>
     <div id="mainboard_2" class="mainboard_x">
             <div id="jpos_40" class="jpos jpos_40"></div>
@@ -1962,6 +1966,13 @@ class Game extends GameMachine {
         <div id="jpos_87" class="jpos jpos_87"></div>
         <div id="jpos_90" class="jpos jpos_90"></div>
         <div id="jpos_95" class="jpos jpos_95"></div>
+
+        <div id="action_folk_2" class="action action_folk_2"></div>
+        <div id="action_folk_1" class="action action_folk_1"></div>
+        <div id="action_land_2" class="action action_land_2"></div>
+        <div id="action_land_1" class="action action_land_1"></div>
+        <div id="action_water_1" class="action action_water_1"></div>
+        <div id="action_water_2" class="action action_water_2"></div>
     </div>
     <div id="mainboard_3" class="mainboard_x">
         <div id="jpos_100" class="jpos jpos_100"></div>
@@ -1970,10 +1981,25 @@ class Game extends GameMachine {
         <div id="jpos_106" class="jpos jpos_106"></div>
         <div id="jpos_107" class="jpos jpos_107"></div>
 
+        <div id="action_water_3" class="action action_water_3"></div>
+        <div id="action_water_4" class="action action_water_4"></div>
+        <div id="action_insp_1" class="action action_insp_1"></div>
+        <div id="action_insp_2" class="action action_insp_2"></div>
+        <div id="action_insp_3" class="action action_insp_3"></div>
+        <div id="action_insp_4" class="action action_insp_4"></div>
 
-      <div id="guild_yellow" class="guild guild_yellow"></div>
-      <div id="guild_blue" class="guild guild_blue"></div>
-      <div id="guild_black" class="guild guild_black"></div>
+      <div id="guild_yellow" class="guild guild_yellow">
+        <div id="guild_yellow_majority" class="guild_hotzone guild_majority"></div>
+        <div id="guild_yellow_action" class="guild_hotzone guild_action"></div>
+      </div>
+      <div id="guild_blue" class="guild guild_blue">
+        <div id="guild_blue_majority" class="guild_hotzone guild_majority"></div>
+        <div id="guild_blue_action" class="guild_hotzone guild_action"></div>
+      </div>
+      <div id="guild_black" class="guild guild_black">
+        <div id="guild_black_majority" class="guild_hotzone guild_majority"></div>
+        <div id="guild_black_action" class="guild_hotzone guild_action"></div>
+      </div>
     </div>
   </div>
 </div>
@@ -2030,7 +2056,12 @@ class Game extends GameMachine {
             this.addListenerWithGuard($("deck_water"), (e) => this.onToken(e));
             document.querySelectorAll(".jpos").forEach((node) => {
                 this.addListenerWithGuard(node, (e) => this.onToken(e));
+                this.updateTooltip(node.id);
             });
+            document.querySelectorAll(".action").forEach((node) => {
+                this.updateTooltip(node.id);
+            });
+            this.setupGuildHotzoneTooltips();
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
@@ -2045,6 +2076,19 @@ class Game extends GameMachine {
         }
         console.log("Ending game setup");
         this.inSetup = false;
+    }
+    setupGuildHotzoneTooltips() {
+        const majority = _("3 VP at game end for the player with the most Influence in this Guild. If tied, no one scores.");
+        const actions = {
+            yellow: _("Trade — Once per turn, spend 1 Yellow Influence to Modify Dice in your supply by ±2 (one Die by ±2 or two Dice by ±1 each)."),
+            blue: _("Exploration — Once per turn, spend 1 Blue Influence to hire a Ship — acts as if a placed Die had a Ship asset. Temporary effect."),
+            black: _("Science — Once per turn, spend 1 Black Influence to Journal one extra space.")
+        };
+        for (const color of ["yellow", "blue", "black"]) {
+            this.addTooltipHtml(`guild_${color}_majority`, this.getTooltipHtml(_("Guild Majority"), majority), this.defaultTooltipDelay);
+            this.addTooltipHtml(`guild_${color}_action`, this.getTooltipHtml(_("Guild Action"), this.ttSection(_("Effect"), actions[color]) +
+                this.ttSection(_("How to use"), _("Available as a button in the toolbar when it's your turn."))), this.defaultTooltipDelay);
+        }
     }
     markFirstPlayer(gamedatas) {
         const firstId = gamedatas.playerorder?.[0];
@@ -2722,9 +2766,9 @@ class Game extends GameMachine {
                     case "space":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-                        //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
-                        tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         tokenInfo.tooltip += this.ttSection(_("Cost"), _("Base cost in Silver shown on the board under the card"));
+                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Land or Water Card"));
+                        tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                         if (tokenInfo.r)
                             tokenInfo.tooltip += this.ttSection(_("Instant"), this.getTr(tokenInfo.tor));
                         tokenInfo.tooltip += this.ttSection(_("VP"), this.getTr(tokenInfo.tovp));
@@ -2732,9 +2776,9 @@ class Game extends GameMachine {
                     case "folk":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
-                        tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
                         tokenInfo.tooltip += this.ttSection(_("Cost"), tokenInfo.cost + " " + _("Silver"));
                         tokenInfo.tooltip += this.ttSection(_("Required Tags"), this.getTagsListTr(tokenInfo.tags, ` / `));
+                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed below ONE of the required Tags"));
                         if (tokenInfo.rest) {
                             tokenInfo.tooltip += this.ttSection(_("Rest"), this.getTr(origtt));
                             tokenInfo.tooltip += this.ttSection(undefined, _("Rest bonus is activated when Rest is taken with one or less die"));
@@ -2758,8 +2802,10 @@ class Game extends GameMachine {
                     case "insp":
                         tokenInfo.tooltip = this.ttSection(_("Card Type"), tname);
                         tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
+                        tokenInfo.tooltip += this.ttSection(_("Cost"), _("Free"));
+                        tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Must be placed above Space Card"));
                         tokenInfo.tooltip += this.ttSection(_("Goal"), this.getTr(origtt));
-                        tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Star's scoring"));
+                        tokenInfo.tooltip += this.ttSection(undefined, _("If this goal is achieved at end of game the Inspiration Card will double their Space Card's scoring"));
                         tokenInfo.tooltip += this.ttSection(_("Instant"), _("Instead of gaining, card maybe discarded for the effect of the Worker Placement spot that the Card is adjacent to"));
                         break;
                     case "scheme":
@@ -2793,9 +2839,17 @@ class Game extends GameMachine {
                     return;
                 const color = getPart(tokenId, 1);
                 const tname = this.getTokenName(`upg_${color}`);
+                const payByColor = {
+                    green: _("2 Silver"),
+                    yellow: _("3 Silver or 2 Yellow Influence"),
+                    blue: _("3 Silver or 2 Blue Influence"),
+                    black: _("3 Silver or 2 Black Influence")
+                };
                 tokenInfo.tooltip = "";
                 tokenInfo.tooltip += this.ttSection(_("Type"), tname);
                 tokenInfo.tooltip += this.ttSection(_("Ref#"), num);
+                if (payByColor[color])
+                    tokenInfo.tooltip += this.ttSection(_("Cost"), payByColor[color]);
                 if (tokenInfo.tags)
                     tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
                 // r and r2 are left and right side of the same tile face
@@ -2828,6 +2882,31 @@ class Game extends GameMachine {
                     return;
                 tokenInfo.name = this.getTokenName("jtile");
                 tokenInfo.tooltip = this.ttSection(_("Bonus"), this.getTr(tokenInfo.tooltip));
+                return;
+            }
+            case "jpos": {
+                if (!tokenInfo.tooltip)
+                    return;
+                const num = parseInt(getPart(tokenId, 1) ?? "");
+                tokenInfo.name = _("Journal Space");
+                tokenInfo.tooltip = this.ttSection(_("Effect"), this.getTr(tokenInfo.tooltip));
+                if (num >= 100) {
+                    tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Only one player can occupy this slot"));
+                }
+                return;
+            }
+            case "action": {
+                const ctype = getPart(tokenId, 1);
+                const workerByCtype = {
+                    folk: _("Green Worker"),
+                    land: _("Yellow or Green Worker"),
+                    water: _("Blue or Green Worker"),
+                    insp: _("Any Worker")
+                };
+                const origtt = this.getTr(this.getRulesFor(tokenId, "tooltip"));
+                tokenInfo.tooltip = this.ttSection(_("Cost"), workerByCtype[ctype] ?? "");
+                tokenInfo.tooltip += this.ttSection(_("Effect"), origtt);
+                tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Only one Worker of each color per space"));
                 return;
             }
             case "dice": {

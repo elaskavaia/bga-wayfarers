@@ -1096,9 +1096,27 @@ html[data-theme=dark] .deck .counter {
   position: relative;
 }
 
+.guild_hotzone {
+  position: absolute;
+  width: 43%;
+  height: 43%;
+  cursor: help;
+}
+
+.guild_majority {
+  top: -53%;
+  left: 24%;
+}
+
+.guild_action {
+  bottom: -42%;
+  left: 11%;
+  width: 59%;
+}
+
 .guild {
   position: absolute;
-  width: 40%;
+  width: 35%;
   height: 10%;
 }
 .guild .infsupply {
@@ -1133,18 +1151,18 @@ html[data-theme=dark] .deck .counter {
 }
 
 .guild_blue {
-  top: 65%;
+  top: 66%;
   left: 50%;
 }
 
 .guild_yellow {
-  top: 40%;
+  top: 42%;
   left: 38%;
 }
 
 .guild_black {
   top: 20%;
-  left: 50%;
+  left: 55%;
 }
 
 .tableau {
@@ -1593,12 +1611,93 @@ html[data-theme=dark] .deck .counter {
   top: 6%;
   left: 28%;
   width: 70%;
-  height: 20%;
+  height: 8%;
 }
 #supply > * {
   display: inline-block;
   vertical-align: top;
   margin-right: 5px;
+}
+
+.mainboard .action {
+  position: absolute;
+  z-index: 1;
+  width: 130px;
+  height: 50px;
+}
+.mainboard .action_insp_1,
+.mainboard .action_insp_2,
+.mainboard .action_insp_3,
+.mainboard .action_insp_4 {
+  width: 50px;
+  height: 130px;
+}
+
+.mainboard_1 .action_folk_4 {
+  top: 0;
+  left: 36%;
+}
+.mainboard_1 .action_folk_3 {
+  top: 0;
+  left: 69%;
+}
+.mainboard_1 .action_land_4 {
+  bottom: 0;
+  left: 36%;
+}
+.mainboard_1 .action_land_3 {
+  bottom: 0;
+  left: 69%;
+}
+
+.mainboard_2 .action_folk_2 {
+  top: 0;
+  left: 1%;
+}
+.mainboard_2 .action_folk_1 {
+  top: 0;
+  left: 22%;
+}
+.mainboard_2 .action_land_2 {
+  bottom: 0;
+  left: 1%;
+}
+.mainboard_2 .action_land_1 {
+  bottom: 0;
+  left: 22%;
+}
+.mainboard_2 .action_water_1 {
+  bottom: 0;
+  left: 58%;
+}
+.mainboard_2 .action_water_2 {
+  bottom: 0;
+  left: 79%;
+}
+
+.mainboard_3 .action_water_3 {
+  bottom: 0;
+  left: -1%;
+}
+.mainboard_3 .action_water_4 {
+  bottom: 0;
+  left: 33%;
+}
+.mainboard_3 .action_insp_1 {
+  right: 0;
+  top: 2%;
+}
+.mainboard_3 .action_insp_2 {
+  right: 0;
+  top: 26%;
+}
+.mainboard_3 .action_insp_3 {
+  right: 0;
+  top: 51%;
+}
+.mainboard_3 .action_insp_4 {
+  right: 0;
+  top: 78%;
 }
 
 .jpos {
@@ -2565,6 +2664,10 @@ html[data-theme=dark] .miniboard .jtag_count {
   background-position: 100% 0;
 }
 
+.withtooltip {
+  cursor: help;
+}
+
 /* tooltips */
 .midSizeDialog {
   max-width: 700px;
@@ -3158,4 +3261,5 @@ html:before {
   margin-left: 0.4em;
   vertical-align: middle;
   font-weight: normal;
+  cursor: help;
 }

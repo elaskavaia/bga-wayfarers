@@ -731,3 +731,7 @@ $i: 0;
     background-position: calc($col * 100% / ($cols - 1)) 0;
   }
 }
+
+.withtooltip {
+  cursor: help;
+}

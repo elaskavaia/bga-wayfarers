@@ -54,7 +54,7 @@ infYellow|Place Influence on Yellow Guild|wicon_inf_yellow
 infBlack|Place Influence on Black Guild|wicon_inf_black
 infCard|Place Influence on Card|wicon_infCard
 infMove|Move Influence|wicon_inf_move
-diceMod|Modify Dice by +/- 1|wicon_dice_mod
+diceMod|Modify Dice by ±1|wicon_dice_mod
 dicePlus|Modify Dice by +1|
 diceMinus|Modify Dice by -1|
 newDie|Gain Die|wicon_new_die

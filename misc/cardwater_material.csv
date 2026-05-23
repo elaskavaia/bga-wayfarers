@@ -18,7 +18,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 46||ship|2n_food:(cardWater+pickWorker)|Harbour|_x_x|__xx||Pay 2 Provisions to acquire a Water card and retrieve a Worker
 47||ship|upgBlue/(infBlue,infBlue)|Harbour|xx__|u_x_||Gain a Water Upgrade Tile or place 2 Influence on Blue Guild
 48||ship|upgBlue/(infBlue,infBlue)|Harbour|__xx|yx__||Gain a Water Upgrade Tile or place 2 Influence on Blue Guild
-49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_||Refresh a die, modify dice by +/- 1 and gain Provisions
+49||ship|reroll,diceMod,food|Harbour|_xx_|uxx_||Refresh a die, modify dice by ±1 and gain Provisions
 50||ship,ship|pickWorker,reroll,infCard|Harbour|__xx|u__x||Retrieve a Worker, refresh a die and place Influence on a Card
 
 51||ship,ship|infYellow,infBlack,coin|Harbour|xx__|__xx||Place Yellow and Black Influence and gain Silver
@@ -33,7 +33,7 @@ num|r|d|dr|tags|c1|c2|tor|todr
 59|infBlack,coin,food,infCard|||Sea|_x__|bxxx|Place Influence on Black Guild, gain Silver and Provisions, and place Influence on a Card|
 60|2coin,reroll|||Sea|__xx|_xx_|Gain 2 Silver and refresh a die|
 61|upgBlack(free)|||Sea|___x|u___|Gain a free Space Upgrade Tile|
-62|upgGreen(free),diceMod|||Sea|x__x|b_x_|Gain a free Basic Upgrade Tile and modify dice by +/- 1|
+62|upgGreen(free),diceMod|||Sea|x__x|b_x_|Gain a free Basic Upgrade Tile and modify dice by ±1|
 
 63|upgYellow(free)|||Sea|_x__|_x__|Gain a free Land Upgrade Tile|
 64|upgBlue(free)|||Sea|__x_|__x_|Gain a free Water Upgrade Tile|
