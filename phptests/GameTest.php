@@ -1127,10 +1127,13 @@ final class GameTest extends TestCase {
     public function testRestQueuesRestAbilities() {
         $this->game->tokens->createTokens();
 
-        // Move all dice out of supply so isGoodRest() returns true (0-1 dice in supply)
+        // Move all dice out of supply so isGoodRest() returns true (0-1 dice in supply).
+        // Place one die on a card so Op_rest has placed dice to retrieve (precondition).
         $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_" . PCOLOR);
-        foreach (array_keys($dice) as $dieKey) {
-            $this->game->tokens->db->moveToken($dieKey, "limbo");
+        $dieKeys = array_keys($dice);
+        $this->game->tokens->db->moveToken($dieKeys[0], "card_home_3_" . PCOLOR, 4);
+        for ($i = 1; $i < count($dieKeys); $i++) {
+            $this->game->tokens->db->moveToken($dieKeys[$i], "limbo");
         }
 
         $this->game->machine->queue("rest", PCOLOR);
@@ -1226,6 +1229,13 @@ final class GameTest extends TestCase {
     // --- Turn stats tests ---
 
     private function setupTurnOp(string $owner = PCOLOR): \Bga\Games\wayfarers\OpCommon\Operation {
+        // Roll all dice in player's supply to valid values (1-6) — 0 is not a valid die state.
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$owner");
+        $value = 1;
+        foreach (array_keys($dice) as $dieKey) {
+            $this->game->tokens->db->setTokenState($dieKey, $value);
+            $value = $value == 6 ? 1 : $value + 1;
+        }
         $op = $this->game->machine->instanciateOperation("turn", $owner);
         $op->saveToDb(1, true);
         return $this->dispatch();
@@ -1247,6 +1257,9 @@ final class GameTest extends TestCase {
     public function testTurnStats_RestAction() {
         $this->game->tokens->createTokens();
         $playerId = $this->game->custom_getPlayerIdByColor(PCOLOR);
+
+        // Rest now requires at least one placed die — move one to a card.
+        $this->game->tokens->db->moveToken("dice_" . PCOLOR . "_1", "card_home_3_" . PCOLOR, 4);
 
         $op = $this->setupTurnOp();
         $this->game->fakeUserAction($op, "rest");

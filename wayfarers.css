@@ -1690,19 +1690,19 @@ html[data-theme=dark] .deck .counter {
   bottom: 0;
   left: 33%;
 }
-.mainboard_3 .action_insp_1 {
+.mainboard_3 .action_insp_4 {
   right: 0;
   top: 2%;
 }
-.mainboard_3 .action_insp_2 {
+.mainboard_3 .action_insp_3 {
   right: 0;
   top: 26%;
 }
-.mainboard_3 .action_insp_3 {
+.mainboard_3 .action_insp_2 {
   right: 0;
   top: 51%;
 }
-.mainboard_3 .action_insp_4 {
+.mainboard_3 .action_insp_1 {
   right: 0;
   top: 78%;
 }
@@ -2671,8 +2671,14 @@ html[data-theme=dark] .miniboard .jtag_count {
   background-position: 100% 0;
 }
 
-#page-content .withtooltip:not(.active_slot) {
+#page-content .withtooltip {
   cursor: help;
+}
+
+#page-content .active_slot.withtooltip,
+#page-content .hidden_active_slot.withtooltip,
+#page-content .active_slot .withtooltip {
+  cursor: pointer;
 }
 
 /* tooltips */

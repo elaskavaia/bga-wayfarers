@@ -732,6 +732,14 @@ $i: 0;
   }
 }
 
-#page-content .withtooltip:not(.active_slot) {
+#page-content .withtooltip {
   cursor: help;
+}
+
+#page-content {
+  .active_slot.withtooltip,
+  .hidden_active_slot.withtooltip,
+  .active_slot .withtooltip {
+    cursor: pointer;
+  }
 }

@@ -58,7 +58,7 @@ class Op_newDie extends Operation {
         if (!$this->getDie()) {
             return true;
         }
-        return false;
+        return parent::canSkip();
     }
 
     public function requireConfirmation() {

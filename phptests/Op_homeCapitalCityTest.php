@@ -65,7 +65,13 @@ final class Op_homeCapitalCityTest extends TestCase {
         $this->game->fakeUserAction($top, "card_land_10");
         $this->game->machine->dispatchAll();
 
-        // cardInteract should have auto-resolved using the only affordable option (coin)
+        // cardInteract now requires confirmation; pick coin (the only affordable option)
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($top, "Should be paused at cardInteract");
+        $this->assertEquals("cardInteract", $top->getType());
+        $this->game->fakeUserAction($top, "tracker_coin_$player");
+        $this->game->machine->dispatchAll();
+
         $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "coin"),
             "Player gained 1 coin then spent it paying opponent");
         $this->assertEquals(1, $this->game->tokens->getTrackerValue($opp, "coin"),

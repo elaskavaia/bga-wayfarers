@@ -34,6 +34,9 @@ class Op_turnconf extends Operation {
         return parent::auto();
     }
     function requireConfirmation() {
+        if ($this->getDataField("noconfirm", false)) {
+            return false;
+        }
         $player_id = $this->getPlayerId();
         $pref = $this->game->getUserPreference($player_id, Material::MA_PREF_CONFIRM_TURN);
         return (bool) $pref;

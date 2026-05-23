@@ -661,9 +661,6 @@ abstract class Operation {
         if ($this->canSkip()) {
             return false;
         }
-        // if ($this->getArgType() == Operation::TTYPE_AUTO) {
-        //     return true;
-        // }
         if ($this->isOneChoice()) {
             return true;
         }

@@ -184,8 +184,8 @@ class Op_finalScoring extends Operation {
             $aiEndScored = $game->getAiEndScores();
 
             if ($score < $aiScore) {
-                $game->notifyMessage(clienttranslate('${player_name} wins! You loose'), [], $player_id);
-                $game->notifyMessage(clienttranslate("Scoring is negated (cannot lose with positive scoring in solo)"));
+                $game->notifyMessage(clienttranslate('${player_name} wins! You lose'), [], $player_id);
+                $game->notifyMessage(clienttranslate("Scoring is negated (cannot keep positive scoring in solo when lost)"));
                 $game->playerScore->set($game->getFirstPlayer(), -$score);
                 $reverseScoring = true;
             }

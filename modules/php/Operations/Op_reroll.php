@@ -50,7 +50,7 @@ class Op_reroll extends Operation {
         $dieKey = $this->getDie();
         if ($dieKey) {
             if ($this->isMandatory()) {
-                return [$dieKey];
+                return ["confirm"];
             }
             $res[$dieKey] = ["q" => Material::RET_OK, "name" => clienttranslate("Reroll"), "buttons" => true];
             return $res;
@@ -75,14 +75,21 @@ class Op_reroll extends Operation {
             $dieKey = $this->getCheckedArg();
         }
 
-        $newValue = bga_rand(1, 6);
-        $owner = $this->getOwner();
-        $this->dbSetTokenLocation(
-            $dieKey,
-            "tableau_$owner",
-            $newValue,
-            clienttranslate('${player_name} rerolls ${token_name} to ${new_state}')
-        );
+        $targets = [$dieKey];
+        if (is_array($dieKey)) {
+            $targets = $dieKey;
+        }
+
+        foreach ($targets as $dieKey) {
+            $newValue = bga_rand(1, 6);
+            $owner = $this->getOwner();
+            $this->dbSetTokenLocation(
+                $dieKey,
+                "tableau_$owner",
+                $newValue,
+                clienttranslate('${player_name} rerolls ${token_name} to ${new_state}')
+            );
+        }
         $this->game->customUndoSavepoint($this->getPlayerId(), 1);
     }
     public function canSkip() {
@@ -101,15 +108,19 @@ class Op_reroll extends Operation {
     }
 
     function getDieValue(): int {
-        if (!$this->getDie()) {
+        $dieKey = $this->getDie();
+        if (!$dieKey || is_array($dieKey)) {
             return 0;
         }
-        return (int) $this->game->tokens->db->getTokenState($this->getDie());
+        return (int) $this->game->tokens->db->getTokenState($dieKey);
     }
 
     function getPrompt() {
         $dieKey = $this->getDie();
         if ($dieKey) {
+            if (is_array($dieKey)) {
+                return clienttranslate("Confirm to reroll all placed dice, this cannot be undone");
+            }
             return clienttranslate('Confirm to reroll ${token_div}');
         }
         return clienttranslate("Select a die to reroll");
@@ -118,5 +129,12 @@ class Op_reroll extends Operation {
     public function getExtraArgs() {
         $dieValue = $this->getDieValue();
         return parent::getExtraArgs() + ["token_div" => "wicon_die_$dieValue"];
+    }
+
+    public function requireConfirmation() {
+        if ($this->isMandatory() && $this->getDie()) {
+            return true;
+        }
+        return parent::requireConfirmation();
     }
 }

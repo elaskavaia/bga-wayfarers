@@ -53,8 +53,8 @@ final class Op_rerollTest extends TestCase {
         $op = $this->createOp(["target" => $dieKey, "mandatory" => true]);
         $moves = $op->getPossibleMoves();
 
-        // Should return simple array with just the die key (auto-select)
-        $this->assertEquals([$dieKey], $moves);
+        // Mandatory + target set → only a confirm button (no choice)
+        $this->assertEquals(["confirm"], $moves);
     }
 
     public function testCanSkip_Default(): void {

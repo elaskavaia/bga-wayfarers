@@ -13,6 +13,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
 class Op_rest extends Operation {
@@ -88,9 +89,8 @@ class Op_rest extends Operation {
         }
 
         // Move all placed dice back to player's tableau and roll them
-        foreach ($placedDice as $dieKey => $dieInfo) {
-            $this->queue("reroll", $owner, ["target" => $dieKey, "mandatory" => true]);
-        }
+
+        $this->queue("reroll", $owner, ["target" => array_keys($placedDice), "mandatory" => true]);
 
         // Also reroll dice that were already in supply (optional per rules)
         foreach ($diceInSupply as $dieKey => $dieInfo) {
@@ -113,6 +113,13 @@ class Op_rest extends Operation {
             return true;
         }
         return false;
+    }
+
+    public function getPossibleMoves() {
+        if (count($this->getPlacedDice()) == 0) {
+            return ["q" => Material::ERR_PREREQ];
+        }
+        return parent::getPossibleMoves();
     }
 
     public function requireConfirmation() {

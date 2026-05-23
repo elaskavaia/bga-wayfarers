@@ -136,7 +136,9 @@ class Op_turn extends Operation {
 
         /** @var Op_rest */
         $oprest = $this->instanciateOperation("rest");
-        if ($oprest->isGoodRest()) {
+        if ($oprest->noValidTargets()) {
+            $res["rest"] = ["q" => Material::ERR_NOT_APPLICABLE, "name" => clienttranslate("Rest"), "color" => "secondary"];
+        } elseif ($oprest->isGoodRest()) {
             $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_rest1]", "color" => "secondary"];
         } else {
             $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest"), "color" => "alert"];
@@ -158,9 +160,11 @@ class Op_turn extends Operation {
             $this->game->playerStats->inc("game_turns", 1, $playerId);
         }
 
+        $noconf = false;
         if ($selected === "rest") {
             $this->game->playerStats->inc("game_rest_actions", 1, $playerId);
             $this->queue("rest", null, ["reason" => null]);
+            $noconf = true;
         } elseif (str_starts_with($selected, "worker_")) {
             $this->game->playerStats->inc("game_worker_actions", 1, $playerId);
             $this->queue("placeWorker", $owner, ["worker" => $selected, "reason" => null]);
@@ -176,7 +180,8 @@ class Op_turn extends Operation {
         } else {
             $this->game->systemAssert("Invalid choice $selected");
         }
-        $this->queue("turnconf", null, ["reason" => null]);
+        // rest already asked for confirmation and rerolls can't be undone, so skip the user prompt.
+        $this->queue("turnconf", null, ["reason" => null, "noconfirm" => $noconf]);
         $this->game->queueNextTurnOrEnd($this->getPlayerId());
     }
 
