@@ -104,9 +104,6 @@
   pointer-events: unset; // undo bga default
 }
 
-// .bgabutton.disabled:hover {
-//   background-color: red;
-// }
 
 .bgabutton.disabled:active {
   pointer-events: unset; // none - prevent default click, but not hover

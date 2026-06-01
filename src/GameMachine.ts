@@ -288,14 +288,15 @@ export class GameMachine extends Game1Tokens {
 
   /** default click processor */
   onToken(event: Event, fromMethod?: string) {
+    event.stopPropagation();
+    event.preventDefault();
     console.log(event);
-    let id: string = this.onClickSanity(event);
+    let id = this.onClickSanity(event);
     if (!id) {
       return true;
     }
     if (!fromMethod) fromMethod = "onToken";
-    event.stopPropagation();
-    event.preventDefault();
+
     const ttype = this.opInfo?.ttype;
     if (ttype) {
       var methodName = "onToken_" + ttype;

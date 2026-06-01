@@ -866,7 +866,7 @@ class Game1Tokens extends Game0Basics {
             return element;
         const parent = element.parentElement;
         if (!parent || parent.id == "thething" || parent == element)
-            return null;
+            return undefined;
         return this.findActiveParent(parent);
     }
     /**
@@ -883,16 +883,16 @@ class Game1Tokens extends Game0Basics {
         }
         console.log("on slot " + id, target?.id || target);
         if (!id)
-            return null;
+            return undefined;
         if (this.showHelp(id))
-            return null;
+            return undefined;
         if (checkActiveSlot && !id.startsWith("button_") && !this.checkActiveSlot(id)) {
-            return null;
+            return undefined;
         }
         if (checkActivePlayer && !this.checkActivePlayer()) {
-            return null;
+            return undefined;
         }
-        if (target.dataset.targetId)
+        if (target?.dataset.targetId)
             return target.dataset.targetId;
         id = id.replace("tmp_", "");
         id = id.replace("button_", "");
@@ -1590,6 +1590,8 @@ class GameMachine extends Game1Tokens {
     }
     /** default click processor */
     onToken(event, fromMethod) {
+        event.stopPropagation();
+        event.preventDefault();
         console.log(event);
         let id = this.onClickSanity(event);
         if (!id) {
@@ -1597,8 +1599,6 @@ class GameMachine extends Game1Tokens {
         }
         if (!fromMethod)
             fromMethod = "onToken";
-        event.stopPropagation();
-        event.preventDefault();
         const ttype = this.opInfo?.ttype;
         if (ttype) {
             var methodName = "onToken_" + ttype;
@@ -3045,7 +3045,8 @@ class Game extends GameMachine {
             const origId = node.id.replace("_tt", "");
             node.addEventListener("click", (e) => {
                 const selected_html = this.getTooltipHtmlForToken(origId);
-                $("card_pile_selector").innerHTML = selected_html;
+                if (selected_html)
+                    $("card_pile_selector").innerHTML = selected_html;
             });
             if (index === selectedId)
                 selectedId = origId;
@@ -3055,9 +3056,14 @@ class Game extends GameMachine {
         }
         if (selectedId && typeof selectedId === "string") {
             const selected_html = this.getTooltipHtmlForToken(selectedId);
-            $("card_pile_selector").innerHTML = selected_html;
+            if (selected_html)
+                $("card_pile_selector").innerHTML = selected_html;
         }
         dialog.show();
+        // `popin_pile_underlay` is the dialog backdrop; close on click in case the X button is off-screen
+        $("popin_pile_underlay")?.addEventListener("click", () => {
+            dialog.destroy();
+        });
         return dialog;
     }
     setupNotifications() {

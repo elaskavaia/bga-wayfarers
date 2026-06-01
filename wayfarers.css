@@ -1575,7 +1575,7 @@ html[data-theme=dark] .deck .counter {
   align-items: center;
   justify-content: center;
   gap: 6px;
-  z-index: 1000;
+  z-index: 900;
   padding: 4px;
 }
 .board_layout_controls .layout_button {
@@ -2683,8 +2683,8 @@ html[data-theme=dark] .miniboard .jtag_count {
 
 /* tooltips */
 .midSizeDialog {
-  max-width: 700px;
-  min-width: 400px;
+  max-width: min(700px, 95vw);
+  min-width: min(400px, 90vw);
 }
 
 .tundra .dijitTooltipContainer,
@@ -2725,7 +2725,7 @@ html[data-theme=dark] .miniboard .jtag_count {
   list-style: circle;
 }
 .tooltipcontainer .tooltiptext {
-  max-width: 500px;
+  max-width: min(500px, 95vw);
   top: unset;
 }
 
@@ -2775,7 +2775,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .card_pile_selector .tooltip-right {
-  min-width: 20em;
+  min-width: min(320px, 90vw);
 }
 
 .card_pile_help {

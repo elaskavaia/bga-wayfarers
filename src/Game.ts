@@ -1230,16 +1230,16 @@ export class Game extends GameMachine {
     dialog.setContent(html);
     const parent = $("pile_content");
 
-    let children = Array.from(parent.children);
+    let children = Array.from(parent.children) as HTMLElement[];
     if (sort) {
       children.sort(sort);
       parent.replaceChildren(...children);
     }
-    children.forEach((node: HTMLElement, index) => {
+    children.forEach((node, index) => {
       const origId = node.id.replace("_tt", "");
       node.addEventListener("click", (e) => {
         const selected_html = this.getTooltipHtmlForToken(origId);
-        $("card_pile_selector").innerHTML = selected_html;
+        if (selected_html) $("card_pile_selector").innerHTML = selected_html;
       });
       if (index === selectedId) selectedId = origId;
     });
@@ -1248,9 +1248,14 @@ export class Game extends GameMachine {
     }
     if (selectedId && typeof selectedId === "string") {
       const selected_html = this.getTooltipHtmlForToken(selectedId);
-      $("card_pile_selector").innerHTML = selected_html;
+      if (selected_html) $("card_pile_selector").innerHTML = selected_html;
     }
     dialog.show();
+    // `popin_pile_underlay` is the dialog backdrop; close on click in case the X button is off-screen
+    $("popin_pile_underlay")?.addEventListener("click", () => {
+      dialog.destroy();
+    });
+
     return dialog;
   }
 

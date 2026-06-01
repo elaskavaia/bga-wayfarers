@@ -1,8 +1,8 @@
 @use "variables" as v;
 /* tooltips */
 .midSizeDialog {
-  max-width: 700px;
-  min-width: 400px;
+  max-width: min(700px, 95vw);
+  min-width: min(400px, 90vw);
 }
 
 .tundra .dijitTooltipContainer,
@@ -47,7 +47,7 @@
   }
 
   .tooltiptext {
-    max-width: 500px;
+    max-width: min(500px, 95vw);
     top: unset;
   }
 }
@@ -106,7 +106,7 @@
 
 .card_pile_selector {
   .tooltip-right {
-    min-width: 20em;
+    min-width: min(320px, 90vw);
   }
 }
 

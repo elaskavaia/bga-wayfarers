@@ -285,10 +285,10 @@ export class Game1Tokens extends Game0Basics {
     }
   }
 
-  findActiveParent(element: HTMLElement): HTMLElement | null {
+  findActiveParent(element: HTMLElement): HTMLElement | undefined {
     if (this.isActiveSlot(element)) return element;
     const parent = element.parentElement;
-    if (!parent || parent.id == "thething" || parent == element) return null;
+    if (!parent || parent.id == "thething" || parent == element) return undefined;
     return this.findActiveParent(parent);
   }
 
@@ -296,9 +296,9 @@ export class Game1Tokens extends Game0Basics {
    * This is convenient function to be called when processing click events, it - remembers id of object - stops propagation - logs to
    * console - the if checkActive is set to true check if element has active_slot class
    */
-  onClickSanity(event: Event, checkActiveSlot?: boolean, checkActivePlayer?: boolean): string {
-    let id = (event.currentTarget as HTMLElement).id;
-    let target = event.target as HTMLElement;
+  onClickSanity(event: Event, checkActiveSlot?: boolean, checkActivePlayer?: boolean): string | undefined {
+    let id: string | undefined = (event.currentTarget as HTMLElement).id;
+    let target: HTMLElement | undefined = event.target as HTMLElement;
     if (id == "thething") {
       let node = this.findActiveParent(target);
       id = node?.id;
@@ -306,16 +306,16 @@ export class Game1Tokens extends Game0Basics {
     }
 
     console.log("on slot " + id, target?.id || target);
-    if (!id) return null;
-    if (this.showHelp(id)) return null;
+    if (!id) return undefined;
+    if (this.showHelp(id)) return undefined;
 
     if (checkActiveSlot && !id.startsWith("button_") && !this.checkActiveSlot(id)) {
-      return null;
+      return undefined;
     }
     if (checkActivePlayer && !this.checkActivePlayer()) {
-      return null;
+      return undefined;
     }
-    if (target.dataset.targetId) return target.dataset.targetId;
+    if (target?.dataset.targetId) return target.dataset.targetId;
     id = id.replace("tmp_", "");
     id = id.replace("button_", "");
     return id;

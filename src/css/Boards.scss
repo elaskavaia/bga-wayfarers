@@ -545,7 +545,7 @@ $layout_button_color: #2d5a3d;
   align-items: center;
   justify-content: center;
   gap: 6px;
-  z-index: 1000;
+  z-index: 900; // 950 are popin dialogs
   padding: 4px;
 
   .layout_button {
