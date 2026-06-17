@@ -104,7 +104,6 @@
   pointer-events: unset; // undo bga default
 }
 
-
 .bgabutton.disabled:active {
   pointer-events: unset; // none - prevent default click, but not hover
 }
@@ -204,7 +203,6 @@ button.bgabutton > * {
 
 .button_undo {
   min-width: 6em;
-  background-image: none;
   margin-left: 6em;
 }
 
