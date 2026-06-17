@@ -223,9 +223,9 @@ export class Game extends GameMachine {
 
       // document.rootElement?.classList.add("bgaext_cust_back");
 
-      var parent = document.querySelector(".debug_section"); // studio only
-      if (parent)
-        this.bga.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
+      // var parent = document.querySelector(".debug_section"); // studio only
+      // if (parent)
+      //   this.bga.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
 
       this.setupLayoutControls();
     } catch (e) {
