@@ -2063,7 +2063,6 @@ class Game extends GameMachine {
             if (this.isSolo()) {
                 this.setupAutoma(gamedatas.playerswithbots[this.AI_PLAYER_ID]);
             }
-            this.markFirstPlayer(gamedatas);
             super.setupGame(gamedatas);
             for (const playerId of orderedPlayerIds) {
                 const pcolor = gamedatas.players[playerId].color;
@@ -2094,6 +2093,7 @@ class Game extends GameMachine {
             this.setupNotifications();
             this.setupScoreSheet();
             this.updateBanner();
+            this.markFirstPlayer(gamedatas);
             // document.rootElement?.classList.add("bgaext_cust_back");
             // var parent = document.querySelector(".debug_section"); // studio only
             // if (parent)
@@ -2120,21 +2120,21 @@ class Game extends GameMachine {
         }
     }
     markFirstPlayer(gamedatas) {
-        const firstId = gamedatas.playerorder?.[0];
-        if (!firstId)
+        const firstPlayer = gamedatas.tokens.starting_player;
+        if (!firstPlayer)
             return;
-        const nameLink = document.querySelector(`#player_board_${firstId} .player_elo_wrap`);
+        const firstPlayerColor = getPart(firstPlayer.location, 1);
+        const nameLink = document.querySelector(`#player_board_inner_${firstPlayerColor} .player_elo_wrap`);
         if (!nameLink)
             return;
         // setup() can re-run on reconnect; drop any prior marker so we don't end up with duplicate IDs.
-        document.getElementById("first_player_marker")?.remove();
-        const marker = document.createElement("span");
-        marker.className = "first_player_marker";
-        marker.id = "first_player_marker";
-        marker.textContent = _("#1");
-        nameLink.insertAdjacentElement("afterend", marker);
-        const html = this.getTooltipHtml(_("First Player"), _("First player starts the game. End-game is triggered mid-round and play continues only until the trigger player is reached again, so players earlier in turn order can take one more turn than players coming after the trigger."));
-        this.addTooltipHtml(marker.id, html, this.defaultTooltipDelay);
+        const marker = $("starting_player");
+        if (marker) {
+            marker.textContent = _("#1");
+            nameLink.insertAdjacentElement("afterend", marker);
+            const html = this.getTooltipHtml(_("First Player"), _("First player starts the game. End-game is triggered mid-round and play continues only until the trigger player is reached again, so players earlier in turn order can take one more turn than players coming after the trigger."));
+            this.addTooltipHtml(marker.id, html, this.defaultTooltipDelay);
+        }
     }
     setupPlayer(playerInfo) {
         console.log("player info " + playerInfo.id, playerInfo);

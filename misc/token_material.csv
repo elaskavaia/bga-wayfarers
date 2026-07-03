@@ -8,6 +8,8 @@ id|name|count|type|create|location|php
 # 5 - the token with id "${id}_{INDEX}_{COLOR}" for each player will be created
 # 6 - custom placeholders
 
+#first player
+starting_player|First Player Marker|1||1|limbo
 
 #12  Workers 4 of each 3 colors
 worker_blue|Blue Worker|4|worker wooden|2|limbo|

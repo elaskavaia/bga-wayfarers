@@ -65,7 +65,10 @@ class Game extends Base {
         called from setupNewGame
     */
     protected function setupGameTables() {
+        $startingPlayer = (int) $this->getActivePlayerId();
+        $this->customUndoSavepoint($startingPlayer, 1);
         $this->tokens->createTokens();
+        $this->setCurrentStartingPlayer($startingPlayer);
         $tokens = $this->tokens->db;
         // setup
         $pnum = $this->getPlayersNumber();
@@ -159,7 +162,6 @@ class Game extends Base {
         // Return any unused Player Boards, Dice, Influence tokens, Player Markers, and Workers to the box.
 
         $i = 1;
-        $startingPlayer = (int) $this->getActivePlayerId();
         $p = $this->getPlayerIdsInOrder($startingPlayer);
         $pboards = [1, 2, 3, 4];
         shuffle($pboards);
@@ -175,13 +177,20 @@ class Game extends Base {
             $this->tokens->db->moveToken("worker_blue_{$i}", "tableau_$color", 0);
             $this->tokens->db->moveToken("worker_yellow_{$i}", "tableau_$color", 0);
 
+            // silver
             if ($i <= 2) {
                 $this->effect_incCount($color, "coin", 3, "setup");
             } else {
                 $this->effect_incCount($color, "coin", 4, "setup");
             }
-            $this->effect_incCount($color, "food", 2, "setup");
+            // provisions
+            if ($i <= 3) {
+                $this->effect_incCount($color, "food", 2, "setup");
+            } else {
+                $this->effect_incCount($color, "food", 3, "setup");
+            }
 
+            //influence
             $this->tokens->dbSetTokenLocation(
                 "influence_{$color}_1",
                 "guild_blue",
@@ -217,7 +226,7 @@ class Game extends Base {
         }
 
         $this->machine->queue("turn", $this->custom_getPlayerColorById($startingPlayer));
-        $this->customUndoSavepoint($startingPlayer, 1);
+
         // Force the deferred save now — framework's setup-end self::sendNotifications bypasses
         // our Base::sendNotifications override, so the snapshot would otherwise never be written.
         $this->doUndoSavePoint();
@@ -996,6 +1005,18 @@ class Game extends Base {
         $this->machine->queue("turn", $this->custom_getPlayerColorById($nextPlayerId));
     }
 
+    function setCurrentStartingPlayer(int $playerId) {
+        $color = $this->custom_getPlayerColorById($playerId);
+        $this->tokens->dbSetTokenLocation(
+            "starting_player",
+            "tableau_$color",
+            $playerId,
+            clienttranslate('${player_name} is starting player'),
+            [],
+            $playerId
+        );
+    }
+
     public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
         if ($this->isSolo()) {
             $player_id = $this->getFirstPlayer();
@@ -1035,12 +1056,14 @@ class Game extends Base {
 
     function debug_q() {
         $color = $this->getPlayerColorById((int) $this->getCurrentPlayerId());
+
+        $this->setCurrentStartingPlayer((int) $this->getCurrentPlayerId());
         // $this->machine->push("upgGreen", $color);
         // $this->machine->push("upgGreen", $color);
         // $this->machine->push("upgBlack", $color);
         // $this->machine->push("upgBlack", $color);
         // $this->machine->push("upgYellow", $color);
-        $this->machine->push("infAny", $this->getAutomaColor());
+        //$this->machine->push("infAny", $this->getAutomaColor());
 
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }

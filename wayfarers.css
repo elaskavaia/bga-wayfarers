@@ -2143,13 +2143,13 @@ html[data-theme=dark] .miniboard .jtag_count {
 .food {
   background-image: url(img/tokens.png);
   background-position: 84% 42%;
-  background-size: auto 1100%;
+  background-size: auto 1000%;
 }
 
 .coin {
   background-image: url(img/tokens.png);
   background-position: 76.5% 42%;
-  background-size: auto 1200%;
+  background-size: auto 1100%;
 }
 
 .worker {
@@ -3181,12 +3181,6 @@ button.bgabutton > * {
   overflow: visible;
 }
 
-.player-board {
-  background-color: #f8f8f8;
-  background-image: url(img/bg.jpg);
-  background-size: cover;
-}
-
 #score-area {
   display: flex;
   flex-wrap: wrap;
@@ -3243,12 +3237,11 @@ button.bgabutton > * {
   cursor: pointer;
 }
 
-html {
+html[data-theme=light] {
   background: none;
   background-color: #b9ecbe;
 }
-
-html:before {
+html[data-theme=light]::before {
   background-image: url(img/bg.jpg);
   background-position: 50% 100%;
   background-repeat: no-repeat;
@@ -3263,13 +3256,17 @@ html:before {
   position: fixed;
   z-index: -1;
 }
-
-#player_board_inner_6cd0f6 .player-name a,
-#player_board_inner_ffcc02 .player-name a {
+html[data-theme=light] #player_board_inner_6cd0f6 .player-name a,
+html[data-theme=light] #player_board_inner_ffcc02 .player-name a {
   text-shadow: -1px -1px rgba(0, 0, 0, 0.267), 1px 1px rgba(0, 0, 0, 0.267), -1px 1px rgba(0, 0, 0, 0.267), 1px -1px rgba(0, 0, 0, 0.267);
 }
+html[data-theme=light] .player-board {
+  background-color: #f8f8f8;
+  background-image: url(img/bg.jpg);
+  background-size: cover;
+}
 
-#first_player_marker {
+#starting_player {
   margin-left: 0.4em;
   vertical-align: middle;
   font-weight: normal;

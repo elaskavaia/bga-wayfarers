@@ -584,6 +584,13 @@ class Material {
 // # 4 - the token with id "${id}_{COLOR}" for each player will be created, count must be 1
 // # 5 - the token with id "${id}_{INDEX}_{COLOR}" for each player will be created
 // # 6 - custom placeholders
+// #first player
+    "starting_player" => [ 
+        "name" => clienttranslate("First Player Marker"),
+        "count" => 1,
+        "create" => 1,
+        "location" => "limbo",
+],
 // #12  Workers 4 of each 3 colors
     "worker_blue" => [ 
         "name" => clienttranslate("Blue Worker"),
@@ -1119,8 +1126,8 @@ class Material {
         "d" => "camel",
         "dr" => "2n_food:coin,cardLand",
         "tags" => "City",
-        "nom" => "Capital City",
-        "todr" => "Pay 2 Provisions to gain Silver and acquire a Land Card",
+        "nom" => clienttranslate("Capital City"),
+        "todr" => clienttranslate("Pay 2 Provisions to gain Silver and acquire a Land Card"),
         "state"=>-1,
 ],
     "card_home_3" => [ 
@@ -1131,8 +1138,8 @@ class Material {
         "d" => "ship",
         "dr" => "2n_food:cardWater",
         "tags" => "Harbour",
-        "nom" => "Capital Harbour",
-        "todr" => "Pay 2 Provisions to acquire a Water Card",
+        "nom" => clienttranslate("Capital Harbour"),
+        "todr" => clienttranslate("Pay 2 Provisions to acquire a Water Card"),
         "state"=>1,
 ],
     "card_home_10" => [ 
@@ -1142,8 +1149,8 @@ class Material {
         "num" => 10,
         "d" => "telescope",
         "dr" => "(cardSpace/upgBlack)",
-        "nom" => "Capital Observatory",
-        "todr" => "Acquire a Space Card or Space Upgrade Tile",
+        "nom" => clienttranslate("Capital Observatory"),
+        "todr" => clienttranslate("Acquire a Space Card or Space Upgrade Tile"),
 ],
     "card_home_11" => [ 
         "create" => 4,
@@ -1152,8 +1159,8 @@ class Material {
         "num" => 11,
         "d" => "pigeon",
         "dr" => "(journal/(infAny,pickWorker))",
-        "nom" => "Capital Library",
-        "todr" => "Journal or Retrieve a Worker and Place Influence on any Guild",
+        "nom" => clienttranslate("Capital Library"),
+        "todr" => clienttranslate("Journal or Retrieve a Worker and Place Influence on any Guild"),
 ],
     "card_home_12" => [ 
         "create" => 4,
@@ -1162,8 +1169,8 @@ class Material {
         "num" => 12,
         "d" => "any",
         "dr" => "(cardFolk/2food)",
-        "nom" => "Capital Market",
-        "todr" => "Acquire a Townsfolk Card or Gain 2 Provisions",
+        "nom" => clienttranslate("Capital Market"),
+        "todr" => clienttranslate("Acquire a Townsfolk Card or Gain 2 Provisions"),
 ],
     "card_home_13" => [ 
         "create" => 4,
@@ -1172,8 +1179,8 @@ class Material {
         "num" => 13,
         "d" => "any",
         "dr" => "(upgGreen/2coin)",
-        "nom" => "Capital Reserve",
-        "todr" => "Gain a Basic Upgrade Tile or Gain 2 Silver",
+        "nom" => clienttranslate("Capital Reserve"),
+        "todr" => clienttranslate("Gain a Basic Upgrade Tile or Gain 2 Silver"),
 ],
             /* --- gen php end card_material --- */
             /* --- gen php begin cardfolk_material --- */
@@ -2685,8 +2692,8 @@ class Material {
         "r" => "journal",
         "vpexp" => "win_Comet?4:3",
         "tags" => "Comet",
-        "tor" => "Journal",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP",
+        "tor" => clienttranslate("Journal"),
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP"),
         "nom" => clienttranslate("Chronicler's Comet"),
 ],
     "card_space_78" => [ 
@@ -2695,8 +2702,8 @@ class Material {
         "r" => "journal",
         "vpexp" => "win_Comet?4:3",
         "tags" => "Comet",
-        "tor" => "Journal",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP",
+        "tor" => clienttranslate("Journal"),
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 3 VP"),
         "nom" => clienttranslate("Chronicler's Comet"),
 ],
     "card_space_79" => [ 
@@ -2705,8 +2712,8 @@ class Material {
         "r" => "reroll",
         "vpexp" => "win_Comet?4:2",
         "tags" => "Comet Comet",
-        "tor" => "Refresh a die",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP",
+        "tor" => clienttranslate("Refresh a die"),
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP"),
         "nom" => clienttranslate("Blazing Trail"),
 ],
     "card_space_80" => [ 
@@ -2715,8 +2722,8 @@ class Material {
         "r" => "reroll",
         "vpexp" => "win_Comet?4:2",
         "tags" => "Comet Comet",
-        "tor" => "Refresh a die",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP",
+        "tor" => clienttranslate("Refresh a die"),
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP"),
         "nom" => clienttranslate("Blazing Trail"),
 ],
     "card_space_81" => [ 
@@ -2725,8 +2732,8 @@ class Material {
         "r" => "reroll",
         "vpexp" => "win_Comet?4:2",
         "tags" => "Comet Comet",
-        "tor" => "Refresh a die",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP",
+        "tor" => clienttranslate("Refresh a die"),
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 2 VP"),
         "nom" => clienttranslate("Blazing Trail"),
 ],
     "card_space_82" => [ 
@@ -2734,7 +2741,7 @@ class Material {
         "num" => 82,
         "vpexp" => "win_Comet?4:1",
         "tags" => "Comet Comet Comet",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP",
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP"),
         "nom" => clienttranslate("Great Omen"),
 ],
     "card_space_83" => [ 
@@ -2742,7 +2749,7 @@ class Material {
         "num" => 83,
         "vpexp" => "win_Comet?4:1",
         "tags" => "Comet Comet Comet",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP",
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP"),
         "nom" => clienttranslate("Great Omen"),
 ],
     "card_space_84" => [ 
@@ -2750,7 +2757,7 @@ class Material {
         "num" => 84,
         "vpexp" => "win_Comet?4:1",
         "tags" => "Comet Comet Comet",
-        "tovp" => "If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP",
+        "tovp" => clienttranslate("If you have more Comet tags than each opponent: 4 VP, otherwise 1 VP"),
         "nom" => clienttranslate("Great Omen"),
 ],
 // # Planets
@@ -2760,8 +2767,8 @@ class Material {
         "r" => "infYellow",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Place Influence on Yellow Guild",
-        "tovp" => "1 VP + 1 VP per Planet tag",
+        "tor" => clienttranslate("Place Influence on Yellow Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Planet tag"),
         "nom" => clienttranslate("Jupiter"),
 ],
     "card_space_87" => [ 
@@ -2770,8 +2777,8 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Gain Provisions",
-        "tovp" => "1 VP + 1 VP per Planet tag",
+        "tor" => clienttranslate("Gain Provisions"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Planet tag"),
         "nom" => clienttranslate("Mars"),
 ],
     "card_space_88" => [ 
@@ -2780,8 +2787,8 @@ class Material {
         "r" => "infCard",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Place Influence on a Card",
-        "tovp" => "1 VP + 1 VP per Planet tag",
+        "tor" => clienttranslate("Place Influence on a Card"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Planet tag"),
         "nom" => clienttranslate("Mercury"),
 ],
     "card_space_89" => [ 
@@ -2790,8 +2797,8 @@ class Material {
         "r" => "infBlack",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Place Influence on Black Guild",
-        "tovp" => "1 VP + 1 VP per Planet tag",
+        "tor" => clienttranslate("Place Influence on Black Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Planet tag"),
         "nom" => clienttranslate("Saturn"),
 ],
     "card_space_90" => [ 
@@ -2800,8 +2807,8 @@ class Material {
         "r" => "infBlue",
         "vpexp" => "1+tag_Planet",
         "tags" => "Planet",
-        "tor" => "Place Influence on Blue Guild",
-        "tovp" => "1 VP + 1 VP per Planet tag",
+        "tor" => clienttranslate("Place Influence on Blue Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Planet tag"),
         "nom" => clienttranslate("Venus"),
 ],
 // # Stars
@@ -2811,8 +2818,8 @@ class Material {
         "r" => "infCard",
         "vpexp" => "min(tag_Planet,tag_Comet,tag_Stars)*3",
         "tags" => "Stars",
-        "tor" => "Place Influence on a Card",
-        "tovp" => "3 VP per set of Planet, Comet, and Stars tags",
+        "tor" => clienttranslate("Place Influence on a Card"),
+        "tovp" => clienttranslate("3 VP per set of Planet, Comet, and Stars tags"),
         "nom" => clienttranslate("Celestial Triad"),
 ],
     "card_space_92" => [ 
@@ -2820,7 +2827,7 @@ class Material {
         "num" => 92,
         "vpexp" => "tag_City",
         "tags" => "Stars",
-        "tovp" => "1 VP per City tag",
+        "tovp" => clienttranslate("1 VP per City tag"),
         "nom" => clienttranslate("City Light"),
 ],
     "card_space_93" => [ 
@@ -2828,7 +2835,7 @@ class Material {
         "num" => 93,
         "vpexp" => "tag_City",
         "tags" => "Stars",
-        "tovp" => "1 VP per City tag",
+        "tovp" => clienttranslate("1 VP per City tag"),
         "nom" => clienttranslate("City Light"),
 ],
     "card_space_94" => [ 
@@ -2836,7 +2843,7 @@ class Material {
         "num" => 94,
         "vpexp" => "tag_Harbour",
         "tags" => "Stars",
-        "tovp" => "1 VP per Harbour tag",
+        "tovp" => clienttranslate("1 VP per Harbour tag"),
         "nom" => clienttranslate("Harbor Beacon"),
 ],
     "card_space_95" => [ 
@@ -2844,7 +2851,7 @@ class Material {
         "num" => 95,
         "vpexp" => "tag_Harbour",
         "tags" => "Stars",
-        "tovp" => "1 VP per Harbour tag",
+        "tovp" => clienttranslate("1 VP per Harbour tag"),
         "nom" => clienttranslate("Harbor Beacon"),
 ],
     "card_space_96" => [ 
@@ -2853,8 +2860,8 @@ class Material {
         "r" => "cardInsp",
         "vpexp" => "tag_card_insp",
         "tags" => "Stars",
-        "tor" => "Acquire an Inspiration card",
-        "tovp" => "1 VP per Inspiration card",
+        "tor" => clienttranslate("Acquire an Inspiration card"),
+        "tovp" => clienttranslate("1 VP per Inspiration card"),
         "nom" => clienttranslate("Muse's Light"),
 ],
     "card_space_97" => [ 
@@ -2863,8 +2870,8 @@ class Material {
         "r" => "infBlack,infMove",
         "vpexp" => "1+(inf_black/2)",
         "tags" => "Stars",
-        "tor" => "Place Influence on Black Guild and move Influence",
-        "tovp" => "1 VP + 1 VP per 2 influence on Black Guild",
+        "tor" => clienttranslate("Place Influence on Black Guild and move Influence"),
+        "tovp" => clienttranslate("1 VP + 1 VP per 2 influence on Black Guild"),
         "nom" => clienttranslate("Shadow Guide"),
 ],
     "card_space_98" => [ 
@@ -2873,8 +2880,8 @@ class Material {
         "r" => "infBlue,infMove",
         "vpexp" => "1+(inf_blue/2)",
         "tags" => "Stars",
-        "tor" => "Place Influence on Blue Guild and move Influence",
-        "tovp" => "1 VP + 1 VP per 2 influence on Blue Guild",
+        "tor" => clienttranslate("Place Influence on Blue Guild and move Influence"),
+        "tovp" => clienttranslate("1 VP + 1 VP per 2 influence on Blue Guild"),
         "nom" => clienttranslate("Tide Navigator"),
 ],
     "card_space_99" => [ 
@@ -2883,8 +2890,8 @@ class Material {
         "r" => "infYellow,infMove",
         "vpexp" => "1+(inf_yellow/2)",
         "tags" => "Stars",
-        "tor" => "Place Influence on Yellow Guild and move Influence",
-        "tovp" => "1 VP + 1 VP per 2 influence on Yellow Guild",
+        "tor" => clienttranslate("Place Influence on Yellow Guild and move Influence"),
+        "tovp" => clienttranslate("1 VP + 1 VP per 2 influence on Yellow Guild"),
         "nom" => clienttranslate("Path Finder"),
 ],
     "card_space_100" => [ 
@@ -2893,8 +2900,8 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Book",
         "tags" => "Stars",
-        "tor" => "Gain Provisions",
-        "tovp" => "1 VP + 1 VP per Book tag",
+        "tor" => clienttranslate("Gain Provisions"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Book tag"),
         "nom" => clienttranslate("Scholar's Star"),
 ],
     "card_space_101" => [ 
@@ -2903,8 +2910,8 @@ class Material {
         "r" => "food",
         "vpexp" => "1+tag_Observatory",
         "tags" => "Stars",
-        "tor" => "Gain Provisions",
-        "tovp" => "1 VP + 1 VP per Observatory tag",
+        "tor" => clienttranslate("Gain Provisions"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Observatory tag"),
         "nom" => clienttranslate("Observer's Eye"),
 ],
     "card_space_102" => [ 
@@ -2912,7 +2919,7 @@ class Material {
         "num" => 102,
         "vpexp" => "tag_Sea",
         "tags" => "Stars",
-        "tovp" => "1 VP per Open Water tag",
+        "tovp" => clienttranslate("1 VP per Open Water tag"),
         "nom" => clienttranslate("Ocean Star"),
 ],
     "card_space_103" => [ 
@@ -2920,7 +2927,7 @@ class Material {
         "num" => 103,
         "vpexp" => "tag_Sea",
         "tags" => "Stars",
-        "tovp" => "1 VP per Open Water tag",
+        "tovp" => clienttranslate("1 VP per Open Water tag"),
         "nom" => clienttranslate("Ocean Star"),
 ],
     "card_space_104" => [ 
@@ -2929,8 +2936,8 @@ class Material {
         "r" => "cardFolk(free)",
         "vpexp" => "min(tag_card_folk,tag_card_space,tag_card_land,tag_card_water)",
         "tags" => "Stars",
-        "tor" => "Acquire a free Townsfolk card",
-        "tovp" => "1 VP per set of Townsfolk, Space, Land, and Water cards",
+        "tor" => clienttranslate("Acquire a free Townsfolk card"),
+        "tovp" => clienttranslate("1 VP per set of Townsfolk, Space, Land, and Water cards"),
         "nom" => clienttranslate("Collector's Star"),
 ],
     "card_space_105" => [ 
@@ -2939,8 +2946,8 @@ class Material {
         "r" => "infCard",
         "vpexp" => "tag_Stars",
         "tags" => "Stars",
-        "tor" => "Place Influence on a Card",
-        "tovp" => "1 VP per Stars tag",
+        "tor" => clienttranslate("Place Influence on a Card"),
+        "tovp" => clienttranslate("1 VP per Stars tag"),
         "nom" => clienttranslate("Constellation"),
 ],
     "card_space_106" => [ 
@@ -2949,8 +2956,8 @@ class Material {
         "r" => "infBlack",
         "vpexp" => "1+tag_upg_black",
         "tags" => "Stars",
-        "tor" => "Place Influence on Black Guild",
-        "tovp" => "1 VP + 1 VP per Space upgrade tile",
+        "tor" => clienttranslate("Place Influence on Black Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Space upgrade tile"),
         "nom" => clienttranslate("Night Compass"),
 ],
     "card_space_107" => [ 
@@ -2959,8 +2966,8 @@ class Material {
         "r" => "infBlue",
         "vpexp" => "1+tag_upg_blue",
         "tags" => "Stars",
-        "tor" => "Place Influence on Blue Guild",
-        "tovp" => "1 VP + 1 VP per Water upgrade tile",
+        "tor" => clienttranslate("Place Influence on Blue Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Water upgrade tile"),
         "nom" => clienttranslate("Sea Compass"),
 ],
     "card_space_108" => [ 
@@ -2969,8 +2976,8 @@ class Material {
         "r" => "cardFolk(free)",
         "vpexp" => "1+tag_upg_green",
         "tags" => "Stars",
-        "tor" => "Acquire a free Townsfolk card",
-        "tovp" => "1 VP + 1 VP per Basic upgrade tile",
+        "tor" => clienttranslate("Acquire a free Townsfolk card"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Basic upgrade tile"),
         "nom" => clienttranslate("Land Guide"),
 ],
     "card_space_109" => [ 
@@ -2979,8 +2986,8 @@ class Material {
         "r" => "infYellow",
         "vpexp" => "1+tag_upg_yellow",
         "tags" => "Stars",
-        "tor" => "Place Influence on Yellow Guild",
-        "tovp" => "1 VP + 1 VP per Land upgrade tile",
+        "tor" => clienttranslate("Place Influence on Yellow Guild"),
+        "tovp" => clienttranslate("1 VP + 1 VP per Land upgrade tile"),
         "nom" => clienttranslate("Earth Compass"),
 ],
     "card_space_110" => [ 
@@ -2988,7 +2995,7 @@ class Material {
         "num" => 110,
         "vpexp" => "tag_Vista",
         "tags" => "Stars",
-        "tovp" => "1 VP per Vista tag",
+        "tovp" => clienttranslate("1 VP per Vista tag"),
         "nom" => clienttranslate("Vista Gleam"),
 ],
     "card_space_111" => [ 
@@ -2996,7 +3003,7 @@ class Material {
         "num" => 111,
         "vpexp" => "tag_Vista",
         "tags" => "Stars",
-        "tovp" => "1 VP per Vista tag",
+        "tovp" => clienttranslate("1 VP per Vista tag"),
         "nom" => clienttranslate("Vista Gleam"),
 ],
 // #Moon and Sun
@@ -3006,8 +3013,8 @@ class Material {
         "r" => "infBlue",
         "vpexp" => "tag_Sun?7:3",
         "tags" => "Moon",
-        "tor" => "Place Influence on Blue Guild",
-        "tovp" => "If you have a Sun tag: 7 VP, otherwise 3 VP",
+        "tor" => clienttranslate("Place Influence on Blue Guild"),
+        "tovp" => clienttranslate("If you have a Sun tag: 7 VP, otherwise 3 VP"),
         "nom" => clienttranslate("Moon"),
 ],
     "card_space_112" => [ 
@@ -3016,8 +3023,8 @@ class Material {
         "r" => "infYellow",
         "vpexp" => "tag_Moon?7:3",
         "tags" => "Sun",
-        "tor" => "Place Influence on Yellow Guild",
-        "tovp" => "If you have a Moon tag: 7 VP, otherwise 3 VP",
+        "tor" => clienttranslate("Place Influence on Yellow Guild"),
+        "tovp" => clienttranslate("If you have a Moon tag: 7 VP, otherwise 3 VP"),
         "nom" => clienttranslate("Sun"),
 ],
 // # 113|upgPink|1|Comet|Gain special upgrade tile|1 VP|Rare Fragment
@@ -3029,7 +3036,7 @@ class Material {
         "num" => 1,
         "vpexp" => "min(tag_upg_any,tag_card_folk)",
         "tags" => "Stars",
-        "tovp" => "1 VP per set of Basic upgrade and Townsfolk",
+        "tovp" => clienttranslate("1 VP per set of an upgrade tile and Townsfolk"),
         "nom" => clienttranslate("Capital Sky"),
         "state"=>1,
 ],
@@ -3043,7 +3050,7 @@ class Material {
         "collect" => "tag_Comet",
         "goal" => 6,
         "tooltip" => clienttranslate("Have at least 6 Comet tags"),
-        "nom" => "Comet Wish",
+        "nom" => clienttranslate("Comet Wish"),
 ],
     "card_insp_2" => [ 
         "create" => 1,
@@ -3051,7 +3058,7 @@ class Material {
         "collect" => "tag_Stars",
         "goal" => 5,
         "tooltip" => clienttranslate("Have at least 5 Stars tags, including starting tag"),
-        "nom" => "Starlight",
+        "nom" => clienttranslate("Starlight"),
 ],
     "card_insp_3" => [ 
         "create" => 1,
@@ -3059,7 +3066,7 @@ class Material {
         "collect" => "tag_Planet",
         "goal" => 3,
         "tooltip" => clienttranslate("Have at least 3 Planet tags"),
-        "nom" => "Planetfall",
+        "nom" => clienttranslate("Planetfall"),
 ],
     "card_insp_4" => [ 
         "create" => 1,
@@ -3067,7 +3074,7 @@ class Material {
         "collect" => "tag_card_folk",
         "goal" => 6,
         "tooltip" => clienttranslate("Have at least 6 Townsfolk cards, including starting card"),
-        "nom" => "Town Square",
+        "nom" => clienttranslate("Town Square"),
 ],
     "card_insp_5" => [ 
         "create" => 1,
@@ -3075,7 +3082,7 @@ class Material {
         "collect" => "tag_Book",
         "goal" => 4,
         "tooltip" => clienttranslate("Have at least 4 Library tags, including starting tag"),
-        "nom" => "Curiosity",
+        "nom" => clienttranslate("Curiosity"),
 ],
     "card_insp_6" => [ 
         "create" => 1,
@@ -3083,7 +3090,7 @@ class Material {
         "collect" => "tag_Vista",
         "goal" => 4,
         "tooltip" => clienttranslate("Have at least 4 Vista tags"),
-        "nom" => "Grand View",
+        "nom" => clienttranslate("Grand View"),
 ],
     "card_insp_7" => [ 
         "create" => 1,
@@ -3091,7 +3098,7 @@ class Material {
         "collect" => "tag_Sea",
         "goal" => 4,
         "tooltip" => clienttranslate("Have at least 4 Open Water tags"),
-        "nom" => "Open Seas",
+        "nom" => clienttranslate("Open Seas"),
 ],
     "card_insp_8" => [ 
         "create" => 1,
@@ -3099,7 +3106,7 @@ class Material {
         "collect" => "tag_Harbour",
         "goal" => 5,
         "tooltip" => clienttranslate("Have at least 5 Harbour tags, including starting tag"),
-        "nom" => "Safe Harbors",
+        "nom" => clienttranslate("Safe Harbors"),
 ],
     "card_insp_9" => [ 
         "create" => 1,
@@ -3107,7 +3114,7 @@ class Material {
         "collect" => "min(tag_upg_green,tag_upg_black)",
         "goal" => 2,
         "tooltip" => clienttranslate("Have at least two Basic upgrades and two Space upgrades"),
-        "nom" => "Dual Study",
+        "nom" => clienttranslate("Dual Study"),
 ],
     "card_insp_10" => [ 
         "create" => 1,
@@ -3115,7 +3122,7 @@ class Material {
         "collect" => "tag_upg_blue",
         "goal" => 3,
         "tooltip" => clienttranslate("Have at least 3 Water upgrades"),
-        "nom" => "Sea Mastery",
+        "nom" => clienttranslate("Sea Mastery"),
 ],
     "card_insp_11" => [ 
         "create" => 1,
@@ -3123,7 +3130,7 @@ class Material {
         "collect" => "tag_upg_yellow",
         "goal" => 3,
         "tooltip" => clienttranslate("Have at least 3 Land upgrades"),
-        "nom" => "Land Mastery",
+        "nom" => clienttranslate("Land Mastery"),
 ],
     "card_insp_12" => [ 
         "create" => 1,
@@ -3131,7 +3138,7 @@ class Material {
         "collect" => "inf_yellow+inf_blue+inf_black",
         "goal" => 10,
         "tooltip" => clienttranslate("Have at least 10 combined influence in all guilds"),
-        "nom" => "Eminence",
+        "nom" => clienttranslate("Eminence"),
 ],
     "card_insp_13" => [ 
         "create" => 1,
@@ -3139,7 +3146,7 @@ class Material {
         "collect" => "tag_Observatory",
         "goal" => 4,
         "tooltip" => clienttranslate("Have at least 4 Observatory tags, including starting tag"),
-        "nom" => "Starwatch",
+        "nom" => clienttranslate("Starwatch"),
 ],
     "card_insp_14" => [ 
         "create" => 1,
@@ -3147,7 +3154,7 @@ class Material {
         "collect" => "tag_City",
         "goal" => 5,
         "tooltip" => clienttranslate("Have at least 5 City tags, including starting tag"),
-        "nom" => "Metropolis",
+        "nom" => clienttranslate("Metropolis"),
 ],
     "card_insp_15" => [ 
         "create" => 1,
@@ -3155,7 +3162,7 @@ class Material {
         "collect" => "tracker_food",
         "goal" => 6,
         "tooltip" => clienttranslate("Have at least 6 Provisions"),
-        "nom" => "Stockpile",
+        "nom" => clienttranslate("Stockpile"),
 ],
     "card_insp_15" => [ 
         "create" => 1,
@@ -3163,7 +3170,7 @@ class Material {
         "collect" => "tracker_coin",
         "goal" => 6,
         "tooltip" => clienttranslate("Have at least 6 Silver"),
-        "nom" => "Treasure Mountains",
+        "nom" => clienttranslate("Treasure Mountains"),
 ],
     "card_insp_17" => [ 
         "create" => 1,
@@ -3171,7 +3178,7 @@ class Material {
         "collect" => "tag_card_land",
         "goal" => 8,
         "tooltip" => clienttranslate("Have at least 8 Land cards, including starting card"),
-        "nom" => "New Horizons",
+        "nom" => clienttranslate("New Horizons"),
 ],
     "card_insp_18" => [ 
         "create" => 1,
@@ -3179,7 +3186,7 @@ class Material {
         "collect" => "tag_card_water",
         "goal" => 8,
         "tooltip" => clienttranslate("Have at least 8 Water cards, including starting card"),
-        "nom" => "Odyssey",
+        "nom" => clienttranslate("Odyssey"),
 ],
             /* --- gen php end cardinsp_material --- */
 
@@ -4781,7 +4788,7 @@ class Material {
         "r2" => "ai_focusAction",
         "p" => 6,
         "comet" => 1,
-        "nom" => "Worker or Focus",
+        "nom" => clienttranslate("Worker or Focus"),
 ],
     "card_scheme_2" => [ 
         "create" => 1,
@@ -4794,7 +4801,7 @@ class Material {
         "r2" => "infBlue,infYellow,infBlack",
         "p" => 8,
         "comet" => 1,
-        "nom" => "Worker or Influence",
+        "nom" => clienttranslate("Worker or Influence"),
 ],
     "card_scheme_3" => [ 
         "create" => 1,
@@ -4807,7 +4814,7 @@ class Material {
         "r2" => "ai_upgAny",
         "p" => 10,
         "comet" => 0,
-        "nom" => "Worker or Upgrade",
+        "nom" => clienttranslate("Worker or Upgrade"),
 ],
 // # Red cards
     "card_scheme_4" => [ 
@@ -4821,7 +4828,7 @@ class Material {
         "r2" => "infBlue,ai_upgAny",
         "p" => 5,
         "comet" => 1,
-        "nom" => "Buy Water or Upgrade",
+        "nom" => clienttranslate("Buy Water or Upgrade"),
 ],
     "card_scheme_5" => [ 
         "create" => 1,
@@ -4834,7 +4841,7 @@ class Material {
         "r2" => "infBlack,ai_cardFolk",
         "p" => 3,
         "comet" => 1,
-        "nom" => "Buy Space or Buy Townsfolk",
+        "nom" => clienttranslate("Buy Space or Buy Townsfolk"),
 ],
     "card_scheme_6" => [ 
         "create" => 1,
@@ -4847,7 +4854,7 @@ class Material {
         "r2" => "infYellow,infYellow,ai_infCard",
         "p" => 1,
         "comet" => 0,
-        "nom" => "Buy Land or Influence",
+        "nom" => clienttranslate("Buy Land or Influence"),
 ],
 // #res track
 // #t: priority color
@@ -4918,7 +4925,7 @@ class Material {
         "t" => "ai_cardSpace",
         "r1" => "ai_cardSpace",
         "r2" => "ai_comet",
-        "nom" => "Aida the Stargazer",
+        "nom" => clienttranslate("Aida the Stargazer"),
 ],
     "aiboard_2" => [ 
         "create" => 0,
@@ -4926,7 +4933,7 @@ class Material {
         "t" => "ai_upgAny",
         "r1" => "ai_upgAny",
         "r2" => "infYellow",
-        "nom" => "Aida the Inventor",
+        "nom" => clienttranslate("Aida the Inventor"),
 ],
     "aiboard_3" => [ 
         "create" => 0,
@@ -4934,7 +4941,7 @@ class Material {
         "t" => "ai_cardFolk",
         "r1" => "ai_cardFolk",
         "r2" => "ai_cardFolk",
-        "nom" => "Aida the Mayor",
+        "nom" => clienttranslate("Aida the Mayor"),
 ],
     "aiboard_4" => [ 
         "create" => 0,
@@ -4942,7 +4949,7 @@ class Material {
         "t" => "ai_journal",
         "r1" => "ai_infCard",
         "r2" => "infBlack",
-        "nom" => "Aida the Wayfarer",
+        "nom" => clienttranslate("Aida the Wayfarer"),
 ],
             /* --- gen php end scheme_material --- */
         ];

@@ -139,7 +139,7 @@ class Op_turn extends Operation {
         if ($oprest->noValidTargets()) {
             $res["rest"] = ["q" => Material::ERR_NOT_APPLICABLE, "name" => clienttranslate("Rest"), "color" => "secondary"];
         } elseif ($oprest->isGoodRest()) {
-            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest") . " [wicon_rest1]", "color" => "secondary"];
+            $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest [wicon_rest1]"), "color" => "secondary"];
         } else {
             $res["rest"] = ["q" => 0, "name" => clienttranslate("Rest"), "color" => "alert"];
         }

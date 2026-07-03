@@ -3,6 +3,7 @@ num|t|c|r1|r2|p|comet|nom
 #set id=card_scheme_{num}
 #set type=card card_scheme
 #set location=deck_scheme
+#set _tr=nom
 # 6 Scheme Cards for Solo AI
 # t: blue or red
 # c: silver value (0-2) - how far AI moves on Resource Track

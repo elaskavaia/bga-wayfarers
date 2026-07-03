@@ -1,5 +1,6 @@
 num|collect|goal|tooltip|nom
 #set create=1
+#set _tr=nom
 #set id=card_insp_{num}
 # Inspiration cards (1-18)
 1|tag_Comet|6|Have at least 6 Comet tags|Comet Wish
