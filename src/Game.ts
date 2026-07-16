@@ -9,7 +9,7 @@
  *
  */
 
-import { getParentParts, getPart, NotificationMessage, placeHtml } from "./Game0Basics";
+import { getFirstParts, getParentParts, getPart, NotificationMessage, placeHtml } from "./Game0Basics";
 import { Token, TokenMoveInfo, AnimArgs, TokenDisplayInfo } from "./Game1Tokens";
 import { GameMachine, OpInfo, ParamInfo } from "./GameMachine";
 import { BgaScoreSheet } from "./libs";
@@ -883,7 +883,11 @@ export class Game extends GameMachine {
         {
           const cardType = getPart(target, 1);
           if (cardType == "home") {
-            this.showHiddenContent(node, _("Home Actions"), target);
+            this.showHiddenContent(node, _("Capital"), target);
+            return false;
+          }
+          if (getFirstParts(target, 3) == "card_space_1") {
+            this.showHiddenContent(node, _("Capital"), target);
             return false;
           }
           const container = $(target).parentElement?.id;
@@ -1039,8 +1043,8 @@ export class Game extends GameMachine {
             //tokenInfo.tooltip += this.ttSection(_("Name"), this.getTr(tokenInfo.nom));
             tokenInfo.tooltip += this.ttSection(_("Silver"), tokenInfo.c);
             tokenInfo.tooltip += this.ttSection(_("Color"), tokenInfo.t == "red" ? _("Red") : _("Blue"));
-            tokenInfo.tooltip += this.ttSection(_("Primary Action"), this.getOpListTr(tokenInfo.r1));
-            tokenInfo.tooltip += this.ttSection(_("Fallback Action"), this.getOpListTr(tokenInfo.r2));
+            tokenInfo.tooltip += this.ttSection(_("Primary Action"), this.getTr(tokenInfo.tor1));
+            tokenInfo.tooltip += this.ttSection(_("Fallback Action"), this.getTr(tokenInfo.tor2));
             tokenInfo.tooltip += this.ttSection(_("Special Upgrade"), tokenInfo.p);
             if (tokenInfo.comet == "1") tokenInfo.tooltip += this.ttSection(_("Comet"), _("Yes"));
             else tokenInfo.tooltip += this.ttSection(_("Comet"), _("No"));

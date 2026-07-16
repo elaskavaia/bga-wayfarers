@@ -30,7 +30,7 @@ class Op_ai_shuffle extends AiOperation {
 
         // Shuffle the deck
         $this->game->tokens->db->shuffle("deck_scheme");
-        $this->notifyMessage('${player_name} shuffles scheme cards back to deck');
+        $this->notifyMessage(clienttranslate('${player_name} shuffles scheme cards back to deck'));
 
         return true;
     }

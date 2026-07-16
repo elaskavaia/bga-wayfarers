@@ -745,7 +745,8 @@ class Base extends Table {
     */
 
     function zombieTurn($state, $active_player) {
-        throw new UserException("Zombie mode not supported at this game");
+        // this is a fallback, zombie mode is handled via states
+        throw new UserException("Zombie mode not supported in this game"); // NOI18N
     }
 
     ///////////////////////////////////////////////////////////////////////////////////:

@@ -182,6 +182,9 @@ abstract class Op_upgBase extends Op_acquireBase {
             if (count($res) == 0) {
                 return ["q" => Material::ERR_NONE_LEFT, "err" => clienttranslate("No more tiles of this type left")];
             }
+            if (count($this->getValidPositions($this->getTileWidth(), $this->getTileHeight())) == 0) {
+                return ["q" => Material::ERR_NONE_LEFT, "err" => clienttranslate("Caravan is full")];
+            }
             return $res;
         } else {
             // Step 2: Select position on caravan grid

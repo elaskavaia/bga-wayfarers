@@ -967,6 +967,13 @@ class Material {
     "mainarea" => [ 
         "name" => clienttranslate("Main Board"),
 ],
+// #reason names
+    "restracker_bonus" => [ 
+        "name" => clienttranslate("Resource Tracker Bonus"),
+],
+    "setup" => [ 
+        "name" => clienttranslate("Setup"),
+],
 // #ui elements
     "wicon_die_1" => [ 
         "type" => "dice wicon wicon_die_1",
@@ -4789,6 +4796,8 @@ class Material {
         "p" => 6,
         "comet" => 1,
         "nom" => clienttranslate("Worker or Focus"),
+        "tor1" => clienttranslate("Place a green Worker on a Townsfolk card"),
+        "tor2" => clienttranslate("Use the AI board Focus Action"),
 ],
     "card_scheme_2" => [ 
         "create" => 1,
@@ -4802,6 +4811,8 @@ class Material {
         "p" => 8,
         "comet" => 1,
         "nom" => clienttranslate("Worker or Influence"),
+        "tor1" => clienttranslate("Place a green Worker on a Townsfolk card, or a blue Worker on a Water card"),
+        "tor2" => clienttranslate("Place Influence on Blue, Yellow and Black Guilds"),
 ],
     "card_scheme_3" => [ 
         "create" => 1,
@@ -4815,6 +4826,8 @@ class Material {
         "p" => 10,
         "comet" => 0,
         "nom" => clienttranslate("Worker or Upgrade"),
+        "tor1" => clienttranslate("Place a green Worker on a Townsfolk card, or a yellow Worker on a Land card"),
+        "tor2" => clienttranslate("Gain an Upgrade Tile"),
 ],
 // # Red cards
     "card_scheme_4" => [ 
@@ -4829,6 +4842,8 @@ class Material {
         "p" => 5,
         "comet" => 1,
         "nom" => clienttranslate("Buy Water or Upgrade"),
+        "tor1" => clienttranslate("Pay 2 Blue Influence to acquire a Water card"),
+        "tor2" => clienttranslate("Place Influence on Blue Guild and gain an Upgrade Tile"),
 ],
     "card_scheme_5" => [ 
         "create" => 1,
@@ -4842,6 +4857,8 @@ class Material {
         "p" => 3,
         "comet" => 1,
         "nom" => clienttranslate("Buy Space or Buy Townsfolk"),
+        "tor1" => clienttranslate("Pay 2 Black Influence to acquire a Space card"),
+        "tor2" => clienttranslate("Place Influence on Black Guild and acquire a Townsfolk card"),
 ],
     "card_scheme_6" => [ 
         "create" => 1,
@@ -4855,6 +4872,8 @@ class Material {
         "p" => 1,
         "comet" => 0,
         "nom" => clienttranslate("Buy Land or Influence"),
+        "tor1" => clienttranslate("Pay 2 Yellow Influence to acquire a Land card"),
+        "tor2" => clienttranslate("Place 2 Influence on Yellow Guild and place Influence on a Card"),
 ],
 // #res track
 // #t: priority color
