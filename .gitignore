@@ -111,3 +111,6 @@ dist
 * *
 .settings/
 .project
+
+# Local harness snapshot artifacts
+staging/

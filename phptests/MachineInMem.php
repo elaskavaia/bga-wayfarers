@@ -225,4 +225,19 @@ class MachineInMem extends DbMachine {
             }
         }
     }
+
+    function loadRows(array $rows): void {
+        array_splice($this->xtable, 0);
+        foreach ($rows as $row) {
+            $this->xtable[] = $row;
+        }
+    }
+
+    function toJson(): array {
+        return array_values($this->xtable);
+    }
+
+    function fromJson(array $rows): void {
+        $this->loadRows($rows);
+    }
 }

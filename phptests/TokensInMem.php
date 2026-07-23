@@ -168,4 +168,14 @@ class TokensInMem extends DbTokens {
             $n++;
         }
     }
+
+    public function toJson(): array {
+        return array_values($this->keyindex);
+    }
+
+    public function fromJson(array $rows): void {
+        foreach ($rows as $rec) {
+            $this->DbCreateTokens([[$rec["key"], $rec["location"], $rec["state"]]]);
+        }
+    }
 }

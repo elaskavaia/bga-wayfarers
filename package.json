@@ -14,7 +14,9 @@
     "lint:php": "find modules/php/ -name '*.php' -exec php -l {} + && echo 'All PHP files OK'",
     "genmat": "php8.4 misc/other/genmat.php misc/*.csv",
     "tests": "APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --display-deprecations --display-warnings --bootstrap ./phptests/_autoload.php  --colors=always phptests",
-    "jstests": "TS_NODE_PROJECT=src/tests/tsconfig.json node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON -r ts-node/register node_modules/.bin/mocha -r src/tests/setup.ts src/tests/**/*.spec.ts"
+    "jstests": "TS_NODE_PROJECT=src/tests/tsconfig.json node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON -r ts-node/register node_modules/.bin/mocha -r src/tests/setup.ts src/tests/**/*.spec.ts",
+    "harness": "APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ php8.4 phptests/Harness/play.php",
+    "snapshot": "npm run harness && TS_NODE_PROJECT=phptests/Harness/tsconfig.json node -r ts-node/register phptests/Harness/render.ts"
   },
   "author": "Alena Laskavaia",
   "license": "EPL2.0",

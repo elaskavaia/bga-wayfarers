@@ -1,0 +1,5 @@
+{
+  "current_player_id": 10,
+  "reset": true,
+  "steps": [{ "endpoint": "debug_setup", "reload": true }]
+}

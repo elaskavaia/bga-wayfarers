@@ -1,0 +1,78 @@
+/* Minimal BGA layout rules for local harness snapshot. */
+
+/* Page layout */
+#leftright_page_wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: 5px;
+}
+#left-side-wrapper {
+  flex: 1;
+  min-width: 0;
+}
+#right-side {
+  flex-shrink: 0;
+  width: 240px;
+}
+
+/* Action bar */
+#page-title {
+  background-color: white;
+  height: 76px;
+  padding: 5px;
+  text-align: center;
+  /* BGA positions this bar; .game_top_bar (selection area, zoom buttons) is absolute at top:100% of it
+     and would otherwise escape to the bottom of the page here. */
+  position: relative;
+}
+#maintitlebar_content {
+  min-height: 42px;
+}
+#pagemaintitle_wrap {
+  height: 42px;
+  overflow: hidden;
+}
+#generalactions {
+  display: inline;
+}
+#page-title .action-button {
+  display: inline-block;
+}
+
+/* Player panels */
+#player_boards {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+}
+.player_panel_content {
+  clear: both;
+}
+.player-board {
+  padding: 5px 3px;
+}
+
+/* Game log */
+#logs_wrap {
+  margin-top: 8px;
+  border-top: 1px solid #ccc;
+  padding-top: 4px;
+}
+#logs {
+  font: 12px sans-serif;
+}
+#logs .log {
+  padding: 3px 4px;
+  border-bottom: 1px solid #eee;
+}
+#logs .log .roundedbox {
+  display: inline;
+}
+
+/* Disabled buttons */
+button.disabled,
+.action-button.disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
