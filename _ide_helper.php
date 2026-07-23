@@ -2861,6 +2861,23 @@ namespace Bga\GameFramework\GameResult {
         ) {
             return new self();
         }
+
+        /**
+         * Build a solo game result (internally treated as a cooperative result).
+         *
+         * @param Player $player The player at this table.
+         * @param int $score The solo score. For display only, the outcome is decided by $outcome.
+         * @param bool $win indicates if the coop game is won or lost
+         *
+         * @return self
+         */
+        public static function solo(
+            Player $player,
+            int $score,
+            bool $win = true,
+        ) {
+            return new self();
+        }
     }
 }
 

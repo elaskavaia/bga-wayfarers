@@ -14,6 +14,9 @@ class StateConstants {
     // special state to indicate that stack machine is empty
     const STATE_MACHINE_HALTED = 42;
 
+    // final scoring state, just before end of game
+    const STATE_END_SCORE = 98;
+
     // last state
     const STATE_END_GAME = 99;
 }

@@ -39,7 +39,7 @@ class PlayerTurnConfirm extends GameState {
     function action_resolve(#[JsonParam] array $data) {
         $this->game->notify->all("message", ""); // empty message
         if ($this->game->isEndOfGame()) {
-            return StateConstants::STATE_END_GAME;
+            return EndScore::class;
         }
 
         return GameDispatch::class;

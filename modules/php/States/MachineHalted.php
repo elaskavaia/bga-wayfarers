@@ -31,7 +31,7 @@ class MachineHalted extends GameState {
             if ($this->game->isStudio()) {
                 return PlayerTurnConfirm::class;
             }
-            return StateConstants::STATE_END_GAME;
+            return EndScore::class;
         }
         return PlayerTurnConfirm::class;
     }
