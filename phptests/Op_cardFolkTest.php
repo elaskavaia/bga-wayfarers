@@ -10,6 +10,7 @@ use PHPUnit\Framework\TestCase;
 
 final class Op_cardFolkTest extends TestCase {
     private GameUT $game;
+    private const AI_COLOR = "ffffff";
 
     protected function setUp(): void {
         $this->game = new GameUT();
@@ -351,5 +352,44 @@ final class Op_cardFolkTest extends TestCase {
         // cost 1 - coinDis 1 = 0 → "0n_coin".
         /** @var Op_cardFolk $top */
         $this->assertEquals("0n_coin", $top->getPaymentOperation("card_folk_133"));
+    }
+
+    /**
+     * Regression guard (originated from investigating BGA #233581, but documents CORRECT behavior,
+     * not that bug): with the human holding a fully legal folk buy AND AI influence sitting on the
+     * folk card, Op_cardFolk::getPossibleMoves still offers the card. getPossibleMoves never inspects
+     * influence - it only checks cost, placed-this-turn workers, and a matching unoccupied home - so
+     * the "influence hides the folk" hypothesis is false. (The actual #233581 defect is a turn/automa
+     * interleave and needs a Campaign integration test, not this unit test.)
+     */
+    public function testFolkOfferedEvenWithAiInfluenceOnIt(): void {
+        // Human tableau has a Land card that shares the "Vista" tag -> a legal tuck home.
+        $this->game->tokens->db->moveToken("card_land_20", "tableau_" . PCOLOR, 2);
+        $this->game->material->setRulesFor("card_land_20", ["tags" => "Vista Stars"]);
+
+        // Folk card face up in the main area, cheap and matching the Vista home.
+        $folk = "card_folk_133";
+        $this->game->tokens->db->moveToken($folk, "mainarea");
+        $this->game->material->setRulesFor($folk, ["tags" => "Vista", "cost" => "1"]);
+
+        // Human can pay.
+        $this->game->effect_incCount(PCOLOR, "coin", 10, "test");
+
+        // Sanity: without any influence the folk is offered.
+        $baseline = $this->createOp()->getPossibleMoves();
+        $this->assertEquals(Material::RET_OK, $baseline[$folk]["q"], "baseline: legal folk buy is offered");
+
+        // Put AI (opponent) influence on that same folk card (forces "pays x1 (Interact with Card)").
+        $this->game->tokens->db->moveToken("influence_" . self::AI_COLOR . "_3", $folk);
+
+        $op = $this->createOp();
+        $moves = $op->getPossibleMoves();
+
+        // AI influence does not remove the folk from the offer - the human IS still offered it.
+        $this->assertArrayHasKey($folk, $moves);
+        $this->assertEquals(Material::RET_OK, $moves[$folk]["q"], "folk still offered despite AI influence on it");
+        $this->assertContains($folk, $op->getArgs()[Operation::ARG_TARGET], "folk is a valid target");
+        $this->assertFalse($op->noValidTargets(), "acquire is not void");
+        $this->assertFalse($op->canSkip(), "acquire cannot be silently skipped");
     }
 }

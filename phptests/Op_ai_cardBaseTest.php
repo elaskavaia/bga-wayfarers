@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Bga\Games\wayfarers\Operations\Op_ai_cardBase;
+use Bga\Games\wayfarers\Operations\Op_turn;
 use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
@@ -145,5 +146,77 @@ final class Op_ai_cardBaseTest extends TestCase {
 
         // card_land_1 filtered; remaining [card_land_2, card_land_3]; priority 1 -> index 0
         $this->assertEquals("card_land_2", $card);
+    }
+
+    /**
+     * Regression test for the scenario reported in BGA #233581 (solo vs AI "Aida"):
+     * "I placed a green worker on the acquire a townsfolk card, as a result the AI acquired the card."
+     *
+     * This documents CORRECT, rules-conformant behavior - the report was a misunderstanding,
+     * not a bug. Placing a worker on a card takes that card's action; it does not reserve or
+     * buy the card. Workers are a public resource (RULES.md:60), and whoever acquires a card
+     * collects the workers on it (RULES.md:183, and :389 for the AI "just as you would").
+     * The only protection is within-turn: a player cannot place and then acquire a card holding
+     * a worker they placed that same turn (RULES.md:252) - which is what the state=1
+     * "placed-this-turn" marker enforces in Op_ai_cardBase::getPossibleMoves.
+     *
+     * Sequence:
+     *  1. On the human's turn a green worker is placed on a mainarea card (marker state=1).
+     *     While that marker is set, the card is not an acquisition target (within-turn guard).
+     *  2. The turn passes to the AI. Op_turn::auto clears the per-turn marker (state 1 -> 0),
+     *     because the place-and-acquire restriction only applies within the placing turn.
+     *  3. The card is now a normal public card. The AI acquires it and, per the rules, collects
+     *     the public worker sitting on it. Nothing the human owned was taken.
+     */
+    public function testAiAcquiresPublicCardAndCollectsWorkerOnNextTurn(): void {
+        // Townsfolk card in mainarea at position 1
+        $card = "card_folk_1";
+        $this->game->tokens->db->moveToken($card, "mainarea", 1);
+
+        // Human places a green worker on that card this turn (state=1 = placed-this-turn marker)
+        $this->game->tokens->db->moveToken("worker_green_1", $card, 1);
+
+        // The AI has its own influence on the card (the reporter's guess for the cause)
+        $this->game->tokens->db->moveToken("influence_" . self::AI_COLOR . "_3", $card);
+
+        // Give the AI position priority 1 so it targets the mainarea slot 1 card
+        $scheme = "card_scheme_1";
+        $this->game->tokens->db->moveToken($scheme, "tableau_" . self::AI_COLOR, 2);
+        $this->game->material->setRulesFor($scheme, ["c" => "1"]);
+
+        // Within the placing turn the card is protected: you cannot acquire a card holding a
+        // worker you placed this turn (RULES.md:252).
+        /** @var Op_ai_cardBase $probe */
+        $probe = $this->game->machine->instanciateOperation("ai_cardFolk", self::AI_COLOR);
+        $this->assertNotContains($card, $probe->getPossibleMoves(), "Within its turn, a placed-this-turn worker protects its card");
+
+        // 1) Turn passes to the AI -> Op_turn::auto clears the per-turn marker. This is correct:
+        //    the place-and-acquire restriction only applies within the placing turn.
+        /** @var Op_turn $turn */
+        $turn = $this->game->machine->instanciateOperation("turn", self::AI_COLOR);
+        $turn->auto();
+
+        $workerState = (int) $this->game->tokens->db->getTokenState("worker_green_1");
+        $this->assertEquals(0, $workerState, "Per-turn worker marker clears when the turn passes");
+
+        // 2) The card is now a normal public card; the AI acquires it. AI owns the influence so it
+        //    commits directly and queues ai_cardInteract.
+        /** @var Op_ai_cardBase $acquire */
+        $acquire = $this->game->machine->instanciateOperation("ai_cardFolk", self::AI_COLOR);
+        $acquire->auto();
+
+        // 3) Resolve the queued ai_cardInteract, which moves influence and the public worker to the buyer.
+        $interact = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($interact);
+        $this->assertEquals("ai_cardInteract", $interact->getType());
+        $interact->auto();
+
+        // Correct per rules: the card was public (never reserved by the human), so the AI may acquire it,
+        $cardOwner = $this->game->tokens->db->getTokenInfo($card)["location"];
+        $this->assertEquals("tableau_" . self::AI_COLOR, $cardOwner, "AI legitimately acquires the public card");
+
+        // and it collects the public worker on it (RULES.md:183 / :389), just as any player would.
+        $workerOwner = $this->game->tokens->db->getTokenInfo("worker_green_1")["location"];
+        $this->assertEquals("tableau_" . self::AI_COLOR, $workerOwner, "AI collects the public worker on the acquired card");
     }
 }
