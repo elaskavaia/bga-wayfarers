@@ -647,9 +647,9 @@ class Game extends Base {
      * Place an upgrade tile into a player's tableau and remove the reverse side
      * of double-sided tiles (blue/yellow) from mainarea.
      */
-    function effect_gainTile(string $owner, string $tileKey, int $posValue, string $notif): void {
+    function effect_gainTile(string $owner, string $tileKey, int $posValue, string $notif, array $args = []): void {
         $player_id = $this->custom_getPlayerIdByColor($owner);
-        $this->tokens->dbSetTokenLocation($tileKey, "tableau_$owner", $posValue, $notif, [], $player_id);
+        $this->tokens->dbSetTokenLocation($tileKey, "tableau_$owner", $posValue, $notif, $args, $player_id);
 
         // For double-sided tiles, remove the reverse side from mainarea
         $color = getPart($tileKey, 1);

@@ -15,11 +15,15 @@ use Tests\Harness\GameWrapper;
  * player actions via respond()/skip().
  */
 abstract class CampaignBase extends TestCase {
+    /** Deck shuffling uses PHP's global Mt19937 - seed it so scenarios replay identically. */
+    private const RAND_SEED = 20250725;
+
     protected GameWrapper $game;
     protected GameDriver $driver;
     protected string $outputDir;
 
     protected function setUp(): void {
+        mt_srand(self::RAND_SEED);
         $this->outputDir = sys_get_temp_dir() . "/campaign_test_" . getmypid();
         if (!is_dir($this->outputDir)) {
             mkdir($this->outputDir, 0777, true);
@@ -136,7 +140,7 @@ abstract class CampaignBase extends TestCase {
                 $this->assertArrayHasKey(
                     $name,
                     $args,
-                    "Notification #$idx ({$notif["type"]}) template \"$log\" references \${{$name}} but no matching arg",
+                    "Notification #$idx ({$notif["type"]}) template \"$log\" references \${{$name}} but no matching arg"
                 );
             }
         }

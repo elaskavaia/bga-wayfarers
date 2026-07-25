@@ -202,7 +202,7 @@ class Op_ai_journal extends AiOperation {
         }
 
         // Move marker to selected position
-        $this->dbSetTokenState($markerId, $selectedPos, clienttranslate('${player_name} journals to position ${num}'), [
+        $this->dbSetTokenState($markerId, $selectedPos, clienttranslate('${player_name} journals to position ${num} ${reason}'), [
             "num" => $selectedPos,
         ]);
 

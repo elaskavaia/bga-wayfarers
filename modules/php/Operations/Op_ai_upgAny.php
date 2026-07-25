@@ -129,7 +129,8 @@ class Op_ai_upgAny extends AiOperation {
                 $owner,
                 $selectedTile,
                 0,
-                clienttranslate('${player_name} acquires ${token_name} and places it alongside their board')
+                clienttranslate('${player_name} acquires ${token_name} and places it alongside their board ${reason}'),
+                ["reason" => $this->getReason()]
             );
             return true;
         }
@@ -140,7 +141,8 @@ class Op_ai_upgAny extends AiOperation {
             $owner,
             $selectedTile,
             $stateValue,
-            clienttranslate('${player_name} acquires ${token_name} and places it in caravan')
+            clienttranslate('${player_name} acquires ${token_name} and places it in caravan ${reason}'),
+            ["reason" => $this->getReason()]
         );
 
         // Cover bonuses use the effective (post-rotation) footprint, not the native one

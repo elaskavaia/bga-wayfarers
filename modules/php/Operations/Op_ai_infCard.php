@@ -111,7 +111,7 @@ class Op_ai_infCard extends AiOperation {
             $influenceKey,
             $targetCardInfo["card"],
             0,
-            clienttranslate('${player_name} places ${token_name} on ${place_name} (${card_type_name} at ${pos})'),
+            clienttranslate('${player_name} places ${token_name} on ${place_name} (${card_type_name} at ${pos}) ${reason}'),
             $targetCardInfo
         );
 

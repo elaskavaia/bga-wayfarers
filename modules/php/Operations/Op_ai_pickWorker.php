@@ -146,7 +146,7 @@ class Op_ai_pickWorker extends AiOperation {
         $this->queue("ai_cardInteract", $owner, ["card" => $card, "buy" => false]);
 
         // Move worker to AI's tableau
-        $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name}'));
+        $this->dbSetTokenLocation($workerKey, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name} ${reason}'));
     }
 
     public function isVoid(): bool {

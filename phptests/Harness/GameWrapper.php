@@ -43,6 +43,11 @@ class GameWrapper extends Game implements HarnessGameInterface {
         return 0;
     }
 
+    /** No user-preference storage in the harness - every preference reads as its default. */
+    function getUserPreference(int $player_id, int $code): int {
+        return 0;
+    }
+
     // -- Debug scenarios -----------------------------------------------------
 
     /** Default harness scenario: 2-player setup, paused on the first player's turn. */

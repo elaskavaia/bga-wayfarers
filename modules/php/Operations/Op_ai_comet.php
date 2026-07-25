@@ -28,7 +28,7 @@ class Op_ai_comet extends AiOperation {
         $newPos = min($currentPos + $count, 10); // Max comet track is 10
 
         if ($newPos != $currentPos) {
-            $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves comet marker to ${pos}'), [
+            $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves comet marker to ${pos} ${reason}'), [
                 "pos" => $newPos,
             ]);
         } else {

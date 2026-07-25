@@ -74,12 +74,14 @@ class Op_ai_cardBase extends AiOperation {
         if ($cardType == "insp") {
             $prio = $this->getResourceMarkerRules("c");
             $this->notifyMessage(
-                clienttranslate('${player_name} acquires card at position ${priority} based on inspiration priority of resource track'),
+                clienttranslate(
+                    '${player_name} acquires card at position ${priority} based on inspiration priority of resource track ${reason}'
+                ),
                 ["priority" => $prio]
             );
         } else {
             $prio = $this->getPositionPriority();
-            $this->notifyMessage(clienttranslate('${player_name} acquires card at position ${priority} based on silver values'), [
+            $this->notifyMessage(clienttranslate('${player_name} acquires card at position ${priority} based on silver values ${reason}'), [
                 "priority" => $prio,
             ]);
         }

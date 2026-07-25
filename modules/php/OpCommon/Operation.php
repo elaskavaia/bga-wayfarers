@@ -553,6 +553,9 @@ abstract class Operation {
     }
 
     function notifyMessage($message = "", $args = []) {
+        if (!isset($args["reason"])) {
+            $args["reason"] = $this->getReason();
+        }
         $this->game->notify->all("message", $message, ["player_id" => $this->getPlayerId()] + $args);
     }
     // overridable stuff

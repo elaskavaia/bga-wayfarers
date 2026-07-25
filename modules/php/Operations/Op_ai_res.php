@@ -25,7 +25,7 @@ class Op_ai_res extends AiOperation {
         [$trackerId, $currentPos] = $this->game->tokens->getTrackerIdAndValue($owner, "res");
         $silver = $this->getCount();
         $newPos = ($currentPos + $silver) % 8;
-        $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves resource marker to ${pos}'), [
+        $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves resource marker to ${pos} ${reason}'), [
             "pos" => $newPos,
         ]);
 
@@ -37,7 +37,21 @@ class Op_ai_res extends AiOperation {
             $boardNumber = $this->aiGetBoardNumber();
             $bonus = $this->game->getRulesForAndAssert("aiboard_$boardNumber", "r2");
 
-            $this->queue($bonus, $owner, ["reason" => "restracker_bonus"]);
+            $data = ["reason" => "restracker_bonus"];
+            // A pending 'turn' op for the automa means we are inside a human's action - the bonus
+            // must wait for the automa to activate instead of interleaving into that action.
+            // On the final turn there is no automa turn left, so fall back to the (ownerless)
+            // finalScoring op, which still keeps the bonus out of the human's unfinished action.
+            $pending = $this->game->machine->db->getOperations($owner, "turn");
+            if (!$pending) {
+                $pending = $this->game->machine->db->getOperations(null, "finalScoring");
+            }
+            if ($pending) {
+                $rank = (int) reset($pending)["rank"];
+                $this->game->machine->insert($bonus, $owner, $data, $rank);
+            } else {
+                $this->queue($bonus, $owner, $data);
+            }
         }
         return true;
     }

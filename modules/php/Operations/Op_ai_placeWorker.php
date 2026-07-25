@@ -139,7 +139,7 @@ class Op_ai_placeWorker extends AiOperation {
             $worker,
             $targetCard,
             1,
-            clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos}'),
+            clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos} ${reason}'),
             ["pos" => $state, "card_type" => $this->game->getTokenName($cardType)]
         );
 
