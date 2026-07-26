@@ -69,7 +69,7 @@ class Op_pay extends CountableOperation {
         } elseif ($count == 3) {
             return "[wicon_$type][wicon_$type][wicon_$type]";
         }
-        return "\${count} x [wicon_$type]";
+        return "{$count} x [wicon_$type]";
     }
 
     public function getPrompt() {

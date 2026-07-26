@@ -8,15 +8,16 @@ use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
 /**
- * Reproduces BGA #229172 ("Error message due to discounting to 0").
+ * Verifies the fix for BGA #229172 ("Error message due to discounting to 0").
  *
  * Capital Reserve (card ref 13, action "(upgGreen/2coin)") buys a green Upgrade Tile
  * that costs 2 coins. When caravan coin discounts bring the cost to 0, Op_upgGreen
- * returns "0n_coin" as the payment op. Op_pay::getIconicName() for count 0 falls
- * through to the literal '${count} x [wicon_coin]', which Op_upgBase::getPrompt() then
- * substitutes into the message arg "cost" WITHOUT supplying a matching "count" key.
- * The nested '${count}' placeholder is never resolved, producing the client error:
+ * returns "0n_coin" as the payment op. Op_pay::getIconicName() used to emit a literal
+ * '${count} x [wicon_coin]' for any count outside 1-3; Op_upgBase::getPrompt() folds that
+ * into the message arg "cost" without supplying a matching "count" key, so the nested
+ * placeholder never resolved and the client reported:
  *   "Invalid or missing substitution argument for log message: ... could not find key 'count'".
+ * The count is now interpolated directly, as Op_gain::getIconicName() already did.
  */
 final class Op_upgGreenDiscountZeroTest extends TestCase {
     private GameUT $game;
@@ -50,23 +51,41 @@ final class Op_upgGreenDiscountZeroTest extends TestCase {
         return $op;
     }
 
-    // Documents buggy behavior for BGA #229172; flip this assertion once the fix lands
-    // (the ${count} should resolve or the free/0 path should not include it).
-    public function testDiscountToZeroPromptHasUnresolvedCountPlaceholder(): void {
+    public function testDiscountToZeroPromptHasNoUnresolvedPlaceholder(): void {
         $op = $this->createDiscountedUpgGreen();
 
         $this->assertEquals(2, $op->getCoinDiscount(), "Green cost 2 fully discounted by 2 coinDis tiles");
         $this->assertEquals("0n_coin", $op->getPaymentOperation(), "Discount-to-0 yields a zero-count pay op");
 
         $payopName = $op->getExtraArgs()["payop_name"];
-        $this->assertStringContainsString('${count}', $payopName, "payop_name carries a nested \${count} placeholder");
+        $this->assertStringNotContainsString('${', $payopName, "payop_name must not carry an unresolved placeholder");
+        $this->assertStringContainsString("0 x [wicon_coin]", $payopName, "Zero cost renders the count directly");
 
         $prompt = $op->getPrompt();
         $this->assertInstanceOf(NotificationMessage::class, $prompt, "Buy prompt is a NotificationMessage");
-
-        // BUG: cost value contains ${count}, but args only supply "cost" (no "count").
         $this->assertArrayHasKey("cost", $prompt->args);
-        $this->assertArrayNotHasKey("count", $prompt->args, "No 'count' key is provided to resolve the nested placeholder");
-        $this->assertStringContainsString('${count}', $prompt->args["cost"], "The 'cost' arg still holds an unresolved \${count}");
+        $this->assertStringNotContainsString('${', $prompt->args["cost"], "The 'cost' arg must be fully resolved");
+    }
+
+    /** Counts outside the 1-3 iconic range took the same broken placeholder path. */
+    public function testPayIconicNameResolvesCountForAllAmounts(): void {
+        foreach ([0, 4, 5] as $count) {
+            $name = $this->game->machine->instanciateOperation("{$count}n_coin", PCOLOR)->getIconicName();
+            $this->assertEquals("$count x [wicon_coin]", $name, "Pay $count coin renders its count");
+        }
+        foreach ([1, 2, 3] as $count) {
+            $name = $this->game->machine->instanciateOperation("{$count}n_coin", PCOLOR)->getIconicName();
+            $this->assertEquals(str_repeat("[wicon_coin]", $count), $name, "Pay $count coin renders repeated icons");
+        }
+    }
+
+    /**
+     * Blue/yellow/black tiles pay via "{c}n_coin/2n_infX". Op_or joins sub names into one
+     * string and cannot carry per-sub args, so a placeholder there would be unresolvable.
+     */
+    public function testOrPaymentIconicNameResolvesCount(): void {
+        $op = $this->game->machine->instanciateOperation("0n_coin/2n_infBlue", PCOLOR);
+        $this->assertStringNotContainsString('${', $op->getIconicName(), "Joined pay name has no unresolved placeholder");
+        $this->assertStringContainsString("0 x [wicon_coin]", $op->getIconicName(), "Zero coin side renders its count");
     }
 }
