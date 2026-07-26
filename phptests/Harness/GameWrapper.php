@@ -21,6 +21,9 @@ class GameWrapper extends Game implements HarnessGameInterface {
     public array $xtable = [];
     public array $randQueue = [];
 
+    /** Recorded Game::customUndoSavepoint calls, so tests can assert which ops establish an undo boundary. */
+    public array $savepointCalls = [];
+
     function __construct() {
         parent::__construct();
         $this->machine = new OpMachine(new MachineInMem($this, $this->xtable));
@@ -46,6 +49,11 @@ class GameWrapper extends Game implements HarnessGameInterface {
     /** No user-preference storage in the harness - every preference reads as its default. */
     function getUserPreference(int $player_id, int $code): int {
         return 0;
+    }
+
+    public function customUndoSavepoint(int $player_id, int $barrier = 0, string $label = "undo"): void {
+        $this->savepointCalls[] = ["player_id" => $player_id, "barrier" => $barrier, "label" => $label];
+        parent::customUndoSavepoint($player_id, $barrier, $label);
     }
 
     // -- Debug scenarios -----------------------------------------------------
