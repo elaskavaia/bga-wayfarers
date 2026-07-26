@@ -1405,6 +1405,6 @@ export class Game extends GameMachine {
     } catch (e: any) {
       console.error(log, args, "Exception thrown", e.stack);
     }
-    return { log, args: {} }; // no args - to prevent framework doing nasty stuff
+    return { log: log as string, args: {} }; // no args - to prevent framework doing nasty stuff
   }
 }
