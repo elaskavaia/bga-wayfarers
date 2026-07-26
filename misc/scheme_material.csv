@@ -16,13 +16,13 @@ num|t|c|r1|r2|p|comet|nom|tor1|tor2
 
 
 # Blue cards
-1|blue|2|ai_placeWorker(green)|ai_focusAction|6|1|Worker or Focus|Place a green Worker on a Townsfolk card|Use the AI board Focus Action
+1|blue|2|ai_placeWorker(green)|ai_focusAction|6|0|Worker or Focus|Place a green Worker on a Townsfolk card|Use the AI board Focus Action
 2|blue|0|ai_placeWorker(green/blue)|infBlue,infYellow,infBlack|8|1|Worker or Influence|Place a green Worker on a Townsfolk card, or a blue Worker on a Water card|Place Influence on Blue, Yellow and Black Guilds
-3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|10|0|Worker or Upgrade|Place a green Worker on a Townsfolk card, or a yellow Worker on a Land card|Gain an Upgrade Tile
+3|blue|0|ai_placeWorker(green/yellow)|ai_upgAny|10|1|Worker or Upgrade|Place a green Worker on a Townsfolk card, or a yellow Worker on a Land card|Gain an Upgrade Tile
 # Red cards
 4|red|1|2n_infBlue:ai_cardWater|infBlue,ai_upgAny|5|1|Buy Water or Upgrade|Pay 2 Blue Influence to acquire a Water card|Place Influence on Blue Guild and gain an Upgrade Tile
-5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|3|1|Buy Space or Buy Townsfolk|Pay 2 Black Influence to acquire a Space card|Place Influence on Black Guild and acquire a Townsfolk card
-6|red|1|2n_infYellow:ai_cardLand|infYellow,infYellow,ai_infCard|1|0|Buy Land or Influence|Pay 2 Yellow Influence to acquire a Land card|Place 2 Influence on Yellow Guild and place Influence on a Card
+5|red|2|2n_infBlack:ai_cardSpace|infBlack,ai_cardFolk|3|0|Buy Space or Buy Townsfolk|Pay 2 Black Influence to acquire a Space card|Place Influence on Black Guild and acquire a Townsfolk card
+6|red|1|2n_infYellow:ai_cardLand|infYellow,infYellow,ai_infCard|1|1|Buy Land or Influence|Pay 2 Yellow Influence to acquire a Land card|Place 2 Influence on Yellow Guild and place Influence on a Card
 
 
 #res track
