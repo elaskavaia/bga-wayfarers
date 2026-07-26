@@ -255,7 +255,7 @@ html[data-theme=dark] .deck .counter {
 }
 
 .card_home {
-  background-image: url(img/PlayerBoard-nb.png);
+  background-image: url(img/PlayerBoard-nb.webp);
   background-size: 300% auto;
   background-position-y: 86%;
 }
@@ -1229,7 +1229,7 @@ html[data-theme=dark] .deck .counter {
 
 .pboard::before {
   content: " ";
-  background-image: url(img/PlayerBoard-nb.png);
+  background-image: url(img/PlayerBoard-nb.webp);
   background-size: auto 100%;
   width: 100%;
   height: 100%;
@@ -1406,10 +1406,10 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_1 {
-  background-image: url(img/boards/MainBoard1.jpg);
+  background-image: url(img/boards/MainBoard1.webp);
 }
 .mainboard_1[data-state="1"] {
-  background-image: url(img/boards/MainBoard4.jpg);
+  background-image: url(img/boards/MainBoard4.webp);
 }
 .mainboard_1 .upg_pink {
   position: absolute;
@@ -1456,11 +1456,11 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_2 {
-  background-image: url(img/boards/MainBoard2.jpg);
+  background-image: url(img/boards/MainBoard2.webp);
   aspect-ratio: 1212/1024 !important;
 }
 .mainboard_2[data-state="1"] {
-  background-image: url(img/boards/MainBoard5.jpg);
+  background-image: url(img/boards/MainBoard5.webp);
 }
 .mainboard_2 .upg {
   position: absolute;
@@ -1552,10 +1552,10 @@ html[data-theme=dark] .deck .counter {
 }
 
 .mainboard_3 {
-  background-image: url(img/boards/MainBoard3.jpg);
+  background-image: url(img/boards/MainBoard3.webp);
 }
 .mainboard_3[data-state="1"] {
-  background-image: url(img/boards/MainBoard6.jpg);
+  background-image: url(img/boards/MainBoard6.webp);
 }
 
 #mainarea_wrap {
@@ -1926,7 +1926,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .wooden {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 800%;
 }
 .log .wooden, #page-title .wooden, #replaylogs .wooden {
@@ -2051,7 +2051,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .influence {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1400%;
   width: 32px;
   height: 32px;
@@ -2079,7 +2079,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 .marker,
 .tracker_comet,
 .tracker_res {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1100%;
   width: 32px;
   height: 32px;
@@ -2141,13 +2141,13 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .food {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-position: 84% 42%;
   background-size: auto 1000%;
 }
 
 .coin {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-position: 76.5% 42%;
   background-size: auto 1100%;
 }
@@ -2176,7 +2176,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .wicon {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1200%;
   height: 32px;
   aspect-ratio: 1;
@@ -2784,7 +2784,7 @@ html[data-theme=dark] .miniboard .jtag_count {
 }
 
 .tooltipcontainer .card_home {
-  background-image: url(img/PlayerBoard-nb.png);
+  background-image: url(img/PlayerBoard-nb.webp);
   background-size: 304% auto;
   background-position-y: 85%;
 }
@@ -2793,7 +2793,7 @@ html[data-theme=dark] .miniboard .jtag_count {
   height: 50px;
 }
 .tooltipcontainer .card_space_1 {
-  background-image: url(img/PlayerBoard-nb.png);
+  background-image: url(img/PlayerBoard-nb.webp);
   background-size: 304% auto;
   background-position-x: 100%;
   background-position-y: 15%;

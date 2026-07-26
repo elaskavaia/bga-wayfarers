@@ -157,7 +157,7 @@
 }
 .pboard::before {
   content: " ";
-  background-image: url(img/PlayerBoard-nb.png);
+  background-image: url(img/PlayerBoard-nb.webp);
   background-size: auto 100%;
   width: 100%;
   height: 100%;
@@ -346,10 +346,10 @@
   margin-bottom: 200px;
 }
 .mainboard_1 {
-  background-image: url(img/boards/MainBoard1.jpg);
+  background-image: url(img/boards/MainBoard1.webp);
 
   &[data-state="1"] {
-    background-image: url(img/boards/MainBoard4.jpg);
+    background-image: url(img/boards/MainBoard4.webp);
   }
 
   // Pink tiles - positioned absolutely on the board
@@ -415,11 +415,11 @@
   }
 }
 .mainboard_2 {
-  background-image: url(img/boards/MainBoard2.jpg);
+  background-image: url(img/boards/MainBoard2.webp);
   aspect-ratio: 1212 / 1024 !important;
 
   &[data-state="1"] {
-    background-image: url(img/boards/MainBoard5.jpg);
+    background-image: url(img/boards/MainBoard5.webp);
   }
 
   .upg {
@@ -518,10 +518,10 @@
 }
 
 .mainboard_3 {
-  background-image: url(img/boards/MainBoard3.jpg);
+  background-image: url(img/boards/MainBoard3.webp);
 
   &[data-state="1"] {
-    background-image: url(img/boards/MainBoard6.jpg);
+    background-image: url(img/boards/MainBoard6.webp);
   }
 }
 

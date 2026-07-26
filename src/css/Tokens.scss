@@ -103,7 +103,7 @@
 }
 
 .wooden {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 800%;
 
   .log &,
@@ -175,7 +175,7 @@ $i: 0;
 }
 
 .influence {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1400%;
   width: 32px;
   height: 32px;
@@ -199,7 +199,7 @@ $i: 0;
 .marker,
 .tracker_comet,
 .tracker_res {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1100%;
   width: 32px;
   height: 32px;
@@ -246,12 +246,12 @@ $i: 0;
 }
 
 .food {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-position: 84% 42%;
   background-size: auto 1000%;
 }
 .coin {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-position: 76.5% 42%;
   background-size: auto 1100%;
 }
@@ -278,7 +278,7 @@ $i: 0;
 }
 
 .wicon {
-  background-image: url(img/tokens.png);
+  background-image: url(img/tokens.webp);
   background-size: auto 1200%;
   height: 32px;
   aspect-ratio: 1;
