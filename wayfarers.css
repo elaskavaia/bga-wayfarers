@@ -2707,7 +2707,6 @@ html[data-theme=dark] .miniboard .jtag_count {
   display: flex;
   justify-content: center;
   align-items: center;
-  max-width: min(760px, 92vw);
 }
 .tooltipcontainer .tooltiptitle {
   position: relative;
@@ -2720,7 +2719,6 @@ html[data-theme=dark] .miniboard .jtag_count {
   position: relative;
   display: flex;
   flex-direction: row;
-  flex-wrap: wrap;
   justify-content: space-between;
 }
 .tooltipcontainer li {
@@ -2731,6 +2729,14 @@ html[data-theme=dark] .miniboard .jtag_count {
   top: unset;
 }
 
+@media (max-width: 800px) {
+  .tooltipcontainer {
+    max-width: 92vw;
+  }
+  .tooltipcontainer .tooltip-body {
+    flex-wrap: wrap;
+  }
+}
 .tooltip-left {
   padding: 0.5em;
   display: flex;

@@ -36,6 +36,14 @@ The game is publicly released on BGA as an alpha. Real users may have existing p
 - `npm run tests` - Run all PHPUnit tests. Redirect output to avoid running multiple times on failures with long outout.
 - To run a single test file: `npm run tests -- --filter <someFilerOrTest>`
 - Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository if running manually, always run via npm
+- `npm run jstests` - Client-side unit tests (mocha + chai + jsdom, `src/tests/*.spec.ts`)
+
+### Visual Testing (local harness)
+
+- `npm run play` - Run the game locally without BGA: the PHP side builds a game state, the real client code renders it in jsdom, and headless Chrome screenshots it. Writes `staging/snapshot.html` (with click/tooltip/wicon inspection sections) and `staging/snapshot.png`.
+- **Read `staging/snapshot.png` to visually validate any UI/CSS change** - alignment, sizing, colours. Never claim a client-side change is unverifiable without running this first.
+- `HARNESS_SHOT_WIDTH=390 HARNESS_SHOT_HEIGHT=844 npm run play` - phone-sized viewport for mobile layout checks.
+- Full documentation, including scenarios, debug functions, and what the harness does NOT cover (hover, clicks, real BGA page chrome): [misc/docs/HARNESS.md](misc/docs/HARNESS.md)
 
 ### Utilities
 
