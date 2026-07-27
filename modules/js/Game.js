@@ -1691,7 +1691,7 @@ class GameMachine extends Game1Tokens {
             .performAction("action_resolve", {
             data: JSON.stringify(args)
         })
-            .then((x) => {
+            ?.then((x) => {
             console.log("action complete", x);
         })
             .catch((e) => {
