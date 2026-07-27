@@ -13,6 +13,7 @@ class Material {
     const ERR_NONE_LEFT = 5;
     const ERR_NOT_APPLICABLE = 6;
     const ERR_NO_PLACE = 7;
+    const ERR_INFLUENCE_FEE = 8;
 
     const MA_PREF_CONFIRM_TURN = 101;
 
@@ -93,6 +94,13 @@ class Material {
                 "code" => Material::ERR_NO_PLACE,
                 "type" => "err",
                 "name" => clienttranslate("Not valid placement"),
+            ],
+
+            "err_8" => [
+                //
+                "code" => Material::ERR_INFLUENCE_FEE,
+                "type" => "err",
+                "name" => clienttranslate("You cannot pay the Influence owner to interact with this card"),
             ],
 
             /* --- gen php begin loc_material --- */

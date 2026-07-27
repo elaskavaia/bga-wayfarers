@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\Operation;
 
@@ -27,6 +28,27 @@ use function Bga\Games\wayfarers\getPart;
  * Otherwise, the acting player must pay food or coin to the influence owner.
  */
 class Op_cardInteract extends Operation {
+    /** Influence token on the card (any owner), or null */
+    public static function influenceOnCard(Game $game, string $card): ?string {
+        return array_key_first($game->tokens->getTokensOfTypeInLocation("influence", $card));
+    }
+
+    /**
+     * RULES.md:83 - interacting with a card carrying an opponent's Influence costs 1 Silver or 1 Provision,
+     * paid on top of the card's own price ($reservedCoins). Returns an error when the fee is unpayable,
+     * null when the card is free to interact with.
+     */
+    public static function getFeeError(Game $game, string $card, string $owner, int $reservedCoins = 0): ?string {
+        $inf = self::influenceOnCard($game, $card);
+        if (!$inf || getPart($inf, 1) == $owner) {
+            return null;
+        }
+        if ($game->tokens->getTrackerValue($owner, "coin") >= 1 + $reservedCoins || $game->tokens->getTrackerValue($owner, "food") >= 1) {
+            return null;
+        }
+        return $game->getRulesFor("err_" . Material::ERR_INFLUENCE_FEE, "name");
+    }
+
     public function getCard(): ?string {
         return $this->getDataField("card", null);
     }
@@ -44,13 +66,7 @@ class Op_cardInteract extends Operation {
         if (!$card) {
             return null;
         }
-        $children = $this->game->tokens->getTokensOfTypeInLocation("influence", $card);
-        $infKey = array_key_first($children);
-        if (!$infKey) {
-            return null;
-        }
-
-        return $infKey;
+        return self::influenceOnCard($this->game, $card);
     }
 
     public function isOwnInfluence(string $infKey) {

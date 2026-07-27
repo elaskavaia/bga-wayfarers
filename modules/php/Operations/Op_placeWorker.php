@@ -88,9 +88,9 @@ class Op_placeWorker extends Operation {
                 }
             }
             if (isset($res[$key]) && $res[$key]["q"] === Material::RET_OK) {
-                $interactError = $this->game->getCardInteractionError($key, $owner);
+                $interactError = Op_cardInteract::getFeeError($this->game, $key, $owner);
                 if ($interactError) {
-                    $res[$key] = ["q" => Material::ERR_COST, "err" => $interactError];
+                    $res[$key] = ["q" => Material::ERR_INFLUENCE_FEE, "err" => $interactError];
                 }
             }
         }

@@ -73,9 +73,12 @@ class Op_cardSpace extends Op_cardBase {
         return "space";
     }
 
+    function getCoinCost(?string $card): int {
+        return max(0, $this->getCost($card) - $this->getCoinDiscount());
+    }
+
     public function getPaymentOperation(?string $card = null): string {
-        $c = max(0, $this->getCost($card) - $this->getCoinDiscount());
-        return "{$c}n_coin";
+        return $this->getCoinCost($card) . "n_coin";
     }
     public function getCost(?string $card): int {
         if (!$card) {

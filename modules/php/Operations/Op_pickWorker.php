@@ -36,7 +36,7 @@ class Op_pickWorker extends Operation {
         $owner = $this->getOwner();
         $available = [];
         foreach ($publicWorkers as $key => $info) {
-            if ((int) $info["state"] === 0 && !$this->game->getCardInteractionError($info["location"], $owner)) {
+            if ((int) $info["state"] === 0 && !Op_cardInteract::getFeeError($this->game, $info["location"], $owner)) {
                 $available[] = $key;
             }
         }

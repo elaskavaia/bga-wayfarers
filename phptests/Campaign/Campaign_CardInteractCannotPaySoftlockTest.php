@@ -119,7 +119,7 @@ class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
         $op = $this->game->machine->instanciateSimpleOperation("cardLand", $pc);
         $moves = $op->getPossibleMoves();
         $this->assertArrayHasKey($land, $moves);
-        $this->assertSame(Material::ERR_COST, $moves[$land]["q"], "cannot acquire a card you cannot pay the influence owner for");
+        $this->assertSame(Material::ERR_INFLUENCE_FEE, $moves[$land]["q"], "cannot acquire a card you cannot pay the influence owner for");
     }
 
     /** A chosen worker with every legal card blocked must not strand the player either. */
@@ -143,8 +143,8 @@ class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
         $this->assertTrue($op->canSkip(), "placing a chosen worker with no valid card stays skippable");
     }
 
-    /** Blocking every card must not create the softlock it is meant to remove. */
-    public function testAcquisitionWithEveryCardBlockedIsSkippable(): void {
+    /** With every card blocked the acquisition is void: pruned from choices, undo for a committed op. */
+    public function testAcquisitionWithEveryCardBlockedIsVoid(): void {
         $this->setupGame(4);
         $pc = $this->getActiveColor();
         $opp = $this->opponentColor($pc);
@@ -158,7 +158,7 @@ class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
 
         $op = $this->game->machine->instanciateSimpleOperation("cardInsp", $pc);
         $this->assertTrue($op->noValidTargets(), "every inspiration card is blocked");
-        $this->assertTrue($op->canSkip(), "an acquisition with no valid target stays skippable");
+        $this->assertTrue($op->isVoid(), "an acquisition with every card blocked is void, not skippable");
     }
 
     /** The card's own price is paid before the Influence fee, so both must fit in the player's supply. */
@@ -175,7 +175,7 @@ class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
         $cost = (int) $this->game->getRulesFor($folk, "cost", 5);
 
         $this->setResource($pc, "coin", $cost);
-        $this->assertSame(Material::ERR_COST, $op->getPossibleMoves()[$folk]["q"], "no coin left over for the Influence fee");
+        $this->assertSame(Material::ERR_INFLUENCE_FEE, $op->getPossibleMoves()[$folk]["q"], "no coin left over for the Influence fee");
 
         $this->setResource($pc, "coin", $cost + 1);
         $this->assertEmpty($op->getPossibleMoves()[$folk]["err"] ?? "", "price plus fee is affordable");

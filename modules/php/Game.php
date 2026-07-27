@@ -549,21 +549,6 @@ class Game extends Base {
         return $this->tokens->getTrackerIdAndValue($color, $type, $arr);
     }
 
-    /**
-     * RULES.md:83 - interacting with a card that carries an opponent's Influence costs 1 Silver or 1 Provision,
-     * and a player who cannot pay cannot interact with that card at all (acquire it, place or retrieve a worker).
-     */
-    function getCardInteractionError(string $card, string $owner, int $coinSpentFirst = 0): ?string {
-        $inf = array_key_first($this->tokens->getTokensOfTypeInLocation("influence", $card));
-        if (!$inf || getPart($inf, 1) === $owner) {
-            return null;
-        }
-        if ($this->tokens->getTrackerValue($owner, "coin") >= 1 + $coinSpentFirst || $this->tokens->getTrackerValue($owner, "food") >= 1) {
-            return null;
-        }
-        return clienttranslate("You cannot pay the Influence owner to interact with this card");
-    }
-
     function getTagsSet(string $card) {
         $tags = $this->getRulesFor($card, "tags", "");
         $tagsarr = explode(" ", $tags);

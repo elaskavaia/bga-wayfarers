@@ -60,11 +60,8 @@ class Op_cardFolk extends Op_cardBase {
                     continue;
                 }
 
-                $interactError = $this->getInteractionError($card);
-                if ($interactError) {
-                    $res[$card]["q"] = Material::ERR_COST;
-                    $res[$card]["can"] = false;
-                    $res[$card]["err"] = $interactError;
+                $this->applyInteractionFee($res[$card], $card);
+                if ($res[$card]["q"] !== Material::RET_OK) {
                     continue;
                 }
 
@@ -111,9 +108,12 @@ class Op_cardFolk extends Op_cardBase {
         return (int) $this->game->getRulesFor("$card", "cost", 5);
     }
 
+    function getCoinCost(?string $card): int {
+        return max(0, $this->getCost($card) - $this->getCoinDiscount());
+    }
+
     public function getPaymentOperation(?string $card = null): string {
-        $cost = max(0, $this->getCost($card) - $this->getCoinDiscount());
-        return "{$cost}n_coin";
+        return $this->getCoinCost($card) . "n_coin";
     }
 
     /** User does the action */

@@ -95,44 +95,34 @@ abstract class Op_cardBase extends Op_acquireBase {
                 $entry["q"] = Material::ERR_NOT_APPLICABLE;
                 $entry["err"] = $placedWorkerError;
             }
-            $interactError = $entry["q"] === Material::RET_OK ? $this->getInteractionError($card) : null;
-            if ($interactError) {
-                $entry["q"] = Material::ERR_COST;
-                $entry["can"] = false;
-                $entry["err"] = $interactError;
-                $entry["nointeract"] = true;
-            }
+            $this->applyInteractionFee($entry, $card);
             $res[$card] = $entry;
         }
 
         return $res;
     }
 
-    /**
-     * RULES.md:83 - the Influence fee is paid on top of the card's own price, so the coin price is
-     * reserved before asking whether the fee is still payable.
-     */
-    function getInteractionError(string $card): ?string {
-        $payop = $this->isFree() ? "" : $this->getPaymentOperation($card);
-        $coinCost = preg_match("/^(\d+)n_coin$/", $payop, $matches) ? (int) $matches[1] : 0;
-        return $this->game->getCardInteractionError($card, $this->getOwner(), $coinCost);
+    /** Coin price of the card after discounts; the Influence fee must be payable on top of it */
+    function getCoinCost(?string $card): int {
+        return 0;
     }
 
-    /**
-     * A card the player cannot pay the Influence fee for is not a valid target, so blocking the last one
-     * would strand them. Other void cases stay void, so such a branch is still pruned out of a choice
-     * instead of being offered and then skipped.
-     */
-    public function canSkip() {
-        if (!$this->noValidTargets()) {
-            return false;
+    function getInteractionError(string $card): ?string {
+        $reserved = $this->isFree() ? 0 : $this->getCoinCost($card);
+        return Op_cardInteract::getFeeError($this->game, $card, $this->getOwner(), $reserved);
+    }
+
+    /** Veto an otherwise-valid target the player cannot pay the Influence fee for (RULES.md:83) */
+    function applyInteractionFee(array &$entry, string $card): void {
+        if (($entry["q"] ?? 0) !== Material::RET_OK) {
+            return;
         }
-        foreach ($this->getPossibleMoves() as $entry) {
-            if (is_array($entry) && ($entry["nointeract"] ?? false)) {
-                return true;
-            }
+        $interactError = $this->getInteractionError($card);
+        if ($interactError) {
+            $entry["q"] = Material::ERR_INFLUENCE_FEE;
+            $entry["can"] = false;
+            $entry["err"] = $interactError;
         }
-        return false;
     }
 
     /**

@@ -24,6 +24,7 @@
 - [x] Can recruit book/obs folk without spot/tag for it (home_1 is already occupied by pre-print)
 - [x] Insp card reverse action slots
 - [x] Bug: cannot place and retrive working on the same turn
+- [ ] Minor: a card acquisition whose every target is blocked (e.g. all cards carry an unpayable Influence fee) is void, so a committed one strands the player on undo as the only exit. Only cardFolk is skippable on no-valid-targets; other card ops are not. Decide per bonus whether it is forced or an active choice; possibly express optionality in the op DSL instead (e.g. ?cardFolk(free) skippable externally). See Campaign_CardInteractCannotPaySoftlockTest.
 
 ## SOLO AI
 
