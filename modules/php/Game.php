@@ -1081,6 +1081,11 @@ class Game extends Base {
     function debug_game_variant(string $type = "variant_multi", int $value = 1) {
         $this->setGameStateValue($type, $value);
     }
+
+    function debug_finalScoring() {
+        (new EndScore($this))->finalScoring();
+        $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
+    }
     /**
      * Example of debug function.
      * Here, jump to a state you want to test (by default, jump to next player state)

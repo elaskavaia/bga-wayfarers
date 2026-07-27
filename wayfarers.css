@@ -3210,6 +3210,10 @@ button.bgabutton > * {
   background-color: #cba014;
 }
 
+#popin_score_dialog_contents {
+  display: flex;
+}
+
 #test_stuff > * {
   display: inline-block;
 }

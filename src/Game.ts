@@ -41,6 +41,8 @@ class PlayerTurnConfirm extends PlayerTurn {
 export class Game extends GameMachine {
   private scoreSheet: any;
   private scoreSheetAI: any;
+  private scoreDialog: any = null;
+  private lastScores: any = null;
   private inSetup = true;
   private boardZoomMode: "fit" | "manual" = "fit";
   private boardZoomScale: number = 1;
@@ -292,6 +294,7 @@ export class Game extends GameMachine {
       placeHtml(`<div id='${guild.id}_${pcolor}' class='${guild.id}_${pcolor} infsupply'></div>`, guild);
     });
     this.createMiniboard(pcolor, pp);
+    this.setupScoreDialogTrigger(playerInfo.id);
     let parent = this.player_color == pcolor ? "current_player_panel" : "players_panels";
     // Generate caravan grid cells (6x3)
     let caravanCells = "";
@@ -356,6 +359,7 @@ export class Game extends GameMachine {
       this.bga.playerPanels.getElement(playerInfo.id)
     );
     this.createMiniboard(pcolor, `player_panel_content_${pcolor}`);
+    this.setupScoreDialogTrigger(playerInfo.id);
     let parent = "players_panels";
     // Generate caravan grid cells (7x3)
     let caravanCells = "";
@@ -481,8 +485,8 @@ export class Game extends GameMachine {
     else this.bga.gameArea.removeLastTurnBanner();
   }
 
-  setupScoreSheet() {
-    const entries = [
+  getScoreEntries() {
+    return [
       { property: "game_vp_tags", label: _("VP from Primary Tags") },
       { property: "game_vp_sets", label: _("VP from Tag Sets") },
       { property: "game_vp_space", label: _("VP from Space Cards") },
@@ -491,6 +495,29 @@ export class Game extends GameMachine {
       { property: "game_vp_guilds", label: _("VP from Guild Majorities") },
       { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
     ];
+  }
+
+  getAiScoreEntries() {
+    return [
+      { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
+      { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
+      { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
+      { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
+      { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
+      { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
+      { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
+    ];
+  }
+
+  getAiScoreSheetPlayers() {
+    const aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
+    const players = {};
+    players[this.AI_PLAYER_ID] = { ...aiPlayer, color: this.AI_COLOR_OVERRIDE };
+    return players;
+  }
+
+  setupScoreSheet() {
+    const entries = this.getScoreEntries();
     this.scoreSheet = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet`)!, {
       animationsActive: () => this.gameAnimationsActive(),
       playerNameWidth: 80,
@@ -514,20 +541,11 @@ export class Game extends GameMachine {
       this.setupAIScoreSheet(this.gamedatas.aiEndScores);
     }
   }
-  setupAIScoreSheet(scores: any) {
+  /** `scores` fills the sheet on creation (page reload); leave it out and call setScores() to animate */
+  setupAIScoreSheet(scores?: any) {
     if (this.scoreSheetAI) return;
-    const aiEntries = [
-      { property: "game_vp_ai_folk", label: _("VP from Folk Cards (1 VP per card)") },
-      { property: "game_vp_ai_cards", label: _("VP from Land/Water Cards (2 VP per card)") },
-      { property: "game_vp_ai_space", label: _("VP from Space Cards (3 VP per card)") },
-      { property: "game_vp_ai_insp", label: _("VP from Inspiration Cards (4 VP per card)") },
-      { property: "game_vp_ai_caravan", label: _("VP from Upgrades") },
-      { property: "game_vp_ai_guilds", label: _("VP from Guild Majorities") },
-      { property: "total", label: _("Total"), scoresClasses: "total", width: 80, height: 40 }
-    ];
-    const aiPlayer = this.gamedatas.playerswithbots[this.AI_PLAYER_ID];
-    const players = {};
-    players[this.AI_PLAYER_ID] = { ...aiPlayer, color: this.AI_COLOR_OVERRIDE };
+    const aiEntries = this.getAiScoreEntries();
+    const players = this.getAiScoreSheetPlayers();
     this.scoreSheetAI = new BgaScoreSheet.ScoreSheet(document.getElementById(`game-score-sheet-ai`), {
       animationsActive: () => this.gameAnimationsActive(),
       playerNameWidth: 80,
@@ -1324,12 +1342,64 @@ export class Game extends GameMachine {
     this.updateBanner();
   }
 
+  /** Throwaway score sheets built from the last payload; the permanent ones stay in #score-area for the game end */
+  showScoreDialog() {
+    const data = this.lastScores;
+    if (!data?.endScores) return;
+    const title = data.final ? _("Final Score") : _("Score Preview");
+    // a still-open dialog would keep its copy of the content ids, and getElementById would find that one
+    if (this.scoreDialog && $("popin_score_dialog")) this.scoreDialog.destroy();
+    this.scoreDialog = this.showPopin(`<div id="score_dialog_players"></div><div id="score_dialog_ai"></div>`, "score_dialog", title);
+
+    const common = {
+      animationsActive: () => false,
+      playerNameWidth: 80,
+      playerNameHeight: 30,
+      entryLabelHeight: 20,
+      classes: "score-sheet"
+    };
+    const sheet = new BgaScoreSheet.ScoreSheet($("score_dialog_players"), {
+      ...common,
+      entryLabelWidth: 180,
+      players: this.gamedatas.players,
+      entries: this.getScoreEntries()
+    });
+    sheet.setScores(data.endScores);
+    if (data.aiEndScores) {
+      const aiSheet = new BgaScoreSheet.ScoreSheet($("score_dialog_ai"), {
+        ...common,
+        entryLabelWidth: 220,
+        players: this.getAiScoreSheetPlayers(),
+        entries: this.getAiScoreEntries()
+      });
+      aiSheet.setScores(data.aiEndScores);
+    }
+  }
+
+  /** Panel score opens the breakdown; only wired when there is something to show (live scoring on, or game over) */
+  setupScoreDialogTrigger(playerId: number) {
+    const node = $(`player_score_${playerId}`);
+    if (!node || !this.gamedatas.endScores) return;
+    this.addListenerWithGuard(node, () => this.showScoreDialog());
+    node.style.cursor = "pointer";
+    this.addTooltipHtml(node.id, this.getTooltipHtml(_("Score"), _("Click to see the score breakdown")), this.defaultTooltipDelay);
+  }
+
   updateLiveScores(args: any) {
     if (!args) return;
+    this.lastScores = args;
     for (const scores of [args.endScores, args.aiEndScores]) {
-      for (const playerId in scores) {
-        const counter = this.bga.playerPanels.getScoreCounter(Number(playerId));
-        if (counter) counter.toValue(scores[playerId].total ?? 0);
+      for (const key in scores) {
+        const playerId = Number(key);
+        const total = scores[key].total ?? 0;
+        const counter = this.bga.playerPanels.getScoreCounter(playerId);
+        // during setup an animated toValue does not stick, the panel keeps the stored score (0)
+        if (counter) {
+          if (this.inSetup) counter.setValue(total);
+          else counter.toValue(total);
+        }
+        const player = this.gamedatas.players[playerId] ?? this.gamedatas.playerswithbots?.[playerId];
+        if (player) player.score = total;
       }
     }
   }
@@ -1340,16 +1410,14 @@ export class Game extends GameMachine {
       this.updateLiveScores(args);
       return;
     }
+    this.lastScores = args;
     // setting scores will make the score sheet visible if it isn't already
     await this.scoreSheet.setScores(args.endScores, {
       startBy: this.bga.players.getCurrentPlayerId()
     });
     if (args.aiEndScores) {
-      if (!this.scoreSheetAI) {
-        this.setupAIScoreSheet(args.aiEndScores);
-      } else {
-        await this.scoreSheetAI.setScores(args.aiEndScores);
-      }
+      this.setupAIScoreSheet();
+      await this.scoreSheetAI.setScores(args.aiEndScores);
     }
   }
   replaceSimpleIconsInLog(log: string) {
