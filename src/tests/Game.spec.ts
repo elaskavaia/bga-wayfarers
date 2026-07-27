@@ -210,7 +210,7 @@ describe("Game", () => {
           prompt: "Pick",
           err: "oops",
           data: { reason: "would-be-reason" },
-          info: {},
+          info: {}
         } as any);
         const arg = bga.statusBar.setTitle.getCall(0).args[0];
         expect(arg).to.include("Error: oops");
@@ -242,7 +242,7 @@ describe("Game", () => {
         game.onEnteringState_PlayerTurn({
           info: { t1: { q: 0 } },
           target: ["t1"],
-          ui: { noactive: true },
+          ui: { noactive: true }
         } as any);
         expect(document.getElementById("t1")!.classList.contains("active_slot")).to.be.false;
       });
@@ -289,11 +289,9 @@ describe("Game", () => {
         // completeOpInfo will set ui.color to 'primary' by default; per-target color must win.
         game.onEnteringState_PlayerTurn({
           info: { t1: { q: 0, color: "secondary" } },
-          target: ["t1"],
+          target: ["t1"]
         } as any);
-        const targetCall = bga.statusBar.addActionButton
-          .getCalls()
-          .find((c: any) => c.args[2]?.id === "button_t1");
+        const targetCall = bga.statusBar.addActionButton.getCalls().find((c: any) => c.args[2]?.id === "button_t1");
         expect(targetCall.args[2].color).to.equal("secondary");
       });
     });
@@ -309,7 +307,7 @@ describe("Game", () => {
       it("skips secondary buttons when buttons === false", () => {
         game.onEnteringState_PlayerTurn({
           info: { sec1: { q: 0, sec: true, buttons: false } },
-          target: ["sec1"],
+          target: ["sec1"]
         } as any);
         const calls = bga.statusBar.addActionButton.getCalls();
         const secCall = calls.find((c: any) => c.args[2]?.id === "button_sec1");
@@ -323,7 +321,7 @@ describe("Game", () => {
         game.onEnteringState_PlayerTurn({
           info: {},
           type: "myop",
-          ui: { selected: ["hl1", "hl2"] },
+          ui: { selected: ["hl1", "hl2"] }
         } as any);
         expect(document.getElementById("hl1")!.classList.contains("gg_selected")).to.be.true;
         expect(document.getElementById("hl2")!.classList.contains("gg_selected")).to.be.true;
@@ -331,9 +329,7 @@ describe("Game", () => {
 
       it("tolerates missing target divs in selected list", () => {
         // Should not throw.
-        expect(() =>
-          game.onEnteringState_PlayerTurn({ info: {}, ui: { selected: ["does_not_exist"] } } as any)
-        ).to.not.throw();
+        expect(() => game.onEnteringState_PlayerTurn({ info: {}, ui: { selected: ["does_not_exist"] } } as any)).to.not.throw();
       });
     });
 
@@ -373,10 +369,114 @@ describe("Game", () => {
         });
         game.onEnteringState_PlayerTurn({
           info: { a: { q: 0, o: 3 }, b: { q: 0, o: 1 }, c: { q: 0, o: 2 } },
-          target: ["a", "b", "c"],
+          target: ["a", "b", "c"]
         } as any);
         expect(order).to.deep.equal(["b", "c", "a"]);
       });
+    });
+  });
+
+  /**
+   * BGA #229079 - "Tooltip on placed upgrade tile is wrong".
+   *
+   * When an upgrade tile is placed into the caravan, its DOM node (`upg_*`) is
+   * moved INTO the caravan cell node (`ccell_*`) as a child (see
+   * Game.getPlaceRedirect -> result.location = `ccell_${pos}_${color}`, then
+   * slideAndPlace appendChilds the tile into that cell).
+   *
+   * BGA's tooltip framework delegates on mouseover, which bubbles from the
+   * hovered child up to its ancestors; the outer (container) node's handler runs
+   * last and wins, so the cell's tooltip used to be what the user saw when
+   * hovering the tile. Game.updateCaravanCellTooltips now drops the tooltip of a
+   * covered cell (and restores it once the tile leaves).
+   */
+  describe("updateCaravanCellTooltips", () => {
+    const CARAVAN_ID = "caravan_ff0000";
+    const CELL_ID = "ccell_5_ff0000";
+    const EMPTY_CELL_ID = "ccell_6_ff0000";
+    const TILE_ID = "upg_yellow_12";
+
+    // Registry mirroring the real gameui.tooltips map (keyed by node id).
+    let registry: Record<string, string>;
+
+    beforeEach(() => {
+      registry = {};
+      (global as any).gameui.tooltips = registry;
+      (global as any).gameui.addTooltipHtml = (nodeId: string, html: string) => {
+        registry[nodeId] = html;
+      };
+
+      // Build the DOM exactly as the placed-tile case produces it: the tile node
+      // is a child of the caravan cell, which itself holds the pre-printed icon.
+      document.body.innerHTML = `
+        <div id='${CARAVAN_ID}' class='caravan'>
+          <div id='${CELL_ID}' class='ccell' data-r='coin'>
+            <div class='wicon wicon_coin'></div>
+            <div id='${TILE_ID}' class='upg upg_yellow'></div>
+          </div>
+          <div id='${EMPTY_CELL_ID}' class='ccell' data-r='food'></div>
+        </div>`;
+
+      // setupPlayer registers a tooltip on every bonus cell before any tile is placed.
+      registry[CELL_ID] = "<div>Caravan Cell (registered before the tile arrived)</div>";
+      registry[EMPTY_CELL_ID] = "<div>Caravan Cell (registered before the tile arrived)</div>";
+
+      // The tile registers its own tooltip through the real updateTooltip path.
+      // (Stub display-info so we don't need the full Material rule chain.)
+      (game as any).getTokenDisplayInfo = (id: string) => ({
+        tokenId: id,
+        key: id,
+        name: "Upgrade Tile #12",
+        tooltip: "<p><b>Assets</b>: yellow upgrade</p>",
+        imageTypes: "upg upg_yellow _nottimage",
+        showtooltip: true
+      });
+      game.updateTooltip(TILE_ID);
+    });
+
+    afterEach(() => {
+      (global as any).gameui.tooltips = {};
+      (global as any).gameui.addTooltipHtml = () => {};
+    });
+
+    // Model of BGA's ancestor-precedence tooltip delegation: hovering a node,
+    // mouseover bubbles up the parent chain and the OUTERMOST registered
+    // ancestor-or-self wins (its handler fires last).
+    function resolveHoverTooltip(nodeId: string): string | undefined {
+      let node: HTMLElement | null = document.getElementById(nodeId);
+      let winner: string | undefined = undefined;
+      while (node) {
+        if (node.id && registry[node.id] !== undefined) winner = registry[node.id];
+        node = node.parentElement;
+      }
+      return winner;
+    }
+
+    it("hovering a placed tile shows the tile's own tooltip, not the cell's", () => {
+      game.updateCaravanCellTooltips(CARAVAN_ID);
+
+      const tileTooltip = registry[TILE_ID];
+      expect(tileTooltip, "tile registered its own tooltip").to.be.a("string");
+      expect(tileTooltip).to.contain("Upgrade Tile #12");
+
+      expect(resolveHoverTooltip(TILE_ID)).to.equal(tileTooltip);
+    });
+
+    it("a covered cell loses the tooltip it was registered with, an uncovered one keeps it", () => {
+      game.updateCaravanCellTooltips(CARAVAN_ID);
+
+      expect(registry[CELL_ID], "covered cell tooltip is dropped").to.be.undefined;
+      expect(registry[EMPTY_CELL_ID], "uncovered cell keeps its tooltip").to.contain("registered before the tile arrived");
+    });
+
+    it("the cell tooltip comes back once the tile leaves", () => {
+      game.updateCaravanCellTooltips(CARAVAN_ID);
+      expect(registry[CELL_ID]).to.be.undefined;
+
+      document.getElementById(TILE_ID)!.remove();
+      game.updateCaravanCellTooltips(CARAVAN_ID);
+
+      expect(registry[CELL_ID], "uncovered again").to.contain("Caravan Cell");
     });
   });
 });

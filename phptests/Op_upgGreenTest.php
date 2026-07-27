@@ -19,7 +19,7 @@ use PHPUnit\Framework\TestCase;
  *   "Invalid or missing substitution argument for log message: ... could not find key 'count'".
  * The count is now interpolated directly, as Op_gain::getIconicName() already did.
  */
-final class Op_upgGreenDiscountZeroTest extends TestCase {
+final class Op_upgGreenTest extends TestCase {
     private GameUT $game;
 
     protected function setUp(): void {

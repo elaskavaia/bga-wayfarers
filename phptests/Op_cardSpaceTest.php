@@ -9,7 +9,7 @@ use PHPUnit\Framework\TestCase;
 /**
  * Test coin discount from caravan tiles when purchasing space cards via Capital Observatory
  */
-final class Op_cardSpaceDiscountTest extends TestCase {
+final class Op_cardSpaceTest extends TestCase {
     private GameUT $game;
 
     protected function setUp(): void {
@@ -71,7 +71,10 @@ final class Op_cardSpaceDiscountTest extends TestCase {
         $moves = $op->getPossibleMoves();
         $this->assertArrayHasKey($spaceCardKey, $moves, "Space card should be in possible moves");
         if ($expectedPay <= 1) {
-            $this->assertTrue($moves[$spaceCardKey]["can"], "Player should afford space card with discount (pay $expectedPay, have 1 coin)");
+            $this->assertTrue(
+                $moves[$spaceCardKey]["can"],
+                "Player should afford space card with discount (pay $expectedPay, have 1 coin)"
+            );
         }
     }
 
@@ -141,7 +144,10 @@ final class Op_cardSpaceDiscountTest extends TestCase {
         $spaceCards = $this->game->tokens->getTokensOfTypeInLocation("card_space", "mainarea");
         foreach ($spaceCards as $key => $info) {
             $this->assertArrayHasKey($key, $moves);
-            $this->assertFalse($moves[$key]["can"], "Player should NOT afford $key (cost " . $op->getCost($key) . ") with 1 coin and no discount");
+            $this->assertFalse(
+                $moves[$key]["can"],
+                "Player should NOT afford $key (cost " . $op->getCost($key) . ") with 1 coin and no discount"
+            );
         }
     }
 }

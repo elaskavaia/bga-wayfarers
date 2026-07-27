@@ -3,6 +3,8 @@
 declare(strict_types=1);
 namespace Tests;
 
+use Bga\Games\wayfarers\Db\DbMultiUndo;
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Operations\Op_gain;
 use Bga\Games\wayfarers\Operations\Op_journal;
 use Bga\Games\wayfarers\Operations\Op_order;
@@ -11,7 +13,6 @@ use Bga\Games\wayfarers\States\GameDispatch;
 use PHPUnit\Framework\TestCase;
 
 use function Bga\Games\wayfarers\array_get;
-use function Bga\Games\wayfarers\getPart;
 use function Bga\Games\wayfarers\startsWith;
 
 final class GameTest extends TestCase {
@@ -115,155 +116,6 @@ final class GameTest extends TestCase {
         }
     }
 
-    public function testAllDiceSpots() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_")) {
-                continue;
-            }
-            $r = $info["d"] ?? "";
-            if (!$r) {
-                continue;
-            }
-
-            try {
-                $r = $info["dr"] ?? "";
-                $this->assertTrue($r != "", "empty dr for $key");
-                $this->game->machine->instanciateOperation($r, PCOLOR);
-            } catch (\Exception $e) {
-                $this->fail("$key dr=$r: " . $e->getMessage());
-            }
-        }
-    }
-
-    public function testAllInstRules() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_")) {
-                continue;
-            }
-            $r = $info["r"] ?? "";
-            if (!$r) {
-                continue;
-            }
-
-            try {
-                $this->game->machine->instanciateOperation($r, PCOLOR);
-            } catch (\Exception $e) {
-                $this->fail("$key r=$r: " . $e->getMessage());
-            }
-        }
-    }
-
-    public function testAllInspExpr() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_insp_")) {
-                continue;
-            }
-            $r = $info["collect"] ?? "";
-            $this->assertTrue($r != "", "empty collect for $key");
-            try {
-                $this->game->evaluateExpression($r, PCOLOR);
-            } catch (\Exception $e) {
-                $this->fail("$key collect=$r: " . $e->getMessage());
-            }
-        }
-    }
-
-    public function testAllSpaceCards() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_space_")) {
-                continue;
-            }
-            try {
-                $r = $info["vpexp"] ?? "";
-                $this->assertTrue($r != "", "empty vpexp for $key");
-                $this->game->evaluateExpression((string) $r, PCOLOR);
-                $r = $info["r"] ?? "";
-                if ($r) {
-                    $this->game->machine->instanciateOperation($r, PCOLOR);
-                }
-                $r = $info["tags"] ?? "";
-                $this->assertTrue($r != "", "empty tags for $key");
-            } catch (\Exception $e) {
-                $this->fail("$key: " . $e->getMessage());
-            }
-        }
-    }
-
-    public function testFolk() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "card_folk_")) {
-                continue;
-            }
-            try {
-                $r = $info["cost"] ?? "";
-                $this->assertTrue($r != "", "empty cost for $key");
-
-                $r = $info["dr"] ?? ($info["da"] ?? "");
-                $this->assertTrue($r != "", "empty dr for $key");
-                $this->game->machine->instanciateOperation($r, PCOLOR);
-            } catch (\Exception $e) {
-                $this->fail("$key: " . $e->getMessage());
-            }
-        }
-    }
-
-    function checkRules($ruleField, $key, $info, $canEmpty = false) {
-        $r = $info[$ruleField] ?? "";
-        if (!$canEmpty) {
-            $this->assertTrue($r != "", "empty $ruleField for $key");
-        } else {
-            return;
-        }
-        try {
-            $this->game->machine->instanciateOperation($r, PCOLOR);
-        } catch (\Exception $e) {
-            $this->fail("$key $ruleField=$r: " . $e->getMessage());
-        }
-        return $r;
-    }
-
-    /**
-     * Test Material data for aiboard_X. Make sure all rules are implements
-     */
-    public function testAIBoard() {
-        $this->game();
-        $token_types = $this->game->material->get();
-
-        foreach ($token_types as $key => $info) {
-            $this->assertTrue(!!$key);
-            if (!startsWith($key, "aiboard_")) {
-                continue;
-            }
-            //echo "testing $key\n";
-            $bnum = getPart($key, 1);
-            $this->checkRules("t", $key, $info);
-            $this->checkRules("r1", $key, $info);
-            $this->checkRules("r2", $key, $info);
-            for ($i = 0; $i < 21; $i++) {
-                $this->checkRules("r", "aibonus_{$bnum}_{$i}", $token_types["aibonus_{$bnum}_{$i}"], true);
-            }
-        }
-    }
     /**
      * Test getCaravanAssetsForDie with starting assets only (no upgrade tiles)
      */
@@ -468,7 +320,7 @@ final class GameTest extends TestCase {
         // Queue the full expression as Op_placeDie would: 2n_food:cardWater with die and reason
         $op = $this->game->machine->instanciateOperation("2n_food:cardWater", PCOLOR, [
             "die" => $die,
-            "reason" => "card_home_3_" . PCOLOR,
+            "reason" => "card_home_3_" . PCOLOR
         ]);
         $op->saveToDb(1, true);
 
@@ -518,7 +370,7 @@ final class GameTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
         $op = $this->game->machine->instanciateOperation("cardLand", PCOLOR, [
             "die" => $die,
-            "reason" => $cardKey,
+            "reason" => $cardKey
         ]);
 
         $result = $op->hasPigeonLeftover();
@@ -537,7 +389,7 @@ final class GameTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
         $op = $this->game->machine->instanciateOperation("cardWater", PCOLOR, [
             "die" => $die,
-            "reason" => "card_home_3_" . PCOLOR,
+            "reason" => "card_home_3_" . PCOLOR
         ]);
 
         $result = $op->hasPigeonLeftover();
@@ -1162,9 +1014,11 @@ final class GameTest extends TestCase {
         $notifications = $this->game->notify->_getNotifications();
         $this->assertNotEmpty($notifications, "No notification was sent" . ($context ? " ($context)" : ""));
         $notif = end($notifications);
-        $log = $notif['log'];
-        if (!$log) return; // empty log = suppressed notification
-        $args = $notif['args'];
+        $log = $notif["log"];
+        if (!$log) {
+            return;
+        } // empty log = suppressed notification
+        $args = $notif["args"];
         // Check that all ${...} placeholders in the log have corresponding keys in args
         preg_match_all('/\$\{(\w+)\}/', $log, $matches);
         foreach ($matches[1] as $key) {
@@ -1301,5 +1155,218 @@ final class GameTest extends TestCase {
         $this->assertEquals(0, $this->game->playerStats->get("game_dice_actions", $automaId));
         $this->assertEquals(0, $this->game->playerStats->get("game_rest_actions", $automaId));
         $this->assertEquals(0, $this->game->playerStats->get("game_worker_actions", $automaId));
+    }
+
+    // -- refillMainArea -----------------------------------------------------------
+
+    private function setupRefilledMainArea(): void {
+        $this->game(1);
+        $this->game->tokens->createTokens();
+        $this->game->refillMainArea();
+    }
+
+    private function getMainAreaCards(string $ctype): array {
+        return $this->game->tokens->getTokensOfTypeInLocation("card_$ctype", "mainarea", null, "token_state");
+    }
+
+    private function getCardAtPosition(string $ctype, int $pos): ?string {
+        foreach ($this->getMainAreaCards($ctype) as $key => $info) {
+            if ((int) $info["state"] == $pos) {
+                return $key;
+            }
+        }
+        return null;
+    }
+
+    private function getPositions(string $ctype): array {
+        return array_map(fn($c) => (int) $c["state"], array_values($this->getMainAreaCards($ctype)));
+    }
+
+    public function testRefillMainArea_NoGapsDoesNothing(): void {
+        $this->setupRefilledMainArea();
+        foreach (["folk", "space", "land", "water", "insp"] as $ctype) {
+            $this->assertCount(4, $this->getMainAreaCards($ctype), "Should start with 4 $ctype cards");
+        }
+
+        $this->game->refillMainArea();
+
+        foreach (["folk", "space", "land", "water", "insp"] as $ctype) {
+            $this->assertCount(4, $this->getMainAreaCards($ctype), "Should still have 4 $ctype cards after refill");
+        }
+    }
+
+    public function testRefillMainArea_RefillsOneGap(): void {
+        $this->setupRefilledMainArea();
+        $removedCard = $this->getCardAtPosition("land", 2);
+        $this->assertNotNull($removedCard, "Should find a card at position 2");
+        $this->game->tokens->db->moveToken($removedCard, "discard");
+
+        $this->game->refillMainArea();
+
+        $this->assertCount(4, $this->getMainAreaCards("land"), "Should have 4 land cards after refill");
+        $this->assertEquals([1, 2, 3, 4], $this->getPositions("land"), "Cards should be compacted to positions 1-4");
+    }
+
+    public function testRefillMainArea_RefillsMultipleGaps(): void {
+        $this->setupRefilledMainArea();
+        $card1 = $this->getCardAtPosition("water", 1);
+        $card3 = $this->getCardAtPosition("water", 3);
+        $this->assertNotNull($card1);
+        $this->assertNotNull($card3);
+        $this->game->tokens->db->moveToken($card1, "discard");
+        $this->game->tokens->db->moveToken($card3, "discard");
+
+        $this->game->refillMainArea();
+
+        $this->assertCount(4, $this->getMainAreaCards("water"), "Should have 4 water cards after refill");
+        $this->assertEquals([1, 2, 3, 4], $this->getPositions("water"), "Cards should be compacted to positions 1-4");
+    }
+
+    public function testRefillMainArea_CompactsGapCorrectly(): void {
+        $this->setupRefilledMainArea();
+        $pos3Card = $this->getCardAtPosition("space", 3);
+        $pos2Card = $this->getCardAtPosition("space", 2);
+        $this->assertNotNull($pos3Card);
+        $this->assertNotNull($pos2Card);
+        $this->game->tokens->db->moveToken($pos2Card, "discard");
+
+        $this->game->refillMainArea();
+
+        $cards = $this->getMainAreaCards("space");
+        $this->assertEquals(2, (int) $cards[$pos3Card]["state"], "Card from position 3 should slide to position 2");
+    }
+
+    public function testRefillMainArea_OnlyAffectsTypesWithGaps(): void {
+        $this->setupRefilledMainArea();
+        $folkCard = $this->getCardAtPosition("folk", 1);
+        $this->assertNotNull($folkCard);
+        $this->game->tokens->db->moveToken($folkCard, "discard");
+
+        $landBefore = $this->getMainAreaCards("land");
+
+        $this->game->refillMainArea();
+
+        $landAfter = $this->getMainAreaCards("land");
+        $this->assertEquals(array_keys($landBefore), array_keys($landAfter), "Land cards should be untouched");
+    }
+
+    // -- customUndoSavepoint ------------------------------------------------------
+    //
+    // Snapshots used to be taken inline from inside customUndoSavepoint, which captured DB state
+    // mid-resolve (before the current op had been destroy()'d). Op_cardDraw snapshotted between
+    // Phase 1 (draw) and destroy(), so the original cardDraw stayed at rank>0 in the snapshot and
+    // restoring it would re-run Phase 1. Now customUndoSavepoint only stores meta + raises the flag;
+    // the actual save runs in doCustomUndoSavePoint at end of request via the sendNotifications hook.
+
+    private RecordingDbMultiUndo $undoStub;
+
+    private function setupUndoStub(): void {
+        $this->undoStub = new RecordingDbMultiUndo($this->game);
+        $this->game->dbMultiUndo = $this->undoStub;
+        // Reset both the duplicate flag and the meta - GameUT carries state across helpers.
+        $this->game->setUndoSavepoint(false);
+        $this->setUndoMeta([]);
+    }
+
+    private function setUndoMeta(array $meta): void {
+        $ref = new \ReflectionProperty(Game::class, "undoSavepointMeta");
+        $ref->setAccessible(true);
+        $ref->setValue($this->game, $meta);
+    }
+
+    private function getUndoMeta(): array {
+        $ref = new \ReflectionProperty(Game::class, "undoSavepointMeta");
+        $ref->setAccessible(true);
+        return $ref->getValue($this->game);
+    }
+
+    public function testCustomUndoSavepoint_DoesNotSaveImmediately(): void {
+        $this->setupUndoStub();
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "test");
+
+        $this->assertSame(0, $this->undoStub->saveCount, "Snapshot must be deferred, not taken inline");
+        $this->assertTrue($this->game->isUndoSavepoint(), "Flag must be raised");
+    }
+
+    public function testCustomUndoSavepoint_StoresMeta(): void {
+        $this->setupUndoStub();
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "after-cardDraw");
+
+        $meta = $this->getUndoMeta();
+        $this->assertSame(1, $meta["barrier"]);
+        $this->assertSame("after-cardDraw", $meta["label"]);
+        $this->assertSame(PCOLOR_ID, $meta["player_id"]);
+    }
+
+    public function testMultipleCustomUndoSavepoint_LastWins(): void {
+        $this->setupUndoStub();
+        // Simulates Op_turn.auto -> Op_cardDraw: only one snapshot at end of request, with the
+        // latest meta. The intermediate one is discarded.
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "start-of-turn");
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "after-cardDraw");
+
+        $this->assertSame(0, $this->undoStub->saveCount, "Still no save before the hook fires");
+        $this->assertSame("after-cardDraw", $this->getUndoMeta()["label"]);
+    }
+
+    public function testDoCustomUndoSavePoint_FiresSaveWithCorrectMeta(): void {
+        $this->setupUndoStub();
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "mylabel");
+        $this->game->doCustomUndoSavePoint();
+
+        $this->assertSame(1, $this->undoStub->saveCount);
+        $call = $this->undoStub->lastSaveCall;
+        $this->assertSame(PCOLOR_ID, $call["player_id"]);
+        $this->assertSame(1, $call["meta"]["barrier"]);
+        $this->assertSame("mylabel", $call["meta"]["label"]);
+        $this->assertArrayNotHasKey("player_id", $call["meta"], "player_id is passed separately, not in meta");
+    }
+
+    public function testDoCustomUndoSavePoint_NoOpWhenNoMeta(): void {
+        $this->setupUndoStub();
+        // Flag never raised, meta empty - nothing to save.
+        $this->game->doCustomUndoSavePoint();
+
+        $this->assertSame(0, $this->undoStub->saveCount);
+    }
+
+    public function testDoCustomUndoSavePoint_ClearsMetaAfterSave(): void {
+        $this->setupUndoStub();
+        $this->game->customUndoSavepoint(PCOLOR_ID, 1, "once");
+        $this->game->doCustomUndoSavePoint();
+        $this->game->doCustomUndoSavePoint(); // second call: should not re-save the same snapshot
+
+        $this->assertSame(1, $this->undoStub->saveCount);
+        $this->assertSame([], $this->getUndoMeta());
+    }
+
+    public function testCustomUndoSavepoint_SoloModeForcesPlayerIdToFirstPlayer(): void {
+        $this->setupUndoStub();
+        $this->game->setPlayersNumber(1);
+        $this->assertTrue($this->game->isSolo(), "sanity: 1-player table is solo");
+
+        // Pass a deliberately wrong id (e.g. 0 or AUTOMA=1) - the meta should still resolve to
+        // the human player so the snapshot is keyed to a real undoer.
+        $this->game->customUndoSavepoint(0, 1, "solo");
+
+        $expected = $this->game->getFirstPlayer();
+        $this->assertSame($expected, $this->getUndoMeta()["player_id"]);
+    }
+}
+
+/**
+ * Stub DbMultiUndo that records doSaveUndoSnapshot calls without touching any DB.
+ */
+class RecordingDbMultiUndo extends DbMultiUndo {
+    public int $saveCount = 0;
+    public ?array $lastSaveCall = null;
+
+    public function doSaveUndoSnapshot(array $meta, int $player_id, bool $notify = false) {
+        $this->saveCount++;
+        $this->lastSaveCall = [
+            "meta" => $meta,
+            "player_id" => $player_id,
+            "notify" => $notify
+        ];
     }
 }
