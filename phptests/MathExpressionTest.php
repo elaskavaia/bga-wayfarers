@@ -8,16 +8,15 @@ use Exception;
 use PHPUnit\Framework\TestCase;
 
 final class MathExpressionTest extends TestCase {
-
     /**
      * Test parsing and evaluating min with two numeric arguments
      */
     public function testMinFunctionWithTwoNumbers() {
         $expr = MathExpression::parse("min(5,3)");
 
-        $this->assertEquals("min(5,3)", (string)$expr);
+        $this->assertEquals("min(5,3)", (string) $expr);
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -30,10 +29,10 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithTwoVariables() {
         $expr = MathExpression::parse("min(a,b)");
 
-        $this->assertEquals("min(a,b)", (string)$expr);
+        $this->assertEquals("min(a,b)", (string) $expr);
 
-        $result = $expr->evaluate(function($x) {
-            $values = ['a' => 10, 'b' => 7];
+        $result = $expr->evaluate(function ($x) {
+            $values = ["a" => 10, "b" => 7];
             return $values[$x] ?? 0;
         });
 
@@ -46,8 +45,8 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithExpressions() {
         $expr = MathExpression::parse("min(a+5,b*2)");
 
-        $result = $expr->evaluate(function($x) {
-            $values = ['a' => 3, 'b' => 5];
+        $result = $expr->evaluate(function ($x) {
+            $values = ["a" => 3, "b" => 5];
             return $values[$x] ?? 0;
         });
 
@@ -61,7 +60,7 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithMultipleArguments() {
         $expr = MathExpression::parse("min(10,5,15,3)");
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -74,7 +73,7 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithNegativeNumbers() {
         $expr = MathExpression::parse("min(-5,3)");
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -87,7 +86,7 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithEqualValues() {
         $expr = MathExpression::parse("min(5,5,5)");
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -102,7 +101,7 @@ final class MathExpressionTest extends TestCase {
         $this->expectExceptionMessage("min function requires at least 2 arguments");
 
         $expr = MathExpression::parse("min(5)");
-        $expr->evaluate(function($x) {
+        $expr->evaluate(function ($x) {
             return $x;
         });
     }
@@ -113,8 +112,8 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithComplexExpressions() {
         $expr = MathExpression::parse("min(a+b,c*2)");
 
-        $result = $expr->evaluate(function($x) {
-            $values = ['a' => 3, 'b' => 4, 'c' => 2];
+        $result = $expr->evaluate(function ($x) {
+            $values = ["a" => 3, "b" => 4, "c" => 2];
             return $values[$x] ?? 0;
         });
 
@@ -128,8 +127,8 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionInLargerExpression() {
         $expr = MathExpression::parse("min(a,b)+c");
 
-        $result = $expr->evaluate(function($x) {
-            $values = ['a' => 5, 'b' => 3, 'c' => 2];
+        $result = $expr->evaluate(function ($x) {
+            $values = ["a" => 5, "b" => 3, "c" => 2];
             return $values[$x] ?? 0;
         });
 
@@ -163,8 +162,8 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithComparisonResult() {
         $expr = MathExpression::parse("min(a,b)>2");
 
-        $result = $expr->evaluate(function($x) {
-            $values = ['a' => 5, 'b' => 3];
+        $result = $expr->evaluate(function ($x) {
+            $values = ["a" => 5, "b" => 3];
             return $values[$x] ?? 0;
         });
 
@@ -178,7 +177,7 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionWithZeroValues() {
         $expr = MathExpression::parse("min(0,5)");
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -191,7 +190,7 @@ final class MathExpressionTest extends TestCase {
     public function testMinFunctionReturnsInteger() {
         $expr = MathExpression::parse("min(5,3)");
 
-        $result = $expr->evaluate(function($x) {
+        $result = $expr->evaluate(function ($x) {
             return $x;
         });
 
@@ -200,14 +199,14 @@ final class MathExpressionTest extends TestCase {
 
     public function testMaxFunctionWithTwoNumbers() {
         $expr = MathExpression::parse("max(5,3)");
-        $this->assertEquals("max(5,3)", (string)$expr);
+        $this->assertEquals("max(5,3)", (string) $expr);
         $result = $expr->evaluate(fn($x) => $x);
         $this->assertEquals(5, $result);
     }
 
     public function testMaxFunctionWithVariables() {
         $expr = MathExpression::parse("max(a,b)");
-        $result = $expr->evaluate(fn($x) => ['a' => 2, 'b' => 7][$x] ?? 0);
+        $result = $expr->evaluate(fn($x) => ["a" => 2, "b" => 7][$x] ?? 0);
         $this->assertEquals(7, $result);
     }
 

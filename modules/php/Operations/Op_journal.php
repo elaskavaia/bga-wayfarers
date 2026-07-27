@@ -50,7 +50,7 @@ class Op_journal extends Operation {
                     "q" => Material::ERR_OCCUPIED,
                     "err" => clienttranslate("Final Journal space is blocked by an opponent"),
                     "name" => $pos,
-                    "token_id" => $connector,
+                    "token_id" => $connector
                 ];
                 continue;
             }
@@ -77,7 +77,7 @@ class Op_journal extends Operation {
                 "q" => $achived ? Material::RET_OK : Material::ERR_PREREQ,
                 "name" => $name,
                 "r" => $prereq,
-                "token_id" => $connector,
+                "token_id" => $connector
             ];
         }
         return $res;
@@ -119,7 +119,7 @@ class Op_journal extends Operation {
         }
         // Update marker state
         $this->dbSetTokenState($markerId, $newState, clienttranslate('${player_name} journals to position ${num}'), [
-            "num" => $newState,
+            "num" => $newState
         ]);
 
         // Position Bonus

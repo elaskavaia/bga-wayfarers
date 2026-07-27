@@ -40,7 +40,9 @@ final class Op_ai_placeWorkerTest extends TestCase {
     private function setPositionPriority(int $value): void {
         // Set scheme cards to create desired sum value (0-4)
         // Use 2 cards: first with floor(value/2), second with ceil(value/2)
-        if ($value <= 0) return;
+        if ($value <= 0) {
+            return;
+        }
         $card1 = "card_scheme_1";
         $this->game->tokens->db->moveToken($card1, "tableau_" . self::AI_COLOR, 2);
         $this->game->material->setRulesFor($card1, ["c" => (string) intdiv($value, 2)]);
@@ -238,7 +240,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
         return $cards;
     }
 
-    #[PHPUnit\Framework\Attributes\DataProvider('positionPriorityProvider')]
+    #[PHPUnit\Framework\Attributes\DataProvider("positionPriorityProvider")]
     public function testSelectTargetCardByPositionPriority(int $prio, int $expectedPosition): void {
         $this->addWorkerToSupply("green");
         $cards = $this->addFolkCardsAtAllPositions();
@@ -255,11 +257,11 @@ final class Op_ai_placeWorkerTest extends TestCase {
             "prio 1 => position 1" => [1, 1],
             "prio 2 => position 2" => [2, 2],
             "prio 3 => position 3" => [3, 3],
-            "prio 4 => position 4" => [4, 4],
+            "prio 4 => position 4" => [4, 4]
         ];
     }
 
-    #[PHPUnit\Framework\Attributes\DataProvider('wrapAroundProvider')]
+    #[PHPUnit\Framework\Attributes\DataProvider("wrapAroundProvider")]
     public function testSelectTargetCardWrapsAround(int $prio, int $deniedPosition, int $expectedPosition): void {
         $this->addWorkerToSupply("green");
         $cards = $this->addFolkCardsAtAllPositions();
@@ -269,7 +271,11 @@ final class Op_ai_placeWorkerTest extends TestCase {
         $op->withDataField("denied", [$cards[$deniedPosition]]);
         $selected = $op->selectTargetCard("folk", "green");
 
-        $this->assertEquals($cards[$expectedPosition], $selected, "Priority $prio with position $deniedPosition denied should select position $expectedPosition");
+        $this->assertEquals(
+            $cards[$expectedPosition],
+            $selected,
+            "Priority $prio with position $deniedPosition denied should select position $expectedPosition"
+        );
     }
 
     public static function wrapAroundProvider(): array {
@@ -279,7 +285,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
             "prio 1, deny pos 1 => next forward is pos 2" => [1, 1, 2],
             "prio 2, deny pos 2 => next forward is pos 3" => [2, 2, 3],
             "prio 3, deny pos 3 => next backward is pos 2" => [3, 3, 2],
-            "prio 4, deny pos 4 => next backward is pos 3" => [4, 4, 3],
+            "prio 4, deny pos 4 => next backward is pos 3" => [4, 4, 3]
         ];
     }
 

@@ -38,7 +38,6 @@ class Op_camel extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate('Use Camel asset');
+        return clienttranslate("Use Camel asset");
     }
-
 }

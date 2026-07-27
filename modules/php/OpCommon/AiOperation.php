@@ -30,7 +30,7 @@ abstract class AiOperation extends CountableOperation {
         "black" => "space",
         "blue" => "water",
         "yellow" => "land",
-        "green" => "folk",
+        "green" => "folk"
     ];
     // Color priority based on resource track marker position
     const COLOR_PRIORITY = ["black", "blue", "yellow", "green"];

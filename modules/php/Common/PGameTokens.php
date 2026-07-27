@@ -162,8 +162,8 @@ class PGameTokens {
             "location" => $location,
             "name" => [
                 "log" => clienttranslate('${location_name} Counter'),
-                "args" => ["location_name" => $location_name, "i18n" => ["location_name"]],
-            ],
+                "args" => ["location_name" => $location_name, "i18n" => ["location_name"]]
+            ]
         ];
     }
 
@@ -332,7 +332,7 @@ class PGameTokens {
             "token_id" => $token_id,
             "place_id" => $place_id,
             "new_state" => $state,
-            "place_from" => $place_from,
+            "place_from" => $place_from
         ];
 
         $magicArgs = ["token_div" => $token_id, "place_name" => $place_id, "place_from_name" => $place_from, "token_name" => $token_id];
@@ -409,7 +409,7 @@ class PGameTokens {
         $notifyArgs = [
             "list" => $keys, //
             "place_id" => $place_id, //
-            "place_name" => $place_id,
+            "place_name" => $place_id
         ];
         if ($state !== null) {
             $notifyArgs["new_state"] = $state;
@@ -483,7 +483,7 @@ class PGameTokens {
         $args = array_merge($args, [
             "inc" => $num,
             "absInc" => abs($num),
-            "token_div" => $token_id,
+            "token_div" => $token_id
         ]);
 
         $this->notifyCounterDirect($token_id, $value, $message, $args, $player_id);

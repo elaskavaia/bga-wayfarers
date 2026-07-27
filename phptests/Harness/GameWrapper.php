@@ -69,7 +69,7 @@ class GameWrapper extends Game implements HarnessGameInterface {
         $this->loadDbState([]);
         // setupGameTables returns a state class-string; the live framework resolves it, the stub does not.
         $next = $this->setupGameTables();
-        $this->gamestate->jumpToState(is_string($next) ? (new $next($this))->id : $next);
+        $this->gamestate->jumpToState(is_string($next) ? new $next($this)->id : $next);
     }
 
     // -- Harness contract ------------------------------------------------------
@@ -81,7 +81,7 @@ class GameWrapper extends Game implements HarnessGameInterface {
     public function saveDbState(): array {
         return [
             "tokens" => $this->tokens->db->toJson(),
-            "machine" => $this->machine->db->toJson(),
+            "machine" => $this->machine->db->toJson()
         ];
     }
 

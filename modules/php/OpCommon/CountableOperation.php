@@ -33,8 +33,8 @@ abstract class CountableOperation extends Operation {
             return [
                 "$count" => [
                     "name" => "Confirm",
-                    "q" => 0,
-                ],
+                    "q" => 0
+                ]
             ];
         }
         for ($i = $mcount; $i <= $count; $i++) {

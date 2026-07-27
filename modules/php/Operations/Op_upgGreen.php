@@ -33,5 +33,4 @@ class Op_upgGreen extends Op_upgBase {
     function getTileHeight(): int {
         return 1;
     }
-
 }

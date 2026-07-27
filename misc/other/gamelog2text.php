@@ -18,7 +18,7 @@ if ($html === false) {
 }
 
 // Remove reflection time blocks (multiline)
-$html = preg_replace('/<div class="reflexiontimes_block"[^>]*>.*?<\/div>\s*<\/div>/s', '', $html);
+$html = preg_replace('/<div class="reflexiontimes_block"[^>]*>.*?<\/div>\s*<\/div>/s', "", $html);
 
 // Only keep content inside <div id="gamelogs"...>
 if (preg_match('/<div id="gamelogs"[^>]*>(.*)<\/div>\s*$/s', $html, $m)) {
@@ -53,3 +53,4 @@ $text = preg_replace('/\n{3,}/', "\n\n", $text);
 $text = trim($text) . "\n";
 
 echo $text;
+

@@ -37,7 +37,7 @@ class Game extends Base {
         "game_vp_ai_space",
         "game_vp_ai_insp",
         "game_vp_ai_caravan",
-        "game_vp_ai_guilds",
+        "game_vp_ai_guilds"
     ];
 
     public static Game $instance;
@@ -52,7 +52,7 @@ class Game extends Base {
         parent::__construct();
         self::initGameStateLabels([
             "variant_solo_board" => 101,
-            "variant_live_scoring" => 102,
+            "variant_live_scoring" => 102
         ]);
 
         $this->material = new Material();
@@ -474,7 +474,7 @@ class Game extends Base {
             new NotificationMessage($message, [
                 "reason" => $stat,
                 "target" => $target,
-                "token_name" => $target,
+                "token_name" => $target
             ])
         );
 
@@ -494,7 +494,7 @@ class Game extends Base {
     /** Final scoring numbers computed without writing anything (see EndScore::finalScoring) */
     function scoreAllTable(): array {
         $table = [];
-        (new EndScore($this))->finalScoring($table);
+        new EndScore($this)->finalScoring($table);
         return $table;
     }
 
@@ -670,7 +670,7 @@ class Game extends Base {
             $count == 4 => 5,
             $count == 5 => 8,
             $count == 6 => 12,
-            default => 16, // 7+
+            default => 16 // 7+
         };
     }
 
@@ -1050,7 +1050,7 @@ class Game extends Base {
         $this->undoSavepointMeta = [
             "barrier" => $barrier,
             "label" => $label,
-            "player_id" => $player_id,
+            "player_id" => $player_id
         ];
         $this->undoSavepoint();
     }
@@ -1098,7 +1098,7 @@ class Game extends Base {
     }
 
     function debug_finalScoring() {
-        (new EndScore($this))->finalScoring();
+        new EndScore($this)->finalScoring();
         $this->gamestate->jumpToState(StateConstants::STATE_GAME_DISPATCH);
     }
     /**

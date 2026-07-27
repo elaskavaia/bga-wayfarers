@@ -268,7 +268,7 @@ class DbMachine {
             "type" => $this->escapeStringForDB($type),
             "rank" => 42,
             "owner" => $this->escapeStringForDB($owner),
-            "data" => $this->escapeStringForDB($this->fixedJsonEncode($data)),
+            "data" => $this->escapeStringForDB($this->fixedJsonEncode($data))
         ];
 
         return $record;

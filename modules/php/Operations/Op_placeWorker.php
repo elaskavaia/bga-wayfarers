@@ -81,7 +81,7 @@ class Op_placeWorker extends Operation {
                     if (str_starts_with($child["key"], "worker_$wcolor")) {
                         $res[$key] = [
                             "q" => Material::ERR_OCCUPIED,
-                            "err" => clienttranslate("You cannot place more than 1 worker of the same color on a card"),
+                            "err" => clienttranslate("You cannot place more than 1 worker of the same color on a card")
                         ];
                         break;
                     }

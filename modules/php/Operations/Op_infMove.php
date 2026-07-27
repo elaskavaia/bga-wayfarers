@@ -43,7 +43,7 @@ class Op_infMove extends Operation {
                     "from" => $from,
                     "to" => $to,
                     "name" => "[wicon_inf_$fromColor] ⤇ [wicon_inf_$toColor]",
-                    "token_id" => $tokenId,
+                    "token_id" => $tokenId
                 ];
             }
         }
@@ -76,5 +76,4 @@ class Op_infMove extends Operation {
     function getPrompt() {
         return clienttranslate("Select where to move Influence");
     }
-
 }

@@ -37,7 +37,6 @@ class Op_pigeon extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate('Use Pigeon asset');
+        return clienttranslate("Use Pigeon asset");
     }
-
 }

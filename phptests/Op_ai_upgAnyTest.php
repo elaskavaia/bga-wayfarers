@@ -93,7 +93,8 @@ final class Op_ai_upgAnyTest extends TestCase {
         $pinkIds = array_keys($pinks);
 
         $this->fillCells(range(1, 8)); // 8 greens at positions 1-8
-        for ($i = 0; $i < 10; $i++) { // 10 pinks at positions 9-18
+        for ($i = 0; $i < 10; $i++) {
+            // 10 pinks at positions 9-18
             $this->game->tokens->db->moveToken($pinkIds[$i], "tableau_" . self::AI_COLOR, 9 + $i);
         }
         // Shrink 3 blue tiles to 1×1 and place at positions 19-21
@@ -147,11 +148,7 @@ final class Op_ai_upgAnyTest extends TestCase {
         $info = reset($tiles);
         // Native black is 1×2 vertical; in caravan rows it must rotate to 2×1 horizontal.
         // First winding slot is pos 15. Rotated → state = 115.
-        $this->assertEquals(
-            15 + self::ROT,
-            (int) $info["state"],
-            "Black 1×2 must rotate to horizontal in caravan rows (state = 115)"
-        );
+        $this->assertEquals(15 + self::ROT, (int) $info["state"], "Black 1×2 must rotate to horizontal in caravan rows (state = 115)");
     }
 
     public function testBlackTileStaysVerticalAtRowEndCorner(): void {
@@ -169,10 +166,6 @@ final class Op_ai_upgAnyTest extends TestCase {
         $tiles = $this->game->tokens->getTokensOfTypeInLocation("upg_black", "tableau_" . self::AI_COLOR);
         $this->assertCount(1, $tiles);
         $info = reset($tiles);
-        $this->assertEquals(
-            14,
-            (int) $info["state"],
-            "Black at corner-wrap anchors at 14 native vertical (state = 14, NOT rotated)"
-        );
+        $this->assertEquals(14, (int) $info["state"], "Black at corner-wrap anchors at 14 native vertical (state = 14, NOT rotated)");
     }
 }

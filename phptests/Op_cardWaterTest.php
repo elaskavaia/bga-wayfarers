@@ -58,7 +58,7 @@ final class Op_cardWaterTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardWater */
         $op = $this->game->machine->instanciateOperation("cardWater", $color, [
             "card" => "card_water_44",
-            "params" => "free",
+            "params" => "free"
         ]);
         $this->game->fakeUserAction($op, "card_water_44");
 
@@ -98,7 +98,7 @@ final class Op_cardWaterTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardWater */
         $op = $this->game->machine->instanciateOperation("cardWater", $color, [
             "card" => "card_water_52",
-            "params" => "free",
+            "params" => "free"
         ]);
         $this->game->fakeUserAction($op, "card_water_52");
 

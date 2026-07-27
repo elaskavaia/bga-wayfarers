@@ -26,7 +26,7 @@ class Op_ai_res extends AiOperation {
         $silver = $this->getCount();
         $newPos = ($currentPos + $silver) % 8;
         $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves resource marker to ${pos} ${reason}'), [
-            "pos" => $newPos,
+            "pos" => $newPos
         ]);
 
         //   - [ ] Resolve resource track effects passed over (comet, guild influence, townsfolk card)

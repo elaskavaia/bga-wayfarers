@@ -37,7 +37,7 @@ $checks = [
     "card_land_" => [["r", "tor"], ["dr", "todr"]],
     "card_space_" => [["r", "tor"]],
     "card_home_" => [["dr", "todr"]],
-    "jtile_" => [["r", "tooltip"]],
+    "jtile_" => [["r", "tooltip"]]
 ];
 
 echo "id|field|rule|op_name|tooltip|match\n";

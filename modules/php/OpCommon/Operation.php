@@ -431,7 +431,7 @@ abstract class Operation {
             "o" => 1000,
             "sec" => true,
             "q" => 0,
-            "color" => "alert",
+            "color" => "alert"
         ];
     }
 

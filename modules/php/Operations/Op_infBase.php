@@ -86,7 +86,7 @@ abstract class Op_infBase extends CountableOperation {
             }
 
             $this->dbSetTokenLocation($influenceKey, $guild, 0, clienttranslate('${player_name} gains ${token_icon} ${reason}'), [
-                "token_icon" => $icon,
+                "token_icon" => $icon
             ]);
         } else {
             // Move from another location
@@ -96,7 +96,7 @@ abstract class Op_infBase extends CountableOperation {
                 0,
                 clienttranslate('${player_name} gains ${token_icon} from ${place_from_name} ${reason}'),
                 [
-                    "token_icon" => $icon,
+                    "token_icon" => $icon
                 ]
             );
         }

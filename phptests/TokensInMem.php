@@ -19,7 +19,7 @@ class TokensInMem extends DbTokens {
         return [
             "key" => $arr[0],
             "location" => $arr[1],
-            "state" => $arr[2],
+            "state" => $arr[2]
         ];
     }
 
@@ -61,7 +61,7 @@ class TokensInMem extends DbTokens {
             $this->keyindex[$token_key] = [
                 "location" => "limbo",
                 "state" => 0,
-                "key" => $token_key,
+                "key" => $token_key
             ];
         }
         $this->keyindex[$token_key]["location"] = $location;

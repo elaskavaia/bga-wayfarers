@@ -92,7 +92,7 @@ class Op_ai_journal extends AiOperation {
             // AI always marks as OK - ignores requirements
             $res["jpos_$pos"] = [
                 "pos" => $pos,
-                "connector" => $connector,
+                "connector" => $connector
             ];
         }
         return $res;
@@ -203,7 +203,7 @@ class Op_ai_journal extends AiOperation {
 
         // Move marker to selected position
         $this->dbSetTokenState($markerId, $selectedPos, clienttranslate('${player_name} journals to position ${num} ${reason}'), [
-            "num" => $selectedPos,
+            "num" => $selectedPos
         ]);
 
         // Position Bonus

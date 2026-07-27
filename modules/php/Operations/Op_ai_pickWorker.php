@@ -201,8 +201,8 @@ class Op_ai_pickWorker extends AiOperation {
                         "denied" => $this->getDataField("denied", []),
                         "buy" => false,
                         "confirmed_worker" => $workerKey,
-                        "confirmed_card" => $card,
-                    ],
+                        "confirmed_card" => $card
+                    ]
                 ]);
                 return true;
             }

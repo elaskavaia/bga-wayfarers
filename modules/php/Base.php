@@ -849,7 +849,7 @@ function uRShift($a, $b = 1) {
     if ($b == 0) {
         return $a;
     }
-    return ($a >> $b) & ~((1 << 8 * PHP_INT_SIZE - 1) >> $b - 1);
+    return ($a >> $b) & ~((1 << (8 * PHP_INT_SIZE - 1)) >> ($b - 1));
 }
 
 if (!function_exists("array_key_first")) {

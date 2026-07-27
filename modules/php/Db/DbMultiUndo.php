@@ -314,7 +314,7 @@ class DbMultiUndo {
             [
                 "last_move" => $next - 1,
                 "undo_move" => $move_id,
-                "undo_move_prev" => $move_id + 1,
+                "undo_move_prev" => $move_id + 1
             ],
             $player_id
         );

@@ -82,7 +82,7 @@ class Op_ai_cardBase extends AiOperation {
         } else {
             $prio = $this->getPositionPriority();
             $this->notifyMessage(clienttranslate('${player_name} acquires card at position ${priority} based on silver values ${reason}'), [
-                "priority" => $prio,
+                "priority" => $prio
             ]);
         }
 
@@ -133,8 +133,8 @@ class Op_ai_cardBase extends AiOperation {
                     "caller_data" => [
                         "denied" => $this->getDataField("denied", []),
                         "buy" => true,
-                        "confirmed_card" => $card,
-                    ],
+                        "confirmed_card" => $card
+                    ]
                 ]);
                 return true;
             }

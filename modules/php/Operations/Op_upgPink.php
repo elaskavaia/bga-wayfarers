@@ -43,5 +43,4 @@ class Op_upgPink extends Op_upgBase {
     function getTileHeight(): int {
         return 1;
     }
-
 }

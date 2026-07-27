@@ -39,7 +39,7 @@ class Op_infAny extends Op_infBase {
             return [
                 "guild_black" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_black")],
                 "guild_yellow" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_yellow")],
-                "guild_blue" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_blue")],
+                "guild_blue" => ["q" => Material::RET_OK, "name" => $this->game->getTokenName("guild_blue")]
             ];
         }
 

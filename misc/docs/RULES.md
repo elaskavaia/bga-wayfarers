@@ -1,7 +1,7 @@
 # Wayfarers of the South Tigris — Rules
 
-*Game Design: Shem Phillips & S J Macdonald*
-*Copyright 2022 Garphill Games*
+_Game Design: Shem Phillips & S J Macdonald_
+_Copyright 2022 Garphill Games_
 
 ## Aim of the Game
 
@@ -43,6 +43,7 @@ The aim is to be the player with the most Victory Points (VP) at the game's end.
 ### Player Setup
 
 Give each player:
+
 1. 1 Player Board, dealt at random.
 2. 5 Dice in their chosen colour: 2 are placed in a reserve nearby the Minarets on the Main Board; 3 must be rolled and placed alongside their Player Board.
 3. 15 Influence in their chosen colour.
@@ -56,6 +57,7 @@ Return any excess Player Boards, Dice, Influence, Player Markers, and Workers to
 Wayfarers of the South Tigris is played over an undetermined number of turns. Starting with the first player, each player will take a turn, followed by the next player in clockwise order. This continues until the end-game is triggered.
 
 On each of their turns, players must do 1 of the following:
+
 - **Place a Die** — Each player has their own set of Dice, placed onto their own Player Board or onto Cards they previously acquired. The Caravan on a player's Board dictates what Assets and other benefits each Die face has.
 - **Place a Worker** — Players start with 1 Yellow Worker and 1 Blue Worker. These are always placed onto Cards around the edges of the Main Board. Once placed, Workers become a public resource that all players have access to.
 - **Rest** — Allows players to return their Dice, gather some resources, and advance along the Journal Track. Players can Rest earlier than required.
@@ -71,6 +73,7 @@ Throughout the game players will be collecting a variety of different Tags. Thes
 **Space Tags:** Stars, Planet, Sun, Moon, Comet, Observatory, Library
 
 City, Vista, Harbour, and Open Water are "primary" Tags. These score VP in 2 ways:
+
 - **Common sets:** Players score each of their 4 primary Tag types individually, based on how many they have: 0-1 Tags scores 0VP; 2-7 Tags scores the values shown on the reference. Any Tags beyond 7 do not score additional VP.
 - **Unique sets:** Players also score 5VP for each set of 4 unique primary Tags (1 of each type).
 
@@ -107,6 +110,7 @@ Also placed along the Track during Setup are 4 Green Workers. The first player t
 ### Guilds
 
 There are 3 Guilds in the game, represented by the 3 coloured Minarets on the Main Board:
+
 - **Science (Black)** — When Journaling, move 1 additional space.
 - **Trade (Yellow)** — Increase or decrease their Dice by 2.
 - **Exploration (Blue)** — When placing a Die, act as if it had a Ship.
@@ -174,6 +178,7 @@ When acquiring a Card, players must usually take from 1 of the 4 available faceu
 - **Townsfolk Cards** each have a set price (0-3 Silver).
 
 **Card Refreshing:** Faceup Cards are only refreshed at the end of each player's turn. If a Card was acquired, slide all faceup Cards in the direction listed below to fill empty Card slots before revealing new Cards:
+
 - Townsfolk and Land Cards slide to the right.
 - Space and Water Cards slide to the left.
 - Inspiration Cards slide downwards.
@@ -242,6 +247,7 @@ Once a Die with any required Assets has been placed, a player may then perform t
 Players start the game with 1 Yellow Worker and 1 Blue Worker. When placing a Worker on their turn, players must place it onto 1 of the faceup Cards around the edges of the Main Board (excluding Space Cards). The action they resolve is shown on the edge of the Main Board where their chosen Card sits. Players can only place a Worker if they are able to resolve at least 1 part of its printed action (they cannot place it and do nothing).
 
 Worker placement slots:
+
 - 1 Green Worker and 1 Blue Worker may be placed on each Water Card.
 - Only 1 Green Worker may be placed on each Townsfolk Card.
 - 1 Green Worker and 1 Yellow Worker may be placed on each Land Card.
@@ -293,6 +299,7 @@ Set up Wayfarers as you would for a 2-player game, with the following changes:
 Your turns function exactly the same as in multiplayer. On your opponent's turn you will either be revealing a Scheme Card, or resolving a Rest action for the AI.
 
 Each Scheme Card will be either Blue or Red in colour, and have a number of icons:
+
 - Silver Value
 - First Action
 - Scheme Card Colour
@@ -356,6 +363,7 @@ There are some changes for how Influence works on Cards in solo mode:
 **Player interacts with AI-influenced Card:** If the AI has an Influence on a Card that you want to interact with, you still need to pay them. Doing so will move their Marker 1 space around their Resource Track.
 
 **AI interacts with player-influenced Card:** If the AI wants to interact with a Card that you have an Influence on, you have a choice:
+
 1. **Let them interact.** You may then choose to take 1 Provision, or 1 Silver from the Main Supply.
 2. **Deny them.** You may pay 1 Provision or 1 Silver to have them move to the next Card, based on their usual priority rules. You can do this multiple times, so long as you can afford to.
 
@@ -370,6 +378,7 @@ When retrieving Workers, they will always take Green Workers first. If there are
 #### Journaling
 
 The AI will usually have 2 options for movement on the Journal Track. Whether they take the higher or lower path is dictated by the colour of all faceup Scheme Cards:
+
 - If the majority of their Scheme Cards are Blue, they'll take the higher path.
 - If the majority are Red, they'll take the lower path.
 - Equal number of each colour: the colour of their most recently revealed Scheme Card takes priority.
@@ -378,6 +387,7 @@ The AI will usually have 2 options for movement on the Journal Track. Whether th
 When moving into the last column of the Journal Track, the AI will never take the middle option. If you blocked the space they would have moved into, they instead move into the other available space in that final column. For the final space, they will take a Special Upgrade Tile, not an Inspiration Card.
 
 Before Journaling, first check to see where the AI's Player Marker is in reference to your own:
+
 - If they are **behind**, they will spend 1 Black Influence to move an extra space if possible.
 - If they are in the **same column**, this will cost 2 Black Influence.
 - If they are **ahead**, this will cost 3 Black Influence.
@@ -399,6 +409,7 @@ When acquiring a Special (Pink) Upgrade Tile, the AI prioritises using the refer
 The game end is triggered in the same way as the multiplayer game. If the AI triggers the end game, they will still get a final turn after you take yours.
 
 The AI scores VP for the following:
+
 - 1VP per acquired Townsfolk Card
 - 2VP per acquired Water/Land Card
 - 3VP per acquired Space Card

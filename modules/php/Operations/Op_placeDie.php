@@ -34,7 +34,7 @@ class Op_placeDie extends Op_acquireBase {
                 $slots[$card] = [
                     "key" => $card,
                     "location" => $card,
-                    "state" => count($info["children"]),
+                    "state" => count($info["children"])
                 ];
             }
         }

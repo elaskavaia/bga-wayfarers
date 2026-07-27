@@ -55,7 +55,7 @@ class Op_turn extends Operation {
             $this->game->notify->all("journalTagCounts", "", [
                 "player_id" => Game::PLAYER_AUTOMA,
                 "color" => $this->game->getAutomaColor(),
-                "counts" => $this->game->getJournalTagCounts($this->game->getAutomaColor()),
+                "counts" => $this->game->getJournalTagCounts($this->game->getAutomaColor())
             ]);
         }
 
@@ -101,7 +101,7 @@ class Op_turn extends Operation {
                 $res[$dieKey] = [
                     "q" => Material::RET_OK,
                     "buttons" => false,
-                    "sec" => true,
+                    "sec" => true
                 ];
             } else {
                 $res[$dieKey] = ["q" => Material::RET_OK, "color" => "primary"];

@@ -37,7 +37,6 @@ class Op_ship extends Operation {
     }
 
     public function getPrompt() {
-        return clienttranslate('Use Ship asset');
+        return clienttranslate("Use Ship asset");
     }
-
 }

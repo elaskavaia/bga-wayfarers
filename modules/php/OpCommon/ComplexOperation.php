@@ -81,7 +81,7 @@ abstract class ComplexOperation extends CountableOperation {
             "r" => $sub->getTypeFullExpr(),
             "q" => $q,
             "max" => $max,
-            "tooltip" => $sub->getOpName(),
+            "tooltip" => $sub->getOpName()
         ];
         if ($sub instanceof Op_pay) {
             $res["token_id"] = $args["token_id"] ?? null;

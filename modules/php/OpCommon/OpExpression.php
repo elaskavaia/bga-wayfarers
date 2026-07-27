@@ -406,7 +406,7 @@ class OpParser {
         "/" => 3,
         "+" => 4,
         "," => 5,
-        "!" => 6,
+        "!" => 6
     ];
 
     public static function compareOperationRank($pop, $cop) {

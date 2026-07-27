@@ -95,7 +95,7 @@ class Op_ai_cardInteractChoice extends Operation {
         $card = $this->getDataField("card");
 
         return [
-            "token_name" => $card,
+            "token_name" => $card
         ];
     }
 
@@ -103,7 +103,7 @@ class Op_ai_cardInteractChoice extends Operation {
         $card = $this->getDataField("card");
         return [
             "imagebuttons" => true,
-            "selected" => [$card],
+            "selected" => [$card]
         ];
     }
 }

@@ -142,7 +142,7 @@ class OpMachine {
             ";" => "seq",
             "^" => "unique",
             "/" => "or",
-            default => throw new SystemException("Unknown operator $operand"),
+            default => throw new SystemException("Unknown operator $operand")
         };
     }
     function instanciateCommonOperation(string $type, ?string $owner = null, mixed $data = null): Operation {

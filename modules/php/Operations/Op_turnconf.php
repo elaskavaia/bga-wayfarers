@@ -29,7 +29,7 @@ class Op_turnconf extends Operation {
         $this->game->notify->all("journalTagCounts", "", [
             "player_id" => $playerId,
             "color" => $owner,
-            "counts" => $this->game->getJournalTagCounts($owner),
+            "counts" => $this->game->getJournalTagCounts($owner)
         ]);
         return parent::auto();
     }
@@ -57,7 +57,7 @@ class Op_turnconf extends Operation {
     #[Override]
     public function getExtraArgs() {
         return parent::getExtraArgs() + [
-            "pref_id" => Material::MA_PREF_CONFIRM_TURN,
+            "pref_id" => Material::MA_PREF_CONFIRM_TURN
         ];
     }
 }

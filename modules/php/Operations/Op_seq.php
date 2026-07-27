@@ -91,7 +91,6 @@ class Op_seq extends ComplexOperation {
         return $this->getRecName(", ");
     }
 
-
     public function resolve(): void {
         if ($this->isRangedChoice()) {
             $c = $this->getCheckedArg();

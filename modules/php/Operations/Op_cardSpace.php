@@ -89,7 +89,7 @@ class Op_cardSpace extends Op_cardBase {
             1 => 3,
             2 => 4,
             3 => 4,
-            4 => 5,
+            4 => 5
         };
     }
 

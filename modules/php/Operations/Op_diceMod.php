@@ -57,14 +57,14 @@ class Op_diceMod extends CountableOperation {
 
                     "token_id" => $key,
                     "from" => $value,
-                    "to" => $valuePlus,
+                    "to" => $valuePlus
                 ];
                 $res["{$key}_down"] = [
                     "q" => Material::RET_OK,
 
                     "token_id" => $key,
                     "from" => $value,
-                    "to" => $valueMinus,
+                    "to" => $valueMinus
                 ];
             } elseif ($value == 1) {
                 $res["{$key}_up"] = [
@@ -72,7 +72,7 @@ class Op_diceMod extends CountableOperation {
                     "token_id" => $key,
 
                     "from" => $value,
-                    "to" => $valuePlus,
+                    "to" => $valuePlus
                 ];
             } elseif ($value == 6) {
                 $res["{$key}_down"] = [
@@ -80,7 +80,7 @@ class Op_diceMod extends CountableOperation {
 
                     "from" => $value,
                     "to" => $valueMinus,
-                    "token_id" => $key,
+                    "token_id" => $key
                 ];
             }
         }

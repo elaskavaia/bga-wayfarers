@@ -31,7 +31,7 @@ final class Op_cardBaseTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
         $op = $this->game->machine->instanciateOperation("cardWater", $color, [
             "die" => $die,
-            "reason" => "card_home_3_$color",
+            "reason" => "card_home_3_$color"
         ]);
 
         $result = $op->hasPigeonLeftover();
@@ -50,7 +50,7 @@ final class Op_cardBaseTest extends TestCase {
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
         $op = $this->game->machine->instanciateOperation("cardWater", $color, [
             "die" => $die,
-            "reason" => "card_home_3_$color",
+            "reason" => "card_home_3_$color"
         ]);
 
         $result = $op->hasPigeonLeftover();

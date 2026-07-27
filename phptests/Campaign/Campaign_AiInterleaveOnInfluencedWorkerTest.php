@@ -104,10 +104,6 @@ class Campaign_AiInterleaveOnInfluencedWorkerTest extends CampaignBase {
         $bonusLogs = $this->bonusAcquisitionLogs();
         $this->assertCount(1, $bonusLogs, "bonus executed once, during the automa turn");
         $this->assertStringContainsString('${reason}', $bonusLogs[0]["log"], "log tells the player why the automa acquired");
-        $this->assertGreaterThan(
-            $folkBefore,
-            $this->countTokens("card_folk", "tableau_" . self::AI),
-            "automa ends up with the Townsfolk"
-        );
+        $this->assertGreaterThan($folkBefore, $this->countTokens("card_folk", "tableau_" . self::AI), "automa ends up with the Townsfolk");
     }
 }

@@ -61,7 +61,11 @@ final class Op_pickWorkerTest extends TestCase {
         $this->assertArrayHasKey("card_land_1", $res);
         $this->assertSame(Material::ERR_NOT_APPLICABLE, $res["card_land_1"]["q"], "Card with this-turn worker must be blocked");
         $this->assertArrayHasKey("card_land_2", $res);
-        $this->assertNotSame(Material::ERR_NOT_APPLICABLE, $res["card_land_2"]["q"], "Card without this-turn worker must not be blocked by this rule");
+        $this->assertNotSame(
+            Material::ERR_NOT_APPLICABLE,
+            $res["card_land_2"]["q"],
+            "Card without this-turn worker must not be blocked by this rule"
+        );
     }
 
     public function testTurnStartResetsWorkerStates(): void {

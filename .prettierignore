@@ -1,0 +1,12 @@
+node_modules
+staging
+
+# Build outputs - never hand edit, see CLAUDE.md
+wayfarers.js
+wayfarers.css
+wayfarers.css.map
+modules/js/Game.js
+modules/php/Material.php
+
+# BGA framework stub for IDE autocomplete, not our code
+_ide_helper.php

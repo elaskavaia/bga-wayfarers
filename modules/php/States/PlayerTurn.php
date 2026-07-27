@@ -38,8 +38,8 @@ class PlayerTurn extends GameState {
         return [
             "description" => $args["description"] ?? "",
             "_private" => [
-                $active_player_id => $args,
-            ],
+                $active_player_id => $args
+            ]
         ];
     }
 

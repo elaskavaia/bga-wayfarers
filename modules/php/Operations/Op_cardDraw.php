@@ -81,7 +81,7 @@ class Op_cardDraw extends CountableOperation {
                     "message",
                     clienttranslate('${player_name} draws ${count} cards'),
                     [
-                        "count" => count($drawn),
+                        "count" => count($drawn)
                     ],
                     $this->getPlayerId()
                 );

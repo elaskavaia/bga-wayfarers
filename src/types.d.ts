@@ -9,8 +9,7 @@
  *
  */
 
-interface CustomPlayer extends Player {
-}
+interface CustomPlayer extends Player {}
 
 interface Token {
   key: string;

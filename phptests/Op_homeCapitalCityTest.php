@@ -52,10 +52,16 @@ final class Op_homeCapitalCityTest extends TestCase {
         $this->game->machine->dispatchAll();
 
         // At this point, food is paid (0) and coin is gained (1).
-        $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "food"),
-            "Food should already have been paid before cardLand prompt");
-        $this->assertEquals(1, $this->game->tokens->getTrackerValue($player, "coin"),
-            "Coin should have been gained BEFORE cardLand prompt");
+        $this->assertEquals(
+            0,
+            $this->game->tokens->getTrackerValue($player, "food"),
+            "Food should already have been paid before cardLand prompt"
+        );
+        $this->assertEquals(
+            1,
+            $this->game->tokens->getTrackerValue($player, "coin"),
+            "Coin should have been gained BEFORE cardLand prompt"
+        );
 
         $top = $this->game->machine->createTopOperationFromDbForOwner(null);
         $this->assertNotNull($top);
@@ -72,10 +78,8 @@ final class Op_homeCapitalCityTest extends TestCase {
         $this->game->fakeUserAction($top, "tracker_coin_$player");
         $this->game->machine->dispatchAll();
 
-        $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "coin"),
-            "Player gained 1 coin then spent it paying opponent");
-        $this->assertEquals(1, $this->game->tokens->getTrackerValue($opp, "coin"),
-            "Opponent should have received 1 coin for influence");
+        $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "coin"), "Player gained 1 coin then spent it paying opponent");
+        $this->assertEquals(1, $this->game->tokens->getTrackerValue($opp, "coin"), "Opponent should have received 1 coin for influence");
 
         // Land card should be in player's tableau
         $loc = $this->game->tokens->db->getTokenLocation("card_land_10");
@@ -133,12 +137,9 @@ final class Op_homeCapitalCityTest extends TestCase {
         $this->game->fakeUserAction($top, "tracker_coin_$player");
         $this->game->machine->dispatchAll();
 
-        $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "coin"),
-            "Player should have spent the coin");
-        $this->assertEquals(1, $this->game->tokens->getTrackerValue($player, "food"),
-            "Food should be untouched after the pay step");
-        $this->assertEquals(1, $this->game->tokens->getTrackerValue($opp, "coin"),
-            "Opponent should have received 1 coin");
+        $this->assertEquals(0, $this->game->tokens->getTrackerValue($player, "coin"), "Player should have spent the coin");
+        $this->assertEquals(1, $this->game->tokens->getTrackerValue($player, "food"), "Food should be untouched after the pay step");
+        $this->assertEquals(1, $this->game->tokens->getTrackerValue($opp, "coin"), "Opponent should have received 1 coin");
 
         $ops = $this->game->machine->db->getOperations();
         $this->assertEmpty($ops, "All operations should have resolved");

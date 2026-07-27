@@ -35,12 +35,7 @@ class Op_pickGreen extends Operation {
         $worker = array_key_first($workers);
 
         if ($worker) {
-            $this->dbSetTokenLocation(
-                $worker,
-                "tableau_$owner",
-                0,
-                clienttranslate('${player_name} picks ${token_name} from the board')
-            );
+            $this->dbSetTokenLocation($worker, "tableau_$owner", 0, clienttranslate('${player_name} picks ${token_name} from the board'));
         }
     }
 }

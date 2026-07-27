@@ -169,7 +169,7 @@ class EndScore extends GameState {
             if ($commit) {
                 $game->notifyMessage(clienttranslate('Scoring majority for ${token_name}, max influence ${max}'), [
                     "token_name" => $guild,
-                    "max" => $maxInfluence,
+                    "max" => $maxInfluence
                 ]);
             }
 

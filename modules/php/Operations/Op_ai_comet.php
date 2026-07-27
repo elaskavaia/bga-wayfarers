@@ -29,7 +29,7 @@ class Op_ai_comet extends AiOperation {
 
         if ($newPos != $currentPos) {
             $this->dbSetTokenState($trackerId, $newPos, clienttranslate('${player_name} moves comet marker to ${pos} ${reason}'), [
-                "pos" => $newPos,
+                "pos" => $newPos
             ]);
         } else {
             $this->notifyMessage(clienttranslate('${player_name} does not move comet marker - maxed out at 10'));

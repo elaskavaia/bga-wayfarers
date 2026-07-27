@@ -79,9 +79,9 @@ class GameDriver {
         $finalDb = $this->game->saveDbState() + [
             "gamestate" => [
                 "state_id" => $this->game->gamestate->getCurrentMainStateId(),
-                "active_player" => (int) $this->game->getActivePlayerId(),
+                "active_player" => (int) $this->game->getActivePlayerId()
             ],
-            "players" => array_values($this->game->loadPlayersBasicInfos()),
+            "players" => array_values($this->game->loadPlayersBasicInfos())
         ];
         self::saveJson("$this->stagingDir/db.json", $finalDb);
     }
@@ -123,7 +123,7 @@ class GameDriver {
             "id" => $stateId,
             "name" => $stateName,
             "active_player" => $activePlayer,
-            "args" => $stateArgs,
+            "args" => $stateArgs
         ];
     }
 
@@ -313,7 +313,7 @@ class GameDriver {
             "name" => $newGamestate["name"] ?? "",
             "active_player" => (string) $newGamestate["active_player"],
             "type" => "activeplayer",
-            "args" => $newGamestate["args"] ?? [],
+            "args" => $newGamestate["args"] ?? []
         ]);
     }
 

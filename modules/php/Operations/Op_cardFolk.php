@@ -89,7 +89,7 @@ class Op_cardFolk extends Op_cardBase {
             } else {
                 $res[$tcard] = [
                     "q" => Material::ERR_PREREQ,
-                    "err" => clienttranslate("Cannot find home for Townfolk"),
+                    "err" => clienttranslate("Cannot find home for Townfolk")
                 ];
             }
         }
@@ -124,7 +124,7 @@ class Op_cardFolk extends Op_cardBase {
             $this->queue($this->getTypeFullExpr(), $owner, [
                 "card" => $this->getCheckedArg(),
                 "die" => $this->getDie(),
-                "reason" => $this->getReason(),
+                "reason" => $this->getReason()
             ]);
             return;
         }

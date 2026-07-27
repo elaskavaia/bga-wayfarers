@@ -84,7 +84,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["buy" => true],
+            "caller_data" => ["buy" => true]
         ]);
         $this->game->fakeUserAction($op, "allow_coin");
 
@@ -99,7 +99,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["buy" => true],
+            "caller_data" => ["buy" => true]
         ]);
         $this->game->fakeUserAction($op, "allow_food");
 
@@ -114,7 +114,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["denied" => []],
+            "caller_data" => ["denied" => []]
         ]);
         $this->game->fakeUserAction($op, "deny_coin");
 
@@ -129,7 +129,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["denied" => []],
+            "caller_data" => ["denied" => []]
         ]);
         $this->game->fakeUserAction($op, "deny_food");
 
@@ -144,7 +144,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["denied" => []],
+            "caller_data" => ["denied" => []]
         ]);
         $op->saveToDb();
         $this->game->fakeUserAction($op, "deny_coin");
@@ -163,7 +163,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
         $op = $this->createOp([
             "card" => "card_land_1",
             "caller" => "ai_cardLand",
-            "caller_data" => ["buy" => true],
+            "caller_data" => ["buy" => true]
         ]);
         $op->saveToDb();
         $this->game->fakeUserAction($op, "allow_coin");

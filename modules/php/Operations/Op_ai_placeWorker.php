@@ -214,8 +214,8 @@ class Op_ai_placeWorker extends AiOperation {
                             "buy" => false,
                             "confirmed_card" => $targetCard,
                             "confirmed_worker" => $worker,
-                            "confirmed_card_type" => $cardType,
-                        ],
+                            "confirmed_card_type" => $cardType
+                        ]
                     ]);
                     return true;
                 }
