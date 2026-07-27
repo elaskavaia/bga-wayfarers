@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-07-27 (v260727-1346)
+
+- Fixed an error message when clicking a token that the game had already refused, such as while the interface was locked
+
 ## 2026-07-27 (v260727-0846)
 
 - Fixed solo game crashing at final scoring when the automa won
