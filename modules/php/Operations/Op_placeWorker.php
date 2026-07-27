@@ -62,6 +62,7 @@ class Op_placeWorker extends Operation {
         // Step 2: Select a card to place the worker on
         $slots = $this->getWorkerSlots();
         $res = [];
+        $owner = $this->getOwner();
         $wcolor = getPart($selectedWorker, 1);
         foreach ($slots as $key => $slot) {
             if (str_starts_with($key, "card_insp")) {
@@ -86,12 +87,27 @@ class Op_placeWorker extends Operation {
                     }
                 }
             }
+            if (isset($res[$key]) && $res[$key]["q"] === Material::RET_OK) {
+                $interactError = $this->game->getCardInteractionError($key, $owner);
+                if ($interactError) {
+                    $res[$key] = ["q" => Material::ERR_COST, "err" => $interactError];
+                }
+            }
         }
         return $res;
     }
 
     public function getUiArgs() {
         return ["buttons" => false];
+    }
+
+    /** With a worker already chosen there is no way back, so no valid card must not strand the player */
+    public function canSkip() {
+        return $this->getSelectedWorker() !== null && $this->noValidTargets();
+    }
+
+    public function skip() {
+        $this->notifyMessage(clienttranslate('${player_name} skips placing a worker - no card can be used'));
     }
 
     function resolve(): void {

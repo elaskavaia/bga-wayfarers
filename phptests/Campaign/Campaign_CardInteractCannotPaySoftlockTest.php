@@ -2,24 +2,17 @@
 
 declare(strict_types=1);
 
+use Bga\Games\wayfarers\Material;
 use Tests\Campaign\CampaignBase;
 
 /**
- * BGA #227894 (4-player "block"/softlock) - reproduces the real defect end-to-end through the op-machine.
+ * BGA #227894 (4-player "block"/softlock) - verifies the fix end-to-end through the op-machine.
  *
- * A player places a worker on a card that carries an OPPONENT's influence. Placing on such a card queues
- * `cardInteract` (Op_placeWorker.php:112, buy=false), which forces the acting player to pay the influence
- * owner one coin or one provision. When the player has NEITHER coin NOR provision, both payment options are
- * ERR_COST (Op_cardInteract::getPossibleMoves), so the op has zero valid targets. Op_cardInteract also
- * requireConfirmation()==true (opponent influence present) and does not override canSkip(), so the op is
- * void yet cannot be auto-resolved or skipped: the player is stuck (matches the "IMPOSSIBLE TO UNDO"
- * softlock in the report).
- *
- * RULES.md:83: "If they cannot pay, then they cannot interact with that Card." The interaction should be
- * blocked UP FRONT (the worker placement / card slot should not be offered) when the player cannot pay.
- *
- * Documents buggy behavior for BGA #227894 (softlock); flip once fixed - interacting with an influenced
- * card the player cannot pay for should be blocked up front (RULES.md:83).
+ * RULES.md:83: "If they cannot pay, then they cannot interact with that Card." A player with neither coin
+ * nor provision used to be offered a card carrying an opponent's Influence anyway; the resulting
+ * `cardInteract` had zero valid targets, requireConfirmation()==true and no canSkip(), so the turn was stuck
+ * (the "IMPOSSIBLE TO UNDO" softlock in the report). The interaction is now blocked up front: such a card is
+ * not an offered target for placing a worker, retrieving a worker, or acquiring the card.
  */
 class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
     private function landAtPosition1(): string {
@@ -40,51 +33,151 @@ class Campaign_CardInteractCannotPaySoftlockTest extends CampaignBase {
         $this->fail("no opponent color found");
     }
 
-    private function zeroOutResource(string $color, string $resource): void {
+    private function setResource(string $color, string $resource, int $target): void {
         $count = (int) $this->game->tokens->db->getTokenState("tracker_{$resource}_{$color}");
-        if ($count !== 0) {
-            $this->game->effect_incCount($color, $resource, -$count, "test");
+        if ($count !== $target) {
+            $this->game->effect_incCount($color, $resource, $target - $count, "test");
         }
-        $this->assertEquals(0, (int) $this->game->tokens->db->getTokenState("tracker_{$resource}_{$color}"));
+        $this->assertEquals($target, (int) $this->game->tokens->db->getTokenState("tracker_{$resource}_{$color}"));
     }
 
-    public function testInteractingWithInfluencedCardWithNoMoneySoftlocks(): void {
+    /** Opponent-influenced land card at mainarea position 1, plus a green worker in the player's supply. */
+    private function setupInfluencedLand(string $pc, string $opp): string {
+        $land = $this->landAtPosition1();
+        $this->game->tokens->db->moveToken("influence_{$opp}_20", $land);
+        $this->game->tokens->db->moveToken("worker_green_1", "tableau_$pc", 0);
+        return $land;
+    }
+
+    public function testCannotPlaceWorkerOnInfluencedCardWithNoMoney(): void {
         $this->setupGame(4);
         $pc = $this->getActiveColor();
         $this->assertOpType("turn");
-
         $opp = $this->opponentColor($pc);
 
-        // The acting player has nothing to pay with.
-        $this->zeroOutResource($pc, "coin");
-        $this->zeroOutResource($pc, "food");
+        $this->setResource($pc, "coin", 0);
+        $this->setResource($pc, "food", 0);
+        $land = $this->setupInfluencedLand($pc, $opp);
 
-        // A land card at position 1 (worker action) carrying an OPPONENT's influence.
-        $land = $this->landAtPosition1();
-        $this->game->tokens->db->moveToken("influence_{$opp}_20", $land);
-
-        // Give the acting player a green worker (green may be placed on any non-space card).
-        $this->game->tokens->db->moveToken("worker_green_1", "tableau_$pc", 0);
-
-        // Player turn: place the green worker on the opponent-influenced land card.
         $this->respond("worker_green_1");
         $this->assertOpType("placeWorker");
+        $this->assertNotValidTarget($land, "an unpayable influenced card cannot be interacted with (RULES.md:83)");
+
+        // Other land cards stay available, so the player is not stuck.
+        $this->assertNotEmpty($this->getOpArgs()["target"] ?? []);
+    }
+
+    public function testPlacingWorkerOnInfluencedCardResolvesWhenPayable(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
+
+        $this->setResource($pc, "coin", 1);
+        $this->setResource($pc, "food", 0);
+        $this->setResource($opp, "coin", 0);
+        $land = $this->setupInfluencedLand($pc, $opp);
+
+        $this->respond("worker_green_1");
+        $this->assertValidTarget($land, "a payable influenced card is still offered");
         $this->respond($land);
 
-        // BUG: placing on an opponent-influenced card queues cardInteract even though the player cannot pay.
-        $this->assertOpType("cardInteract", "player is forced into the pay-to-interact step");
+        $this->assertOpType("cardInteract");
+        $this->assertValidTarget("tracker_coin_$pc", "coin is the only affordable payment");
+        $this->assertNotValidTarget("tracker_food_$pc");
+        $this->respond("tracker_coin_$pc");
 
-        // Both payment options (coin and food) are ERR_COST, so there are NO valid targets to choose.
-        $target = $this->getOpArgs()["target"] ?? [];
-        $this->assertSame([], $target, "no payable option: both coin and food are ERR_COST");
+        $this->assertEquals(0, (int) $this->game->tokens->db->getTokenState("tracker_coin_$pc"), "player paid 1 coin");
+        $this->assertEquals(1, (int) $this->game->tokens->db->getTokenState("tracker_coin_$opp"), "influence owner was paid");
+        $this->assertEquals($land, $this->game->tokens->db->getTokenInfo("worker_green_1")["location"], "worker landed on the card");
+    }
 
-        // ...and the op cannot be skipped or auto-resolved, so the player is stuck (the softlock).
-        $op = $this->game->machine->instanciateSimpleOperation("cardInteract", $pc, ["card" => $land, "buy" => false]);
-        $this->assertTrue($op->requireConfirmation(), "opponent influence forces confirmation");
-        $this->assertFalse($op->canSkip(), "cardInteract cannot be skipped");
-        $this->assertTrue($op->isVoid(), "no valid target and not skippable => void/stuck");
+    public function testCannotPickWorkerFromInfluencedCardWithNoMoney(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
 
-        // Once fixed (interaction blocked up front), this test should be flipped: the land slot should not be
-        // an offered target for placement, so the player would never reach an unpayable cardInteract.
+        $this->setResource($pc, "coin", 0);
+        $this->setResource($pc, "food", 0);
+        $land = $this->setupInfluencedLand($pc, $opp);
+        // A worker already on that card, placed on an earlier turn (state 0 = retrievable).
+        $this->game->tokens->db->moveToken("worker_blue_1", $land, 0);
+
+        $op = $this->game->machine->instanciateSimpleOperation("pickWorker", $pc);
+        $this->assertNotContains("worker_blue_1", $op->getPossibleMoves(), "cannot retrieve a worker you cannot pay for");
+        $this->assertTrue($op->canSkip(), "pickWorker stays skippable, so no softlock");
+    }
+
+    public function testCannotAcquireInfluencedCardWithNoMoney(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
+
+        $this->setResource($pc, "coin", 0);
+        $this->setResource($pc, "food", 0);
+        $land = $this->setupInfluencedLand($pc, $opp);
+
+        $op = $this->game->machine->instanciateSimpleOperation("cardLand", $pc);
+        $moves = $op->getPossibleMoves();
+        $this->assertArrayHasKey($land, $moves);
+        $this->assertSame(Material::ERR_COST, $moves[$land]["q"], "cannot acquire a card you cannot pay the influence owner for");
+    }
+
+    /** A chosen worker with every legal card blocked must not strand the player either. */
+    public function testWorkerPlacementWithEveryCardBlockedIsSkippable(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
+
+        $this->setResource($pc, "coin", 0);
+        $this->setResource($pc, "food", 0);
+        // A blue worker may go on a water card or on an inspiration card.
+        $inf = 20;
+        foreach (["card_water", "card_insp"] as $type) {
+            foreach (array_keys($this->game->tokens->getTokensOfTypeInLocation($type, "mainarea")) as $card) {
+                $this->game->tokens->db->moveToken("influence_{$opp}_" . $inf++, $card);
+            }
+        }
+
+        $op = $this->game->machine->instanciateSimpleOperation("placeWorker", $pc, ["worker" => "worker_blue_1"]);
+        $this->assertTrue($op->noValidTargets(), "every card a blue worker could go on is blocked");
+        $this->assertTrue($op->canSkip(), "placing a chosen worker with no valid card stays skippable");
+    }
+
+    /** Blocking every card must not create the softlock it is meant to remove. */
+    public function testAcquisitionWithEveryCardBlockedIsSkippable(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
+
+        $this->setResource($pc, "coin", 0);
+        $this->setResource($pc, "food", 0);
+        $inf = 20;
+        foreach (array_keys($this->game->tokens->getTokensOfTypeInLocation("card_insp", "mainarea")) as $card) {
+            $this->game->tokens->db->moveToken("influence_{$opp}_" . $inf++, $card);
+        }
+
+        $op = $this->game->machine->instanciateSimpleOperation("cardInsp", $pc);
+        $this->assertTrue($op->noValidTargets(), "every inspiration card is blocked");
+        $this->assertTrue($op->canSkip(), "an acquisition with no valid target stays skippable");
+    }
+
+    /** The card's own price is paid before the Influence fee, so both must fit in the player's supply. */
+    public function testCannotAcquireInfluencedCardWhenPriceEatsAllTheCoins(): void {
+        $this->setupGame(4);
+        $pc = $this->getActiveColor();
+        $opp = $this->opponentColor($pc);
+        $this->setResource($pc, "food", 0);
+
+        $folk = array_key_first($this->game->tokens->getTokensOfTypeInLocation("card_folk", "mainarea"));
+        $this->game->tokens->db->moveToken("influence_{$opp}_20", $folk);
+
+        $op = $this->game->machine->instanciateSimpleOperation("cardFolk", $pc);
+        $cost = (int) $this->game->getRulesFor($folk, "cost", 5);
+
+        $this->setResource($pc, "coin", $cost);
+        $this->assertSame(Material::ERR_COST, $op->getPossibleMoves()[$folk]["q"], "no coin left over for the Influence fee");
+
+        $this->setResource($pc, "coin", $cost + 1);
+        $this->assertEmpty($op->getPossibleMoves()[$folk]["err"] ?? "", "price plus fee is affordable");
     }
 }

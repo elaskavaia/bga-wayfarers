@@ -52,6 +52,13 @@ class Op_cardInsp extends Op_cardBase {
                 if ($placedWorkerError) {
                     $res[$card]["q"] = Material::ERR_NOT_APPLICABLE;
                     $res[$card]["err"] = $placedWorkerError;
+                    continue;
+                }
+                $interactError = $this->getInteractionError($card);
+                if ($interactError) {
+                    $res[$card]["q"] = Material::ERR_COST;
+                    $res[$card]["err"] = $interactError;
+                    $res[$card]["nointeract"] = true;
                 }
             }
 

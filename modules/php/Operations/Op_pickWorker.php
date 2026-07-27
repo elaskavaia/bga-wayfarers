@@ -32,9 +32,11 @@ class Op_pickWorker extends Operation {
         $publicWorkers = $this->game->tokens->getTokensOfTypeInLocation("worker", "card_%");
 
         // Exclude workers placed this turn (state=1) — RULES.md line 252.
+        // Also exclude workers on a card whose Influence owner the player cannot pay - RULES.md line 83.
+        $owner = $this->getOwner();
         $available = [];
         foreach ($publicWorkers as $key => $info) {
-            if ((int) $info["state"] === 0) {
+            if ((int) $info["state"] === 0 && !$this->game->getCardInteractionError($info["location"], $owner)) {
                 $available[] = $key;
             }
         }

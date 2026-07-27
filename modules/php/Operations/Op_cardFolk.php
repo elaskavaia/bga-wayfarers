@@ -59,6 +59,15 @@ class Op_cardFolk extends Op_cardBase {
                 if (!$can) {
                     continue;
                 }
+
+                $interactError = $this->getInteractionError($card);
+                if ($interactError) {
+                    $res[$card]["q"] = Material::ERR_COST;
+                    $res[$card]["can"] = false;
+                    $res[$card]["err"] = $interactError;
+                    continue;
+                }
+
                 $res[$card]["q"] = Material::ERR_PREREQ;
                 $res[$card]["err"] = clienttranslate("Cannot find home for Townfolk");
                 foreach ($cards as $tcard => $info) {
