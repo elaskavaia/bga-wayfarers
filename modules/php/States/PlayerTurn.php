@@ -44,6 +44,7 @@ class PlayerTurn extends GameState {
     }
 
     public function onEnteringState(int $active_player_id) {
+        $this->game->notifyScoringUpdate();
         return $this->game->machine->onEnteringPlayerState($active_player_id);
     }
     #[PossibleAction]

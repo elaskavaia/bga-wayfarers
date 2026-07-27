@@ -25,5 +25,20 @@
         "value": 1
       }
     ]
+  },
+  "102": {
+    "name": "Live scoring",
+    "values": {
+      "0": {
+        "name": "Disabled",
+        "description": "Victory points are only shown at the end of the game"
+      },
+      "1": {
+        "name": "Enabled",
+        "description": "Player panels show the victory points scored so far, recalculated on every action",
+        "tmdisplay": "Live Scoring"
+      }
+    },
+    "default": 0
   }
 }

@@ -2092,6 +2092,7 @@ class Game extends GameMachine {
             this.setupGuildHotzoneTooltips();
             this.setupNotifications();
             this.setupScoreSheet();
+            this.updateLiveScores(gamedatas);
             this.updateBanner();
             this.markFirstPlayer(gamedatas);
             // document.rootElement?.classList.add("bgaext_cust_back");
@@ -2325,7 +2326,8 @@ class Game extends GameMachine {
             classes: "score-sheet",
             players: this.gamedatas.players,
             entries,
-            scores: this.gamedatas.endScores,
+            // only the final scores open the sheet, live ones would pop it up mid-game
+            scores: this.gamedatas.gameEnded ? this.gamedatas.endScores : undefined,
             onScoreDisplayed: (property, playerId, score) => {
                 // if (property === "total") {
                 //   gameui.scoreCtrl[playerId].setValue(score);
@@ -2333,7 +2335,7 @@ class Game extends GameMachine {
             }
         });
         // add second scoreSheet for AI
-        if (this.isSolo() && this.gamedatas.aiEndScores) {
+        if (this.isSolo() && this.gamedatas.gameEnded && this.gamedatas.aiEndScores) {
             this.setupAIScoreSheet(this.gamedatas.aiEndScores);
         }
     }
@@ -3124,7 +3126,23 @@ class Game extends GameMachine {
         this.gamedatas.lastTurn = true;
         this.updateBanner();
     }
+    updateLiveScores(args) {
+        if (!args)
+            return;
+        for (const scores of [args.endScores, args.aiEndScores]) {
+            for (const playerId in scores) {
+                const counter = this.bga.playerPanels.getScoreCounter(Number(playerId));
+                if (counter)
+                    counter.toValue(scores[playerId].total ?? 0);
+            }
+        }
+    }
     async notif_endScores(args) {
+        if (args.final === false) {
+            // live scoring: only the panel counters, the score sheet stays hidden until the game ends
+            this.updateLiveScores(args);
+            return;
+        }
         // setting scores will make the score sheet visible if it isn't already
         await this.scoreSheet.setScores(args.endScores, {
             startBy: this.bga.players.getCurrentPlayerId()

@@ -25,5 +25,6 @@ interface CustomGamedatas extends Gamedatas<CustomPlayer> {
   lastTurn?: boolean;
   endScores?: any;
   aiEndScores?: any;
+  gameEnded?: boolean;
   playerswithbots?: { [playerId: number]: any };
 }

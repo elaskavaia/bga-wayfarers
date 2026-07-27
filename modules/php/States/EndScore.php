@@ -23,7 +23,7 @@ use Bga\Games\wayfarers\StateConstants;
 
 /**
  * Final state just before the end of the game (99).
- * Scoring itself runs via Op_finalScoring before the machine halts.
+ * Scoring itself runs here; Op_finalScoring only marks the game stage.
  */
 class EndScore extends GameState {
     public function __construct(protected Game $game) {
@@ -34,10 +34,22 @@ class EndScore extends GameState {
         return $this->finalScoring();
     }
 
-    function finalScoring() {
+    /**
+     * When $table is null this commits the scoring: score is written, stats are set and the log is generated.
+     * When a $table is passed nothing is written, it is filled with the same numbers instead (live scoring preview).
+     */
+    function finalScoring(?array &$table = null) {
+        $commit = $table === null;
         $game = $this->game;
         $players = $game->loadPlayersBasicInfos();
         $guildInfluence = []; // Track influence per guild per player for majority
+
+        if ($commit) {
+            // live scoring writes previews straight into the panel counters, reset so the real scoring is not added on top
+            foreach ($players as $player_id => $player) {
+                $game->playerScore->set((int) $player_id, 0);
+            }
+        }
 
         foreach ($players as $player_id => $player) {
             $color = $game->custom_getPlayerColorById((int) $player_id);
@@ -50,15 +62,15 @@ class EndScore extends GameState {
                 $count = $game->countPlayerTags($tag, $color);
                 $tagCounts[$tag] = $count;
                 $vp = $game->getTagVP($count);
-                $game->effect_incVp($color, $vp, "", "game_vp_tag_$tag");
+                $this->scoreVp($table, $color, $vp, "", "game_vp_tag_$tag");
                 $vp_tags += $vp;
             }
-            $game->playerStats->inc("game_vp_tags", $vp_tags, $player_id);
+            $this->scoreStat($table, (int) $player_id, "game_vp_tags", $vp_tags);
 
             // Sets bonus: 5 VP for each set of 4 unique primary tags
             $sets = min($tagCounts);
             if ($sets > 0) {
-                $game->effect_incVp($color, $sets * 5, "game_vp_sets");
+                $this->scoreVp($table, $color, $sets * 5, "game_vp_sets");
             }
 
             // 2. Space and Inspriration Cards VP
@@ -68,7 +80,7 @@ class EndScore extends GameState {
             foreach ($cards as $cardKey => $cardInfo) {
                 $vp = $game->countVpForSpaceCard($cardKey, $color);
 
-                $game->effect_incVp($color, $vp, "game_vp_space", $cardKey);
+                $this->scoreVp($table, $color, $vp, "game_vp_space", $cardKey);
                 if (!$vp) {
                     continue;
                 }
@@ -80,8 +92,8 @@ class EndScore extends GameState {
                         // Found tucked inspiration card, check if goal is achieved
                         if ($game->isInspirationGoalAchieved($inspKey, $color)) {
                             // Goal achieved - score space card VP again
-                            $game->effect_incVp($color, $vp, "game_vp_insp", $inspKey);
-                        } else {
+                            $this->scoreVp($table, $color, $vp, "game_vp_insp", $inspKey);
+                        } elseif ($commit) {
                             $game->notifyMessage(
                                 clienttranslate('${player_name} did not achieve the goal for tucked inspiration card ${token_name}'),
                                 ["token_name" => $game->getTokenName($inspKey)],
@@ -98,7 +110,7 @@ class EndScore extends GameState {
             foreach ($tiles as $tileKey => $tileInfo) {
                 $vp = (int) $game->getRulesFor($tileKey, "vp", 0);
                 if ($vp > 0) {
-                    $game->effect_incVp($color, $vp, "game_vp_caravan");
+                    $this->scoreVp($table, $color, $vp, "game_vp_caravan");
                 }
             }
 
@@ -124,14 +136,14 @@ class EndScore extends GameState {
                 if ($type == "land" || $type == "water") {
                     $stat = "game_vp_ai_cards";
                 }
-                $game->effect_incVp($color, $vp, $stat);
+                $this->scoreVp($table, $color, $vp, $stat);
             }
             //VP from acquired Upgrade Tiles;
             $tiles = $game->tokens->getTokensOfTypeInLocation("upg", "tableau_$color");
             foreach ($tiles as $tileKey => $tileInfo) {
                 $vp = (int) $game->getRulesFor($tileKey, "vp", 0);
                 if ($vp > 0) {
-                    $game->effect_incVp($color, $vp, "game_vp_ai_caravan");
+                    $this->scoreVp($table, $color, $vp, "game_vp_ai_caravan");
                 }
             }
             //VP from Guild Majorities.
@@ -154,18 +166,24 @@ class EndScore extends GameState {
                 }
             }
 
-            $game->notifyMessage(clienttranslate('Scoring majority for ${token_name}, max influence ${max}'), [
-                "token_name" => $guild,
-                "max" => $maxInfluence,
-            ]);
+            if ($commit) {
+                $game->notifyMessage(clienttranslate('Scoring majority for ${token_name}, max influence ${max}'), [
+                    "token_name" => $guild,
+                    "max" => $maxInfluence,
+                ]);
+            }
 
             // Only award VP if there's a single winner (no ties)
             if (count($winners) == 1 && $maxInfluence > 0) {
-                $game->effect_incVp($winners[0], 3, "game_vp_guilds");
-            } else {
+                $this->scoreVp($table, $winners[0], 3, "game_vp_guilds");
+            } elseif ($commit) {
                 // add notify message that vp is no awarded because of tie
                 $game->notifyMessage(clienttranslate('No VP awarded for ${token_name} due to tie'), ["token_name" => $guild]);
             }
+        }
+
+        if (!$commit) {
+            return null;
         }
 
         // Set tiebreaker: Black Influence, then Yellow, then Blue
@@ -184,14 +202,12 @@ class EndScore extends GameState {
             $game->playerStats->set("game_vp_total", $score, $player_id);
         }
 
-        $aiEndScored = null;
         $reverseScoring = false;
         if ($game->isSolo()) {
             // notify with total of automa scope
             $aiScore = $game->tokens->getTrackerValue($game->getAutomaColor(), "vp");
             $player_id = Game::PLAYER_AUTOMA;
             $game->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $aiScore], $player_id);
-            $aiEndScored = $game->getAiEndScores();
 
             if ($score < $aiScore) {
                 $game->notifyMessage(clienttranslate('${player_name} wins! You lose'), [], $player_id);
@@ -201,12 +217,7 @@ class EndScore extends GameState {
             }
         }
 
-        $game->notify->all("endScores", "", [
-            "endScores" => $game->getEndScores(),
-            "aiEndScores" => $aiEndScored,
-            "final" => true,
-            "reverseScoring" => $reverseScoring,
-        ]);
+        $game->notify->all("endScores", "", $game->getScoresUpdate(true) + ["reverseScoring" => $reverseScoring]);
 
         if ($game->isSolo() && $reverseScoring) {
             $playersDb = $this->game->getCollectionFromDb("SELECT * FROM `player`");
@@ -215,5 +226,28 @@ class EndScore extends GameState {
         }
 
         return StateConstants::STATE_END_GAME;
+    }
+
+    private function scoreVp(?array &$table, string $color, int $vp, string $stat = "", string $target = "") {
+        if ($table === null) {
+            $this->game->effect_incVp($color, $vp, $stat, $target);
+            return;
+        }
+        $player_id = $this->game->custom_getPlayerIdByColor($color);
+        $table[$player_id]["total"] = ($table[$player_id]["total"] ?? 0) + $vp;
+        if ($stat) {
+            if ($player_id == Game::PLAYER_AUTOMA) {
+                $stat = $this->game->getAiStatName($stat);
+            }
+            $table[$player_id][$stat] = ($table[$player_id][$stat] ?? 0) + $vp;
+        }
+    }
+
+    private function scoreStat(?array &$table, int $player_id, string $stat, int $value) {
+        if ($table === null) {
+            $this->game->playerStats->inc($stat, $value, $player_id);
+            return;
+        }
+        $table[$player_id][$stat] = ($table[$player_id][$stat] ?? 0) + $value;
     }
 }

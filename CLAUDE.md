@@ -33,9 +33,9 @@ The game is publicly released on BGA as an alpha. Real users may have existing p
 
 ### Testing
 
-- `npm run tests` - Run all PHPUnit tests
-- To run a single test file: `APP_GAMEMODULE_PATH=~/git/bga-sharedcode/misc/ phpunit --bootstrap ./phptests/_autoload.php phptests/<TestFile>.php`
-- Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository
+- `npm run tests` - Run all PHPUnit tests. Redirect output to avoid running multiple times on failures with long outout.
+- To run a single test file: `npm run tests -- --filter <someFilerOrTest>`
+- Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository if running manually, always run via npm
 
 ### Utilities
 

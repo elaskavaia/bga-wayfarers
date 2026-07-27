@@ -25,10 +25,20 @@ use Bga\Games\wayfarers\Common\PGameTokens;
 use Bga\Games\wayfarers\Db\DbMultiUndo;
 use Bga\Games\wayfarers\Db\DbTokens;
 use Bga\Games\wayfarers\OpCommon\OpMachine;
+use Bga\Games\wayfarers\States\EndScore;
 use Bga\Games\wayfarers\States\GameDispatch;
 
 class Game extends Base {
     const GAME_STAGE = "game_stage";
+    const VP_STATS = ["game_vp_tags", "game_vp_sets", "game_vp_space", "game_vp_insp", "game_vp_caravan", "game_vp_guilds"];
+    const VP_STATS_AI = [
+        "game_vp_ai_folk",
+        "game_vp_ai_cards",
+        "game_vp_ai_space",
+        "game_vp_ai_insp",
+        "game_vp_ai_caravan",
+        "game_vp_ai_guilds",
+    ];
 
     public static Game $instance;
     public OpMachine $machine;
@@ -42,6 +52,7 @@ class Game extends Base {
         parent::__construct();
         self::initGameStateLabels([
             "variant_solo_board" => 101,
+            "variant_live_scoring" => 102,
         ]);
 
         $this->material = new Material();
@@ -327,8 +338,7 @@ class Game extends Base {
         $isGameEnded = $gameStage >= 5;
         $result["gameEnded"] = $isGameEnded;
         $result["lastTurn"] = $gameStage >= 1 && $gameStage <= 4;
-        $result["endScores"] = $isGameEnded ? $this->getEndScores() : null;
-        $result["aiEndScores"] = $isGameEnded ? $this->getAiEndScores() : null;
+        $result = array_merge($result, $this->getScoresUpdate($isGameEnded));
 
         $players = $this->loadPlayersBasicInfosWithBots();
 
@@ -423,6 +433,11 @@ class Game extends Base {
         }
     }
 
+    /** The automa keeps its VP breakdown under parallel game_vp_ai_* stats */
+    function getAiStatName(string $stat): string {
+        return str_starts_with($stat, "game_vp_ai_") ? $stat : str_replace("game_vp_", "game_vp_ai_", $stat);
+    }
+
     function effect_incVp(string $owner, int $inc, string $stat = "", string $target = "") {
         $player_id = $this->custom_getPlayerIdByColor($owner);
 
@@ -447,10 +462,7 @@ class Game extends Base {
             $trackerId = $this->tokens->getTrackerId($owner, "vp");
             $this->tokens->dbResourceInc($trackerId, $inc, $message, ["reason" => $stat, "token_name" => $target], self::PLAYER_AUTOMA);
             if ($stat) {
-                if (!str_starts_with($stat, "game_vp_ai_")) {
-                    $stat = str_replace("game_vp_", "game_vp_ai_", $stat);
-                }
-                $this->tableStats->inc($stat, $inc, $player_id);
+                $this->tableStats->inc($this->getAiStatName($stat), $inc, $player_id);
             }
 
             return;
@@ -473,6 +485,43 @@ class Game extends Base {
 
     function getVariantSoloBoard() {
         return (int) $this->getGameStateValue("variant_solo_board");
+    }
+
+    function isLiveScoringEnabled(): bool {
+        return $this->getGameStateValue("variant_live_scoring", 0) == 1;
+    }
+
+    /** Final scoring numbers computed without writing anything (see EndScore::finalScoring) */
+    function scoreAllTable(): array {
+        $table = [];
+        (new EndScore($this))->finalScoring($table);
+        return $table;
+    }
+
+    /** Payload of the endScores notification; scoring reads only board state, so final and live compute the same way */
+    function getScoresUpdate(bool $final = false): array {
+        if (!$final && !$this->isLiveScoringEnabled()) {
+            return ["endScores" => null, "aiEndScores" => null, "final" => false];
+        }
+
+        $table = $this->scoreAllTable();
+        $aiEndScores = null;
+        if (isset($table[self::PLAYER_AUTOMA])) {
+            $aiEndScores = [self::PLAYER_AUTOMA => $table[self::PLAYER_AUTOMA] + array_fill_keys(self::VP_STATS_AI, 0)];
+            unset($table[self::PLAYER_AUTOMA]);
+        }
+        foreach ($table as $player_id => $entry) {
+            $table[$player_id] = $entry + array_fill_keys(self::VP_STATS, 0);
+        }
+
+        return ["endScores" => $table, "aiEndScores" => $aiEndScores, "final" => $final];
+    }
+
+    function notifyScoringUpdate(): void {
+        if (!$this->isLiveScoringEnabled()) {
+            return;
+        }
+        $this->notify->all("endScores", "", $this->getScoresUpdate());
     }
 
     function getRulesFor($token_id, $field = "r", $default = "") {
@@ -857,44 +906,6 @@ class Game extends Base {
         }
 
         return parent::evaluateTerm($x, $owner, $context, $options);
-    }
-
-    function getEndScores(): array {
-        $endScores = [];
-        $players = $this->loadPlayersBasicInfos();
-        $vp_stats = ["game_vp_tags", "game_vp_sets", "game_vp_space", "game_vp_insp", "game_vp_caravan", "game_vp_guilds"];
-
-        foreach ($players as $player_id => $player) {
-            foreach ($vp_stats as $stat) {
-                $endScores[$player_id][$stat] = $this->playerStats->get($stat, $player_id);
-            }
-            $endScores[$player_id]["total"] = $this->playerStats->get("game_vp_total", $player_id);
-        }
-
-        return $endScores;
-    }
-
-    function getAiEndScores(): array {
-        $endScores = [];
-        if ($this->isSolo()) {
-            $color = $this->getAutomaColor();
-            $player_id = self::PLAYER_AUTOMA;
-
-            $vp_stats_ai = [
-                "game_vp_ai_folk",
-                "game_vp_ai_cards",
-                "game_vp_ai_space",
-                "game_vp_ai_insp",
-                "game_vp_ai_caravan",
-                "game_vp_ai_guilds",
-            ];
-            foreach ($vp_stats_ai as $stat) {
-                $endScores[$player_id][$stat] = $this->tableStats->get($stat, $player_id);
-            }
-            $endScores[$player_id]["total"] = $this->tokens->getTrackerValue($color, "vp");
-        }
-
-        return $endScores;
     }
 
     /**

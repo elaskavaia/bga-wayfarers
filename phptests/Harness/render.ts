@@ -358,7 +358,7 @@ const mockBga = {
       return document.getElementById(`player_board_${playerId}`);
     },
     addAutomataPlayerPanel: (playerId: number) => document.getElementById(`player_board_${playerId}`),
-    getScoreCounter: () => ({ setValue: () => {}, getValue: () => 0, incValue: () => {} })
+    getScoreCounter: () => ({ setValue: () => {}, getValue: () => 0, incValue: () => {}, toValue: () => {} })
   },
   dialogs: { showMessage: () => {}, showMoveUnauthorized: () => {} },
   states
