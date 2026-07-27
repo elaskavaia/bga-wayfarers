@@ -2179,9 +2179,29 @@ class Game extends GameMachine {
             node.dataset.r = r;
             if (r) {
                 placeHtml(`<div class='wicon_${r} wicon'></div>`, node);
-                const html = this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r));
-                this.game.addTooltipHtml(node.id, html, this.game.defaultTooltipDelay);
             }
+        });
+        this.updateCaravanCellTooltips(`caravan_${pcolor}`);
+    }
+    /**
+     * A placed upgrade tile is a child of the cell it covers, and on hover the cell's tooltip wins over the
+     * tile's own one (mouseover bubbles up to the ancestor), so a covered cell must not keep a tooltip.
+     */
+    updateCaravanCellTooltips(caravanId) {
+        $(caravanId)
+            ?.querySelectorAll(".ccell")
+            .forEach((node) => {
+            const r = node.dataset.r;
+            const registered = gameui.tooltips?.[node.id] !== undefined;
+            if (!r || node.querySelector(".upg")) {
+                if (registered)
+                    this.removeTooltip(node.id);
+                return;
+            }
+            if (registered)
+                return; // the text is static, re-registering would stack tooltips on the same node
+            const html = this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r));
+            this.addTooltipHtml(node.id, html, this.defaultTooltipDelay);
         });
     }
     setupAutoma(playerInfo) {
@@ -2231,11 +2251,8 @@ class Game extends GameMachine {
             const num = Number(getPart(node.id, 1)) - 1;
             const r = this.getRulesFor(`aibonus_${boardNum}_${num}`, "r", "");
             node.dataset.r = r;
-            if (r) {
-                const html = this.getTooltipHtml(_("Caravan Cell"), _("When placing upgrade that covers this cell:") + " " + this.getOpListTr(r));
-                this.game.addTooltipHtml(node.id, html, this.game.defaultTooltipDelay);
-            }
         });
+        this.updateCaravanCellTooltips(`caravan_${pcolor}`);
     }
     setupLayoutControls() {
         this.destroyDivOtherCopies("board_layout_controls");
@@ -2630,6 +2647,10 @@ class Game extends GameMachine {
             }
         }
         else if (tokenId.startsWith("upg")) {
+            // The cell a placed tile covers must lose its tooltip, and one it leaves must get it back.
+            const leftCaravan = $(tokenId)?.closest(".caravan")?.id;
+            if (leftCaravan)
+                result.onEnd = () => this.updateCaravanCellTooltips(leftCaravan);
             if (location.startsWith("tableau")) {
                 // Upgrade tiles in caravan. State encodes position (1-21) and rotation:
                 // state > 100 means the tile is drawn rotated 90° from its native orientation.
@@ -2645,6 +2666,9 @@ class Game extends GameMachine {
                     result.location = `ccell_${pos}_${color}`;
                     result.onEnd = (node) => {
                         node.classList.toggle("rotated", rotated);
+                        this.updateCaravanCellTooltips(`caravan_${color}`);
+                        if (leftCaravan && leftCaravan !== `caravan_${color}`)
+                            this.updateCaravanCellTooltips(leftCaravan);
                     };
                 }
             }

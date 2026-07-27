@@ -26,6 +26,9 @@
   display: flex;
   justify-content: center;
   align-items: center;
+  // A card image next to text as wide as the viewport made the tooltip wider than the page on phones.
+  // 760px leaves room for a card image (190px) beside text at its own 500px cap, so desktop does not wrap.
+  max-width: min(760px, 92vw);
 
   .tooltiptitle {
     position: relative;
@@ -39,6 +42,7 @@
     position: relative;
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     justify-content: space-between;
   }
 
@@ -47,7 +51,7 @@
   }
 
   .tooltiptext {
-    max-width: min(500px, 95vw);
+    max-width: min(500px, 92vw);
     top: unset;
   }
 }

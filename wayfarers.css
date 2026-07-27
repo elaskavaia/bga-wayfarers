@@ -2707,6 +2707,7 @@ html[data-theme=dark] .miniboard .jtag_count {
   display: flex;
   justify-content: center;
   align-items: center;
+  max-width: min(760px, 92vw);
 }
 .tooltipcontainer .tooltiptitle {
   position: relative;
@@ -2719,13 +2720,14 @@ html[data-theme=dark] .miniboard .jtag_count {
   position: relative;
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
 }
 .tooltipcontainer li {
   list-style: circle;
 }
 .tooltipcontainer .tooltiptext {
-  max-width: min(500px, 95vw);
+  max-width: min(500px, 92vw);
   top: unset;
 }
 
