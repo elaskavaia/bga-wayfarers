@@ -1,0 +1,8 @@
+{
+  "extends": "./phptests/Harness/tsconfig.json",
+  "compilerOptions": {
+    "module": "ES2022",
+    "moduleResolution": "bundler",
+    "noEmit": true
+  }
+}

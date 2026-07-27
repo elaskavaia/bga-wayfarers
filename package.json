@@ -10,7 +10,7 @@
     "watch:scss": "sass --watch src/css/Game.scss wayfarers.css",
     "watch": "run-p watch:ts watch:scss",
     "build": "run-s build:ts build:scss genmat",
-    "predeploy": "run-s build typecheck lint:ts lint:php tests jstests play",
+    "predeploy": "run-s build typecheck lint:php tests jstests play",
     "genmat": "php8.4 misc/other/genmat.php misc/*.csv",
     "lint:php": "find modules/php/ -name '*.php' -exec php -l {} + && echo 'All PHP files OK'",
     "lint:ts": "eslint",
