@@ -220,9 +220,9 @@ class EndScore extends GameState {
         $game->notify->all("endScores", "", $game->getScoresUpdate(true) + ["reverseScoring" => $reverseScoring]);
 
         if ($game->isSolo() && $reverseScoring) {
-            $playersDb = $this->game->getCollectionFromDb("SELECT * FROM `player`");
-            $players = Player::fromPlayersDb($playersDb);
-            return GameResult::solo($players[0], $players[0]->score, false);
+            $playerId = $this->game->getFirstPlayer(); // solo player
+            $player = Player::fromPlayerDb($players[$playerId]);
+            return GameResult::solo($player, $score, false);
         }
 
         return StateConstants::STATE_END_GAME;
