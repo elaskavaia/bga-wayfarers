@@ -57,7 +57,7 @@ The BGA framework does a lot of work that normally only runs on their servers or
 
 ## What the harness does NOT cover
 
-- **Hover behaviour.** Tooltips are captured in a registry, not attached to a live dijit widget, so the snapshot cannot show which tooltip wins on hover or how wide the tooltip box renders. Ancestor-precedence logic is unit-tested instead (see `src/tests/UpgradeTooltip.spec.ts`).
+- **Hover behaviour.** Tooltips are captured in a registry, not attached to a live dijit widget, so the snapshot cannot show which tooltip wins on hover or how wide the tooltip box renders. Ancestor-precedence logic is unit-tested instead (see the `updateCaravanCellTooltips` block in `src/tests/Game.spec.ts`).
 - **Anything driven by real user input** - clicks, drags, pinch zoom. The click registry lists the handlers, it does not fire them.
 - **The real BGA page chrome** - their layout CSS, the top bar, the notification/log panel styling. Only `common.css` structure plus our own `wayfarers.css`.
 - **Real player preferences** - `getUserPreference` returns 0 (the default) for every code.
@@ -114,13 +114,13 @@ Then read `staging/snapshot.html`, or **view `staging/snapshot.png`** for a visu
 
 Size is configurable via env vars:
 
-| Var | Default | Effect |
-| --- | --- | --- |
-| `HARNESS_SHOT_WIDTH` | `2400` | viewport width (px) |
-| `HARNESS_SHOT_HEIGHT` | `1600` | viewport height (px); width:height is the output aspect ratio |
-| `HARNESS_SHOT_SCALE` | `1` | DPI multiplier (device scale factor); `2` doubles output resolution |
+| Var                   | Default | Effect                                                              |
+| --------------------- | ------- | ------------------------------------------------------------------- |
+| `HARNESS_SHOT_WIDTH`  | `2400`  | viewport width (px)                                                 |
+| `HARNESS_SHOT_HEIGHT` | `1600`  | viewport height (px); width:height is the output aspect ratio       |
+| `HARNESS_SHOT_SCALE`  | `1`     | DPI multiplier (device scale factor); `2` doubles output resolution |
 
-Width/height change the *layout* viewport (wider reflows the page wider; taller captures more vertical content before it is cut); scale just renders the same layout sharper. A narrow width is how you check mobile layout:
+Width/height change the _layout_ viewport (wider reflows the page wider; taller captures more vertical content before it is cut); scale just renders the same layout sharper. A narrow width is how you check mobile layout:
 
 ```
 HARNESS_SHOT_WIDTH=3600 npm run play               # big width
@@ -238,7 +238,9 @@ Available endpoints - **actions**: `action_*`; **debug**: any `debug_*` method o
   "tokens": [{ "key": "worker_green_1", "location": "tableau_6cd0f6", "state": 0 }],
   "machine": [{ "id": 1, "rank": 1, "type": "turn", "owner": "6cd0f6", "pool": "main", "data": null }],
   "gamestate": { "state_id": 10, "active_player": 10 },
-  "players": [{ "player_id": 10, "player_no": 1, "player_color": "6cd0f6", "player_name": "player1", "player_zombie": 0, "player_eliminated": 0 }]
+  "players": [
+    { "player_id": 10, "player_no": 1, "player_color": "6cd0f6", "player_name": "player1", "player_zombie": 0, "player_eliminated": 0 }
+  ]
 }
 ```
 

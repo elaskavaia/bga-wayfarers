@@ -37,6 +37,10 @@ The game is publicly released on BGA as an alpha. Real users may have existing p
 - To run a single test file: `npm run tests -- --filter <someFilerOrTest>`
 - Note: Tests require APP_GAMEMODULE_PATH environment variable pointing to bga-sharedcode repository if running manually, always run via npm
 - `npm run jstests` - Client-side unit tests (mocha + chai + jsdom, `src/tests/*.spec.ts`)
+- **Where a new test goes is not a free choice**: unit tests are one file per class under test and named
+  after it (`phptests/<ClassUnderTest>Test.php`), integration tests are scenarios under
+  `phptests/Campaign/Campaign_<Scenario>Test.php`. Never name a test file after a bug or a feature.
+  Rules and rationale: [misc/docs/DESIGN.md](misc/docs/DESIGN.md#test-layout)
 
 ### Visual Testing (local harness)
 
