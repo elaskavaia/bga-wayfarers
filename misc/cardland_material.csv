@@ -12,7 +12,7 @@ num|r|d|dr|tags|trig|tor|todr
 6|infYellow|camel|2n_food:cardLand,infYellow|City||Place Influence on Yellow Guild|Pay 2 Provisions to acquire a Land card and place Influence on Yellow Guild
 7|infBlue|camel|cardFolk,infBlue|City||Place Influence on Blue Guild|Acquire a Townsfolk card and place Influence on Blue Guild
 8|infCard|camel|cardFolk,infCard|City||Place Influence on a Card|Acquire a Townsfolk card and place Influence on a Card
-9||telescope,camel|cardSpace,infBlue|City Observatory||Acquire a Space card and place Influence on Blue Guild
+9||telescope,camel|cardSpace,infBlue|City Observatory|||Acquire a Space card and place Influence on Blue Guild
 10||telescope,camel|cardSpace,infYellow|City Observatory|||Acquire a Space card and place Influence on Yellow Guild
 11||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Gain a Space Upgrade Tile or place 2 Influence on Black Guild
 12||telescope,camel|upgBlack/(infBlack,infBlack)|City Observatory|||Gain a Space Upgrade Tile or place 2 Influence on Black Guild

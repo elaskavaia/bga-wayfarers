@@ -1627,7 +1627,7 @@ class Material {
         "d" => "telescope,camel",
         "dr" => "cardSpace,infBlue",
         "tags" => "City Observatory",
-        "tor" => clienttranslate("Acquire a Space card and place Influence on Blue Guild"),
+        "todr" => clienttranslate("Acquire a Space card and place Influence on Blue Guild"),
 ],
     "card_land_10" => [ 
         "create" => 1,
