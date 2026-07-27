@@ -198,6 +198,9 @@ class EndScore extends GameState {
             $game->playerScoreAux->set($player_id, $tiebreaker);
 
             $score = $game->playerScore->get($player_id);
+            // loadPlayersBasicInfos carries no scores, Player::fromPlayerDb below reads them off the row
+            $players[$player_id]["player_score"] = $score;
+            $players[$player_id]["player_score_aux"] = $tiebreaker;
             $game->notifyMessage(clienttranslate('${player_name} gets total score of ${points}'), ["points" => $score], $player_id);
             $game->playerStats->set("game_vp_total", $score, $player_id);
         }

@@ -95,5 +95,5 @@ $gameinfos = [
     ],
 
     "db_undo_support" => true,
-    "exception_on_warning" => true,
+    //"exception_on_warning" => true,
 ];
