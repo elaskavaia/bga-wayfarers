@@ -119,6 +119,8 @@ tag_upg_any|Any Upgrade||wicon_upg_any
 
 #reasons and assets
 caravanBonus|Caravan Placement Bonus
+immediateBonus|Immediate Bonus
+joinBonus|Connection Link
 coinDis|Silver Discount
 foodDis|Provisions Discount
 vp|VP

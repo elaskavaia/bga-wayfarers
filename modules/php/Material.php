@@ -951,6 +951,12 @@ class Material {
     "caravanBonus" => [ 
         "name" => clienttranslate("Caravan Placement Bonus"),
 ],
+    "immediateBonus" => [ 
+        "name" => clienttranslate("Immediate Bonus"),
+],
+    "joinBonus" => [ 
+        "name" => clienttranslate("Connection Link"),
+],
     "coinDis" => [ 
         "name" => clienttranslate("Silver Discount"),
 ],
