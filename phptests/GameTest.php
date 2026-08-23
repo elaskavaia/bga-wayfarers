@@ -9,6 +9,7 @@ use Bga\Games\wayfarers\Operations\Op_gain;
 use Bga\Games\wayfarers\Operations\Op_journal;
 use Bga\Games\wayfarers\Operations\Op_order;
 use Bga\Games\wayfarers\Operations\Op_seq;
+use Bga\Games\wayfarers\OpCommon\Operation;
 use Bga\Games\wayfarers\States\GameDispatch;
 use PHPUnit\Framework\TestCase;
 
@@ -678,18 +679,15 @@ final class GameTest extends TestCase {
         $op = $this->game->machine->instantiateOperation("cardLand", PCOLOR);
         $op->queueVistaTriggers($starsCard);
 
-        $ops = $this->game->machine->db->getOperations();
-        $opTypes = array_map(fn($o) => $o["type"], array_values($ops));
+        // Both triggers merge into a single order choice (player resolves them in any order)
+        $orderRow = $this->game->machine->findOperation("order", PCOLOR);
+        $this->assertNotNull($orderRow, "Vista and folk triggers should merge into one order choice");
+        $subTypes = array_column(Operation::decodeData($orderRow["data"])["args"] ?? [], "type");
 
         // Vista card_land_20 dr="food" should be queued
-        $this->assertContains("food", $opTypes, "Vista card's dr (food) should be queued");
+        $this->assertContains("food", $subTypes, "Vista card's dr (food) should be queued");
         // Tucked folk card_folk_133 dr="coin" should be queued
-        $this->assertContains("coin", $opTypes, "Tucked folk card's dr (coin) should be queued");
-
-        // Folk trigger should be queued before Vista trigger (folk first)
-        $folkIdx = array_search("coin", $opTypes);
-        $vistaIdx = array_search("food", $opTypes);
-        $this->assertLessThan($vistaIdx, $folkIdx, "Folk card trigger should be queued before Vista trigger");
+        $this->assertContains("coin", $subTypes, "Tucked folk card's dr (coin) should be queued");
     }
 
     /**

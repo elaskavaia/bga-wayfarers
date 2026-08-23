@@ -3,21 +3,15 @@
 declare(strict_types=1);
 
 use Tests\Campaign\CampaignBase;
+use Bga\Games\wayfarers\OpCommon\Operation;
 
 /**
- * BGA #221524 - acquiring a Water Card fires several immediate effects at once and the player gets
- * no say in what order they resolve.
+ * BGA #221524 - acquiring a Water Card fires several immediate effects at once, and RULES.md:225
+ * lets the player perform them "in any order they choose".
  *
- * RULES.md:225 lets a player perform the actions of a placement "in any order they choose", so the
- * reported combo is legal: take the connection (link) Blue Influence first, then use a triggered
- * Vista to move that same Influence. The implementation cannot express it: Op_cardBase::resolve()
- * queues the card's own bonus and the Vista triggers, and only then calls placeCard(), so
- * Op_cardWater::grantSideMatchingBonuses() lands the link bonus at the highest rank of all - always
- * last, never wrapped in an `order` choice.
- *
- * DOCUMENTS BUGGY BEHAVIOUR ON PURPOSE so the suite stays green until a fix lands. When the immediate
- * effects become a free-order choice, flip the assertions: the first interactive op should be `order`
- * (or the link bonus should be reachable first), not the Vista's `infBlue/infMove`.
+ * queuePool merges the simultaneous effects into a single `order` operation, so the connection
+ * (link) Blue Influence and the triggered Vista are offered together: the player can take the
+ * link Influence first and have the Vista move that same Influence.
  */
 class Campaign_WaterLinkBonusOrderTest extends CampaignBase {
     /**
@@ -25,7 +19,7 @@ class Campaign_WaterLinkBonusOrderTest extends CampaignBase {
      * acquiring 66 grants the connection Blue Influence. card_water_66 is tagged Sea, which triggers
      * the Vista on card_land_22 (trig=Sea, dr="infBlue/infMove").
      */
-    public function testWaterConnectionBonusIsForcedAfterTheVistaItShouldFeed(): void {
+    public function testWaterConnectionBonusIsOrderableWithTheVistaItCanFeed(): void {
         $this->setupGame(3);
         $color = $this->getActiveColor();
 
@@ -37,22 +31,13 @@ class Campaign_WaterLinkBonusOrderTest extends CampaignBase {
         $this->driver->runDispatchLoop();
         $this->respond("card_water_66");
 
-        $ranks = [];
-        foreach ($this->game->machine->db->getOperations() as $row) {
-            $ranks[$row["type"]] = (int) $row["rank"];
-        }
-        $this->assertArrayHasKey("infBlue/infMove", $ranks, "the Sea tag must trigger the Vista on card_land_22");
-        $this->assertArrayHasKey("infBlue", $ranks, "the water connection must grant a Blue Influence");
+        $orderRow = $this->game->machine->findOperation("order", $color);
+        $this->assertNotNull($orderRow, "simultaneous immediate effects must merge into one order choice");
+        $subTypes = array_column(Operation::decodeData($orderRow["data"])["args"] ?? [], "type");
+        $this->assertContains("or", $subTypes, "the Sea tag must trigger the Vista on card_land_22 (infBlue/infMove choice)");
+        $this->assertContains("infBlue", $subTypes, "the water connection must grant a Blue Influence");
 
-        // BUG: the connection bonus sits behind the Vista, so it cannot be the Influence the Vista moves.
-        $this->assertGreaterThan(
-            $ranks["infBlue/infMove"],
-            $ranks["infBlue"],
-            "BGA #221524: connection bonus is queued after the Vista trigger instead of being orderable"
-        );
-
-        // BUG: the player is dropped straight into the Vista choice, with no `order` step in front of it.
-        $this->assertEquals("or", $this->getOpType(), "BGA #221524: the Vista resolves first and no order choice is offered");
-        $this->assertEquals("card_land_22", $this->getOpArgs()["data"]["reason"] ?? "", "the forced first choice is the Vista's");
+        // The player chooses the order, so the link Influence can feed the Vista.
+        $this->assertEquals("order", $this->getOpType(), "the player is offered the order choice");
     }
 }

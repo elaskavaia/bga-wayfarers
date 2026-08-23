@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Tests\GameUT;
+use Bga\Games\wayfarers\OpCommon\Operation;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -42,6 +43,16 @@ final class Op_cardWaterTest extends TestCase {
         return $infId;
     }
 
+    /** Rank of the queued `order` row offering the given bonus delegate, or null */
+    private function getBonusOrderRank(string $bonusType): ?int {
+        $row = $this->game->machine->findOperation("order", PCOLOR);
+        if ($row === null) {
+            return null;
+        }
+        $subTypes = array_column(Operation::decodeData($row["data"])["args"] ?? [], "type");
+        return in_array($bonusType, $subTypes) ? (int) $row["rank"] : null;
+    }
+
     /**
      * Coin link bonus: prev card c2[1]='x' and placed card c1[1]='x'.
      * card_water_41 has c2=bx_x (coin on right at pos 1).
@@ -66,18 +77,15 @@ final class Op_cardWaterTest extends TestCase {
         $coinAfter = $this->game->tokens->getTrackerValue($color, "coin");
         $this->assertEquals($coinBefore, $coinAfter, "Coin link bonus must not fire before cardInteract resolves");
 
-        // The queue must contain both cardInteract and a coin op, with cardInteract at a LOWER rank
-        $ops = $this->game->machine->db->getOperations();
+        // The queue must contain cardInteract and an order offering the coin bonus, cardInteract at a LOWER rank
         $cardInteractRank = null;
-        $coinRank = null;
-        foreach ($ops as $row) {
-            if ($row["type"] === "cardInteract" && $cardInteractRank === null) {
+        foreach ($this->game->machine->db->getOperations() as $row) {
+            if ($row["type"] === "cardInteract") {
                 $cardInteractRank = (int) $row["rank"];
-            }
-            if ($row["type"] === "coin" && $coinRank === null) {
-                $coinRank = (int) $row["rank"];
+                break;
             }
         }
+        $coinRank = $this->getBonusOrderRank("coin");
         $this->assertNotNull($cardInteractRank, "cardInteract must be queued");
         $this->assertNotNull($coinRank, "coin link bonus must be queued");
         $this->assertLessThan($coinRank, $cardInteractRank, "cardInteract must run before coin link bonus");
@@ -105,17 +113,14 @@ final class Op_cardWaterTest extends TestCase {
         $foodAfter = $this->game->tokens->getTrackerValue($color, "food");
         $this->assertEquals($foodBefore, $foodAfter, "Food link bonus must not fire before cardInteract resolves");
 
-        $ops = $this->game->machine->db->getOperations();
         $cardInteractRank = null;
-        $foodRank = null;
-        foreach ($ops as $row) {
-            if ($row["type"] === "cardInteract" && $cardInteractRank === null) {
+        foreach ($this->game->machine->db->getOperations() as $row) {
+            if ($row["type"] === "cardInteract") {
                 $cardInteractRank = (int) $row["rank"];
-            }
-            if ($row["type"] === "food" && $foodRank === null) {
-                $foodRank = (int) $row["rank"];
+                break;
             }
         }
+        $foodRank = $this->getBonusOrderRank("food");
         $this->assertNotNull($cardInteractRank, "cardInteract must be queued");
         $this->assertNotNull($foodRank, "food link bonus must be queued");
         $this->assertLessThan($foodRank, $cardInteractRank, "cardInteract must run before food link bonus");

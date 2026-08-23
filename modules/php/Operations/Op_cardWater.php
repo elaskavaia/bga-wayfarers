@@ -88,29 +88,29 @@ class Op_cardWater extends Op_cardBase {
     }
 
     private function grantBonus(int $position, string $typeChar): void {
-        $owner = $this->getOwner();
+        $data = ["reason" => "joinBonus"];
         switch ($position) {
             case 0: // influence - check for specific type
                 switch ($typeChar) {
                     case "b":
-                        $this->queue("infBlack");
+                        $this->queuePool("infBlack", $data);
                         return;
                     case "u":
-                        $this->queue("infBlue");
+                        $this->queuePool("infBlue", $data);
                         return;
                     case "y":
-                        $this->queue("infYellow");
+                        $this->queuePool("infYellow", $data);
                         return;
                 }
                 break;
             case 1: // coin
-                $this->queue("coin", $owner);
+                $this->queuePool("coin", $data);
                 break;
             case 2: // food
-                $this->queue("food", $owner);
+                $this->queuePool("food", $data);
                 break;
             case 3: // infCard
-                $this->queue("infCard", $owner);
+                $this->queuePool("infCard", $data);
                 break;
         }
     }

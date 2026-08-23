@@ -241,14 +241,9 @@ abstract class Operation {
         $this->queueRank++;
     }
 
-    function instantiatePool(array $rules): Operation {
+    function instantiatePool(array $rules): Op_order {
         if (count($rules) == 0) {
-            return $this->instantiateOperation("nop");
-        }
-        if (count($rules) == 1) {
-            $r = $rules[0];
-            $op = $r instanceof Operation ? $r : $this->instantiateOperation($r);
-            return $op;
+            $rules = ["nop"];
         }
 
         /** @var Op_order */
@@ -260,8 +255,10 @@ abstract class Operation {
         return $or;
     }
 
-    function queuePool(array $rules): void {
-        $this->queueOp($this->instantiatePool($rules));
+    function queuePool(array $rules, mixed $data = null): void {
+        $x = $this->instantiatePool($rules);
+        $x->withData($data, true);
+        $this->queueOp($x);
     }
 
     /**

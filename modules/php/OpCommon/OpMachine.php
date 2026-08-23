@@ -249,12 +249,20 @@ class OpMachine {
         return [];
     }
 
+    /** First queued operation matching exact type and owner, lowest rank first, or null */
+    function findOperation(string $type, ?string $owner = null): ?array {
+        foreach ($this->db->getOperations($owner, $type) as $row) {
+            return $row;
+        }
+        return null;
+    }
+
     function getAllOperations(?string $owner = null) {
         $operations = $this->db->getOperations();
         $result = [];
         while (count($operations) > 0) {
             $op = array_shift($operations);
-            if ($op["owner"] === null || $op["owner"] === $owner) {
+            if ($op["owner"] === "" || $op["owner"] === $owner) {
                 $result[$op["id"]] = $op;
             }
         }

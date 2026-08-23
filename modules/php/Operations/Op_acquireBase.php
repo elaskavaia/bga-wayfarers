@@ -110,11 +110,41 @@ abstract class Op_acquireBase extends Operation {
                 $isRestOnly = $this->game->getRulesFor($folkCard, "rest", 0);
                 if (!$isRestOnly) {
                     $folkRule = $this->game->getRulesFor($folkCard, "dr", "abort");
-                    $this->queue($folkRule, $owner, ["reason" => $folkCard]);
+                    $this->queuePool($folkRule, ["reason" => $folkCard]);
                 }
             }
-            $this->queue($dr, $owner, ["reason" => $vistaCard]);
+            $this->queuePool($dr, ["reason" => $vistaCard]);
         }
+    }
+
+    function queuePool(mixed $rules, mixed $data = null): void {
+        if (!is_array($rules)) {
+            $rules = [$rules];
+        }
+        if (count($rules) == 0) {
+            return;
+        }
+        /** @var Op_order $x */
+        $x = $this->instantiatePool($rules);
+        $machine = $this->game->machine;
+        // exact type only: an expression row (e.g. "a+b") keeps delegates in its type
+        // string, rewriting its data args would double them on reload
+        $found = $machine->findOperation("order", $this->getOwner());
+        if ($found === null) {
+            $x->withData($data, true);
+            $this->queueOp($x);
+            return;
+        }
+
+        /** @var Op_order $order */
+        $order = $machine->instantiateOperationFromDbRow($found);
+        $merged = $x->delegates;
+        foreach ($merged as $sub) {
+            $order->withDelegate($sub);
+        }
+        $order->withData($data, true);
+        $machine->hide((int) $found["id"]);
+        $machine->put($order->getType(), $order->getOwner(), $order->getDataForDb(), (int) $found["rank"]);
     }
 
     /**

@@ -173,7 +173,7 @@ abstract class Op_cardBase extends Op_acquireBase {
         // Immediate bonus
         $r = $this->game->getRulesFor($card, "r");
         if ($r) {
-            $this->queue($r, $owner, []);
+            $this->queuePool($r, ["reason" => "immediateBonus"]);
         }
         // Check if any Vista cards are triggered by this card
         $this->queueVistaTriggers($card);
