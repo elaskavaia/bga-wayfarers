@@ -21,7 +21,7 @@ final class Op_ai_upgAnyTest extends TestCase {
 
     private function createOp(string $color): Op_ai_upgAny {
         /** @var Op_ai_upgAny */
-        $op = $this->game->machine->instanciateOperation("ai_upgAny", self::AI_COLOR);
+        $op = $this->game->machine->instantiateOperation("ai_upgAny", self::AI_COLOR);
         $op->withDataField("upgrade", $color);
         return $op;
     }

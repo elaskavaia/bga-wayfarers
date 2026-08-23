@@ -33,7 +33,7 @@ final class Op_turnTest extends TestCase {
         $this->game->tokens->db->setTokenState($dieKey, 2); // value 2 carries no caravan asset
 
         /** @var Op_turn */
-        $op = $this->game->machine->instanciateOperation("turn", $color);
+        $op = $this->game->machine->instantiateOperation("turn", $color);
         $args = $op->getArgs();
 
         $this->assertNotContains($dieKey, $args["target"], "a die that cannot be placed is not a legal turn action");
@@ -49,7 +49,7 @@ final class Op_turnTest extends TestCase {
         $this->game->tokens->db->setTokenState($dieKey, 1); // value 1 supplies the camel Capital City wants
 
         /** @var Op_turn */
-        $op = $this->game->machine->instanciateOperation("turn", $color);
+        $op = $this->game->machine->instantiateOperation("turn", $color);
         $this->assertContains($dieKey, $op->getArgs()["target"]);
     }
 }

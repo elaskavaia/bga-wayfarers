@@ -141,7 +141,7 @@ class Op_placeDie extends Op_acquireBase {
         // Add influence spending options
         $ops = ["spendInfBlue", "spendInfYellow"];
         foreach ($ops as $opId) {
-            $op = $this->game->machine->instanciateOperation($opId, $owner);
+            $op = $this->game->machine->instantiateOperation($opId, $owner);
             $res[$op->getOpId()] = ["q" => Material::RET_OK, "name" => $op->getIconicName(), "color" => "secondary"];
             $void = $op->noValidTargets();
             if ($void) {
@@ -175,7 +175,7 @@ class Op_placeDie extends Op_acquireBase {
         if (!$rule) {
             return null;
         }
-        return $this->instanciateOperation($rule, null, ["die" => $this->getDie(), "reason" => $cardId]);
+        return $this->instantiateOperation($rule, null, ["die" => $this->getDie(), "reason" => $cardId]);
     }
 
     public function getUiArgs() {
@@ -218,7 +218,7 @@ class Op_placeDie extends Op_acquireBase {
 
         // Player can choose order
         /** @var Op_order $op */
-        $op = $this->instanciateOperation("order", $owner);
+        $op = $this->instantiateOperation("order", $owner);
 
         // Check for folk card tucked under this card (same state) and activate its ability
         $folkCard = $this->getTuckedFolk($cardId);
@@ -227,14 +227,14 @@ class Op_placeDie extends Op_acquireBase {
             if (!$isRestOnly) {
                 $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
                 if ($folkRule) {
-                    $op->withDelegate($this->instanciateOperation($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]));
+                    $op->withDelegate($this->instantiateOperation($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]));
                 }
             }
         }
 
         $r = $this->game->getRulesFor($cardId, "dr");
         $r = $this->applyFoodDiscount($r);
-        $op->withDelegate($this->instanciateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]));
+        $op->withDelegate($this->instantiateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]));
         $this->queueOp($op);
     }
 

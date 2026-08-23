@@ -29,7 +29,7 @@ final class Op_cardBaseTest extends TestCase {
         $this->game->tokens->db->moveToken($die, "card_home_3_$color", 2);
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
-        $op = $this->game->machine->instanciateOperation("cardWater", $color, [
+        $op = $this->game->machine->instantiateOperation("cardWater", $color, [
             "die" => $die,
             "reason" => "card_home_3_$color"
         ]);
@@ -48,7 +48,7 @@ final class Op_cardBaseTest extends TestCase {
         $this->game->tokens->db->moveToken($die, "card_home_3_$color", 2);
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
-        $op = $this->game->machine->instanciateOperation("cardWater", $color, [
+        $op = $this->game->machine->instantiateOperation("cardWater", $color, [
             "die" => $die,
             "reason" => "card_home_3_$color"
         ]);

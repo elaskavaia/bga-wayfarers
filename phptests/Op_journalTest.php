@@ -21,7 +21,7 @@ final class Op_journalTest extends TestCase {
 
     private function createOp(): Op_journal {
         /** @var Op_journal */
-        $op = $this->game->machine->instanciateOperation("journal", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("journal", PCOLOR);
         return $op;
     }
 

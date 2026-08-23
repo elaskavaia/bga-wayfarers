@@ -42,7 +42,7 @@ abstract class Op_acquireBase extends Operation {
         if (!$op || $op == "nop") {
             return true;
         }
-        return !$this->game->machine->instanciateOperation($op, $this->getOwner())->isVoid();
+        return !$this->game->machine->instantiateOperation($op, $this->getOwner())->isVoid();
     }
 
     function isFree(): bool {

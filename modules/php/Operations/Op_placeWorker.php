@@ -93,7 +93,7 @@ class Op_placeWorker extends Operation {
             }
 
             // Placement queues the board action, so a cost the player cannot meet strands them there
-            $qop = $this->instanciateOperation($this->getSlotRule($key));
+            $qop = $this->instantiateOperation($this->getSlotRule($key));
             if ($qop->noValidTargets()) {
                 $res[$key] = ["q" => Material::ERR_PREREQ, "err" => $qop->getError()];
             }

@@ -18,7 +18,7 @@ final class Op_diceModTest extends TestCase {
 
     private function createOp(?array $data = null): Op_diceMod {
         /** @var Op_diceMod */
-        $op = $this->game->machine->instanciateOperation("diceMod", PCOLOR, $data);
+        $op = $this->game->machine->instantiateOperation("diceMod", PCOLOR, $data);
         return $op;
     }
 
@@ -111,7 +111,7 @@ final class Op_diceModTest extends TestCase {
     }
 
     public function test2diceMod_countable(): void {
-        $op = $this->game->machine->instanciateOperation("2diceMod", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("2diceMod", PCOLOR);
         $this->assertInstanceOf(Op_diceMod::class, $op);
     }
 

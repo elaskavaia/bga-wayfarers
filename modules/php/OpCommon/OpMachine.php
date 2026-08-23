@@ -56,10 +56,10 @@ class OpMachine {
         }
         $dop = reset($ops);
 
-        return $this->instanciateOperationFromDbRow($dop);
+        return $this->instantiateOperationFromDbRow($dop);
     }
 
-    function instanciateOperationFromDbRow(mixed $dop): Operation {
+    function instantiateOperationFromDbRow(mixed $dop): Operation {
         if (is_string($dop["data"])) {
             $data = Operation::decodeData($dop["data"]);
         } else {
@@ -69,17 +69,17 @@ class OpMachine {
         if ($args) {
             unset($data["args"]);
         }
-        $op = $this->instanciateOperation($dop["type"], $dop["owner"], $data, $dop["id"] ?? 0);
+        $op = $this->instantiateOperation($dop["type"], $dop["owner"], $data, $dop["id"] ?? 0);
         if ($op instanceof ComplexOperation) {
             foreach ($args as $sub) {
-                $subOp = $this->instanciateOperationFromDbRow(["owner" => $dop["owner"]] + $sub);
+                $subOp = $this->instantiateOperationFromDbRow(["owner" => $dop["owner"]] + $sub);
                 $op->withDelegate($subOp);
             }
         }
         return $op;
     }
 
-    function instanciateOperation(string $type, ?string $owner = null, mixed $data = null, mixed $id = 0): Operation {
+    function instantiateOperation(string $type, ?string $owner = null, mixed $data = null, mixed $id = 0): Operation {
         try {
             if ($id) {
                 $id = (int) $id;

@@ -78,10 +78,10 @@ class Op_rest extends Operation {
             $restCards = $this->getRestAbilityCards();
             if (count($restCards)) {
                 /** @var Op_order $op */
-                $op = $this->instanciateOperation("order", $owner);
+                $op = $this->instantiateOperation("order", $owner);
                 foreach (array_keys($restCards) as $cardId) {
                     $dr = $this->game->getRulesForAndAssert($cardId, "dr", "");
-                    $op->withDelegate($this->instanciateOperation($dr, $owner, ["reason" => $cardId]));
+                    $op->withDelegate($this->instantiateOperation($dr, $owner, ["reason" => $cardId]));
                 }
 
                 $this->queueOp($op);

@@ -22,50 +22,50 @@ final class OperationTest extends TestCase {
     }
 
     public function testOr_GetOpName_NoIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $flat = $this->resolveName($op->getOpName());
         $this->assertStringNotContainsString("wicon", $flat, "OpName should not contain icon markup: $flat");
     }
 
     public function testOr_GetIconicName_HasIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $iconicName = $op->getIconicName();
         $this->assertEquals("[wicon_coin] / [wicon_food]", $iconicName);
     }
 
     public function testSeq_GetOpName_NoIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin,food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin,food", PCOLOR);
         $flat = $this->resolveName($op->getOpName());
         $this->assertStringNotContainsString("wicon", $flat, "OpName should not contain icon markup: $flat");
     }
 
     public function testSeq_GetIconicName_HasIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin,food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin,food", PCOLOR);
         $iconicName = $op->getIconicName();
         $this->assertEquals("[wicon_coin] [wicon_food]", $iconicName);
     }
 
     public function testSimple_GetOpName_NoIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin", PCOLOR);
         $flat = $this->resolveName($op->getOpName());
         $this->assertStringNotContainsString("wicon", $flat, "Simple OpName should not contain icon markup: $flat");
     }
 
     public function testCounted_GetOpName(): void {
-        $op = $this->game->machine->instanciateOperation("2coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("2coin", PCOLOR);
         $flat = $this->resolveName($op->getOpName());
         $this->assertEquals("Gain Silver x 2", $flat);
     }
 
     public function testSimple_GetIconicName_HasIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin", PCOLOR);
         $iconicName = $op->getIconicName();
         $this->assertIsString($iconicName);
         $this->assertStringContainsString("wicon", $iconicName, "Simple iconic name should contain icon markup");
     }
 
     public function testParamInfo_TooltipVsName(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $moves = $op->getPossibleMoves();
         foreach ($moves as $id => $info) {
             $tooltip = $this->resolveName($info["tooltip"] ?? "");

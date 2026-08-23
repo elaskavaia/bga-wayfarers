@@ -60,7 +60,7 @@ class Op_journal extends Operation {
 
             if (str_starts_with($prereq, "Op")) {
                 // Operations are costs (e.g., Op(n_infBlack), Op(n_infBlue,n_infYellow))
-                $op = $this->instanciateOperation(trim(substr($prereq, 2), "()"));
+                $op = $this->instantiateOperation(trim(substr($prereq, 2), "()"));
                 $achived = !$op->isVoid();
                 $name = $op->getIconicName();
             } elseif ($prereq) {
@@ -127,7 +127,7 @@ class Op_journal extends Operation {
         $this->queue($r, $owner, ["jpos" => $selected, "reason" => $selected]);
 
         /** @var Op_spendInfBlack */
-        $op = $this->instanciateOperation("spendInfBlack");
+        $op = $this->instantiateOperation("spendInfBlack");
         if (!$op->isBlackInfluenceSpentThisTurn()) {
             $this->queue("spendInfBlack");
         }

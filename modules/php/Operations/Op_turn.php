@@ -93,7 +93,7 @@ class Op_turn extends Operation {
      * "Switch Die" only re-opens this same choice, so it does not count as somewhere to go.
      */
     function getPlacementError(string $type, array $data): string {
-        $op = $this->instanciateOperation($type, null, $data);
+        $op = $this->instantiateOperation($type, null, $data);
         $targets = array_diff($op->getArgs()[Operation::ARG_TARGET], ["change"]);
         if (count($targets) > 0) {
             return "";
@@ -149,7 +149,7 @@ class Op_turn extends Operation {
         $ops = ["spendInfYellow"];
         $owner = $this->getOwner();
         foreach ($ops as $opId) {
-            $op = $this->game->machine->instanciateOperation($opId, $owner);
+            $op = $this->game->machine->instantiateOperation($opId, $owner);
             $key = $op->getOpId();
             $void = $op->noValidTargets();
             if (!$void) {
@@ -158,7 +158,7 @@ class Op_turn extends Operation {
         }
 
         /** @var Op_rest */
-        $oprest = $this->instanciateOperation("rest");
+        $oprest = $this->instantiateOperation("rest");
         if ($oprest->noValidTargets()) {
             $res["rest"] = ["q" => Material::ERR_NOT_APPLICABLE, "name" => clienttranslate("Rest"), "color" => "secondary"];
         } elseif ($oprest->isGoodRest()) {

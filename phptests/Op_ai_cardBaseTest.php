@@ -21,7 +21,7 @@ final class Op_ai_cardBaseTest extends TestCase {
 
     private function createOp(string $type = "ai_cardLand", array $data = []): Op_ai_cardBase {
         /** @var Op_ai_cardBase */
-        $op = $this->game->machine->instanciateOperation($type, self::AI_COLOR, $data);
+        $op = $this->game->machine->instantiateOperation($type, self::AI_COLOR, $data);
         return $op;
     }
 
@@ -187,13 +187,13 @@ final class Op_ai_cardBaseTest extends TestCase {
         // Within the placing turn the card is protected: you cannot acquire a card holding a
         // worker you placed this turn (RULES.md:252).
         /** @var Op_ai_cardBase $probe */
-        $probe = $this->game->machine->instanciateOperation("ai_cardFolk", self::AI_COLOR);
+        $probe = $this->game->machine->instantiateOperation("ai_cardFolk", self::AI_COLOR);
         $this->assertNotContains($card, $probe->getPossibleMoves(), "Within its turn, a placed-this-turn worker protects its card");
 
         // 1) Turn passes to the AI -> Op_turn::auto clears the per-turn marker. This is correct:
         //    the place-and-acquire restriction only applies within the placing turn.
         /** @var Op_turn $turn */
-        $turn = $this->game->machine->instanciateOperation("turn", self::AI_COLOR);
+        $turn = $this->game->machine->instantiateOperation("turn", self::AI_COLOR);
         $turn->auto();
 
         $workerState = (int) $this->game->tokens->db->getTokenState("worker_green_1");
@@ -202,7 +202,7 @@ final class Op_ai_cardBaseTest extends TestCase {
         // 2) The card is now a normal public card; the AI acquires it. AI owns the influence so it
         //    commits directly and queues ai_cardInteract.
         /** @var Op_ai_cardBase $acquire */
-        $acquire = $this->game->machine->instanciateOperation("ai_cardFolk", self::AI_COLOR);
+        $acquire = $this->game->machine->instantiateOperation("ai_cardFolk", self::AI_COLOR);
         $acquire->auto();
 
         // 3) Resolve the queued ai_cardInteract, which moves influence and the public worker to the buyer.

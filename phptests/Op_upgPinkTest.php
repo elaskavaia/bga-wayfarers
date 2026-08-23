@@ -18,7 +18,7 @@ final class Op_upgPinkTest extends TestCase {
 
     private function createOp(): Op_upgPink {
         /** @var Op_upgPink */
-        $op = $this->game->machine->instanciateOperation("upgPink", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("upgPink", PCOLOR);
         return $op;
     }
 

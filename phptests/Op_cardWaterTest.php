@@ -23,7 +23,7 @@ final class Op_cardWaterTest extends TestCase {
     }
 
     /**
-     * Place a water card in the player's tableau. `checkSideMatchingBonuses`
+     * Place a water card in the player's tableau. `grantSideMatchingBonuses`
      * pairs the placed card with the card at $slot-1, so pass slot >= 2
      * to ensure there IS a previous card.
      */
@@ -56,7 +56,7 @@ final class Op_cardWaterTest extends TestCase {
         $coinBefore = $this->game->tokens->getTrackerValue($color, "coin");
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardWater */
-        $op = $this->game->machine->instanciateOperation("cardWater", $color, [
+        $op = $this->game->machine->instantiateOperation("cardWater", $color, [
             "card" => "card_water_44",
             "params" => "free"
         ]);
@@ -96,7 +96,7 @@ final class Op_cardWaterTest extends TestCase {
         $foodBefore = $this->game->tokens->getTrackerValue($color, "food");
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardWater */
-        $op = $this->game->machine->instanciateOperation("cardWater", $color, [
+        $op = $this->game->machine->instantiateOperation("cardWater", $color, [
             "card" => "card_water_52",
             "params" => "free"
         ]);

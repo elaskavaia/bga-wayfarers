@@ -29,7 +29,7 @@ final class Op_upgBaseTest extends TestCase {
         $color = PCOLOR;
 
         $this->setCoin($color, 2);
-        $op = $this->game->machine->instanciateOperation("upgGreen", $color);
+        $op = $this->game->machine->instantiateOperation("upgGreen", $color);
         $this->assertEquals("2n_coin", $op->getPaymentOperation(), "a green tile costs 2 Silver undiscounted");
         $this->assertNotEmpty($op->getArgs()["target"], "2 Silver covers it");
 
@@ -37,7 +37,7 @@ final class Op_upgBaseTest extends TestCase {
         $this->assertEmpty($this->upgGreenTargets($color), "1 Silver does not cover it, so no tile is a legal choice");
 
         // Vetoing every entry must not trade one dead end for another
-        $op = $this->game->machine->instanciateOperation("upgGreen", $color);
+        $op = $this->game->machine->instantiateOperation("upgGreen", $color);
         $this->assertTrue($op->canSkip(), "an unaffordable upgrade is declined, not blocked on");
         $this->assertFalse($op->isVoid(), "and so it never parks in PlayerTurn");
     }
@@ -49,7 +49,7 @@ final class Op_upgBaseTest extends TestCase {
     /** Args are cached per instance, so each read needs a fresh operation. */
     private function upgGreenTargets(string $color): array {
         /** @var Op_upgGreen */
-        $op = $this->game->machine->instanciateOperation("upgGreen", $color);
+        $op = $this->game->machine->instantiateOperation("upgGreen", $color);
         return $op->getArgs()["target"];
     }
 }

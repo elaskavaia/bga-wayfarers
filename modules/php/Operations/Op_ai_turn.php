@@ -69,7 +69,7 @@ class Op_ai_turn extends AiOperation {
         $action1 = $this->game->getRulesForAndAssert($cardKey, "r1");
         $action2 = $this->game->getRulesForAndAssert($cardKey, "r2");
 
-        if ($this->instanciateOperation($action1)->isVoid()) {
+        if ($this->instantiateOperation($action1)->isVoid()) {
             $this->notifyMessage(clienttranslate('${player_name} cannot perform first Scheme action, performing the second'));
             $this->queue($action2);
         } else {

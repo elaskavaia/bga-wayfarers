@@ -29,6 +29,7 @@ use Bga\Games\wayfarers\States\PlayerTurn;
 use Bga\Games\wayfarers\OpCommon\OpExpression;
 use Bga\Games\wayfarers\OpCommon\OpExpressionRanged;
 use Bga\Games\wayfarers\OpCommon\OpParser;
+use Bga\Games\wayfarers\Operations\Op_order;
 use Exception;
 
 use function Bga\Games\wayfarers\array_get;
@@ -214,13 +215,13 @@ abstract class Operation {
         }
         return GameDispatch::class;
     }
-    function instanciateOperation($type, $owner = null, $data = null) {
+    function instantiateOperation($type, $owner = null, $data = null) {
         if ($owner === null) {
             $owner = $this->getOwner();
         }
-        return $this->game->machine->instanciateOperation($type, $owner, $data);
+        return $this->game->machine->instantiateOperation($type, $owner, $data);
     }
-    function queue($type, $owner = null, $data = null) {
+    function queue(string $type, $owner = null, $data = null) {
         $this->game->systemAssert("empty op pushed", $type);
         if ($owner === null) {
             $owner = $this->getOwner();
@@ -238,6 +239,29 @@ abstract class Operation {
     function queueOp(Operation $op) {
         $op->saveToDb($this->queueRank, true);
         $this->queueRank++;
+    }
+
+    function instantiatePool(array $rules): Operation {
+        if (count($rules) == 0) {
+            return $this->instantiateOperation("nop");
+        }
+        if (count($rules) == 1) {
+            $r = $rules[0];
+            $op = $r instanceof Operation ? $r : $this->instantiateOperation($r);
+            return $op;
+        }
+
+        /** @var Op_order */
+        $or = $this->instantiateOperation("order");
+        foreach ($rules as $r) {
+            $op = $r instanceof Operation ? $r : $this->instantiateOperation($r);
+            $or->withDelegate($op);
+        }
+        return $or;
+    }
+
+    function queuePool(array $rules): void {
+        $this->queueOp($this->instantiatePool($rules));
     }
 
     /**

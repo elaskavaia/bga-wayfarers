@@ -93,7 +93,7 @@ final class GameTest extends TestCase {
             $this->assertTrue(!!$type, "empty type for $key");
 
             /** @var Operation */
-            $op = $this->game->machine->instanciateOperation($type, PCOLOR);
+            $op = $this->game->machine->instantiateOperation($type, PCOLOR);
 
             $args = $op->getArgs();
             $ttype = array_get($args, "ttype");
@@ -318,7 +318,7 @@ final class GameTest extends TestCase {
         $this->game->tokens->db->moveToken($die, "card_home_3_" . PCOLOR, 4);
 
         // Queue the full expression as Op_placeDie would: 2n_food:cardWater with die and reason
-        $op = $this->game->machine->instanciateOperation("2n_food:cardWater", PCOLOR, [
+        $op = $this->game->machine->instantiateOperation("2n_food:cardWater", PCOLOR, [
             "die" => $die,
             "reason" => "card_home_3_" . PCOLOR
         ]);
@@ -368,7 +368,7 @@ final class GameTest extends TestCase {
         $this->game->tokens->db->moveToken($die, $cardKey, 4);
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
-        $op = $this->game->machine->instanciateOperation("cardLand", PCOLOR, [
+        $op = $this->game->machine->instantiateOperation("cardLand", PCOLOR, [
             "die" => $die,
             "reason" => $cardKey
         ]);
@@ -387,7 +387,7 @@ final class GameTest extends TestCase {
         $this->game->tokens->db->moveToken($die, "card_home_3_" . PCOLOR, 4);
 
         /** @var \Bga\Games\wayfarers\Operations\Op_cardBase */
-        $op = $this->game->machine->instanciateOperation("cardWater", PCOLOR, [
+        $op = $this->game->machine->instantiateOperation("cardWater", PCOLOR, [
             "die" => $die,
             "reason" => "card_home_3_" . PCOLOR
         ]);
@@ -675,7 +675,7 @@ final class GameTest extends TestCase {
 
         // Test 6: queueVistaTriggers queues both Vista dr and tucked folk dr
         /** @var \Bga\Games\wayfarers\Operations\Op_cardLand */
-        $op = $this->game->machine->instanciateOperation("cardLand", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("cardLand", PCOLOR);
         $op->queueVistaTriggers($starsCard);
 
         $ops = $this->game->machine->db->getOperations();
@@ -893,7 +893,7 @@ final class GameTest extends TestCase {
         $this->game->tokens->createTokens();
 
         // Instantiate a coin gain operation directly (bypass dispatch which auto-resolves single-choice ops)
-        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin", PCOLOR);
 
         // Get initial coin value
         $trackerId = $this->game->tokens->getTrackerId(PCOLOR, "coin");
@@ -933,34 +933,34 @@ final class GameTest extends TestCase {
     }
 
     public function testIsTrivial_gain() {
-        $op = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin", PCOLOR);
         $this->assertTrue($op->isTrivial(), "Op_gain (coin) should be trivial");
     }
 
     public function testIsTrivial_seq_allTrivial() {
-        $op = $this->game->machine->instanciateOperation("coin,food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin,food", PCOLOR);
         $this->assertTrue($op->isTrivial(), "Seq of trivial ops should be trivial");
     }
 
     public function testIsTrivial_seq_withNonTrivial() {
-        $op = $this->game->machine->instanciateOperation("coin,cardFolk", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin,cardFolk", PCOLOR);
         $this->assertFalse($op->isTrivial(), "Seq with non-trivial op should not be trivial");
     }
 
     public function testIsTrivial_or_singleOption() {
-        $op = $this->game->machine->instanciateOperation("coin/coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/coin", PCOLOR);
         // Both are trivial and identical, but it's still a choice between two non-void options
         $this->assertFalse($op->isTrivial(), "Or with multiple non-void options should not be trivial");
     }
 
     public function testIsTrivial_or_allVoid() {
         // Both options are void (no cards in mainarea and no deck), so there's no real choice
-        $op = $this->game->machine->instanciateOperation("cardLand/cardSpace", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("cardLand/cardSpace", PCOLOR);
         $this->assertTrue($op->isTrivial(), "Or with all void options should be trivial");
     }
 
     public function testGetIconicName_seq() {
-        $op = $this->game->machine->instanciateOperation("n_infYellow,n_infBlue", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("n_infYellow,n_infBlue", PCOLOR);
         $name = $op->getIconicName();
         $this->assertIsString($name, "Op_seq::getIconicName should return a string");
         $this->assertStringContainsString("[wicon_inf_yellow_pay]", $name);
@@ -968,7 +968,7 @@ final class GameTest extends TestCase {
     }
 
     public function testGetIconicName_or() {
-        $op = $this->game->machine->instanciateOperation("n_infYellow/n_infBlue", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("n_infYellow/n_infBlue", PCOLOR);
         $name = $op->getIconicName();
         $this->assertIsString($name, "Op_or::getIconicName should return a string");
         $this->assertStringContainsString("[wicon_inf_yellow_pay]", $name);
@@ -1090,7 +1090,7 @@ final class GameTest extends TestCase {
             $this->game->tokens->db->setTokenState($dieKey, $value);
             $value = $value == 6 ? 1 : $value + 1;
         }
-        $op = $this->game->machine->instanciateOperation("turn", $owner);
+        $op = $this->game->machine->instantiateOperation("turn", $owner);
         $op->saveToDb(1, true);
         return $this->dispatch();
     }
@@ -1145,7 +1145,7 @@ final class GameTest extends TestCase {
         $this->game->tokens->createTokens();
 
         // Automa turn: auto() should route to ai_turn and never call resolve()
-        $op = $this->game->machine->instanciateOperation("turn", ACOLOR);
+        $op = $this->game->machine->instantiateOperation("turn", ACOLOR);
         $autoResult = $op->auto();
         $this->assertTrue($autoResult, "Automa turn should auto-resolve");
 

@@ -20,7 +20,7 @@ $game = new GameUT();
 $game->init();
 
 function flattenOpName(string $rule, $game): string {
-    $op = $game->machine->instanciateOperation($rule, PCOLOR);
+    $op = $game->machine->instantiateOperation($rule, PCOLOR);
     $opName = $op->getOpName();
     if (is_array($opName)) {
         return GameUT::format_string_recursive($opName["log"], $opName["args"]);

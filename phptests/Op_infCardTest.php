@@ -21,7 +21,7 @@ final class Op_infCardTest extends TestCase {
 
     private function createOp(): Op_infCard {
         /** @var Op_infCard */
-        $op = $this->game->machine->instanciateOperation("infCard", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("infCard", PCOLOR);
         return $op;
     }
 

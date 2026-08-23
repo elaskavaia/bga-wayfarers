@@ -24,7 +24,7 @@ final class Op_ai_infCardTest extends TestCase {
 
     private function createOp(): Op_ai_infCard {
         /** @var Op_ai_infCard */
-        $op = $this->game->machine->instanciateOperation("ai_infCard", self::AI_COLOR);
+        $op = $this->game->machine->instantiateOperation("ai_infCard", self::AI_COLOR);
         return $op;
     }
 

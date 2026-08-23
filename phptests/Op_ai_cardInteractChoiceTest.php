@@ -21,7 +21,7 @@ final class Op_ai_cardInteractChoiceTest extends TestCase {
 
     private function createOp(array $data = []): Op_ai_cardInteractChoice {
         /** @var Op_ai_cardInteractChoice */
-        $op = $this->game->machine->instanciateOperation("ai_cardInteractChoice", PCOLOR, $data);
+        $op = $this->game->machine->instantiateOperation("ai_cardInteractChoice", PCOLOR, $data);
         return $op;
     }
 

@@ -36,7 +36,7 @@ final class Op_pickWorkerTest extends TestCase {
         $this->game->tokens->db->moveToken("worker_yellow_2", "card_land_2", 0); // placed earlier
 
         /** @var Op_pickWorker */
-        $op = $this->game->machine->instanciateOperation("pickWorker", $color);
+        $op = $this->game->machine->instantiateOperation("pickWorker", $color);
         $available = $op->getAvailableWorkers();
 
         $this->assertNotContains("worker_yellow_1", $available, "Worker placed this turn must not be pickable");
@@ -55,7 +55,7 @@ final class Op_pickWorkerTest extends TestCase {
         $this->game->effect_incCount($color, "coin", 99, "test");
 
         /** @var Op_cardBase */
-        $op = $this->game->machine->instanciateOperation("cardLand", $color);
+        $op = $this->game->machine->instantiateOperation("cardLand", $color);
         $res = $op->getPossibleMoves();
 
         $this->assertArrayHasKey("card_land_1", $res);
@@ -74,14 +74,14 @@ final class Op_pickWorkerTest extends TestCase {
         $this->game->tokens->db->moveToken("card_land_1", "mainarea", 1);
         $this->game->tokens->db->moveToken("worker_yellow_1", "card_land_1", 1); // placed previous turn
 
-        $op = $this->game->machine->instanciateOperation("turn", $color);
+        $op = $this->game->machine->instantiateOperation("turn", $color);
         $op->auto();
 
         $info = $this->game->tokens->db->getTokenInfo("worker_yellow_1");
         $this->assertSame(0, (int) $info["state"], "Op_turn::auto must reset worker state to 0");
 
         /** @var Op_pickWorker */
-        $pickOp = $this->game->machine->instanciateOperation("pickWorker", $color);
+        $pickOp = $this->game->machine->instantiateOperation("pickWorker", $color);
         $this->assertContains("worker_yellow_1", $pickOp->getAvailableWorkers(), "Worker must be pickable again on next turn");
     }
 }

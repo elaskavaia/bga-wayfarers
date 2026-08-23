@@ -25,7 +25,7 @@ final class MaterialTest extends TestCase {
 
     private function instanciate(string $expression, string $key, string $context): void {
         try {
-            $this->game->machine->instanciateOperation($expression, PCOLOR);
+            $this->game->machine->instantiateOperation($expression, PCOLOR);
         } catch (\Exception $e) {
             $this->fail("$key $context=$expression: " . $e->getMessage());
         }

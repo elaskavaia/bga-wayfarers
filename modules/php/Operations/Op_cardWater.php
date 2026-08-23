@@ -51,10 +51,10 @@ class Op_cardWater extends Op_cardBase {
 
     public function placeCard($card) {
         parent::placeCard($card);
-        $this->checkSideMatchingBonuses();
+        $this->grantSideMatchingBonuses();
     }
 
-    private function checkSideMatchingBonuses(): void {
+    private function grantSideMatchingBonuses(): void {
         $owner = $this->getOwner();
         $placedCard = $this->getCheckedArg();
         $placedState = (int) $this->game->tokens->db->getTokenState($placedCard);

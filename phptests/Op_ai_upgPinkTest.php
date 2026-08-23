@@ -18,7 +18,7 @@ final class Op_ai_upgPinkTest extends TestCase {
 
     private function createOp(): Op_ai_upgPink {
         /** @var Op_ai_upgPink */
-        $op = $this->game->machine->instanciateOperation("ai_upgPink", self::AI_COLOR);
+        $op = $this->game->machine->instantiateOperation("ai_upgPink", self::AI_COLOR);
         return $op;
     }
 

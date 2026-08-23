@@ -47,7 +47,7 @@ final class Op_upgGreenTest extends TestCase {
         $this->game->tokens->db->setTokenState($dieKey, 6);
 
         /** @var Op_upgGreen */
-        $op = $this->game->machine->instanciateOperation("upgGreen", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("upgGreen", $color, ["die" => $dieKey]);
         return $op;
     }
 
@@ -70,11 +70,11 @@ final class Op_upgGreenTest extends TestCase {
     /** Counts outside the 1-3 iconic range took the same broken placeholder path. */
     public function testPayIconicNameResolvesCountForAllAmounts(): void {
         foreach ([0, 4, 5] as $count) {
-            $name = $this->game->machine->instanciateOperation("{$count}n_coin", PCOLOR)->getIconicName();
+            $name = $this->game->machine->instantiateOperation("{$count}n_coin", PCOLOR)->getIconicName();
             $this->assertEquals("$count x [wicon_coin]", $name, "Pay $count coin renders its count");
         }
         foreach ([1, 2, 3] as $count) {
-            $name = $this->game->machine->instanciateOperation("{$count}n_coin", PCOLOR)->getIconicName();
+            $name = $this->game->machine->instantiateOperation("{$count}n_coin", PCOLOR)->getIconicName();
             $this->assertEquals(str_repeat("[wicon_coin]", $count), $name, "Pay $count coin renders repeated icons");
         }
     }
@@ -84,7 +84,7 @@ final class Op_upgGreenTest extends TestCase {
      * string and cannot carry per-sub args, so a placeholder there would be unresolvable.
      */
     public function testOrPaymentIconicNameResolvesCount(): void {
-        $op = $this->game->machine->instanciateOperation("0n_coin/2n_infBlue", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("0n_coin/2n_infBlue", PCOLOR);
         $this->assertStringNotContainsString('${', $op->getIconicName(), "Joined pay name has no unresolved placeholder");
         $this->assertStringContainsString("0 x [wicon_coin]", $op->getIconicName(), "Zero coin side renders its count");
     }

@@ -12,7 +12,7 @@ use Tests\Campaign\CampaignBase;
  * reported combo is legal: take the connection (link) Blue Influence first, then use a triggered
  * Vista to move that same Influence. The implementation cannot express it: Op_cardBase::resolve()
  * queues the card's own bonus and the Vista triggers, and only then calls placeCard(), so
- * Op_cardWater::checkSideMatchingBonuses() lands the link bonus at the highest rank of all - always
+ * Op_cardWater::grantSideMatchingBonuses() lands the link bonus at the highest rank of all - always
  * last, never wrapped in an `order` choice.
  *
  * DOCUMENTS BUGGY BEHAVIOUR ON PURPOSE so the suite stays green until a fix lands. When the immediate

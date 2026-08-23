@@ -49,7 +49,7 @@ final class Op_placeDieTest extends TestCase {
         $this->game->tokens->db->setTokenState($dieKey, 2); // value 2 carries no caravan asset
 
         /** @var Op_placeDie */
-        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
         $this->assertEmpty($op->getArgs()["target"], "no slot, no switch, no influence to spend");
         $this->assertTrue($op->canSkip(), "the die is declined");
         $this->assertFalse($op->isVoid(), "and so it never parks in PlayerTurn");
@@ -62,7 +62,7 @@ final class Op_placeDieTest extends TestCase {
     /** Args are cached per instance, so each read needs a fresh operation. */
     private function placeDieTargets(string $dieKey, string $color): array {
         /** @var Op_placeDie */
-        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
         return $op->getArgs()["target"];
     }
 
@@ -75,7 +75,7 @@ final class Op_placeDieTest extends TestCase {
         $dieKey = array_key_first($dice);
 
         /** @var Op_placeDie */
-        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
         $cardId = "card_home_12_$color";
 
         // Simulate resolve: place die on the card
@@ -109,7 +109,7 @@ final class Op_placeDieTest extends TestCase {
         $dieKey = array_key_first($dice);
 
         /** @var Op_placeDie */
-        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
 
         $folkCard = $op->getTuckedFolk("card_land_20");
         $this->assertEquals("card_folk_133", $folkCard, "Should find non-rest folk card tucked under card_land_20");

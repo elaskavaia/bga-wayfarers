@@ -18,7 +18,7 @@ final class Op_orTest extends TestCase {
     public function testAutoResolves_SingleNonVoidTrivial(): void {
         // coin/food — both trivial, both non-void, but isTrivial is false (2 non-void)
         // so auto should NOT resolve
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $this->assertInstanceOf(Op_or::class, $op);
 
         $result = $op->auto();
@@ -29,8 +29,8 @@ final class Op_orTest extends TestCase {
         // If only one delegate is non-void and it's trivial, isTrivial returns true
         // We simulate by using an "or" with one option that's a simple gain
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("or", PCOLOR);
-        $sub = $this->game->machine->instanciateOperation("coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("or", PCOLOR);
+        $sub = $this->game->machine->instantiateOperation("coin", PCOLOR);
         $op->withDelegate($sub);
         $op->saveToDb(1, true);
 
@@ -48,73 +48,73 @@ final class Op_orTest extends TestCase {
 
     public function testAutoResolves_ZeroDelegates(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("or", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("or", PCOLOR);
         $this->assertTrue($op->canSkip(), "Op_or with no delegates should be skippable");
     }
 
     public function testIsTrivial_TwoNonVoidDelegates(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $this->assertFalse($op->isTrivial(), "Op_or with 2 non-void delegates should not be trivial");
     }
 
     public function testIsTrivial_SingleNonVoidTrivialDelegate(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("or", PCOLOR);
-        $op->withDelegate($this->game->machine->instanciateOperation("coin", PCOLOR));
+        $op = $this->game->machine->instantiateOperation("or", PCOLOR);
+        $op->withDelegate($this->game->machine->instantiateOperation("coin", PCOLOR));
         $this->assertTrue($op->isTrivial(), "Op_or with single trivial delegate should be trivial");
     }
 
     public function testIsTrivial_SingleNonTrivialDelegate(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("or", PCOLOR);
-        $op->withDelegate($this->game->machine->instanciateOperation("cardFolk", PCOLOR));
+        $op = $this->game->machine->instantiateOperation("or", PCOLOR);
+        $op->withDelegate($this->game->machine->instantiateOperation("cardFolk", PCOLOR));
         $this->assertFalse($op->isTrivial(), "Op_or with single non-trivial delegate should not be trivial");
     }
 
     public function testIsTrivial_NoDelegates(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("or", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("or", PCOLOR);
         $this->assertTrue($op->isTrivial(), "Op_or with no delegates should be trivial");
     }
 
     public function testGetOperator(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $this->assertInstanceOf(Op_or::class, $op);
         $this->assertEquals("/", $op->getOperator());
     }
 
     public function testGetIconicName_InfBlueFood(): void {
-        $op = $this->game->machine->instanciateOperation("infBlue/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("infBlue/food", PCOLOR);
         $iconicName = $op->getIconicName();
         $this->assertEquals("[wicon_inf_blue] / [wicon_food]", $iconicName);
     }
 
     public function testGetOpName_NoIconMarkup(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $opName = $op->getOpName();
         $flat = is_array($opName) ? GameUT::format_string_recursive($opName["log"], $opName["args"]) : $opName;
         $this->assertEquals("Gain Silver / Gain Provisions", $flat);
     }
 
     public function testGetTypeFullExpr(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $this->assertEquals("coin/food", $op->getTypeFullExpr());
     }
 
     public function testGetTypeFullExpr_Three(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food/coin", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food/coin", PCOLOR);
         $this->assertEquals("coin/food/coin", $op->getTypeFullExpr());
     }
 
     public function testCountIsOne(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $this->assertEquals(1, $op->getCount(), "Op_or default count should be 1");
         $this->assertEquals(1, $op->getMinCount(), "Op_or default minCount should be 1");
     }
 
     public function testResolve_ChooseFirst(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $op->saveToDb(1, true);
 
         $coinBefore = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
@@ -132,7 +132,7 @@ final class Op_orTest extends TestCase {
 
     public function testResolve_ChooseSecond(): void {
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $op->saveToDb(1, true);
 
         $coinBefore = $this->game->tokens->getTrackerValue(PCOLOR, "coin");
@@ -149,7 +149,7 @@ final class Op_orTest extends TestCase {
     }
 
     public function testGetPossibleMoves_TwoOptions(): void {
-        $op = $this->game->machine->instanciateOperation("coin/food", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("coin/food", PCOLOR);
         $moves = $op->getPossibleMoves();
         $this->assertArrayHasKey("choice_0", $moves);
         $this->assertArrayHasKey("choice_1", $moves);
@@ -164,7 +164,7 @@ final class Op_orTest extends TestCase {
     public function testGetPossibleMoves_PropagatesDataWithoutBlowingCounts(): void {
         // Create or with countable children: 2(coin)/3(food)
         /** @var Op_or */
-        $op = $this->game->machine->instanciateOperation("4(2coin/3food)", PCOLOR, ["x" => "y"]);
+        $op = $this->game->machine->instantiateOperation("4(2coin/3food)", PCOLOR, ["x" => "y"]);
 
         $moves = $op->getPossibleMoves();
 

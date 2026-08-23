@@ -20,7 +20,7 @@ final class Op_ai_journalTest extends TestCase {
 
     private function createOp(array $data = []): Op_ai_journal {
         /** @var Op_ai_journal */
-        $op = $this->game->machine->instanciateOperation("ai_journal", self::AI_COLOR, $data);
+        $op = $this->game->machine->instantiateOperation("ai_journal", self::AI_COLOR, $data);
         return $op;
     }
 

@@ -21,7 +21,7 @@ final class Op_cardFolkTest extends TestCase {
     private function createOp(?string $card = null): Op_cardFolk {
         $data = $card !== null ? ["card" => $card] : null;
         /** @var Op_cardFolk */
-        $op = $this->game->machine->instanciateOperation("cardFolk", PCOLOR, $data);
+        $op = $this->game->machine->instantiateOperation("cardFolk", PCOLOR, $data);
         return $op;
     }
 
@@ -261,7 +261,7 @@ final class Op_cardFolkTest extends TestCase {
     private function createFreeOp(?string $card = null): Op_cardFolk {
         $data = $card !== null ? ["card" => $card] : null;
         /** @var Op_cardFolk */
-        $op = $this->game->machine->instanciateOperation("cardFolk(free)", PCOLOR, $data);
+        $op = $this->game->machine->instantiateOperation("cardFolk(free)", PCOLOR, $data);
         return $op;
     }
 
@@ -336,7 +336,7 @@ final class Op_cardFolkTest extends TestCase {
 
         // Step 1: op with the die but no card chosen yet.
         /** @var Op_cardFolk $op */
-        $op = $this->game->machine->instanciateOperation("cardFolk", $color, ["die" => $die]);
+        $op = $this->game->machine->instantiateOperation("cardFolk", $color, ["die" => $die]);
         $op->saveToDb();
 
         // User picks the folk card.

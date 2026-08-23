@@ -18,7 +18,7 @@ final class Op_rerollTest extends TestCase {
 
     private function createOp(?array $data = null): Op_reroll {
         /** @var Op_reroll */
-        $op = $this->game->machine->instanciateOperation("reroll", PCOLOR, $data);
+        $op = $this->game->machine->instantiateOperation("reroll", PCOLOR, $data);
         return $op;
     }
 

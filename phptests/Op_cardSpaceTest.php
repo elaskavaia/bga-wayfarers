@@ -51,7 +51,7 @@ final class Op_cardSpaceTest extends TestCase {
 
         // Instantiate cardSpace with die data (as placeDie would do)
         /** @var Op_cardSpace */
-        $op = $this->game->machine->instanciateOperation("cardSpace", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("cardSpace", $color, ["die" => $dieKey]);
 
         // Check discount is correctly calculated
         $discount = $op->getCoinDiscount();
@@ -102,7 +102,7 @@ final class Op_cardSpaceTest extends TestCase {
         $this->game->tokens->db->moveToken($dieKey, "card_home_10_$color", 6);
 
         // Instantiate through the or expression, same as Capital Observatory dr
-        $op = $this->game->machine->instanciateOperation("(cardSpace/upgBlack)", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("(cardSpace/upgBlack)", $color, ["die" => $dieKey]);
 
         // Get possible moves — cardSpace (choice_0) should show the card as affordable
         $moves = $op->getPossibleMoves();
@@ -134,7 +134,7 @@ final class Op_cardSpaceTest extends TestCase {
         $this->game->tokens->db->moveToken($dieKey, "card_home_10_$color", 6);
 
         /** @var Op_cardSpace */
-        $op = $this->game->machine->instanciateOperation("cardSpace", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("cardSpace", $color, ["die" => $dieKey]);
 
         $discount = $op->getCoinDiscount();
         $this->assertEquals(0, $discount, "No discount tiles means 0 discount");

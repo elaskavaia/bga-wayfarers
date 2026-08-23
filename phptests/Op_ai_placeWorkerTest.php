@@ -21,7 +21,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
 
     private function createOp(string $params = ""): Op_ai_placeWorker {
         /** @var Op_ai_placeWorker */
-        $op = $this->game->machine->instanciateOperation("ai_placeWorker($params)", self::AI_COLOR);
+        $op = $this->game->machine->instantiateOperation("ai_placeWorker($params)", self::AI_COLOR);
         return $op;
     }
 
