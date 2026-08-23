@@ -65,33 +65,37 @@ class Op_placeWorker extends Operation {
         $owner = $this->getOwner();
         $wcolor = getPart($selectedWorker, 1);
         foreach ($slots as $key => $slot) {
-            if (str_starts_with($key, "card_insp")) {
-                $res[$key] = ["q" => Material::RET_OK];
-            } elseif ($wcolor == "yellow" && str_starts_with($key, "card_land")) {
-                $res[$key] = ["q" => Material::RET_OK];
-            } elseif ($wcolor == "blue" && str_starts_with($key, "card_water")) {
-                $res[$key] = ["q" => Material::RET_OK];
-            } elseif ($wcolor == "green" && !str_starts_with($key, "card_space")) {
-                $res[$key] = ["q" => Material::RET_OK];
+            $accepts =
+                str_starts_with($key, "card_insp") ||
+                ($wcolor == "yellow" && str_starts_with($key, "card_land")) ||
+                ($wcolor == "blue" && str_starts_with($key, "card_water")) ||
+                ($wcolor == "green" && !str_starts_with($key, "card_space"));
+            if (!$accepts) {
+                continue;
             }
+            $res[$key] = ["q" => Material::RET_OK];
+
             // You can't have more than 1 of the same colour worker on a card
-            if (isset($res[$key]) && $res[$key]["q"] === Material::RET_OK) {
-                $children = $slot["children"];
-                foreach ($children as $child) {
-                    if (str_starts_with($child["key"], "worker_$wcolor")) {
-                        $res[$key] = [
-                            "q" => Material::ERR_OCCUPIED,
-                            "err" => clienttranslate("You cannot place more than 1 worker of the same color on a card")
-                        ];
-                        break;
-                    }
+            foreach ($slot["children"] as $child) {
+                if (str_starts_with($child["key"], "worker_$wcolor")) {
+                    $res[$key] = [
+                        "q" => Material::ERR_OCCUPIED,
+                        "err" => clienttranslate("You cannot place more than 1 worker of the same color on a card")
+                    ];
+                    continue 2;
                 }
             }
-            if (isset($res[$key]) && $res[$key]["q"] === Material::RET_OK) {
-                $interactError = Op_cardInteract::getFeeError($this->game, $key, $owner);
-                if ($interactError) {
-                    $res[$key] = ["q" => Material::ERR_INFLUENCE_FEE, "err" => $interactError];
-                }
+
+            $interactError = Op_cardInteract::getFeeError($this->game, $key, $owner);
+            if ($interactError) {
+                $res[$key] = ["q" => Material::ERR_INFLUENCE_FEE, "err" => $interactError];
+                continue;
+            }
+
+            // Placement queues the board action, so a cost the player cannot meet strands them there
+            $qop = $this->instanciateOperation($this->getSlotRule($key));
+            if ($qop->noValidTargets()) {
+                $res[$key] = ["q" => Material::ERR_PREREQ, "err" => $qop->getError()];
             }
         }
         return $res;
@@ -141,6 +145,13 @@ class Op_placeWorker extends Operation {
 
         $workerRule = $this->game->getRulesForAndAssert("action_{$ctype}_{$state}", "r", "");
         $this->queue($workerRule);
+    }
+
+    function getSlotRule(string $targetCard) {
+        $state = $this->game->tokens->db->getTokenState($targetCard);
+        $ctype = getPart($targetCard, 1);
+        $workerRule = $this->game->getRulesForAndAssert("action_{$ctype}_{$state}", "r", "");
+        return $workerRule;
     }
 
     public function getPrompt() {

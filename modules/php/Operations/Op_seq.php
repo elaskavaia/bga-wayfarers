@@ -64,8 +64,8 @@ class Op_seq extends ComplexOperation {
         if (count($this->delegates) == 0) {
             return [];
         }
-        $sub = $this->delegates[0];
-        return $sub->getPossibleMoves();
+
+        return ["confirm"];
     }
 
     function getPrompt() {

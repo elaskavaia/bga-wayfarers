@@ -15,6 +15,57 @@ final class Op_placeDieTest extends TestCase {
         $this->game->tokens->createTokens();
     }
 
+    /**
+     * A slot must not be offered when the action it queues cannot be performed, otherwise the player
+     * commits and the machine parks on a payment with no target and no skip.
+     * Capital City (card_home_2) takes a camel die and its dr is "2n_food:coin,cardLand".
+     */
+    public function testDieSlotWhoseActionCannotBePaidIsNotOffered(): void {
+        $color = PCOLOR;
+        $cardId = "card_home_2_$color";
+
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color");
+        $dieKey = array_key_first($dice);
+        $this->game->tokens->db->setTokenState($dieKey, 1); // die value 1 supplies the camel
+
+        $this->setFood($color, 2);
+        $this->assertContains($cardId, $this->placeDieTargets($dieKey, $color), "2 Provisions covers the 2 the action costs");
+
+        $this->setFood($color, 1);
+        $this->assertNotContains($cardId, $this->placeDieTargets($dieKey, $color), "1 Provision does not, so the slot is a dead end");
+    }
+
+    /** Vetoing every slot must not trade one dead end for another, same as Op_placeWorker. */
+    public function testDieWithNowhereLegalToGoIsDeclinedNotBlockedOn(): void {
+        $color = PCOLOR;
+        $dice = array_keys($this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color"));
+        $dieKey = array_shift($dice);
+
+        // Park every other die on the two cost-free slots: that occupies them and empties the supply,
+        // so "Switch Die" is not offered either.
+        foreach ($dice as $i => $other) {
+            $this->game->tokens->db->moveToken($other, $i === 0 ? "card_home_12_$color" : "card_home_13_$color", 2);
+        }
+        $this->game->tokens->db->setTokenState($dieKey, 2); // value 2 carries no caravan asset
+
+        /** @var Op_placeDie */
+        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        $this->assertEmpty($op->getArgs()["target"], "no slot, no switch, no influence to spend");
+        $this->assertTrue($op->canSkip(), "the die is declined");
+        $this->assertFalse($op->isVoid(), "and so it never parks in PlayerTurn");
+    }
+
+    private function setFood(string $color, int $value): void {
+        $this->game->tokens->db->setTokenState($this->game->tokens->getTrackerId($color, "food"), $value);
+    }
+
+    /** Args are cached per instance, so each read needs a fresh operation. */
+    private function placeDieTargets(string $dieKey, string $color): array {
+        /** @var Op_placeDie */
+        $op = $this->game->machine->instanciateOperation("placeDie", $color, ["die" => $dieKey]);
+        return $op->getArgs()["target"];
+    }
+
     public function testRestFolkDrNotTriggeredOnDiePlacement(): void {
         $color = PCOLOR;
         // card_folk_1 (Capital Townsfolk) has rest=1, dr=coin,journal

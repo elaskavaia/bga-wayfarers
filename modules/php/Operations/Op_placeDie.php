@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\Games\wayfarers\Material;
+use Bga\Games\wayfarers\OpCommon\Operation;
 
 /**
  * Place a Die on a card in the player's tableau
@@ -114,6 +115,11 @@ class Op_placeDie extends Op_acquireBase {
                 $missing = $this->canPlaceDieOnCard($cardId, $caravanAssets);
                 if (empty($missing)) {
                     $res[$cardId] = ["q" => Material::RET_OK];
+                    // Placement queues the card action, so a cost the player cannot meet strands them there
+                    $qop = $this->getSlotOperation($cardId);
+                    if ($qop && $qop->noValidTargets()) {
+                        $res[$cardId] = ["q" => Material::ERR_PREREQ, "err" => $qop->getError()];
+                    }
                 } else {
                     // XXX fix
                     $res[$cardId] = ["q" => Material::ERR_COST, "missing" => $missing];
@@ -151,6 +157,25 @@ class Op_placeDie extends Op_acquireBase {
         }
 
         return $res;
+    }
+
+    /** With a die already chosen there is no way back, so no valid slot must not strand the player */
+    public function canSkip() {
+        return $this->getDie() !== null && $this->noValidTargets();
+    }
+
+    public function skip() {
+        parent::skip();
+        $this->notifyMessage(clienttranslate('${player_name} skips placing a die - no slot can be used'));
+    }
+
+    /** The operation placement queues, discounted the same way resolve() does */
+    function getSlotOperation(string $cardId): ?Operation {
+        $rule = $this->applyFoodDiscount($this->game->getRulesFor($cardId, "dr", ""));
+        if (!$rule) {
+            return null;
+        }
+        return $this->instanciateOperation($rule, null, ["die" => $this->getDie(), "reason" => $cardId]);
     }
 
     public function getUiArgs() {

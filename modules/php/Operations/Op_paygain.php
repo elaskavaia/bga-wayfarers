@@ -34,6 +34,22 @@ class Op_paygain extends Op_seq {
         return ":";
     }
 
+    function getPossibleMoves() {
+        foreach ($this->delegates as $sub) {
+            if ($sub->isVoid()) {
+                return ["err" => $sub->getError()];
+            }
+        }
+        if ($this->isRangedChoice()) {
+            return parent::getRangeMoves();
+        }
+        if (count($this->delegates) == 0) {
+            return [];
+        }
+        $sub = $this->delegates[0];
+        return $sub->getPossibleMoves();
+    }
+
     function getIconicName() {
         $names = [];
         foreach ($this->delegates as $sub) {

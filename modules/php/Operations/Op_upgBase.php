@@ -164,6 +164,11 @@ abstract class Op_upgBase extends Op_acquireBase {
 
         if ($selectedTile === null) {
             // Step 1: Select which tile to buy from mainarea
+            // resolve() queues the payment unconditionally, so an unaffordable tile would strand the player.
+            // The cost does not vary by tile, so this vetoes the whole step rather than each entry.
+            if (!$this->isFree() && !$this->canAfford($this->getPaymentOperation())) {
+                return ["q" => Material::ERR_COST];
+            }
             $tileType = $this->getTileType();
             $tokens = $this->game->tokens->getTokensOfTypeInLocation("upg_$tileType", "mainarea");
             $res = [];

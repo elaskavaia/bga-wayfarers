@@ -87,6 +87,20 @@ class Op_turn extends Operation {
         return $this->game->tokens->db->getTokenState($flagToken) > 0;
     }
 
+    /**
+     * Why committing this die or worker would go nowhere, or "" when it is a real choice.
+     * Picking one is binding, so an option with no follow-up must not be offered as playable.
+     * "Switch Die" only re-opens this same choice, so it does not count as somewhere to go.
+     */
+    function getPlacementError(string $type, array $data): string {
+        $op = $this->instanciateOperation($type, null, $data);
+        $targets = array_diff($op->getArgs()[Operation::ARG_TARGET], ["change"]);
+        if (count($targets) > 0) {
+            return "";
+        }
+        return $op->getError() ?: clienttranslate("No action available");
+    }
+
     public function getPossibleMoves() {
         $res = [];
 
@@ -95,9 +109,15 @@ class Op_turn extends Operation {
         // Add dice options - group by die value (1-6)
         $player_dice = $this->getDiceInPlayerSupply();
         $diceByValue = [];
+        $dieError = [];
         foreach ($player_dice as $dieKey => $dieInfo) {
             $dieValue = (int) $dieInfo["state"];
-            if (array_key_exists($dieValue, $diceByValue)) {
+            // Placement depends only on the value, so the answer is shared by every die showing it.
+            // A die with no value yet has no placement to evaluate.
+            $dieError[$dieValue] ??= $dieValue >= 1 ? $this->getPlacementError("placeDie", ["die" => $dieKey]) : "";
+            if ($dieError[$dieValue]) {
+                $res[$dieKey] = ["q" => Material::ERR_NOT_APPLICABLE, "err" => $dieError[$dieValue]];
+            } elseif (array_key_exists($dieValue, $diceByValue)) {
                 $res[$dieKey] = [
                     "q" => Material::RET_OK,
                     "buttons" => false,
@@ -119,7 +139,10 @@ class Op_turn extends Operation {
 
         // Add one option per unique worker color
         foreach ($workersByColor as $workerKey) {
-            $res[$workerKey] = ["q" => Material::RET_OK, "color" => "secondary"];
+            $workerError = $this->getPlacementError("placeWorker", ["worker" => $workerKey]);
+            $res[$workerKey] = $workerError
+                ? ["q" => Material::ERR_NOT_APPLICABLE, "err" => $workerError, "color" => "secondary"]
+                : ["q" => Material::RET_OK, "color" => "secondary"];
         }
 
         // Add influence spending options
