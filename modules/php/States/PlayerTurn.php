@@ -20,6 +20,7 @@ use Bga\Games\wayfarers\StateConstants;
 use Bga\GameFramework\States\PossibleAction;
 use Bga\GameFramework\Actions\Types\JsonParam;
 use Bga\GameFramework\States\GameState;
+use Exception;
 
 class PlayerTurn extends GameState {
     public function __construct(protected Game $game) {
@@ -66,6 +67,15 @@ class PlayerTurn extends GameState {
         return $this->game->machine->action_undo((int) $this->game->getCurrentPlayerId(), $move_id);
     }
     public function zombie(int $playerId) {
-        return $this->game->machine->action_whatever($playerId);
+        $op = $this->game->machine->createTopOperationFromDb($playerId);
+        try {
+            return $op->action_whatever();
+        } catch (Exception $e) {
+            $this->game->notify->all("message", clienttranslate('${player_name} (as zombie) cannot perform ${op_name} and skips it'), [
+                "player_id" => $playerId,
+                "op_name" => $op->getOpName()
+            ]);
+            return $op->destroy();
+        }
     }
 }
