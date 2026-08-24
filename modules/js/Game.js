@@ -2481,7 +2481,7 @@ class Game extends GameMachine {
         const opInfo = this.opInfo;
         if (opInfo?.ui?.replicate) {
             $("selection_area")
-                .querySelectorAll("& > *")
+                .querySelectorAll(":scope > *")
                 .forEach((element) => {
                 element.remove();
             });

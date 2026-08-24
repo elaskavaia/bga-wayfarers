@@ -663,7 +663,7 @@ export class Game extends GameMachine {
 
     if (opInfo?.ui?.replicate) {
       $("selection_area")
-        .querySelectorAll("& > *")
+        .querySelectorAll(":scope > *")
         .forEach((element) => {
           element.remove();
         });
