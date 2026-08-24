@@ -26,8 +26,9 @@ use Bga\Games\wayfarers\OpCommon\CountableOperation;
 class Op_gain extends CountableOperation {
     public function auto(): bool {
         if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
-            // AI  gets res track
-            $this->queue("ai_res", $this->game->getAutomaColor());
+            // AI board converts each provision/silver into 1 space of resource track movement
+            $count = $this->getCount();
+            $this->queue("{$count}ai_res", $this->game->getAutomaColor());
             return true;
         }
         return parent::auto();
