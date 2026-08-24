@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-23 (v260823-2009)
+
+- Choose the order of simultaneous card bonuses (#221524)
+- Blocked unpayable influenced-card interactions (#227894)
+- Fixed dead-end actions stalling turns; zombies no longer block the table
+- Fixed upgrade tile tooltips (#229079)
+
 ## 2026-07-27 (v260727-1346)
 
 - Fixed an error message when clicking a token that the game had already refused, such as while the interface was locked
