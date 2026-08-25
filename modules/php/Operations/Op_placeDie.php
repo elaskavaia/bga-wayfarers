@@ -169,13 +169,25 @@ class Op_placeDie extends Op_acquireBase {
         $this->notifyMessage(clienttranslate('${player_name} skips placing a die - no slot can be used'));
     }
 
-    /** The operation placement queues, discounted the same way resolve() does */
+    /** The operation placement queues: the tucked Townsfolk ability and the card's own action, in player-chosen order */
     function getSlotOperation(string $cardId): ?Operation {
         $rule = $this->applyFoodDiscount($this->game->getRulesFor($cardId, "dr", ""));
         if (!$rule) {
             return null;
         }
-        return $this->instantiateOperation($rule, null, ["die" => $this->getDie(), "reason" => $cardId]);
+        $selectedDie = $this->getDie();
+
+        /** @var Op_order $op */
+        $op = $this->instantiateOperation("order");
+        $folkCard = $this->getTuckedFolk($cardId);
+        if ($folkCard && !$this->game->getRulesFor($folkCard, "rest", 0)) {
+            $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
+            if ($folkRule) {
+                $op->withDelegate($this->instantiateOperation($folkRule, null, ["die" => $selectedDie, "reason" => $folkCard]));
+            }
+        }
+        $op->withDelegate($this->instantiateOperation($rule, null, ["die" => $selectedDie, "reason" => $cardId]));
+        return $op;
     }
 
     public function getUiArgs() {
@@ -216,26 +228,10 @@ class Op_placeDie extends Op_acquireBase {
             clienttranslate('${player_name} places Die ${new_state} onto ${place_name}')
         );
 
-        // Player can choose order
-        /** @var Op_order $op */
-        $op = $this->instantiateOperation("order", $owner);
-
-        // Check for folk card tucked under this card (same state) and activate its ability
-        $folkCard = $this->getTuckedFolk($cardId);
-        if ($folkCard) {
-            $isRestOnly = $this->game->getRulesFor($folkCard, "rest", 0);
-            if (!$isRestOnly) {
-                $folkRule = $this->game->getRulesFor($folkCard, "dr", "");
-                if ($folkRule) {
-                    $op->withDelegate($this->instantiateOperation($folkRule, $owner, ["die" => $selectedDie, "reason" => $folkCard]));
-                }
-            }
+        $op = $this->getSlotOperation($cardId);
+        if ($op) {
+            $this->queueOp($op);
         }
-
-        $r = $this->game->getRulesFor($cardId, "dr");
-        $r = $this->applyFoodDiscount($r);
-        $op->withDelegate($this->instantiateOperation($r, $owner, ["die" => $selectedDie, "reason" => $cardId]));
-        $this->queueOp($op);
     }
 
     public function getExtraArgs() {

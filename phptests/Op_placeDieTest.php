@@ -35,6 +35,96 @@ final class Op_placeDieTest extends TestCase {
         $this->assertNotContains($cardId, $this->placeDieTargets($dieKey, $color), "1 Provision does not, so the slot is a dead end");
     }
 
+    /**
+     * BGA #239757 - the dead-end veto above must see the Townsfolk tucked under the slot.
+     *
+     * Capital Harbour (card_home_3) takes a ship die and its dr is "2n_food:cardWater". With a
+     * Fisherman (card_folk_126, dr="food") tucked under it the player may resolve the Townsfolk
+     * first (RULES.md:169, RULES.md:230), so 1 Provision in hand plus the one the Fisherman gains
+     * covers the 2 the space costs and the slot must stay offered.
+     */
+    public function testDieSlotIsOfferedWhenTuckedTownsfolkCoversTheCost(): void {
+        $color = PCOLOR;
+        $cardId = "card_home_3_$color";
+        $dieKey = $this->armShipDie($color);
+        $this->tuckFisherman($color, $cardId);
+
+        $this->setFood($color, 2);
+        $this->assertContains($cardId, $this->placeDieTargets($dieKey, $color), "the ship requirement is met, so only cost can veto");
+
+        $this->setFood($color, 1);
+        $this->assertContains($cardId, $this->placeDieTargets($dieKey, $color), "the Fisherman's Provision counts towards the cost");
+    }
+
+    /**
+     * BGA #239757, the other half: once the slot is taken the machine resolves it correctly -
+     * the tucked Fisherman is offered as an ordering choice and gaining first makes the 2 Provisions.
+     * This is what the veto above has to predict.
+     */
+    public function testTuckedTownsfolkGainCanBeOrderedBeforeThePaymentItFunds(): void {
+        $color = PCOLOR;
+        $cardId = "card_home_3_$color";
+        $dieKey = $this->armShipDie($color);
+        $this->tuckFisherman($color, $cardId);
+
+        // 2 Provisions only to get past the veto; the die placement itself spends nothing
+        $this->setFood($color, 2);
+        /** @var Op_placeDie */
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
+        $this->game->fakeUserAction($op, $cardId);
+        $this->setFood($color, 1);
+
+        $this->game->machine->dispatchAll();
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($top);
+        $this->assertEquals("order", $top->getType(), "player chooses Townsfolk ability vs the space's own action");
+
+        $this->assertEquals("food+(2(n_food):cardWater)", $top->getTypeFullExpr(), "Fisherman first or the space's own action first");
+
+        $this->game->fakeUserAction($top, "choice_0"); // the Fisherman
+        $this->game->machine->dispatchAll();
+
+        // 1 in hand + 1 from the Fisherman - 2 paid to the space
+        $this->assertEquals(0, $this->game->tokens->getTrackerValue($color, "food"));
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($top);
+        $this->assertEquals("cardWater", $top->getType(), "the action ran to its Water Card selection, so the slot was no dead end");
+    }
+
+    /**
+     * BGA #239757 is not an artifact of tucking under a board space: card_water_45 is an acquired
+     * Harbour Water Card, the placement RULES.md:165 spells out, and its "2n_food:coin,cardWater"
+     * slot must count the tucked Townsfolk the same way.
+     */
+    public function testTuckedTownsfolkIsAlsoCountedUnderAnAcquiredWaterCard(): void {
+        $color = PCOLOR;
+        $cardId = "card_water_45";
+        $this->game->tokens->db->moveToken($cardId, "tableau_$color", 7);
+        $dieKey = $this->armShipDie($color);
+        $this->tuckFisherman($color, $cardId);
+
+        $this->setFood($color, 2);
+        $this->assertContains($cardId, $this->placeDieTargets($dieKey, $color), "the ship requirement is met, so only cost can veto");
+
+        $this->setFood($color, 1);
+        $this->assertContains($cardId, $this->placeDieTargets($dieKey, $color), "the Fisherman's Provision counts towards the cost");
+    }
+
+    /** A die showing 4 with a Basic Upgrade Ship at caravan column 3: the ship a Harbour slot requires. */
+    private function armShipDie(string $color): string {
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color");
+        $dieKey = array_key_first($dice);
+        $this->game->tokens->db->setTokenState($dieKey, 4);
+        $this->game->tokens->db->moveToken("upg_green_32_1", "tableau_$color", 4);
+        return $dieKey;
+    }
+
+    /** card_folk_126 Fisherman: Harbour tag, dr "food" - the "1 provision townsfolk" of the report. */
+    private function tuckFisherman(string $color, string $card): void {
+        $state = (int) $this->game->tokens->db->getTokenState($card);
+        $this->game->tokens->db->moveToken("card_folk_126", "tableau_$color", $state);
+    }
+
     /** Vetoing every slot must not trade one dead end for another, same as Op_placeWorker. */
     public function testDieWithNowhereLegalToGoIsDeclinedNotBlockedOn(): void {
         $color = PCOLOR;
