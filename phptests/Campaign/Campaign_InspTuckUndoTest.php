@@ -6,91 +6,93 @@ namespace Tests\Campaign;
 
 /**
  * BGA #227997 - "Tucking an inspiration card is not undoable".
+ * Report: "I tucked an inspiration card under the wrong space card, attempted to
+ * undo, was unable."
  *
- * A player gains an Inspiration Card (Op_cardInsp) and tucks it under a Space Card,
- * then realises it is the WRONG Space Card and wants to undo just that choice. The
- * reporter had "no ability to undo" the tuck within the (still unconfirmed) turn.
+ * Undo restores to the latest barrier savepoint, and each new barrier wipes the
+ * earlier ones (DbMultiUndo::doSaveUndoSnapshot). Savepoints are taken at turn
+ * start and right after hidden information is revealed (cardDraw/reroll/newDie) -
+ * the post-reveal boundary is what makes reroll fishing impossible.
  *
- * Undo in this engine is boundary-based: undo restores the whole DB to the nearest
- * "undo savepoint", and the only ops that register one are turn/cardDraw/reroll/newDie
- * (all via Game::customUndoSavepoint - see modules/php/Operations/Op_turn.php:45 etc).
- * Op_cardInsp registers NONE, so the two-step "pick inspiration card -> pick space card
- * to tuck under" has no undo boundary of its own: the tuck target cannot be re-picked in
- * isolation. There is nothing between the two steps to roll back to.
+ * Journal spots 20/23/27 and 60/63/67 reward an inspiration tuck plus a new die.
+ * With cardInsp ordered first, the player tucked and THEN Op_newDie rolled and
+ * savepointed, wiping the turn-start snapshot: the only restore point sat after
+ * the tuck, so Undo could not reach back before it. The reward order must be
+ * newDie,cardInsp - the roll and its savepoint land before the tuck, the tuck
+ * stays undoable, and the roll still cannot be re-fished.
  *
- * This test drives the real Op_cardInsp two-step flow through the op-machine and pins
- * that behaviour: gaining + tucking an Inspiration Card records no undo savepoint, and the
- * op is destroyed once the tuck resolves, so the target is committed with no way back short
- * of undoing the entire turn.
- *
- * Note on harness scope: the campaign harness keeps token/machine state in in-memory stubs,
- * while DbMultiUndo snapshots the real (empty) `token`/`machine`/`multiundo` SQL tables - so
- * getAvailableUndoMoves() is always 0 here and DB-level undo restore cannot be exercised
- * in-process. We therefore observe undoability at its source: the customUndoSavepoint
- * boundaries the engine records. Op_cardInsp records none for the tuck.
- *
- * Documents buggy behavior for BGA #227997; flip once fixed (the tuck should be undoable
- * within the turn).
+ * Drives the live jpos_20 reward string through the real op machine, exactly as
+ * Op_journal::resolve queues it, so this test follows the material.
  */
 class Campaign_InspTuckUndoTest extends CampaignBase {
-    public function testTuckingAnInspirationCardRegistersNoUndoBoundary(): void {
+    public function testJournalRewardRollsTheDieBeforeTheTuckSoTheTuckStaysUndoable(): void {
         $this->setupGame(2);
         $pc = $this->getActiveColor();
         $this->assertOpType("turn");
 
-        // Starting a turn is the one undo boundary the engine records for this player.
-        $this->assertNotEmpty($this->game->savepointCalls, "sanity: Op_turn records the turn-start undo savepoint");
-
-        // Give the player two Space Cards to tuck under, so a WRONG choice is possible.
+        // Two space cards to tuck under, so a wrong choice is possible.
         $deckSpace = array_keys($this->game->tokens->getTokensOfTypeInLocation("card_space", "deck_space"));
         [$wrongCard, $rightCard] = [$deckSpace[0], $deckSpace[1]];
         $this->game->tokens->db->moveToken($wrongCard, "tableau_$pc", 2);
         $this->game->tokens->db->moveToken($rightCard, "tableau_$pc", 3);
 
-        // Queue the real "acquire an Inspiration card" operation for this player (as Muse's Light
-        // / cardspace 96 would) and dispatch to it.
-        $this->game->machine->push("cardInsp", $pc);
+        $supplyDie = $this->game->tokens->db->getTokensOfTypeInLocationSingleKey("dice_$pc", "supply");
+        $this->assertNotEmpty($supplyDie, "sanity: a die must be in supply for newDie to resolve");
+
+        // Queue the live journal reward of spot 20, exactly as Op_journal::resolve does.
+        $reward = $this->game->getRulesFor("jpos_20");
+        $this->assertStringContainsString("cardInsp", $reward);
+        $this->assertStringContainsString("newDie", $reward);
+        $this->game->machine->push($reward, $pc, ["jpos" => "jpos_20", "reason" => "jpos_20"]);
+        // Jump to dispatch so the reward expression is expanded by the machine, as after a real journal move.
+        $this->game->gamestate->jumpToState(\Bga\Games\wayfarers\StateConstants::STATE_GAME_DISPATCH);
         $this->driver->runDispatchLoop();
         $this->driver->emitGameStateChange();
-        $this->assertOpType("cardInsp");
 
-        // From here on, everything the player does is the inspiration acquire + tuck. Watch for any
-        // NEW undo boundary the engine records while the player makes the tuck decision.
         $this->game->savepointCalls = [];
 
-        // Step 1: choose which Inspiration Card to gain. Now the player is asked WHICH space card to
-        // tuck under - the exact decision the reporter got wrong and wanted to redo.
+        // Resolve the reward up to the tuck-target decision, in whatever order the ops come.
         $inspCard = array_keys($this->game->tokens->getTokensOfTypeInLocationWithChildren("card_insp", "mainarea"))[0];
-        $this->respond($inspCard);
-        $this->assertOpType("cardInsp", "second step: choose the space card to tuck under");
-        $this->assertValidTarget($wrongCard);
-        $this->assertValidTarget($rightCard);
+        $guard = 0;
+        while (true) {
+            $this->assertLessThan(8, $guard++, "never reached the tuck-target decision");
+            $type = $this->getOpType();
+            if ($type == "seq" || $type == "newDie") {
+                $this->respond("confirm");
+            } elseif ($type == "cardInsp") {
+                if (in_array($wrongCard, $this->getOpArgs()["target"] ?? [])) {
+                    break;
+                }
+                $this->respond($inspCard);
+            } else {
+                $this->fail("unexpected operation '$type' while resolving the journal reward");
+            }
+        }
 
-        // BUG #227997: the player is at the tuck-target decision, but the engine has recorded NO undo
-        // savepoint for it. There is no boundary to roll back to that would let them re-pick the space
-        // card. The tuck is not an independently undoable decision point.
-        $this->assertSame(
-            [],
+        // The reveal must be fully behind us at the tuck decision: die already rolled into the
+        // tableau and its savepoint recorded. With the buggy cardInsp-first order the roll (and
+        // the savepoint that wipes every earlier restore point) came AFTER the tuck, so undo
+        // could not reach back before it (BGA #227997).
+        $this->assertNotEmpty(
             $this->game->savepointCalls,
-            "the inspiration tuck decision establishes no undo boundary, so the target cannot be re-picked within the turn"
+            "the newDie reveal savepoint must precede the tuck decision, or undo cannot reach back before the tuck"
         );
+        $this->assertSame(
+            ["player_id" => (int) $this->game->getMostlyActivePlayerId(), "barrier" => 1, "label" => "undo"],
+            $this->game->savepointCalls[0],
+            "the pre-tuck savepoint is the player's own barrier savepoint"
+        );
+        $this->assertEquals("tableau_$pc", $this->game->tokens->db->getTokenLocation($supplyDie), "the new die is rolled before the tuck is chosen");
 
-        // Step 2: tuck it under the WRONG space card.
+        // Nothing of the reward remains after the tuck to take another savepoint. (The turn op
+        // re-entering afterwards is a harness artifact of pushing the reward directly; in a real
+        // game the next boundary comes with the next turn, behind the confirm gate.)
         $wrongState = (int) $this->game->tokens->db->getTokenState($wrongCard);
         $this->respond($wrongCard);
 
-        // The tuck resolved: inspiration card now sits at the wrong space card's position, and the
-        // right one is still free - a committed mis-tuck with no per-step way back.
-        $this->assertEquals("tableau_$pc", $this->game->tokens->db->getTokenLocation($inspCard), "insp card was tucked into the tableau");
-        $this->assertEquals($wrongState, (int) $this->game->tokens->db->getTokenState($inspCard), "tucked at the WRONG space card's slot");
-        $this->assertOpType("turn", "cardInsp is destroyed once the tuck resolves - the choice is committed");
-
-        // The only undo savepoints the engine ever records around this are turn/die boundaries, and any
-        // that follow the tuck sit AFTER it (next turn boundary) - none captures the pre-tuck state that
-        // would let the player re-pick the space card. Every recorded boundary is a barrier savepoint,
-        // never a fine-grained one for the tuck itself.
-        foreach ($this->game->savepointCalls as $call) {
-            $this->assertSame(1, $call["barrier"], "only coarse turn/die barrier savepoints exist - none is a per-tuck boundary");
-        }
+        // The reorder must not break the reward itself: card tucked at the chosen slot.
+        $this->assertEquals("tableau_$pc", $this->game->tokens->db->getTokenLocation($inspCard), "insp card tucked into the tableau");
+        $this->assertEquals($wrongState, (int) $this->game->tokens->db->getTokenState($inspCard), "tucked at the chosen space card's slot");
+        $this->assertOpType("turn", "reward fully resolved");
     }
 }
