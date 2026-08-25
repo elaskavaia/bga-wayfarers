@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-08-24 (v260824-2121)
+
+- Fixed solo AI marker moving 1 space per gain, not per unit (#239548)
+- Fixed inspiration tuck not undoable on Journal spaces (#227997)
+- Fixed die placement refused when a tucked Townsfolk pays (#239757)
+- Fixed an error on older Safari/Firefox
+
 ## 2026-08-23 (v260823-2009)
 
 - Choose the order of simultaneous card bonuses (#221524)
