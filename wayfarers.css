@@ -1578,6 +1578,9 @@ html[data-theme=dark] .deck .counter {
   z-index: 900;
   padding: 4px;
 }
+.board_layout_controls.controls_hidden {
+  display: none;
+}
 .board_layout_controls .layout_button {
   width: 32px;
   height: 32px;
@@ -3013,6 +3016,15 @@ html[data-theme=dark] .miniboard .jtag_count {
 
 .card_scheme_6 {
   background-position: 83.3333333333% 0%;
+}
+
+.localsettings_select {
+  display: block;
+  width: 100%;
+}
+
+.localsettings_group .row-label label {
+  cursor: pointer;
 }
 
 /**

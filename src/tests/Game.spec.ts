@@ -479,4 +479,52 @@ describe("Game", () => {
       expect(registry[CELL_ID], "uncovered again").to.contain("Caravan Cell");
     });
   });
+
+  describe("setZoomControlsHidden", () => {
+    const controls = () => document.getElementById("board_layout_controls")!;
+    const thething = () => document.getElementById("thething")!;
+
+    beforeEach(() => {
+      localStorage.clear();
+      document.body.innerHTML = `
+        <div id='ebd-body'></div>
+        <div id='board_layout_controls' class='board_layout_controls'>
+          <button id='layout_home' class='layout_button'></button>
+        </div>
+        <div id='mainarea_wrap'><div id='thething'></div></div>`;
+    });
+
+    it("hides the buttons and pins the board to fit", () => {
+      localStorage.setItem("wayfarers_board_zoom_mode", "manual");
+      localStorage.setItem("wayfarers_board_zoom_scale", "2");
+
+      game.setZoomControlsHidden(true);
+
+      expect(controls().classList.contains("controls_hidden")).to.be.true;
+      expect($("ebd-body").dataset.boardZoom).to.equal("fit");
+    });
+
+    it("ignores zoom requests while hidden, and leaves the stored zoom alone", () => {
+      localStorage.setItem("wayfarers_board_zoom_scale", "2");
+      game.setZoomControlsHidden(true);
+
+      game.zoomByFactor(1.1);
+      game.setZoomMode("manual");
+
+      expect(localStorage.getItem("wayfarers_board_zoom_scale")).to.equal("2");
+      expect($("ebd-body").dataset.boardZoom).to.equal("fit");
+    });
+
+    it("restores the stored zoom when the buttons come back", () => {
+      localStorage.setItem("wayfarers_board_zoom_mode", "manual");
+      localStorage.setItem("wayfarers_board_zoom_scale", "2");
+      game.setZoomControlsHidden(true);
+
+      game.setZoomControlsHidden(false);
+
+      expect(controls().classList.contains("controls_hidden")).to.be.false;
+      expect($("ebd-body").dataset.boardZoom).to.equal("manual");
+      expect(thething().style.zoom).to.equal("2");
+    });
+  });
 });

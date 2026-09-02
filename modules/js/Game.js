@@ -1893,6 +1893,119 @@ class GameMachine extends Game1Tokens {
  * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
  * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
  *
+ * Browser-local settings (localStorage only). Deliberately NOT BGA preferences:
+ * nothing is sent to the server, so none of BGA's preference classes or
+ * data-preference-id hooks are used - their JS would try to persist these.
+ *
+ * Modelled on bga-fate LocalSettings, trimmed to the select-style choices this
+ * game needs and with the dojo calls dropped (wayfarers does not load dojo).
+ * -----
+ */
+class LocalSettings {
+    constructor(gameName, props = []) {
+        this.gameName = gameName;
+        this.props = props;
+    }
+    setup() {
+        for (const prop of this.props) {
+            this.applyChanges(prop, this.readProp(prop.key), false);
+        }
+    }
+    getLocalSettingById(key) {
+        return this.props.find((prop) => prop.key == key) ?? null;
+    }
+    getDivId() {
+        return `${this.gameName}_localsettings`;
+    }
+    /**
+     * Renders the settings block into the in-game menu. Returns false when the menu is not
+     * present (e.g. the local harness), so callers can ignore it.
+     */
+    renderContents(parentId) {
+        const parent = document.getElementById(parentId);
+        if (!parent)
+            return false;
+        // BGA re-runs setup on undo/reconnect; drop a previous copy rather than stack duplicates.
+        document.getElementById(this.getDivId())?.remove();
+        const groups = this.props.map((prop) => this.renderProp(prop)).join("");
+        const html = `
+      <div id="${this.getDivId()}" class="localsettings">
+        <h2>${_("Local Settings")}</h2>
+        ${groups}
+      </div>`;
+        // Sit right after the last native preference, so we land at the end of the
+        // preferences block instead of below the game options.
+        const prefs = parent.querySelectorAll(".preference_choice");
+        const anchor = prefs.length ? prefs[prefs.length - 1] : null;
+        if (anchor)
+            anchor.insertAdjacentHTML("afterend", html);
+        else
+            parent.insertAdjacentHTML("beforeend", html);
+        // The BGA menu reacts to taps bubbling out of its content; on mobile that steals focus from our
+        // select just as the native picker opens, dismissing it (the select receives the full tap
+        // sequence untouched, then an external blur - traced on-device). Their own preference rows are
+        // exempt from that reaction; ours are not, so keep our interactions to ourselves.
+        const block = document.getElementById(this.getDivId());
+        for (const type of ["pointerup", "touchend", "mouseup", "click"]) {
+            block.addEventListener(type, (event) => event.stopPropagation());
+        }
+        for (const prop of this.props) {
+            $(this.getInputId(prop)).addEventListener("change", (event) => {
+                this.applyChanges(prop, event.target.value);
+            });
+        }
+        return true;
+    }
+    getInputId(prop) {
+        return `localsettings_prop_${prop.key}`;
+    }
+    renderProp(prop) {
+        const inputId = this.getInputId(prop);
+        const options = Object.entries(prop.choice)
+            .map(([value, label]) => `<option value="${value}" ${value == prop.value ? "selected" : ""}>${label}</option>`)
+            .join("");
+        // row-data/row-label/row-value are BGA's layout-only classes (as used by the static
+        // "Game options" rows) - borrowed for a native look, without any of the classes or
+        // data-preference-id hooks their preference JS binds to.
+        return `
+      <div class="localsettings_group row-data row-data-large">
+        <div class="row-label"><label for="${inputId}">${prop.label}</label></div>
+        <div class="row-value">
+          <select id="${inputId}" class="localsettings_select">${options}</select>
+        </div>
+      </div>`;
+    }
+    applyChanges(prop, newValue, write = true) {
+        prop.value = newValue !== undefined && prop.choice[newValue] ? newValue : prop.default;
+        const input = $(this.getInputId(prop));
+        if (input && input.value != prop.value)
+            input.value = prop.value;
+        $("ebd-body").dataset[`localsetting_${prop.key}`] = prop.value;
+        if (write)
+            this.writeProp(prop.key, prop.value);
+        prop.onChange?.(prop.value);
+    }
+    getLocalStorageItemId(key) {
+        return `${this.gameName}.${key}`;
+    }
+    readProp(key) {
+        return localStorage.getItem(this.getLocalStorageItemId(key)) ?? undefined;
+    }
+    writeProp(key, value) {
+        try {
+            localStorage.setItem(this.getLocalStorageItemId(key), value);
+        }
+        catch (e) {
+            console.error(e);
+        }
+    }
+}
+
+/**
+ *------
+ * BGA framework: Gregory Isabelli & Emmanuel Colin & BoardGameArena
+ * Wayfarers implementation : © Alena Laskavaia <laskava@gmail.com>
+ *
  * This code has been produced on the BGA studio platform for use on http://boardgamearena.com.
  * See http://en.boardgamearena.com/#!doc/Studio for more information.
  * -----
@@ -1927,6 +2040,7 @@ class Game extends GameMachine {
         this.inSetup = true;
         this.boardZoomMode = "fit";
         this.boardZoomScale = 1;
+        this.boardZoomFitOnly = false;
         this.AI_PLAYER_ID = 1;
         this.AI_COLOR_OVERRIDE = "982fff";
         this._ghostMouseHandler = null;
@@ -2102,6 +2216,7 @@ class Game extends GameMachine {
             // if (parent)
             //   this.bga.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
             this.setupLayoutControls();
+            this.setupLocalSettings();
         }
         catch (e) {
             console.error("Exception during game setup", e.stack);
@@ -2258,22 +2373,55 @@ class Game extends GameMachine {
         this.destroyDivOtherCopies("board_layout_controls");
         const host = document.getElementById("page-title") ?? document.getElementById("ebd-body") ?? document.body;
         host.appendChild($("board_layout_controls"));
-        const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
-        const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");
-        this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
-        this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
+        this.readStoredZoom();
         $("layout_home").addEventListener("click", () => this.setZoomMode("fit"));
         $("layout_zoom_in").addEventListener("click", () => this.zoomByFactor(1.1));
         $("layout_zoom_out").addEventListener("click", () => this.zoomByFactor(1 / 1.1));
         window.addEventListener("resize", this.boundOnResize);
         this.applyCurrentZoom();
     }
+    setupLocalSettings() {
+        this.localSettings = new LocalSettings("wayfarers", [
+            {
+                key: "zoomcontrols",
+                label: _("Board zoom"),
+                choice: { controls: _("Show zoom controls"), fit: _("Scale to fit") },
+                default: "controls",
+                onChange: (value) => this.setZoomControlsHidden(value == "fit")
+            }
+        ]);
+        this.localSettings.setup();
+        this.localSettings.renderContents("ingame_menu_content");
+    }
+    readStoredZoom() {
+        const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
+        const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");
+        this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
+        this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
+    }
+    /**
+     * "Scale to fit" setting: hide the zoom buttons and always fit the board to the screen,
+     * ignoring (and never writing) the stored zoom. Turning it off restores the stored zoom.
+     */
+    setZoomControlsHidden(hidden) {
+        this.boardZoomFitOnly = hidden;
+        document.getElementById("board_layout_controls")?.classList.toggle("controls_hidden", hidden);
+        if (hidden)
+            this.boardZoomMode = "fit";
+        else
+            this.readStoredZoom();
+        this.applyCurrentZoom();
+    }
     setZoomMode(mode) {
+        if (this.boardZoomFitOnly)
+            return;
         this.boardZoomMode = mode;
         localStorage.setItem("wayfarers_board_zoom_mode", mode);
         this.applyCurrentZoom();
     }
     zoomByFactor(factor) {
+        if (this.boardZoomFitOnly)
+            return;
         const scalecontrol = $("thething");
         const current = this.boardZoomMode === "fit" ? parseFloat(scalecontrol.dataset.scale ?? "1") || 1 : this.boardZoomScale;
         const next = Math.min(4.0, Math.max(0.3, current * factor));

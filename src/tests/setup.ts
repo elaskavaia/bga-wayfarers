@@ -34,6 +34,23 @@ const dom = new JSDOM("<!doctype html><html><body><div id='ebd-body'></div></bod
   return id;
 };
 
+// jsdom only exposes localStorage for a real origin, so stub the bits the game uses
+(global as any).localStorage = {
+  _store: {} as Record<string, string>,
+  getItem(key: string) {
+    return this._store[key] ?? null;
+  },
+  setItem(key: string, value: string) {
+    this._store[key] = value;
+  },
+  removeItem(key: string) {
+    delete this._store[key];
+  },
+  clear() {
+    this._store = {};
+  }
+};
+
 // BGA framework global: _(str) translation passthrough
 (global as any)._ = function _(str: string) {
   return str;

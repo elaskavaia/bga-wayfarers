@@ -13,6 +13,7 @@ import { getFirstParts, getParentParts, getPart, NotificationMessage, placeHtml 
 import { Token, TokenMoveInfo, AnimArgs, TokenDisplayInfo } from "./Game1Tokens";
 import { GameMachine, OpInfo, ParamInfo } from "./GameMachine";
 import { BgaScoreSheet } from "./libs";
+import { LocalSettings } from "./LocalSettings";
 
 class PlayerTurn {
   constructor(
@@ -46,6 +47,8 @@ export class Game extends GameMachine {
   private inSetup = true;
   private boardZoomMode: "fit" | "manual" = "fit";
   private boardZoomScale: number = 1;
+  private boardZoomFitOnly = false;
+  private localSettings!: LocalSettings;
   private AI_PLAYER_ID = 1;
   private AI_COLOR_OVERRIDE = "982fff";
   private _ghostMouseHandler: ((e: MouseEvent) => void) | null = null;
@@ -230,6 +233,7 @@ export class Game extends GameMachine {
       //   this.bga.statusBar.addActionButton("Reload CSS", () => this.reloadCss(), { id: "button_rcss", destination: $("topbar_content") });
 
       this.setupLayoutControls();
+      this.setupLocalSettings();
     } catch (e: any) {
       console.error("Exception during game setup", e.stack);
     }
@@ -420,10 +424,7 @@ export class Game extends GameMachine {
     const host = document.getElementById("page-title") ?? document.getElementById("ebd-body") ?? document.body;
     host.appendChild($("board_layout_controls"));
 
-    const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
-    const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");
-    this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
-    this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
+    this.readStoredZoom();
 
     $("layout_home").addEventListener("click", () => this.setZoomMode("fit"));
     $("layout_zoom_in").addEventListener("click", () => this.zoomByFactor(1.1));
@@ -434,17 +435,52 @@ export class Game extends GameMachine {
     this.applyCurrentZoom();
   }
 
+  setupLocalSettings() {
+    this.localSettings = new LocalSettings("wayfarers", [
+      {
+        key: "zoomcontrols",
+        label: _("Board zoom"),
+        choice: { controls: _("Show zoom controls"), fit: _("Scale to fit") },
+        default: "controls",
+        onChange: (value) => this.setZoomControlsHidden(value == "fit")
+      }
+    ]);
+    this.localSettings.setup();
+    this.localSettings.renderContents("ingame_menu_content");
+  }
+
   private boundOnResize = () => {
     this.applyCurrentZoom();
   };
 
+  private readStoredZoom() {
+    const savedMode = localStorage.getItem("wayfarers_board_zoom_mode");
+    const savedScale = parseFloat(localStorage.getItem("wayfarers_board_zoom_scale") ?? "");
+    this.boardZoomMode = savedMode === "manual" ? "manual" : "fit";
+    this.boardZoomScale = Number.isFinite(savedScale) && savedScale > 0 ? savedScale : 1;
+  }
+
+  /**
+   * "Scale to fit" setting: hide the zoom buttons and always fit the board to the screen,
+   * ignoring (and never writing) the stored zoom. Turning it off restores the stored zoom.
+   */
+  setZoomControlsHidden(hidden: boolean) {
+    this.boardZoomFitOnly = hidden;
+    document.getElementById("board_layout_controls")?.classList.toggle("controls_hidden", hidden);
+    if (hidden) this.boardZoomMode = "fit";
+    else this.readStoredZoom();
+    this.applyCurrentZoom();
+  }
+
   setZoomMode(mode: "fit" | "manual") {
+    if (this.boardZoomFitOnly) return;
     this.boardZoomMode = mode;
     localStorage.setItem("wayfarers_board_zoom_mode", mode);
     this.applyCurrentZoom();
   }
 
   zoomByFactor(factor: number) {
+    if (this.boardZoomFitOnly) return;
     const scalecontrol = $("thething");
     const current = this.boardZoomMode === "fit" ? parseFloat(scalecontrol.dataset.scale ?? "1") || 1 : this.boardZoomScale;
     const next = Math.min(4.0, Math.max(0.3, current * factor));
