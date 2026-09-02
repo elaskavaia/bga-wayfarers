@@ -548,6 +548,34 @@ final class Op_journalTest extends TestCase {
         $this->assertEquals(Material::RET_OK, $moves["jpos_103"]["q"]);
     }
 
+    /**
+     * Documents current behavior for BGA #240391 ("I had 5 City tags but only the middle path was offered").
+     * Audit of the tag sources a Journal Track requirement counts: the pre-printed player board tag,
+     * Land cards, and a Special (Pink) Upgrade Tile in the Caravan all count, and the connector compares
+     * with >=. RULES.md "Scoring" line 276: "Primary Land and Water Tags - Remember to also count any Tags
+     * in the Caravan." and "Upgrade Tiles" line 206: "Special (Pink) Upgrade Tiles also feature Tags. These
+     * function exactly as they do on Cards."
+     * If this ever goes red, the caravan or board tag source dropped out of countPlayerTags.
+     */
+    public function testFinalSpaceCityRequirementCountsBoardAndCaravanTags(): void {
+        // Real material, side B: jconn_90_103_1 requires 5 City tags and 103 is a final space.
+        $this->game->tokens->db->setTokenState("mainboard_3", 1);
+        $this->setMarkerPosition(90);
+
+        // 1 City from the pre-printed "Capital City" board card (in tableau from setup),
+        // 3 from City Land cards, 1 from the pink Special Upgrade Tile in the caravan.
+        $this->game->tokens->db->moveToken("card_land_1", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_land_2", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("card_land_3", "tableau_" . PCOLOR);
+        $this->game->tokens->db->moveToken("upg_pink_41", "tableau_" . PCOLOR, 5);
+
+        $this->assertEquals(5, $this->game->countPlayerTags("City", PCOLOR));
+
+        $moves = $this->createOp()->getPossibleMoves();
+        $this->assertEquals("5 [wicon_city]", $moves["jpos_103"]["name"]);
+        $this->assertEquals(Material::RET_OK, $moves["jpos_103"]["q"], "5 City tags satisfy the 5 City connector");
+    }
+
     public function testResolveThrowsWhenTargetingBlockedFinalSpace(): void {
         $this->setMarkerPosition(90);
         $this->setupPosition(90, "100");

@@ -235,4 +235,15 @@ final class Op_ai_journalTest extends TestCase {
 
         $this->assertEquals(102, $selected);
     }
+
+    public function testSelectPositionFromLowerEntryLandsOnMiddleSpace(): void {
+        $this->setMarkerPosition(95, self::AI_COLOR);
+        $this->addSchemeCard(1, "blue"); // blue majority -> upper path
+
+        $op = $this->createOp();
+        $moves = $op->getPossibleMoves();
+
+        $this->assertEquals(["jpos_103", "jpos_106", "jpos_107"], array_keys($moves));
+        $this->assertEquals(103, $op->selectPosition($moves));
+    }
 }
