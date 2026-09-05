@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-05 (v260905-1942)
+
+- Added a "Board zoom" setting to hide the zoom controls and scale the board to fit (#233129)
+- Fixed the "Remaining Tiles" count on upgrade tiles not updating when a tile was taken (#242371)
+
 ## 2026-08-24 (v260824-2121)
 
 - Fixed solo AI marker moving 1 space per gain, not per unit (#239548)
