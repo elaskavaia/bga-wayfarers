@@ -2,6 +2,7 @@
  * Test setup: stub BGA framework globals so source files can be imported.
  */
 import { JSDOM } from "jsdom";
+import sinon from "sinon";
 import Module from "module";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -85,3 +86,23 @@ const dom = new JSDOM("<!doctype html><html><body><div id='ebd-body'></div></bod
 
 // BGA framework global: define stub (AMD)
 (global as any).define = function () {};
+
+/** The `bga` framework facade the Game constructor takes. Stubs are fresh per call, so tests can reassign them. */
+export function makeBga(): any {
+  return {
+    statusBar: { setTitle: sinon.stub(), addActionButton: sinon.stub() },
+    states: { register: sinon.stub() },
+    notifications: { setup: sinon.stub() },
+    images: { preload: sinon.stub() },
+    sounds: { enable: sinon.stub() },
+    players: {
+      getActivePlayerId: () => "1",
+      getList: () => [],
+      isCurrentPlayerActive: () => true
+    },
+    actions: { callAction: sinon.stub() },
+    gameArea: { addArea: sinon.stub() },
+    playerPanels: { addPanel: sinon.stub() },
+    dialogs: {}
+  };
+}

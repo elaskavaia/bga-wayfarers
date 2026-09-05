@@ -1,4 +1,4 @@
-import "./setup";
+import { makeBga } from "./setup";
 import { expect } from "chai";
 import sinon from "sinon";
 import { Game } from "../Game";
@@ -8,21 +8,7 @@ describe("Game", () => {
   let bga: any;
 
   beforeEach(() => {
-    bga = {
-      statusBar: { setTitle: sinon.stub() },
-      states: { register: sinon.stub() },
-      notifications: { setup: sinon.stub() },
-      images: { preload: sinon.stub() },
-      sounds: { enable: sinon.stub() },
-      players: {
-        getActivePlayerId: () => "1",
-        getList: () => []
-      },
-      actions: { callAction: sinon.stub() },
-      gameArea: { addArea: sinon.stub() },
-      playerPanels: { addPanel: sinon.stub() },
-      dialogs: {}
-    };
+    bga = makeBga();
     game = new Game(bga);
     game.gamedatas = {
       players: {
