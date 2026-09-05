@@ -714,15 +714,24 @@ export class Game extends GameMachine {
     $("limbo")?.appendChild($(tokenId));
   }
 
-  getRemainingUpgradeTileCount(tokenId: string): number {
+  /** All copies of the same tile face, i.e. tokens sharing the `upg_{color}_{num}` prefix. */
+  getUpgradeTileCopies(tokenId: string): string[] {
     const prefix = getParentParts(tokenId);
-    let count = 0;
-    for (const key in this.gamedatas.tokens) {
-      if (this.gamedatas.tokens[key].location === "mainarea" && prefix == getParentParts(key)) {
-        count++;
-      }
+    return Object.keys(this.gamedatas.tokens).filter((key) => getParentParts(key) == prefix);
+  }
+
+  getRemainingUpgradeTileCount(tokenId: string): number {
+    return this.getUpgradeTileCopies(tokenId).filter((key) => this.gamedatas.tokens[key].location === "mainarea").length;
+  }
+
+  // The remaining count is baked into the memoized tooltip, so every other copy of the same tile
+  // goes stale when one of them enters or leaves the supply.
+  async placeTokenServer(tokenId: string, location: string, state?: number, args?: any) {
+    await super.placeTokenServer(tokenId, location, state, args);
+    if (getPart(tokenId, 0) != "upg") return;
+    for (const key of this.getUpgradeTileCopies(tokenId)) {
+      if (key != tokenId) this.updateTooltip(key, undefined, { force: true });
     }
-    return count;
   }
 
   getPlaceRedirect(tokenInfo: Token, args: AnimArgs = {}): TokenMoveInfo {
