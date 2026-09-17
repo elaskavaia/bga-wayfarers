@@ -207,4 +207,38 @@ final class Op_placeDieTest extends TestCase {
         $isRestOnly = $this->game->getRulesFor($folkCard, "rest", 0);
         $this->assertFalse((bool) $isRestOnly, "card_folk_133 should not have rest=1");
     }
+
+    /**
+     * BGA #243233. A tucked Townsfolk provides its Assets only to the Land or Water Card it sits
+     * under (RULES.md, Cards > Townsfolk Cards), so a Stargazer (card_folk_145, Telescope + Camel)
+     * tucked under City Land 1 buys nothing on City Observatory Land 9.
+     *
+     * The reporter's own scenario (Stargazer under Land 9 itself) does NOT reproduce - that
+     * placement is allowed today.
+     */
+    public function testTownsfolkAssetsAreCreditedOnlyToTheCardItIsTuckedUnder(): void {
+        $color = PCOLOR;
+        // Land Cards land in the tableau at states -2, -3, ... one column each
+        $this->game->tokens->db->moveToken("card_land_1", "tableau_$color", -2);
+        $this->game->tokens->db->moveToken("card_land_9", "tableau_$color", -3);
+        // A tuck is a folk card sharing the state of the card it sits under
+        $this->game->tokens->db->moveToken("card_folk_145", "tableau_$color", -2);
+
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color");
+        $dieKey = array_key_first($dice);
+        $this->game->tokens->db->setTokenState($dieKey, 2); // column 2 of the starting Caravan is empty
+
+        /** @var Op_placeDie */
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
+        $caravanAssets = $this->game->getCaravanAssetsForDie(2, $color);
+
+        $this->assertEquals("card_folk_145", $op->getTuckedFolk("card_land_1"), "the Stargazer is tucked under Land 1");
+        $this->assertEquals([], $op->canPlaceDieOnCard("card_land_1", $caravanAssets), "it pays for the space it sits under");
+
+        $this->assertEquals(
+            ["telescope", "camel"],
+            $op->canPlaceDieOnCard("card_land_9", $caravanAssets),
+            "BGA #243233: the same Stargazer buys nothing on another City space"
+        );
+    }
 }
