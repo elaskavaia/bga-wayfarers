@@ -1,5 +1,9 @@
 # Changelog
 
+## 2026-09-16 (v260917-0432)
+
+- Fixed solo AI turn stalling when Aida placed a Worker on the Explore or Voyage space (#243940)
+
 ## 2026-09-05 (v260905-1942)
 
 - Added a "Board zoom" setting to hide the zoom controls and scale the board to fit (#233129)
