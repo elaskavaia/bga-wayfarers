@@ -13,7 +13,7 @@ final class Op_ai_placeWorkerTest extends TestCase {
 
     protected function setUp(): void {
         $this->game = new GameUT();
-        $this->game->init();
+        $this->game->init(1); // solo, so the automa is a known player
         $this->game->tokens->createTokens();
         // Setup AI color in game
         $this->game->_setCurrentPlayerId(PCOLOR_ID);
@@ -303,5 +303,45 @@ final class Op_ai_placeWorkerTest extends TestCase {
         // Worker should be placed directly
         $worker = $this->game->tokens->db->getTokenInfo("worker_green_1");
         $this->assertEquals($folkCard, $worker["location"]);
+    }
+
+    /**
+     * BGA #243940 (solo, table 914937738): the automa placed a worker on water position 4 and the
+     * space's printed action was queued verbatim, cost included - action_water_4 is
+     * "3n_food:3cardDraw(water)". Op_pay only auto-resolves a zero count, so the pay half reached
+     * Operation::onEnteringGameState with the automa as the player and threw
+     * "Operation does not implement automata 3(n_food)".
+     *
+     * RULES.md, Solo Play > Special Rules: "The AI ignores all costs (other than those on their
+     * Scheme Cards), and ignores all requirements on the Journal Track." and Solo Play > AI
+     * Prioritising > Workers: "They resolve all printed actions of a space when placing a Worker."
+     * So the automa resolves the draw and is never asked for the 3 Provisions.
+     */
+    public function testWorkerActionCostIsIgnoredForAutoma(): void {
+        $this->addWorkerToSupply("blue");
+        $this->addCardToMainarea("water", 4);
+        // the worker blocks its own card, so the draw has another one to land on
+        $this->game->tokens->db->moveToken("card_water_2", "mainarea", 1);
+        $this->setPositionPriority(4);
+
+        $op = $this->createOp("blue");
+        $this->assertTrue($op->auto());
+        $this->game->machine->dispatchAll();
+
+        $this->assertEquals([], $this->game->queuedTypes(self::AI_COLOR), "the whole action resolved without asking the automa");
+        $card = $this->game->tokens->db->getTokenInfo("card_water_2");
+        $this->assertEquals("tableau_" . self::AI_COLOR, $card["location"]);
+    }
+
+    /** The cost carve-out is per rule, not per operation - a costless printed action is untouched. */
+    public function testWorkerActionWithoutCostIsQueuedWhole(): void {
+        $this->addWorkerToSupply("blue");
+        $this->addCardToMainarea("water", 2);
+        $this->setPositionPriority(2);
+
+        $op = $this->createOp("blue");
+        $this->assertTrue($op->auto());
+
+        $this->assertContains("2food,infBlue", $this->game->queuedTypes(self::AI_COLOR));
     }
 }

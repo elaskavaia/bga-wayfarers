@@ -54,6 +54,11 @@ class GameUT extends Game {
         return $this;
     }
 
+    /** Operation types still pending for one owner, in queue order (resolved ops are excluded) */
+    function queuedTypes(string $owner): array {
+        return array_values(array_column($this->machine->db->getOperations($owner), "type"));
+    }
+
     function fakeUserAction(Operation $op, $target = null) {
         return $op->action_resolve([Operation::ARG_TARGET => $target]);
     }

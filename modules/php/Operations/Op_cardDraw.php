@@ -14,6 +14,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\Material;
 use Bga\Games\wayfarers\OpCommon\CountableOperation;
 
@@ -23,6 +24,15 @@ use Bga\Games\wayfarers\OpCommon\CountableOperation;
  * The count prefix (e.g. 3cardDraw) determines how many cards to draw
  */
 class Op_cardDraw extends CountableOperation {
+    public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // The AI has no hand to pick from, it acquires a card of this type by its own priority
+            $this->queue("ai_card" . ucfirst($this->getDeckType()));
+            return true;
+        }
+        return parent::auto();
+    }
+
     function getDeckType(): string {
         return $this->getParam(0, "land");
     }

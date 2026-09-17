@@ -20,6 +20,7 @@ declare(strict_types=1);
 
 namespace Bga\Games\wayfarers\Operations;
 
+use Bga\Games\wayfarers\Game;
 use Bga\Games\wayfarers\OpCommon\CountableOperation;
 use Bga\Games\wayfarers\Material;
 
@@ -36,6 +37,10 @@ class Op_pay extends CountableOperation {
     }
 
     function getPossibleMoves() {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // The AI does not pay
+            return ["confirm"];
+        }
         $owner = $this->getOwner();
         $current = $this->game->tokens->getTrackerValue($owner, $this->getResType());
         if ($current < $this->getCount()) {
@@ -45,6 +50,11 @@ class Op_pay extends CountableOperation {
     }
 
     public function auto(): bool {
+        if ($this->getPlayerId() == Game::PLAYER_AUTOMA) {
+            // The AI does not pay
+            return true;
+        }
+
         if ($this->getCount() == 0) {
             $this->game->effect_incCount($this->getOwner(), $this->getResType(), 0, $this->getReason());
             return true;
