@@ -3,19 +3,24 @@
     "name": "Automa Board",
     "values": {
       "0": {
-        "name": "Random"
+        "name": "Random",
+        "description": "One of the four AI boards is picked at random"
       },
       "1": {
-        "name": "Aida the Stargazer"
+        "name": "Aida the Stargazer",
+        "description": "Space AI: acquires Space Cards on Focus and when Resting; Resource Track bonus is a Comet"
       },
       "2": {
-        "name": "Aida the Inventor"
+        "name": "Aida the Inventor",
+        "description": "Upgrade AI: acquires Upgrade Tiles on Focus and when Resting; Resource Track bonus is Yellow Guild Influence"
       },
       "3": {
-        "name": "Aida the Mayor"
+        "name": "Aida the Mayor",
+        "description": "Townsfolk AI: acquires Townsfolk Cards on Focus, when Resting, and as Resource Track bonus"
       },
       "4": {
-        "name": "Aida the Wayfarer"
+        "name": "Aida the Wayfarer",
+        "description": "Journal AI: Journals on Focus, Influences a Card when Resting; Resource Track bonus is Black Guild Influence"
       }
     },
     "default": 0,
