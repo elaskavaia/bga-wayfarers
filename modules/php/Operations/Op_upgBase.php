@@ -284,7 +284,8 @@ abstract class Op_upgBase extends Op_acquireBase {
                 return clienttranslate("Select an Upgrade Tile free of charge");
             }
             return new NotificationMessage(clienttranslate('Select an Upgrade Tile to buy, will cost ${cost}'), [
-                "cost" => $payop_name
+                "cost" => $payop_name,
+                "i18n" => ["cost"]
             ]);
         }
         return clienttranslate("Select where to place the tile in your caravan");

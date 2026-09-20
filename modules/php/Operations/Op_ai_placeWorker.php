@@ -140,7 +140,7 @@ class Op_ai_placeWorker extends AiOperation {
             $targetCard,
             1,
             clienttranslate('${player_name} places ${token_name} on ${card_type} position ${pos} ${reason}'),
-            ["pos" => $state, "card_type" => $this->game->getTokenName($cardType)]
+            ["pos" => $state, "card_type" => $this->game->getTokenName($cardType), "i18n" => ["card_type"]]
         );
 
         // Resolve the printed action of the space

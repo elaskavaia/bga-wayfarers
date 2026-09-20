@@ -3082,7 +3082,7 @@ class Game extends GameMachine {
                 if (payByColor[color])
                     tokenInfo.tooltip += this.ttSection(_("Cost"), payByColor[color]);
                 if (tokenInfo.tags)
-                    tokenInfo.tooltip += this.ttSection(_("Tags"), _(tokenInfo.tags));
+                    tokenInfo.tooltip += this.ttSection(_("Tags"), this.getTagsListTr(tokenInfo.tags));
                 // r and r2 are left and right side of the same tile face
                 if (tokenInfo.r || tokenInfo.r2) {
                     const assets = [this.getOpListTr(tokenInfo.r), this.getOpListTr(tokenInfo.r2)].filter(Boolean).join(" | ");
