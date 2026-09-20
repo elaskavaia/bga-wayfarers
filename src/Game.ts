@@ -1085,7 +1085,7 @@ export class Game extends GameMachine {
             } else if (tokenInfo.dr) {
               const trigger =
                 tokenInfo.tags === "Vista"
-                  ? _("Bonus is activated when card ability is triggered")
+                  ? _("Bonus is activated when the ability of the land card above is triggered")
                   : _("Bonus is activated when die is placed above");
               tokenInfo.tooltip += this.ttSection(_("Bonus"), this.getTr(origtt) + ". " + trigger);
             } else if (tokenInfo.da) {
