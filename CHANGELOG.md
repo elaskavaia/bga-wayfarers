@@ -1,5 +1,10 @@
 # Changelog
 
+## 2026-09-23 (v260924-0105)
+
+- Added a description of each Automa board to the "Automa Board" lobby option
+- Fixed a few untranslated strings in solo mode and upgrade tiles
+
 ## 2026-09-16 (v260917-0432)
 
 - Fixed solo AI turn stalling when Aida placed a Worker on the Explore or Voyage space (#243940)
