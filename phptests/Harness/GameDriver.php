@@ -329,10 +329,28 @@ class GameDriver {
 
     // ── Run ──────────────────────────────────────────────────────────────────
 
+    /** BGA sends all notifications of one request as a single packet and refuses anything above this. */
+    public const MAX_PACKET_BYTES = 128 * 1024;
+
     public function runStep(string $endpoint, array $data): void {
+        $from = count($this->game->notify->_getNotifications());
         $this->dispatchEndpoint($endpoint, $data);
         $this->runDispatchLoop();
         $this->emitGameStateChange();
+        $this->assertPacketSize($from, "$endpoint " . json_encode($data));
+    }
+
+    /** Everything notified since $from went out in one request: fail as production would. */
+    private function assertPacketSize(int $from, string $request): void {
+        $packet = array_slice($this->game->notify->_getNotifications(), $from);
+        $bytes = strlen(json_encode($packet));
+        if ($bytes > self::MAX_PACKET_BYTES) {
+            $types = array_count_values(array_column($packet, "type"));
+            arsort($types);
+            throw new \RuntimeException(
+                "generated notifications are larger than 128k ($bytes bytes, " . count($packet) . " notifications) for $request; by type: " . json_encode($types)
+            );
+        }
     }
 
     /**
@@ -340,6 +358,7 @@ class GameDriver {
      * no current player set (the quit seat is not the one making the request).
      */
     public function runZombie(int $playerId): void {
+        $from = count($this->game->notify->_getNotifications());
         $stateId = $this->getCurrentStateIdFor($playerId);
         $state = $this->states[$stateId] ?? throw new \RuntimeException("State not found: $stateId");
         $next = $state->zombie($playerId);
@@ -348,6 +367,7 @@ class GameDriver {
         }
         $this->runDispatchLoop();
         $this->emitGameStateChange();
+        $this->assertPacketSize($from, "zombie $playerId");
     }
 
     public function runSteps(array $steps): void {
