@@ -224,6 +224,9 @@ class OpMachine {
                 return $state;
             }
         }
+        // Hitting the cap means an op re-queues itself forever; fail loudly instead of flooding notifications
+        $top = array_column($this->getTopOperations(null), "type");
+        $this->game->systemAssert("dispatch loop did not settle in $n rounds, top: " . implode(",", $top));
         return PlayerTurnConfirm::class;
     }
     function dispatchOne() {

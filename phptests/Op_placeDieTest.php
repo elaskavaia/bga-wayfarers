@@ -145,14 +145,56 @@ final class Op_placeDieTest extends TestCase {
         $this->assertFalse($op->isVoid(), "and so it never parks in PlayerTurn");
     }
 
+    /**
+     * Studio error 690170 (table 916678579, move 466): selecting one die produced a 163 KB notification
+     * packet and the request was refused seven times: with no legal slot, a plus tile under the die's
+     * column and a minus tile under the next one, placeDie auto-resolved 2 to 3 to 2 ... until the
+     * dispatch cap. Each column is now used once per chain, so it bumps 2 to 3, back to 2, then skips.
+     */
+    public function testDieWithOnlyOppositeManipulationsAndNoSlotStopsAfterOneChain(): void {
+        $color = PCOLOR;
+        $dice = array_keys($this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color"));
+        $dieKey = array_shift($dice);
+        foreach ($dice as $i => $other) {
+            $this->game->tokens->db->moveToken($other, $i === 0 ? "card_home_12_$color" : "card_home_13_$color", 2);
+        }
+        $this->setFood($color, 0); // the camel slot costs 2 Provisions, so nothing is placeable
+        $this->game->tokens->db->setTokenState($dieKey, 2);
+        // Both tiles are 2 wide over columns 2 and 3: plus under the 2, minus under the 3.
+        $this->game->tokens->db->moveToken("upg_yellow_1_1", "tableau_$color", 2);
+        $this->game->tokens->db->moveToken("upg_yellow_2_1", "tableau_$color", 8);
+
+        $this->assertEquals(["Op_dicePlus"], $this->placeDieTargets($dieKey, $color), "bumping to 3 is the only option");
+
+        $before = count($this->game->notify->_getNotifications());
+        $this->game->machine->queue("placeDie", $color, ["die" => $dieKey]);
+        $this->game->machine->dispatchAll(400);
+        $notifications = count($this->game->notify->_getNotifications()) - $before;
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+
+        $this->assertNotSame("placeDie", $top?->getType(), "placeDie settled");
+        $this->assertSame(2, (int) $this->game->tokens->db->getTokenState($dieKey), "the die is back where it started");
+        $this->assertLessThan(10, $notifications, "one chain of two bumps and a skip, not a loop");
+    }
+
+    public function testManipulationChainsThroughNewColumnsButNotAUsedOne(): void {
+        $color = PCOLOR;
+        $dieKey = array_key_first($this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color"));
+        $this->game->tokens->db->setTokenState($dieKey, 3);
+        $this->game->tokens->db->moveToken("upg_yellow_2_1", "tableau_$color", 8); // minus under the 3
+
+        $this->assertContains("Op_diceMinus", $this->placeDieTargets($dieKey, $color, [2]), "a chain from column 2 continues");
+        $this->assertNotContains("Op_diceMinus", $this->placeDieTargets($dieKey, $color, [3]), "column 3 already used");
+    }
+
     private function setFood(string $color, int $value): void {
         $this->game->tokens->db->setTokenState($this->game->tokens->getTrackerId($color, "food"), $value);
     }
 
     /** Args are cached per instance, so each read needs a fresh operation. */
-    private function placeDieTargets(string $dieKey, string $color): array {
+    private function placeDieTargets(string $dieKey, string $color, array $used = []): array {
         /** @var Op_placeDie */
-        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey, "used" => $used]);
         return $op->getArgs()["target"];
     }
 

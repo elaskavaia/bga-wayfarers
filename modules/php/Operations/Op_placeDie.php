@@ -86,6 +86,11 @@ class Op_placeDie extends Op_acquireBase {
         return $this->game->getMissingAssetRequirements($requirements, $assets);
     }
 
+    /** Caravan columns (die values) this die was already manipulated from in the current chain */
+    function getManipulatedColumns(): array {
+        return $this->getDataField("used", []);
+    }
+
     public function getPossibleMoves() {
         $owner = $this->getOwner();
         $dieValue = $this->getDieValue();
@@ -127,13 +132,14 @@ class Op_placeDie extends Op_acquireBase {
             }
         }
 
-        $die = $this->getDie();
+        // Manipulations chain but do not stack: each caravan column is used once per chain, which also stops a plus/minus ping-pong
+        $canManipulate = !in_array($dieValue, $this->getManipulatedColumns());
         // Check caravan column for dicePlus, diceMinus abilities (already in caravanAssets)
-        if ((($caravanAssets["dicePlus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue < 6) {
+        if ($canManipulate && (($caravanAssets["dicePlus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue < 6) {
             $dieValuePlus = $dieValue + 1;
             $res["Op_dicePlus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValuePlus]"];
         }
-        if ((($caravanAssets["diceMinus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue > 1) {
+        if ($canManipulate && (($caravanAssets["diceMinus"] ?? 0) > 0 || ($caravanAssets["diceMod"] ?? 0) > 0) && $dieValue > 1) {
             $dieValueM1 = $dieValue - 1;
             $res["Op_diceMinus"] = ["q" => Material::RET_OK, "name" => "[wicon_die_$dieValue]⤇[wicon_die_$dieValueM1]"];
         }
@@ -214,8 +220,12 @@ class Op_placeDie extends Op_acquireBase {
         // Handle extra action - queue the operation and re-enter placeDie
         if (str_starts_with($selected, "Op_")) {
             $optype = str_replace("Op_", "", $selected);
+            $used = $this->getManipulatedColumns();
+            if ($optype === "dicePlus" || $optype === "diceMinus") {
+                $used[] = $dieValue;
+            }
             $this->queue($optype, $owner, ["die" => $selectedDie]);
-            $this->queue("placeDie", $owner, ["die" => $selectedDie, "reason" => $this->getReason()]);
+            $this->queue("placeDie", $owner, ["die" => $selectedDie, "reason" => $this->getReason(), "used" => $used]);
             return;
         }
 
