@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use Bga\Games\wayfarers\Operations\Op_cardSpace;
+use Bga\Games\wayfarers\Operations\Op_placeDie;
 use Tests\GameUT;
 use PHPUnit\Framework\TestCase;
 
@@ -149,5 +150,57 @@ final class Op_cardSpaceTest extends TestCase {
                 "Player should NOT afford $key (cost " . $op->getCost($key) . ") with 1 coin and no discount"
             );
         }
+    }
+
+    /**
+     * BGA #245520 "Discount didnt count": a 2-Silver discount, one from a caravan coinDis column and one
+     * printed on City Observatory (card_land_14, dr "cardSpace(dis)"), must count both at the die slot veto
+     * and at the Space Card selection after the operation is reloaded from the DB.
+     * RULES.md "Upgrade Tiles" Discounts: "that Die's entire action is discounted by 1 of the depicted resource."
+     */
+    public function testCardPrintedAndCaravanDiscountsBothApplyThroughDiePlacement(): void {
+        $color = PCOLOR;
+        $cardId = "card_land_14";
+        $this->game->tokens->db->moveToken($cardId, "tableau_$color", 2);
+
+        // Column 0 (die value 1): camel from the board, telescope from upg_black_22, coinDis from upg_yellow_6
+        $this->game->tokens->db->moveToken("upg_yellow_6_1", "tableau_$color", 1);
+        $this->game->tokens->db->moveToken("upg_black_22_1", "tableau_$color", 7);
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color");
+        $dieKey = array_key_first($dice);
+        $this->game->tokens->db->setTokenState($dieKey, 1);
+
+        $spaceCards = $this->game->tokens->getTokensOfTypeInLocation("card_space", "mainarea");
+        $cheapest = null;
+        foreach ($spaceCards as $key => $info) {
+            if ((int) $info["state"] === 1) {
+                $cheapest = $key;
+            }
+        }
+        $this->assertNotNull($cheapest, "a Space Card sits above slot 1 (costs 3)");
+
+        // 3 Silver card, 2 Silver discount, 1 Silver in hand
+        $this->game->tokens->db->setTokenState("tracker_coin_$color", 1);
+
+        /** @var Op_placeDie */
+        $op = $this->game->machine->instantiateOperation("placeDie", $color, ["die" => $dieKey]);
+        $targets = $op->getArgs()["target"];
+        $this->assertContains($cardId, $targets, "die slot must not be vetoed: discounted price 1 is affordable");
+
+        $this->game->fakeUserAction($op, $cardId);
+        $this->game->machine->dispatchAll();
+
+        /** @var Op_cardSpace */
+        $top = $this->game->machine->createTopOperationFromDbForOwner(null);
+        $this->assertNotNull($top);
+        $this->assertEquals("cardSpace", $top->getType());
+        $this->assertEquals(2, $top->getCoinDiscount(), "caravan coinDis + card-printed dis");
+        $moves = $top->getPossibleMoves();
+        $this->assertTrue($moves[$cheapest]["can"], "1 Silver pays the discounted price");
+
+        $this->game->fakeUserAction($top, $cheapest);
+        $this->game->machine->dispatchAll();
+        $this->assertEquals(0, $this->game->tokens->getTrackerValue($color, "coin"));
+        $this->assertEquals("tableau_$color", $this->game->tokens->db->getTokenLocation($cheapest));
     }
 }
