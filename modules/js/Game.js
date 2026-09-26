@@ -2205,6 +2205,7 @@ class Game extends GameMachine {
             document.querySelectorAll(".action").forEach((node) => {
                 this.updateTooltip(node.id);
             });
+            this.setupJournalConnectors();
             this.setupGuildHotzoneTooltips();
             this.setupNotifications();
             this.setupScoreSheet();
@@ -2223,6 +2224,22 @@ class Game extends GameMachine {
         }
         console.log("Ending game setup");
         this.inSetup = false;
+    }
+    // One div per ink splotch; side A material lists every splotch, the tooltip picks the side at build time
+    setupJournalConnectors() {
+        for (const key of Object.keys(this.gamedatas.token_types)) {
+            if (!key.startsWith("jconn_") || !key.endsWith("_0"))
+                continue;
+            const info = this.getAllRules(key);
+            if (info.r === "true")
+                continue;
+            const id = key.slice(0, -2);
+            const div = document.createElement("div");
+            div.id = id;
+            div.className = `jconn ${id}`;
+            $(info.location).appendChild(div);
+            this.updateTooltip(id);
+        }
     }
     setupGuildHotzoneTooltips() {
         const majority = _("3 VP at game end for the player with the most Influence in this Guild. If tied, no one scores.");
@@ -3126,6 +3143,19 @@ class Game extends GameMachine {
                 }
                 return;
             }
+            case "jconn": {
+                const side = token?.parentElement?.dataset.state ?? "0";
+                const connector = `${tokenId}_${side}`;
+                const requirement = this.getRulesFor(connector, "r", "");
+                if (!requirement)
+                    return;
+                tokenInfo.name = _("Path Requirement");
+                tokenInfo.showtooltip = true;
+                tokenInfo.imageTypes += " _nottimage";
+                tokenInfo.tooltip = this.ttSection(_("Requirement"), this.getJournalRequirementTr(requirement, this.getRulesFor(connector, "gw", 1)));
+                tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Your Player Marker can only cross this splotch if you meet the requirement"));
+                return;
+            }
             case "action": {
                 const ctype = getPart(tokenId, 1);
                 const workerByCtype = {
@@ -3185,6 +3215,29 @@ class Game extends GameMachine {
             trTags.push(this.getTr(this.getRulesFor(`tag_${tag}`, "name")) ?? tag);
         }
         return trTags.join(sep);
+    }
+    // Journal connector "r" field: tag_X, max(tag_X,tag_Y) or Op(n_infX,n_infY)
+    getJournalRequirementTr(requirement, count) {
+        if (requirement.startsWith("Op(")) {
+            return this.splitRequirementList(requirement, 3)
+                .map((op) => this.getIconNameTr(`Op_${op}`))
+                .join(" + ");
+        }
+        const tags = requirement.startsWith("max(") ? this.splitRequirementList(requirement, 4) : [requirement];
+        return `${count} ` + tags.map((tag) => this.getIconNameTr(tag)).join(` ${_("or")} `);
+    }
+    splitRequirementList(requirement, prefixLength) {
+        return requirement
+            .slice(prefixLength, -1)
+            .split(",")
+            .map((item) => item.trim());
+    }
+    getIconNameTr(key) {
+        const rules = this.getAllRules(key);
+        if (!rules)
+            return key;
+        const icon = [rules.wicon, rules.type].find((type) => type?.includes("wicon"));
+        return `${icon ? this.createTokenImage(icon) : ""}${this.getTr(rules.name)}`;
     }
     getOpListTr(tags, sep = ", ") {
         // get translated ops

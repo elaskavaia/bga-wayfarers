@@ -102,3 +102,91 @@ describe("Game upgrade tile remaining-count tooltip (BGA #242371)", () => {
     expect(remainingLine("upg_green_31_3")).to.equal("2");
   });
 });
+
+/**
+ * Journal ink splotches: one hover div per connector, built from side A material, whose tooltip
+ * reads the requirement of whichever board side is in play (data-state on the board div).
+ */
+describe("Game journal splotch tooltips", () => {
+  let game: Game;
+  let registry: Record<string, string>;
+
+  const tag = (name: string, icon: string) => ({ type: `wicon_${icon}`, name });
+  const payOp = (color: string) => ({
+    type: `n_inf${color}`,
+    name: `Pay ${color} Influence`,
+    wicon: `wicon_inf_${color.toLowerCase()}_pay`
+  });
+
+  beforeEach(() => {
+    game = new Game(makeBga());
+    game.animationLa = new LaAnimations();
+    game.gamedatas = {
+      players: { "1": { id: "1", name: "Alice", color: "ff0000" } as any },
+      tokens: {},
+      token_types: {
+        jconn_0_10_0: { location: "mainboard_1", r: "true", gw: 1 },
+        jconn_0_10_1: { location: "mainboard_1", r: "true", gw: 1 },
+        jconn_10_20_0: { location: "mainboard_1", r: "tag_City", gw: 2 },
+        jconn_10_20_1: { location: "mainboard_1", r: "tag_card_folk", gw: 2 },
+        jconn_67_87_0: { location: "mainboard_2", r: "tag_Stars", gw: 4 },
+        jconn_67_87_1: { location: "mainboard_2", r: "max(tag_Sun,tag_Moon)", gw: 1 },
+        jconn_40_50_0: { location: "mainboard_2", r: "Op(n_infBlack)" },
+        jconn_40_50_1: { location: "mainboard_2", r: "Op(n_infBlue,n_infYellow)" },
+        tag_City: tag("City", "city"),
+        tag_card_folk: tag("Townsfolk Card", "card_folk"),
+        tag_Stars: tag("Stars", "stars"),
+        tag_Sun: tag("Sun", "sun"),
+        tag_Moon: tag("Moon", "moon"),
+        Op_n_infBlack: payOp("Black"),
+        Op_n_infBlue: payOp("Blue"),
+        Op_n_infYellow: payOp("Yellow")
+      },
+      counters: {}
+    } as any;
+
+    registry = {};
+    (global as any).gameui.tooltips = registry;
+    (global as any).gameui.addTooltipHtml = (nodeId: string, html: string) => {
+      registry[nodeId] = html;
+    };
+
+    document.body.innerHTML = `
+      <div id='limbo'></div>
+      <div id='mainboard_1' data-state='0'></div>
+      <div id='mainboard_2' data-state='1'></div>`;
+
+    game.setupJournalConnectors();
+  });
+
+  afterEach(() => {
+    (global as any).gameui.tooltips = {};
+    (global as any).gameui.addTooltipHtml = () => {};
+    document.body.innerHTML = "";
+  });
+
+  const text = (id: string) => (registry[id] ?? "").replace(/<[^>]+>/g, " ").replace(/\s+/g, " ");
+
+  it("creates a div per splotch on its board, skipping the free starting paths", () => {
+    expect(document.getElementById("jconn_0_10")).to.equal(null);
+    expect(document.getElementById("jconn_10_20")?.parentElement?.id).to.equal("mainboard_1");
+    expect(document.getElementById("jconn_67_87")?.parentElement?.id).to.equal("mainboard_2");
+    expect(document.getElementById("jconn_10_20")?.classList.contains("withtooltip")).to.equal(true);
+  });
+
+  it("shows the tag count, icon and name for side A", () => {
+    expect(text("jconn_10_20")).to.include("2 City");
+    expect(registry["jconn_10_20"]).to.include("wicon_city");
+    expect(text("jconn_10_20")).to.not.include("Townsfolk");
+  });
+
+  it("reads side B requirements when the board is flipped", () => {
+    expect(text("jconn_67_87")).to.include("1 Sun or Moon");
+    expect(text("jconn_67_87")).to.not.include("Stars");
+  });
+
+  it("names every influence to pay for an Op requirement", () => {
+    expect(text("jconn_40_50")).to.include("Pay Blue Influence + Pay Yellow Influence");
+    expect(registry["jconn_40_50"]).to.include("wicon_inf_blue_pay");
+  });
+});
