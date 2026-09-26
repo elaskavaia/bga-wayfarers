@@ -139,7 +139,7 @@ class Op_placeWorker extends Operation {
             $selectedWorker,
             $targetCard,
             1,
-            clienttranslate('${player_name} places ${token_name} on action ${card_type} position ${pos}'),
+            clienttranslate('${player_name} places ${token_name} on ${card_type} card, position ${pos}'),
             ["pos" => $state, "card_type" => $this->game->getTokenName($ctype)]
         );
 

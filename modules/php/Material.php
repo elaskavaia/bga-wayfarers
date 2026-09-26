@@ -978,6 +978,9 @@ class Material {
     "folk" => [ 
         "name" => clienttranslate("Townsfolk"),
 ],
+    "insp" => [ 
+        "name" => clienttranslate("Inspiration"),
+],
     "mainarea" => [ 
         "name" => clienttranslate("Main Board"),
 ],
