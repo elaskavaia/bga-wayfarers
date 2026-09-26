@@ -174,9 +174,8 @@ describe("Game journal splotch tooltips", () => {
     expect(document.getElementById("jconn_10_20")?.classList.contains("withtooltip")).to.equal(true);
   });
 
-  it("shows the tag count, icon and name for side A", () => {
+  it("shows the tag count and name for side A", () => {
     expect(text("jconn_10_20")).to.include("2 City");
-    expect(registry["jconn_10_20"]).to.include("wicon_city");
     expect(text("jconn_10_20")).to.not.include("Townsfolk");
   });
 
@@ -186,7 +185,6 @@ describe("Game journal splotch tooltips", () => {
   });
 
   it("names every influence to pay for an Op requirement", () => {
-    expect(text("jconn_40_50")).to.include("Pay Blue Influence + Pay Yellow Influence");
-    expect(registry["jconn_40_50"]).to.include("wicon_inf_blue_pay");
+    expect(text("jconn_40_50")).to.include("Pay Blue Influence and Pay Yellow Influence");
   });
 });

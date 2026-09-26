@@ -3152,8 +3152,8 @@ class Game extends GameMachine {
                 tokenInfo.name = _("Path Requirement");
                 tokenInfo.showtooltip = true;
                 tokenInfo.imageTypes += " _nottimage";
-                tokenInfo.tooltip = this.ttSection(_("Requirement"), this.getJournalRequirementTr(requirement, this.getRulesFor(connector, "gw", 1)));
-                tokenInfo.tooltip += this.ttSection(_("Restriction"), _("Your Player Marker can only cross this splotch if you meet the requirement"));
+                tokenInfo.tooltip = this.ttSection(undefined, _("Your Player Marker can only cross this path if you meet the requirement"));
+                tokenInfo.tooltip += this.ttSection(_("Requirement"), this.getJournalRequirementTr(requirement, this.getRulesFor(connector, "gw", 1)));
                 return;
             }
             case "action": {
@@ -3220,24 +3220,17 @@ class Game extends GameMachine {
     getJournalRequirementTr(requirement, count) {
         if (requirement.startsWith("Op(")) {
             return this.splitRequirementList(requirement, 3)
-                .map((op) => this.getIconNameTr(`Op_${op}`))
-                .join(" + ");
+                .map((op) => this.getTokenName(`Op_${op}`))
+                .join(` ${_("and")} `);
         }
         const tags = requirement.startsWith("max(") ? this.splitRequirementList(requirement, 4) : [requirement];
-        return `${count} ` + tags.map((tag) => this.getIconNameTr(tag)).join(` ${_("or")} `);
+        return `${count} ` + tags.map((tag) => this.getTokenName(tag)).join(` ${_("or")} `);
     }
     splitRequirementList(requirement, prefixLength) {
         return requirement
             .slice(prefixLength, -1)
             .split(",")
             .map((item) => item.trim());
-    }
-    getIconNameTr(key) {
-        const rules = this.getAllRules(key);
-        if (!rules)
-            return key;
-        const icon = [rules.wicon, rules.type].find((type) => type?.includes("wicon"));
-        return `${icon ? this.createTokenImage(icon) : ""}${this.getTr(rules.name)}`;
     }
     getOpListTr(tags, sep = ", ") {
         // get translated ops
