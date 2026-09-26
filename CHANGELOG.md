@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-09-26 (v260926-1546)
+
+- Added tooltips for Journal path requirements
+- Fixed game stuck selecting a die between +1 and -1 caravan tiles
+- Fixed die slot blocked when Space Card had nothing to buy (#243233)
+- Fixed panorama card alignment (#231680)
+
 ## 2026-09-23 (v260924-0105)
 
 - Added a description of each Automa board to the "Automa Board" lobby option
