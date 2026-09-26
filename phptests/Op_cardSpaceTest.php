@@ -84,6 +84,28 @@ final class Op_cardSpaceTest extends TestCase {
      * as it would be from Capital Observatory's dr field.
      * The die data must propagate through the or operation to the cardSpace delegate.
      */
+    /** BGA #243233 - nothing to buy is declined by the player, not blocked on and not skipped silently */
+    public function testNothingToBuyIsSkippableWithAReason(): void {
+        $color = PCOLOR;
+        $this->game->tokens->db->moveToken("card_land_9", "tableau_$color", -2);
+        foreach ($this->game->tokens->getTokensOfTypeInLocation("card_space", "mainarea") as $card => $info) {
+            $this->game->tokens->db->moveToken($card, "deck_space", 0);
+        }
+
+        /** @var Op_cardSpace */
+        $op = $this->game->machine->instantiateOperation("cardSpace", $color);
+        $this->assertTrue($op->noValidTargets());
+        $this->assertTrue($op->canSkip());
+        $this->assertFalse($op->isVoid());
+        $this->assertFalse($op->canResolveAutomatically(), "the player sees why and skips, not a silent auto-skip");
+
+        $this->game->tokens->db->moveToken("card_space_77", "mainarea", 1);
+        $this->game->tokens->db->setTokenState("tracker_coin_$color", 0);
+        $op = $this->game->machine->instantiateOperation("cardSpace", $color);
+        $this->assertEquals("Not enough Silver", $op->getPossibleMoves()["card_space_77"]["err"]);
+        $this->assertTrue($op->canSkip(), "unaffordable is the same as nothing to buy");
+    }
+
     public function testCoinDiscountThroughOrExpression(): void {
         $color = PCOLOR;
 

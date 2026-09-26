@@ -67,8 +67,27 @@ final class Op_orTest extends TestCase {
     public function testIsTrivial_SingleNonTrivialDelegate(): void {
         /** @var Op_or */
         $op = $this->game->machine->instantiateOperation("or", PCOLOR);
-        $op->withDelegate($this->game->machine->instantiateOperation("cardFolk", PCOLOR));
+        $op->withDelegate($this->game->machine->instantiateOperation("infAny", PCOLOR));
         $this->assertFalse($op->isTrivial(), "Op_or with single non-trivial delegate should not be trivial");
+    }
+
+    public function testSkippableOptionWithNothingToTakeIsNotOffered(): void {
+        $this->assertCount(0, $this->game->tokens->getTokensOfTypeInLocation("card_space", "mainarea"));
+
+        $op = $this->game->machine->instantiateOperation("cardSpace/coin", PCOLOR);
+        $args = $op->getArgs();
+        $this->assertEquals(["choice_1"], $args["target"], "an empty Space offer is greyed out, not a trap");
+        $this->assertNotEmpty($args["info"]["choice_0"]["err"], "and says why");
+        $this->assertTrue($op->canSkip(), "picking the empty offer and skipping it is a decline, so decline in one step");
+
+        $op = $this->game->machine->instantiateOperation("cardSpace/cardSpace(dis)", PCOLOR);
+        $this->assertTrue($op->noValidTargets());
+        $this->assertTrue($op->canSkip(), "nothing to take is declined, not blocked on");
+        $this->assertFalse($op->canResolveAutomatically(), "the player sees why and skips, not a silent auto-skip");
+
+        $this->game->tokens->db->setTokenState($this->game->tokens->getTrackerId(PCOLOR, "coin"), 0);
+        $op = $this->game->machine->instantiateOperation("3n_coin/5n_coin", PCOLOR);
+        $this->assertTrue($op->isVoid(), "a payment choice nobody can pay stays void, or canAfford lets the purchase through");
     }
 
     public function testIsTrivial_NoDelegates(): void {

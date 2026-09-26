@@ -299,6 +299,11 @@ abstract class Op_upgBase extends Op_acquireBase {
         return parent::canSkip();
     }
 
+    /** Show why nothing can be taken instead of skipping silently */
+    public function requireConfirmation() {
+        return $this->noValidTargets();
+    }
+
     #[Override]
     public function skip() {
         parent::skip();

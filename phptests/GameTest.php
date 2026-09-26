@@ -953,7 +953,7 @@ final class GameTest extends TestCase {
 
     public function testIsTrivial_or_allVoid() {
         // Both options are void (no cards in mainarea and no deck), so there's no real choice
-        $op = $this->game->machine->instantiateOperation("cardLand/cardSpace", PCOLOR);
+        $op = $this->game->machine->instantiateOperation("cardLand/cardWater", PCOLOR);
         $this->assertTrue($op->isTrivial(), "Or with all void options should be trivial");
     }
 

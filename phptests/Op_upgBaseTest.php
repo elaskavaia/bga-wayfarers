@@ -39,7 +39,8 @@ final class Op_upgBaseTest extends TestCase {
         // Vetoing every entry must not trade one dead end for another
         $op = $this->game->machine->instantiateOperation("upgGreen", $color);
         $this->assertTrue($op->canSkip(), "an unaffordable upgrade is declined, not blocked on");
-        $this->assertFalse($op->isVoid(), "and so it never parks in PlayerTurn");
+        $this->assertFalse($op->isVoid(), "and so it never dead-ends in PlayerTurn");
+        $this->assertFalse($op->canResolveAutomatically(), "the player sees why and skips, not a silent auto-skip");
     }
 
     private function setCoin(string $color, int $value): void {

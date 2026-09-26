@@ -43,7 +43,6 @@ class Op_or extends ComplexOperation {
             if ($c > 0) {
                 $max = $sub->getDataField("count", 1);
                 $min = $sub->getDataField("mcount", 1);
-                $sub->withData($this->getData(), true); // get all data from parent
                 // now override count
                 $sub->withDataField("count", $max * $c);
                 $sub->withDataField("mcount", $min * $c);
@@ -75,10 +74,18 @@ class Op_or extends ComplexOperation {
         $res = [];
         $totalLimit = 0;
         foreach ($this->delegates as $i => $sub) {
-            $sub->withData($this->getData(), true);
             $arg = $this->paramInfo($sub);
+            // a skippable option is never void, but offering it with nothing to take is a trap
+            if ($arg["q"] == 0 && $sub->noValidTargets()) {
+                $arg["q"] = Material::ERR_NOT_APPLICABLE;
+                $arg["max"] = 0;
+                $arg["err"] = $sub->getError();
+            }
             $totalLimit += $arg["max"] ?? 0;
             $res["choice_$i"] = $arg;
+        }
+        if ($totalLimit == 0) {
+            return $res;
         }
         if ($totalLimit < $this->getMinCount()) {
             return ["q" => Material::ERR_COST];
@@ -118,11 +125,38 @@ class Op_or extends ComplexOperation {
     function isTrivial(): bool {
         $nonVoid = [];
         foreach ($this->delegates as $sub) {
-            if (!$sub->isVoid()) {
+            if (!$sub->noValidTargets()) {
                 $nonVoid[] = $sub;
             }
         }
         return count($nonVoid) <= 1 && (!$nonVoid || $nonVoid[0]->isTrivial());
+    }
+
+    /** Picking a skippable option and skipping it is a decline, so offer it in one step; an unpayable payment choice stays void */
+    public function canSkip() {
+        if (parent::canSkip()) {
+            return true;
+        }
+        foreach ($this->delegates as $sub) {
+            if ($sub->canSkip()) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /** Show why no option can be taken instead of skipping silently */
+    public function requireConfirmation() {
+        return $this->noValidTargets();
+    }
+
+    public function skip() {
+        parent::skip();
+        if ($this->noValidTargets()) {
+            $this->notifyMessage(clienttranslate('${player_name} skips ${op_name}'), [
+                "op_name" => $this->getOpName()
+            ]);
+        }
     }
 
     function getOperator() {

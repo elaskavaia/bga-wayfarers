@@ -126,3 +126,25 @@ notification and the same score sheet widget.
 3. Reuse the existing end-of-game notification with a `final` flag instead of inventing a new one.
 4. Send it from wherever the machine hands control back to a human.
 5. Client side: panel counters first, breakdown dialog second.
+
+## Operation choice with nothing to take
+
+How `Op_or` treats options that have no valid target. Differs from the euro template on purpose, do not
+port euro's version back.
+
+- An option that has no valid target is greyed out (`ERR_NOT_APPLICABLE` with the option's own error),
+  even when that option is skippable on its own. Offering a click that only leads to a Skip button is a
+  trap. This greying stays in `Op_or`, not in the shared `paramInfo`: in `order` and `seq` an earlier
+  delegate can give a later one targets, so an option that is empty now must stay pickable there.
+- The choice as a whole is skippable when any option is skippable. Picking a skippable option and then
+  skipping it is a decline, so offer the decline in one step instead of two.
+- A choice where no option is skippable stays void, for example a payment choice nobody can pay. Parents
+  such as `Op_seq` and `Op_acquireBase::canAfford` rely on that to reject the whole action.
+- When nothing can be taken, the choice requires confirmation and logs the skip, so the player and the
+  replay see why nothing happened instead of a silent auto-skip. `Op_upgBase` follows the same pattern.
+- Why this matters here and not in euro: this repo's `Op_seq` checks every delegate for voidness up front,
+  so a void choice inside `cardSpace,inf...` (Land 9) made the whole die slot unplaceable when the Space
+  market was empty (BGA #243233). Euro's `Op_seq` only inspects the first delegate.
+- Parent data always flows into delegates through `ComplexOperation::withData`, `withDataField` and
+  `withDelegate`. Never re-seed delegates inside a loop, and never call `withData` from a predicate such
+  as `canSkip`.

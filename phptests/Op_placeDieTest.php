@@ -283,4 +283,18 @@ final class Op_placeDieTest extends TestCase {
             "BGA #243233: the same Stargazer buys nothing on another City space"
         );
     }
+
+    /** BGA #243233 - with no Space Card to take, Land 9 still gives its Influence, so the slot stays open */
+    public function testSpaceCardStepDoesNotBlockTheInfluenceStep(): void {
+        $color = PCOLOR;
+        $this->game->tokens->db->moveToken("card_land_9", "tableau_$color", -2);
+        $this->game->tokens->db->moveToken("card_folk_145", "tableau_$color", -2);
+        $this->assertCount(0, $this->game->tokens->getTokensOfTypeInLocation("card_space", "mainarea"));
+
+        $dice = $this->game->tokens->getTokensOfTypeInLocation("dice", "tableau_$color");
+        $dieKey = array_key_first($dice);
+        $this->game->tokens->db->setTokenState($dieKey, 2);
+
+        $this->assertContains("card_land_9", $this->placeDieTargets($dieKey, $color));
+    }
 }

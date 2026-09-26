@@ -15,6 +15,7 @@ declare(strict_types=1);
 namespace Bga\Games\wayfarers\Operations;
 
 use Bga\GameFramework\NotificationMessage;
+use Bga\Games\wayfarers\Material;
 
 class Op_cardSpace extends Op_cardBase {
     public function getPossibleMoves() {
@@ -22,7 +23,16 @@ class Op_cardSpace extends Op_cardBase {
         if ($this->getNextAvailablePosition() === null) {
             return ["err" => clienttranslate("No available position for this card")];
         }
-        return parent::getPossibleMoves();
+        $res = parent::getPossibleMoves();
+        if ($this->getCard()) {
+            return $res;
+        }
+        foreach ($res as &$entry) {
+            if ($entry["q"] === Material::ERR_COST && !isset($entry["err"])) {
+                $entry["err"] = clienttranslate("Not enough Silver");
+            }
+        }
+        return $res;
     }
 
     /**
@@ -109,5 +119,10 @@ class Op_cardSpace extends Op_cardBase {
             return new NotificationMessage(clienttranslate('Select a Space Card to buy with Silver discount of ${dis}'), ["dis" => $dis]);
         }
         return clienttranslate("Select a Space Card to buy");
+    }
+
+    /** Nothing to buy must not block the rest of the action (Land 9 influence), BGA #243233 */
+    public function canSkip() {
+        return $this->noValidTargets();
     }
 }
