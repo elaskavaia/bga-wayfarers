@@ -20,6 +20,7 @@ final class OpMachineTest extends TestCase {
         for ($i = 0; $i < 3; $i++) {
             $this->game->machine->queue("nop", PCOLOR);
         }
+        $this->expectOutputRegex("/did not settle in 2 rounds, top: nop/");
         $this->expectException(UserException::class);
         $this->expectExceptionMessage("top: nop");
         $this->game->machine->dispatchAll(2);
