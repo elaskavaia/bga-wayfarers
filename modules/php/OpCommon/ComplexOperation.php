@@ -27,6 +27,24 @@ abstract class ComplexOperation extends CountableOperation {
     /** @var Operation[] */
     public array $delegates = [];
 
+    function withData(mixed $data, bool $nocounts = false) {
+        parent::withData($data, $nocounts);
+        foreach ($this->delegates as $sub) {
+            $sub->withData($data, true); // always preserve sub-op counts
+        }
+        return $this;
+    }
+
+    function withDataField(string $field, mixed $value) {
+        parent::withDataField($field, $value);
+        if ($field != "count" && $field != "mcount") {
+            foreach ($this->delegates as $sub) {
+                $sub->withDataField($field, $value);
+            }
+        }
+        return $this;
+    }
+
     function getDataForDb() {
         $data = $this->getData() ?? [];
         $data["args"] = [];
@@ -53,6 +71,7 @@ abstract class ComplexOperation extends CountableOperation {
 
     function withDelegate(Operation $sub) {
         $this->delegates[] = $sub;
+        $sub->withData($this->getData(), true);
         return $this;
     }
 

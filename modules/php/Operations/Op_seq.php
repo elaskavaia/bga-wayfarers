@@ -42,7 +42,6 @@ class Op_seq extends ComplexOperation {
             $sub->destroy();
             $max = $sub->getDataField("count", 1);
             $min = $sub->getDataField("mcount", 1);
-            $sub->withData($this->getData());
             $sub->withDataField("count", $max * $c);
             $sub->withDataField("mcount", $min * $c);
             $sub->saveToDb($rank, false);
