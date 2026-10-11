@@ -586,4 +586,16 @@ final class Op_journalTest extends TestCase {
         $this->expectException(UserException::class);
         $this->createOp()->action_resolve([Operation::ARG_TARGET => "jpos_100"]);
     }
+
+    public function testMaxExpressionConnectorLabel(): void {
+        $this->game->tokens->db->setTokenState("mainboard_2", 1);
+        $this->setMarkerPosition(67);
+
+        $moves = $this->createOp()->getPossibleMoves();
+
+        $this->assertEquals("jconn_67_87_1", $moves["jpos_87"]["token_id"]);
+        $this->assertEquals("max(tag_Sun,tag_Moon)", $moves["jpos_87"]["r"]);
+        // documents buggy behavior for BGA #248816; flip when fixed (label should name Sun/Moon)
+        $this->assertEquals("1 [?]", $moves["jpos_87"]["name"]);
+    }
 }

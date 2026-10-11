@@ -2,6 +2,7 @@ import { makeBga } from "./setup";
 import { expect } from "chai";
 import sinon from "sinon";
 import { Game } from "../Game";
+import { placeHtml } from "../Game0Basics";
 
 describe("Game", () => {
   let game: Game;
@@ -511,6 +512,52 @@ describe("Game", () => {
       expect(controls().classList.contains("controls_hidden")).to.be.false;
       expect($("ebd-body").dataset.boardZoom).to.equal("manual");
       expect(thething().style.zoom).to.equal("2");
+    });
+  });
+
+  describe("onToken_nonActive", () => {
+    const realDialog = (global as any).ebg.popindialog;
+    let realBody: string;
+
+    beforeEach(() => {
+      realBody = document.body.innerHTML;
+      (global as any).ebg.popindialog = class {
+        create() {}
+        setTitle() {}
+        setContent(html: string) {
+          placeHtml(`<div id='popin_test'>${html}</div>`, "ebd-body");
+        }
+        show() {}
+      };
+      document.body.innerHTML = `
+        <div id='ebd-body'>
+          <div id='tableau_ff0000' class='tableau'>
+            <div id='pboard_ff0000' class='pboard'>
+              <div id='breakroom_ff0000' class='breakroom'><div id='worker_green_1'></div><div id='dice_1'></div></div>
+              <div id='infsupply_ff0000' class='infsupply'></div>
+              <div id='caravan_ff0000' class='caravan'><div id='ccell_1_ff0000' class='ccell'></div></div>
+            </div>
+          </div>
+        </div>`;
+    });
+
+    afterEach(() => {
+      (global as any).ebg.popindialog = realDialog;
+      document.body.innerHTML = realBody;
+    });
+
+    // Documents buggy behavior for BGA #249414; flip the assertions when the fix lands.
+    it("opens the whole player board as a pile for a starting card sitting on pboard", () => {
+      const cardId = "card_folk_1_ff0000";
+      const redirect = game.getPlaceRedirect({ key: cardId, location: "tableau_ff0000", state: 0 } as any);
+      expect(redirect.location).to.equal("pboard_ff0000");
+      placeHtml(`<div id='${cardId}' class='card' data-state='0'></div>`, redirect.location);
+
+      game.onToken_nonActive(cardId, $(cardId));
+
+      expect($("card_pile_selector").innerHTML).to.contain("breakroom_ff0000");
+      expect($("breakroom_ff0000_tt"), "breakroom cloned into pile").to.exist;
+      expect($("caravan_ff0000_tt"), "caravan cloned into pile").to.exist;
     });
   });
 });
