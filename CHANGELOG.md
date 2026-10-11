@@ -1,5 +1,13 @@
 # Changelog
 
+## 2026-10-11 (v261011-1857)
+
+- Added move numbers to the game log
+- Fixed game not loading during a BGA platform issue
+- Fixed "1 [?]" labels on Journal paths (#248816)
+- Fixed player board popup showing the whole board (#249414)
+- Named Inspiration Cards in the placement log
+
 ## 2026-09-26 (v260926-1546)
 
 - Added tooltips for Journal path requirements
