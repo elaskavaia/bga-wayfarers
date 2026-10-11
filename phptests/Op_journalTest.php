@@ -595,7 +595,7 @@ final class Op_journalTest extends TestCase {
 
         $this->assertEquals("jconn_67_87_1", $moves["jpos_87"]["token_id"]);
         $this->assertEquals("max(tag_Sun,tag_Moon)", $moves["jpos_87"]["r"]);
-        // documents buggy behavior for BGA #248816; flip when fixed (label should name Sun/Moon)
-        $this->assertEquals("1 [?]", $moves["jpos_87"]["name"]);
+        // BGA #248816: label shows one icon per tag of the max(...) list
+        $this->assertEquals("1 [wicon_sun]/[wicon_moon]", $moves["jpos_87"]["name"]);
     }
 }

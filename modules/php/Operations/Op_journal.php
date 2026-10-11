@@ -68,8 +68,9 @@ class Op_journal extends Operation {
                 $achived = $this->game->evaluateExpression($prereq, $owner) >= $required;
                 $name = $this->game->getRulesFor($connector, "name", "");
                 if (!$name) {
-                    $icon = $this->game->getRulesFor($prereq, "type", "?");
-                    $name = "$required [$icon]";
+                    $tags = str_starts_with($prereq, "max(") ? explode(",", substr($prereq, 4, -1)) : [$prereq];
+                    $icons = array_map(fn($tag) => "[" . $this->game->getRulesFor(trim($tag), "type", "?") . "]", $tags);
+                    $name = "$required " . implode("/", $icons);
                 }
             }
 
