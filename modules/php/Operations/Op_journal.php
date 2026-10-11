@@ -67,10 +67,11 @@ class Op_journal extends Operation {
                 $required = (int) $this->game->getRulesFor($connector, "gw", 1);
                 $achived = $this->game->evaluateExpression($prereq, $owner) >= $required;
                 $name = $this->game->getRulesFor($connector, "name", "");
-                if (!$name) {
-                    $tags = str_starts_with($prereq, "max(") ? explode(",", substr($prereq, 4, -1)) : [$prereq];
-                    $icons = array_map(fn($tag) => "[" . $this->game->getRulesFor(trim($tag), "type", "?") . "]", $tags);
-                    $name = "$required " . implode("/", $icons);
+                if (!$name && $prereq == "max(tag_Sun,tag_Moon)") {
+                    $name = "1 [wicon_sun]/[wicon_moon]"; // the only max() connector
+                } elseif (!$name) {
+                    $icon = $this->game->getRulesFor($prereq, "type", "?");
+                    $name = "$required [$icon]";
                 }
             }
 
