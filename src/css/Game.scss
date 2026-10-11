@@ -333,3 +333,10 @@ html[data-theme="light"] {
   font-weight: normal;
   cursor: help;
 }
+
+// "Move #" stamp added by Game0Basics.addMoveToLog, styled like framework .timestamp
+.log .movestamp {
+  font-size: 75%;
+  color: #777;
+  text-align: center;
+}

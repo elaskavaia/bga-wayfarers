@@ -11,6 +11,12 @@
 
 interface CustomPlayer extends Player {}
 
+interface GameGuiInternal extends GameGui {
+  addMoveToLog(log_id: number, move_id: number): void;
+  originalAddMoveToLog?: (log_id: number, move_id: number) => void;
+  log_to_move_id?: { [log_id: string]: number };
+}
+
 interface Token {
   key: string;
   location: string;

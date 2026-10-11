@@ -69,6 +69,7 @@ const dom = new JSDOM("<!doctype html><html><body><div id='ebd-body'></div></bod
   updatePageTitle: () => {},
   wait: (ms: number) => Promise.resolve(),
   clienttranslate_string: (s: string) => s,
+  addMoveToLog: () => {},
   tooltips: {}
 };
 
