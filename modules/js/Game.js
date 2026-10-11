@@ -2945,16 +2945,13 @@ class Game extends GameMachine {
             case "card":
                 {
                     const cardType = getPart(target, 1);
-                    if (cardType == "home") {
-                        this.showHiddenContent(node, _("Capital"), target);
+                    const isCapital = cardType == "home" || getFirstParts(target, 3) == "card_space_1";
+                    const container = $(target).parentElement;
+                    if (isCapital || container?.classList.contains("pboard")) {
+                        this.showHiddenContent(node, isCapital ? _("Capital") : this.getTokenName(target), target);
                         return false;
                     }
-                    if (getFirstParts(target, 3) == "card_space_1") {
-                        this.showHiddenContent(node, _("Capital"), target);
-                        return false;
-                    }
-                    const container = $(target).parentElement?.id;
-                    this.showHiddenContent(container, _("Pile contents"), 0, function (a, b) {
+                    this.showHiddenContent(container?.id, _("Pile contents"), 0, function (a, b) {
                         const orderA = parseInt(a.dataset.state);
                         const orderB = parseInt(b.dataset.state);
                         return -orderA + orderB; // descending

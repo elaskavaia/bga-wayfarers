@@ -518,12 +518,16 @@ describe("Game", () => {
   describe("onToken_nonActive", () => {
     const realDialog = (global as any).ebg.popindialog;
     let realBody: string;
+    let dialogTitle: string;
 
     beforeEach(() => {
       realBody = document.body.innerHTML;
+      dialogTitle = "";
       (global as any).ebg.popindialog = class {
         create() {}
-        setTitle() {}
+        setTitle(title: string) {
+          dialogTitle = title;
+        }
         setContent(html: string) {
           placeHtml(`<div id='popin_test'>${html}</div>`, "ebd-body");
         }
@@ -546,18 +550,20 @@ describe("Game", () => {
       document.body.innerHTML = realBody;
     });
 
-    // Documents buggy behavior for BGA #249414; flip the assertions when the fix lands.
-    it("opens the whole player board as a pile for a starting card sitting on pboard", () => {
+    // Verifies the fix for BGA #249414
+    it("shows a card sitting directly on pboard alone, not the whole board as a pile", () => {
       const cardId = "card_folk_1_ff0000";
+      game.gamedatas.token_types["card_folk_1"] = { nom: "Capital Townsfolk" };
       const redirect = game.getPlaceRedirect({ key: cardId, location: "tableau_ff0000", state: 0 } as any);
       expect(redirect.location).to.equal("pboard_ff0000");
       placeHtml(`<div id='${cardId}' class='card' data-state='0'></div>`, redirect.location);
 
       game.onToken_nonActive(cardId, $(cardId));
 
-      expect($("card_pile_selector").innerHTML).to.contain("breakroom_ff0000");
-      expect($("breakroom_ff0000_tt"), "breakroom cloned into pile").to.exist;
-      expect($("caravan_ff0000_tt"), "caravan cloned into pile").to.exist;
+      expect(dialogTitle).to.equal("Capital Townsfolk");
+      expect($("card_pile_selector").innerHTML).to.not.contain("breakroom_ff0000");
+      expect($("breakroom_ff0000_tt"), "breakroom not cloned").to.not.exist;
+      expect($("caravan_ff0000_tt"), "caravan not cloned").to.not.exist;
     });
   });
 });
